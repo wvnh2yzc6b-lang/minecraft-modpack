@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "warfront:war_mark"
+    }
+  ],
+  "result": {
+    "id": "minecraft:emerald",
+    "count": 1
+  }
+}

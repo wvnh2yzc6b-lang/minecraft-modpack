@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GWG",
+    "WAW",
+    "MMM"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glistering_melon_slice"
+    },
+    "W": {
+      "item": "warfront:war_mark"
+    },
+    "A": {
+      "item": "minecraft:golden_apple"
+    },
+    "M": {
+      "item": "minecraft:mossy_stone_bricks"
+    }
+  },
+  "result": {
+    "id": "warfront:healing_shrine",
+    "count": 1
+  }
+}

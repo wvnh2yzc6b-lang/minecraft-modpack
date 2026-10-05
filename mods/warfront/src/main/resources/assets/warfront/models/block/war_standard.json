@@ -1,0 +1,245 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "pole": "warfront:block/war_standard_pole",
+    "flag": "warfront:block/war_standard_flag",
+    "particle": "warfront:block/war_standard_flag"
+  },
+  "elements": [
+    {
+      "from": [
+        7,
+        0,
+        7
+      ],
+      "to": [
+        9,
+        16,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "south": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "east": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "west": {
+          "uv": [
+            7,
+            0,
+            9,
+            16
+          ],
+          "texture": "#pole"
+        },
+        "up": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole"
+        },
+        "down": {
+          "uv": [
+            7,
+            7,
+            9,
+            9
+          ],
+          "texture": "#pole"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        15,
+        7.5
+      ],
+      "to": [
+        11,
+        16,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ],
+          "texture": "#pole"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ],
+          "texture": "#pole"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ],
+          "texture": "#pole"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ],
+          "texture": "#pole"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ],
+          "texture": "#pole"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ],
+          "texture": "#pole"
+        }
+      }
+    },
+    {
+      "from": [
+        9,
+        4,
+        7.75
+      ],
+      "to": [
+        16,
+        15,
+        8.25
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            1,
+            7,
+            12
+          ],
+          "texture": "#flag"
+        },
+        "south": {
+          "uv": [
+            0,
+            1,
+            7,
+            12
+          ],
+          "texture": "#flag"
+        },
+        "east": {
+          "uv": [
+            0,
+            1,
+            1,
+            12
+          ],
+          "texture": "#flag"
+        },
+        "west": {
+          "uv": [
+            0,
+            1,
+            1,
+            12
+          ],
+          "texture": "#flag"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            7,
+            1
+          ],
+          "texture": "#flag"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            7,
+            1
+          ],
+          "texture": "#flag"
+        }
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  }
+}

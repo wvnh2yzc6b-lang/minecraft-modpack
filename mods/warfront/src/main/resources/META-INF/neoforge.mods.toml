@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "warfront"
+version = "${mod_version}"
+displayName = "Warfront"
+authors = "Warfront Team"
+description = '''
+Fantasy war-state gameplay: playable races, player factions with diplomacy, recruitable
+soldiers that fight in real formations (shield walls, wedges, squares), healers, captains,
+archer volleys, morale and routing, plus tower defense against marauder sieges.
+'''
+
+[[dependencies.warfront]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.warfront]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "BOTH"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"

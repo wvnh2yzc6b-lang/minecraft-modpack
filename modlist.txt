@@ -1,0 +1,71 @@
+# Warfront: Age of Banners: curated mod list (Modrinth project slugs).
+# NeoForge 1.21.1. Dependencies (libraries) are pulled in automatically.
+# One slug per line; anything after '#' is a comment. The build script tolerates
+# slugs that fail to resolve and reports them, so the pack always builds.
+
+# --- Performance -----------------------------------------------------------
+sodium
+iris
+ferrite-core
+modernfix
+entityculling
+immediatelyfast
+lithium
+
+# --- Quality of life -------------------------------------------------------
+jei
+jade
+appleskin
+mouse-tweaks
+controlling
+xaeros-minimap
+xaeros-world-map
+waystones
+sophisticated-backpacks
+corpse
+inventory-essentials
+trashslot
+
+# --- Magic -----------------------------------------------------------------
+irons-spells-n-spellbooks
+ars-nouveau
+occultism
+apothic-enchanting
+artifacts
+curios
+
+# --- Combat ----------------------------------------------------------------
+better-combat
+simply-swords
+epic-knights-shields-armor-and-weapons
+
+# --- Adventure, dungeons and structures ------------------------------------
+when-dungeons-arise
+yungs-better-dungeons
+yungs-better-strongholds
+yungs-better-mineshafts
+yungs-better-desert-temples
+yungs-better-jungle-temples
+yungs-better-ocean-monuments
+yungs-better-witch-huts
+yungs-better-nether-fortresses
+yungs-bridges
+yungs-extras
+towns-and-towers
+repurposed-structures
+explorify
+dungeons-and-taverns
+the-aether
+the-twilight-forest
+
+# --- World generation ------------------------------------------------------
+terralith
+tectonic
+
+# --- Mobs ------------------------------------------------------------------
+friends-and-foes
+
+# --- Building and atmosphere ----------------------------------------------
+supplementaries
+sound-physics-remastered
+falling-leaves

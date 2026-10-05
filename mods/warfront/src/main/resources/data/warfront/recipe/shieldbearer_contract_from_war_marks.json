@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "minecraft:shield"
+    }
+  ],
+  "result": {
+    "id": "warfront:shieldbearer_contract",
+    "count": 1
+  }
+}

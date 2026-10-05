@@ -1,0 +1,133 @@
+package com.warfront.registry;
+
+import com.mojang.serialization.Codec;
+import com.warfront.Warfront;
+import com.warfront.army.SoldierRole;
+import com.warfront.block.*;
+import com.warfront.entity.SoldierEntity;
+import com.warfront.item.CommanderBatonItem;
+import com.warfront.item.HealingStaffItem;
+import com.warfront.item.RecruitContractItem;
+import com.warfront.item.WarHornItem;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.EnumMap;
+import java.util.Map;
+
+public final class WFRegistry {
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Warfront.MODID);
+    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Warfront.MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITIES =
+            DeferredRegister.create(Registries.ENTITY_TYPE, Warfront.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Warfront.MODID);
+    public static final DeferredRegister<CreativeModeTab> TABS =
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Warfront.MODID);
+    public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
+            DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Warfront.MODID);
+
+    // ---- player data ----
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<String>> RACE = ATTACHMENTS.register("race",
+            () -> AttachmentType.builder(() -> "").serialize(Codec.STRING).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> ARMY_ORDER = ATTACHMENTS.register(
+            "army_order", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> ARMY_FORMATION = ATTACHMENTS.register(
+            "army_formation", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> STARTER_KIT = ATTACHMENTS.register(
+            "starter_kit", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
+    // ---- entities ----
+    public static final DeferredHolder<EntityType<?>, EntityType<SoldierEntity>> SOLDIER = ENTITIES.register("soldier",
+            () -> EntityType.Builder.<SoldierEntity>of(SoldierEntity::new, MobCategory.MISC)
+                    .sized(0.6F, 1.95F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(10)
+                    .build("soldier"));
+
+    // ---- blocks ----
+    public static final DeferredBlock<TowerBlock> ARROW_TOWER = BLOCKS.register("arrow_tower",
+            () -> new TowerBlock(TowerType.ARROW, BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
+                    .strength(3.5F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+    public static final DeferredBlock<TowerBlock> ARCANE_SPIRE = BLOCKS.register("arcane_spire",
+            () -> new TowerBlock(TowerType.ARCANE, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
+                    .strength(3.5F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.AMETHYST)
+                    .lightLevel(s -> 7)));
+    public static final DeferredBlock<TowerBlock> HEALING_SHRINE = BLOCKS.register("healing_shrine",
+            () -> new TowerBlock(TowerType.HEALING, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN)
+                    .strength(3.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)
+                    .lightLevel(s -> 10)));
+    public static final DeferredBlock<WarStandardBlock> WAR_STANDARD = BLOCKS.register("war_standard",
+            () -> new WarStandardBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED)
+                    .strength(2.0F, 1200.0F).sound(SoundType.WOOD).noOcclusion()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowerBlockEntity>> TOWER_BE =
+            BLOCK_ENTITIES.register("tower", () -> BlockEntityType.Builder.of(TowerBlockEntity::new,
+                    ARROW_TOWER.get(), ARCANE_SPIRE.get(), HEALING_SHRINE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WarStandardBlockEntity>> WAR_STANDARD_BE =
+            BLOCK_ENTITIES.register("war_standard", () -> BlockEntityType.Builder.of(WarStandardBlockEntity::new,
+                    WAR_STANDARD.get()).build(null));
+
+    // ---- items ----
+    public static final DeferredItem<BlockItem> ARROW_TOWER_ITEM = ITEMS.registerSimpleBlockItem(ARROW_TOWER);
+    public static final DeferredItem<BlockItem> ARCANE_SPIRE_ITEM = ITEMS.registerSimpleBlockItem(ARCANE_SPIRE);
+    public static final DeferredItem<BlockItem> HEALING_SHRINE_ITEM = ITEMS.registerSimpleBlockItem(HEALING_SHRINE);
+    public static final DeferredItem<BlockItem> WAR_STANDARD_ITEM = ITEMS.registerSimpleBlockItem(WAR_STANDARD);
+
+    public static final DeferredItem<CommanderBatonItem> COMMANDER_BATON = ITEMS.register("commander_baton",
+            () -> new CommanderBatonItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<WarHornItem> WAR_HORN = ITEMS.register("war_horn",
+            () -> new WarHornItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<HealingStaffItem> HEALING_STAFF = ITEMS.register("healing_staff",
+            () -> new HealingStaffItem(new Item.Properties().durability(128)));
+    public static final DeferredItem<Item> WAR_MARK = ITEMS.registerSimpleItem("war_mark");
+    public static final DeferredItem<DeferredSpawnEggItem> SOLDIER_SPAWN_EGG = ITEMS.register("soldier_spawn_egg",
+            () -> new DeferredSpawnEggItem(SOLDIER, 0x7A1F1F, 0x2B2B2B, new Item.Properties()));
+
+    public static final Map<SoldierRole, DeferredItem<RecruitContractItem>> CONTRACTS = new EnumMap<>(SoldierRole.class);
+
+    static {
+        for (SoldierRole role : SoldierRole.values()) {
+            CONTRACTS.put(role, ITEMS.register(role.id() + "_contract",
+                    () -> new RecruitContractItem(role, new Item.Properties().stacksTo(16))));
+        }
+    }
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("main",
+            () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.warfront"))
+                    .icon(() -> new ItemStack(COMMANDER_BATON.get()))
+                    .displayItems((params, out) -> ITEMS.getEntries().forEach(item -> out.accept(item.get())))
+                    .build());
+
+    private WFRegistry() {}
+
+    public static void register(IEventBus bus) {
+        BLOCKS.register(bus);
+        ITEMS.register(bus);
+        ENTITIES.register(bus);
+        BLOCK_ENTITIES.register(bus);
+        TABS.register(bus);
+        ATTACHMENTS.register(bus);
+    }
+}
