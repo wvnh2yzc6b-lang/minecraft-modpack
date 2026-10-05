@@ -445,10 +445,9 @@ public class SoldierEntity extends PathfinderMob {
     private void assignSlot(List<SoldierEntity> group, Vec3 ref, float yaw) {
         if (!group.contains(this)) group.add(this);
         group.sort(Comparator.<SoldierEntity>comparingInt(s -> s.getRole().rank).thenComparing(Entity::getUUID));
-        int melee = 0;
-        for (SoldierEntity s : group) if (s.getRole().melee) melee++;
-        int index = group.indexOf(this);
-        slot = FormationLayout.slot(formation, index, group.size(), melee, ref, yaw);
+        List<SoldierRole> roles = new ArrayList<>(group.size());
+        for (SoldierEntity s : group) roles.add(s.getRole());
+        slot = FormationLayout.slot(formation, roles, group.indexOf(this), ref, yaw);
         anchorYaw = yaw;
     }
 

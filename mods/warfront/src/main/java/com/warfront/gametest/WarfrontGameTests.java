@@ -53,7 +53,8 @@ public final class WarfrontGameTests {
     private static SoldierEntity spawnRaw(GameTestHelper h, int x, int z) {
         SoldierEntity s = WFRegistry.SOLDIER.get().create(h.getLevel());
         if (s == null) throw new IllegalStateException("soldier entity type failed to create");
-        BlockPos abs = h.absolutePos(new BlockPos(x, 1, z));
+        // Relative y=1 is the arena floor (the structure sits one block above the test origin).
+        BlockPos abs = h.absolutePos(new BlockPos(x, 2, z));
         s.moveTo(abs.getX() + 0.5, abs.getY(), abs.getZ() + 0.5, 0F, 0F);
         return s;
     }
@@ -80,7 +81,7 @@ public final class WarfrontGameTests {
         for (int i = 0; i < roles.length; i++) {
             army.add(recruit(h, owner, roles[i], Race.HUMAN, 1 + i % 7, 1 + i / 7));
         }
-        Vec3 anchor = h.absoluteVec(new Vec3(4.5, 1, 6.5));
+        Vec3 anchor = h.absoluteVec(new Vec3(4.5, 2, 6.5));
         for (SoldierEntity s : army) s.command(Order.HOLD, Formation.SHIELD_WALL, anchor, 0F);
         for (SoldierEntity s : army) s.recomputeSlot();
 
@@ -117,7 +118,7 @@ public final class WarfrontGameTests {
         SoldierEntity recruit = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 2, 4);
         SoldierEntity raider = raider(h, SoldierRole.SWORDSMAN, 6, 4);
         h.succeedWhen(() -> h.assertTrue(
-                recruit.getHealth() < recruit.getMaxHealth() || raider.getHealth() < raider.getMaxHealth(),
+                recruit.getLastHurtByMob() == raider || raider.getLastHurtByMob() == recruit,
                 "the two sides never came to blows"));
     }
 
@@ -125,10 +126,9 @@ public final class WarfrontGameTests {
     public static void archerShootsEnemy(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity archer = recruit(h, owner, SoldierRole.ARCHER, Race.ELF, 1, 1);
-        Husk husk = h.spawn(EntityType.HUSK, new BlockPos(7, 1, 7));
+        Husk husk = h.spawn(EntityType.HUSK, new BlockPos(7, 2, 7));
         husk.setPersistenceRequired();
-        h.succeedWhen(() -> h.assertTrue(husk.getLastHurtByMob() == archer || !husk.isAlive(),
-                "archer never hit the husk"));
+        h.succeedWhen(() -> h.assertTrue(husk.getLastHurtByMob() == archer, "archer never hit the husk"));
     }
 
     @GameTest(template = ARENA, timeoutTicks = 200)
@@ -137,6 +137,9 @@ public final class WarfrontGameTests {
         SoldierEntity healer = recruit(h, owner, SoldierRole.HEALER, Race.HUMAN, 3, 4);
         SoldierEntity wounded = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 6, 4);
         wounded.setHealth(8.0F);
-        h.succeedWhen(() -> h.assertTrue(wounded.getHealth() > 8.0F, "healer never healed the wounded soldier"));
+        h.succeedWhen(() -> {
+            h.assertTrue(wounded.isAlive(), "wounded soldier died");
+            h.assertTrue(wounded.getHealth() > 8.0F, "healer never healed the wounded soldier");
+        });
     }
 }
