@@ -7,7 +7,14 @@ import com.warfront.army.SoldierRole;
 import com.warfront.entity.SoldierEntity;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
+import com.warfront.block.WarStandardBlockEntity;
+import com.warfront.mana.Mana;
 import com.warfront.registry.WFRegistry;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -141,5 +148,90 @@ public final class WarfrontGameTests {
             h.assertTrue(wounded.isAlive(), "wounded soldier died");
             h.assertTrue(wounded.getHealth() > 8.0F, "healer never healed the wounded soldier");
         });
+    }
+
+    // ------------------------------------------------------------------ mana, races, sieges
+
+    @GameTest(template = ARENA)
+    public static void summoningCostsMana(GameTestHelper h) {
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
+        ItemStack contract = new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.SWORDSMAN).get(), 2);
+        player.setItemInHand(InteractionHand.MAIN_HAND, contract);
+        int cost = SoldierRole.SWORDSMAN.manaCost(Race.HUMAN);
+
+        Mana.set(player, 0F);
+        contract.getItem().use(h.getLevel(), player, InteractionHand.MAIN_HAND);
+        h.assertTrue(player.getMainHandItem().getCount() == 2, "summoning without mana should fail");
+
+        Mana.set(player, 100F);
+        contract.getItem().use(h.getLevel(), player, InteractionHand.MAIN_HAND);
+        h.assertTrue(player.getMainHandItem().getCount() == 1, "contract should be consumed");
+        h.assertTrue(Math.abs(Mana.get(player) - (100F - cost)) < 0.01F,
+                "expected " + (100 - cost) + " mana left, had " + Mana.get(player));
+        h.assertTrue(SoldierRole.SWORDSMAN.manaCost(Race.HIVE) < cost, "hive troops should be cheaper");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void ripeManabloomDropsShards(GameTestHelper h) {
+        BlockPos crop = new BlockPos(4, 2, 4);
+        h.setBlock(crop.below(), Blocks.FARMLAND.defaultBlockState());
+        h.setBlock(crop, WFRegistry.MANABLOOM.get().getStateForAge(CropBlock.MAX_AGE));
+        h.destroyBlock(crop);
+        h.succeedWhen(() -> h.assertItemEntityPresent(WFRegistry.MANA_SHARD.get(), crop, 2.0));
+    }
+
+    @GameTest(template = ARENA)
+    public static void demonsAreImmuneToFire(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity demon = recruit(h, owner, SoldierRole.SWORDSMAN, Race.DEMON, 4, 4);
+        boolean hurt = demon.hurt(h.getLevel().damageSources().inFire(), 5.0F);
+        h.assertTrue(!hurt && demon.getHealth() == demon.getMaxHealth(), "fire should not hurt a demon");
+        SoldierEntity human = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 6, 4);
+        h.assertTrue(human.hurt(h.getLevel().damageSources().inFire(), 5.0F), "fire should hurt a human");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 500)
+    public static void raidersBreakThroughWalls(GameTestHelper h) {
+        // Box a raider into a cobblestone cell; its objective lies to the east.
+        for (int x = 1; x <= 3; x++) {
+            for (int z = 3; z <= 5; z++) {
+                if (x == 2 && z == 4) continue;
+                h.setBlock(new BlockPos(x, 2, z), Blocks.COBBLESTONE);
+                h.setBlock(new BlockPos(x, 3, z), Blocks.COBBLESTONE);
+            }
+        }
+        h.setBlock(new BlockPos(2, 4, 4), Blocks.COBBLESTONE);
+        SoldierEntity raider = spawnRaw(h, 2, 4);
+        raider.setupAsRaider(NpcFaction.MARAUDERS, SoldierRole.SWORDSMAN, UUID.randomUUID(),
+                h.absoluteVec(new Vec3(7.5, 2, 4.5)), null, 1);
+        h.getLevel().addFreshEntity(raider);
+        h.succeedWhen(() -> h.assertTrue(
+                h.getBlockState(new BlockPos(3, 2, 4)).isAir() || h.getBlockState(new BlockPos(3, 3, 4)).isAir(),
+                "raider never broke out of its cell"));
+    }
+
+    @GameTest(template = ARENA)
+    public static void warHornStartsWaveCampaign(GameTestHelper h) {
+        BlockPos pos = new BlockPos(4, 2, 4);
+        h.setBlock(pos, WFRegistry.WAR_STANDARD.get());
+        if (!(h.getBlockEntity(pos) instanceof WarStandardBlockEntity standard)) {
+            throw new IllegalStateException("war standard has no block entity");
+        }
+        h.assertTrue(standard.startCampaign(h.getLevel()), "campaign should start");
+        h.assertTrue(standard.isCampaignActive() && standard.isUnderSiege() && standard.getWave() == 1,
+                "first wave should begin immediately");
+        UUID warband = standard.getWarbandId();
+        List<SoldierEntity> attackers = new ArrayList<>();
+        for (Entity e : h.getLevel().getAllEntities()) {
+            if (e instanceof SoldierEntity s && warband != null && warband.equals(s.getWarbandId())) attackers.add(s);
+        }
+        h.assertTrue(!attackers.isEmpty(), "the wave should have attackers");
+        // Clean up so the attackers don't wander into other tests.
+        standard.stopCampaign(h.getLevel());
+        attackers.forEach(SoldierEntity::discard);
+        h.succeed();
     }
 }

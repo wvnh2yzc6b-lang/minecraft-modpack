@@ -3,6 +3,8 @@
   "values": [
     "warfront:arrow_tower",
     "warfront:arcane_spire",
-    "warfront:healing_shrine"
+    "warfront:healing_shrine",
+    "warfront:mana_ore",
+    "warfront:deepslate_mana_ore"
   ]
 }

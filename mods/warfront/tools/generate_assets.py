@@ -167,6 +167,111 @@ def item_textures():
              f"item/{role}_contract.png")
 
 
+def mana_textures():
+    shard = [
+        "................",
+        "................",
+        ".........LL.....",
+        "........LWBL....",
+        ".......LWBBL....",
+        "......LWBBDL....",
+        ".....LWBBBDL....",
+        "....LWBBBDL.....",
+        "....LBBBBDL.....",
+        "...LBBBBDL......",
+        "...LBBBDDL......",
+        "...LBBDDL.......",
+        "....LDDL........",
+        ".....LL.........",
+        "................",
+        "................",
+    ]
+    pal = {"L": hexc("1b4f8a"), "W": hexc("e6f7ff"), "B": hexc("3fa9f5"), "D": hexc("1f6fc0")}
+    save(sprite(shard, pal), "item/mana_shard.png")
+    crystal = [
+        "................",
+        ".......LL.......",
+        "......LWBL......",
+        ".....LWBBBL.....",
+        "....LWBBBBDL....",
+        "...LWBBBBBBDL...",
+        "..LWWBBBBBBDDL..",
+        "..LWBBBBBBBBDL..",
+        "..LBBBBBBBBDDL..",
+        "...LBBBBBBDDL...",
+        "....LBBBBDDL....",
+        ".....LBBDDL.....",
+        "......LDDL......",
+        ".......LL.......",
+        "................",
+        "................",
+    ]
+    pal2 = {"L": hexc("3a1b8a"), "W": hexc("f0e6ff"), "B": hexc("8f6bff"), "D": hexc("5a2fd0")}
+    save(sprite(crystal, pal2), "item/mana_crystal.png")
+    seeds = [
+        "................",
+        "................",
+        "................",
+        "......B.........",
+        ".....BLB...B....",
+        "......B...BLB...",
+        "...........B....",
+        "....B...........",
+        "...BLB....B.....",
+        "....B....BLB....",
+        "..........B.....",
+        "......B.........",
+        ".....BLB........",
+        "......B.........",
+        "................",
+        "................",
+    ]
+    save(sprite(seeds, {"B": hexc("2f6f9f"), "L": hexc("9fe8ff")}), "item/manabloom_seeds.png")
+
+    def ore(base_img, name):
+        rnd = random.Random(hash(name) & 0xffff)
+        img = base_img.copy()
+        for _ in range(5):
+            cx, cy = rnd.randint(2, 13), rnd.randint(2, 13)
+            for dx, dy in [(0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)]:
+                x, y = cx + dx, cy + dy
+                if 0 <= x < 16 and 0 <= y < 16:
+                    img.putpixel((x, y), hexc("9fe8ff") if (dx, dy) == (0, 0) else hexc("3fa9f5"))
+        save(img, f"block/{name}.png")
+
+    stone = Image.new("RGBA", (16, 16))
+    noise_fill(stone, hexc("7f7f7f"), 0.12, 201)
+    ore(stone, "mana_ore")
+    deep = Image.new("RGBA", (16, 16))
+    noise_fill(deep, hexc("4a4a50"), 0.12, 202)
+    for y in range(0, 16, 4):
+        for x in range(16):
+            deep.putpixel((x, y), shade(deep.getpixel((x, y)), 0.8))
+    ore(deep, "deepslate_mana_ore")
+
+    # Crop stages: a cross-model plant that grows a glowing blue bloom.
+    for stage in range(4):
+        img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        height = 4 + stage * 3
+        for y in range(16 - height, 16):
+            for x in (5, 10):
+                img.putpixel((x, y), hexc("2e7d32"))
+        for i in range(stage + 1):
+            ly = 15 - 2 - i * 3
+            if ly < 0:
+                continue
+            img.putpixel((4, ly), hexc("43a047"))
+            img.putpixel((11, ly), hexc("43a047"))
+        if stage >= 2:
+            top = 16 - height
+            for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:
+                for cx in (5, 10):
+                    x, y = cx + dx, top + dy
+                    if 0 <= x < 16 and 0 <= y < 16:
+                        img.putpixel((x, y), hexc("9fe8ff") if stage == 3 and (dx, dy) == (0, 0) else hexc("3fa9f5"))
+        save(img, f"block/manabloom_stage{stage}.png")
+
+
 # --------------------------------------------------------------------------- blocks
 
 def noise_fill(img, base, var=0.12, seed=0, box=(0, 0, 16, 16)):
@@ -362,10 +467,64 @@ def soldier_skins():
          hexc("2a1a0a"), hexc("3a2a1a"), extras=beard(hexc("a0461e")), seed=30)
     skin("orc", hexc("6b8e3a"), hexc("1e1e1e"), hexc("6b3a2a"), hexc("9a9a9a"), hexc("3a2a1a"),
          hexc("2a1a0a"), hexc("c0392b"), extras=tusks, seed=40)
-    skin("marauder", hexc("5a7a32"), hexc("111111"), hexc("7a1f1f"), hexc("2b2b2b"), hexc("2b1a10"),
+    skin("demon", hexc("b22222"), hexc("1a0a0a"), hexc("2b0f0f"), hexc("ff8c00"), hexc("1f0a0a"),
+         hexc("0f0505"), hexc("ffd700"), extras=horns(hexc("2a2a2a")), seed=70)
+    skin("angel", hexc("f7e7d4"), hexc("ffe680"), hexc("f2f2f2"), hexc("d4a017"), hexc("e6e6e6"),
+         hexc("c9a227"), hexc("6fb7ff"), extras=halo, seed=80)
+    skin("hive", hexc("5b2a6e"), hexc("3a1748"), hexc("2e1240"), hexc("7fff4f"), hexc("2a1038"),
+         hexc("1a0a24"), hexc("7fff4f"), extras=mandibles, seed=90)
+
+    # NPC factions (file names match NpcFaction enum names in lower case).
+    skin("marauders", hexc("5a7a32"), hexc("111111"), hexc("7a1f1f"), hexc("2b2b2b"), hexc("2b1a10"),
          hexc("1a0f08"), hexc("ff3b1f"), extras=warpaint, seed=50)
     skin("black_legion", hexc("c9a080"), hexc("1a1a1a"), hexc("1f1f24"), hexc("8b0000"), hexc("26262b"),
          hexc("111114"), hexc("8b0000"), seed=60)
+    skin("burning_horde", hexc("8b1a1a"), hexc("0a0a0a"), hexc("3b1a0a"), hexc("ff4500"), hexc("240a05"),
+         hexc("120503"), hexc("ff6a00"), extras=horns(hexc("111111")), seed=100)
+    skin("the_swarm", hexc("3f5a1e"), hexc("26380f"), hexc("2a3a12"), hexc("c0392b"), hexc("1e2a0c"),
+         hexc("101806"), hexc("ff2a2a"), extras=mandibles, seed=110)
+    skin("silverwood_reavers", hexc("e8d8c8"), hexc("dcdcdc"), hexc("23402c"), hexc("a8a8a8"), hexc("1e2e22"),
+         hexc("3a2e1a"), hexc("9fe8ff"), extras=elf_ears(hexc("e8d8c8")), seed=120)
+    skin("ironbeard_clan", hexc("c98a68"), hexc("4a4a4a"), hexc("3f4a5a"), hexc("c0c0c0"), hexc("2f3a44"),
+         hexc("1a1a1a"), hexc("2a2a2a"), extras=beard(hexc("6a6a6a")), seed=130)
+    skin("fallen_host", hexc("cfc6d8"), hexc("2b2b3b"), hexc("3b3450"), hexc("6b5a9b"), hexc("2a2440"),
+         hexc("15121f"), hexc("c050ff"), extras=halo_dark, seed=140)
+
+
+def horns(color):
+    def apply(img):
+        # Horns on the hat layer, above the temples.
+        for (x, y) in [(41, 0), (42, 0), (46, 0), (45, 0), (41, 1), (46, 1)]:
+            img.putpixel((x, y), color)
+        for (x, y) in [(40, 8), (40, 9), (47, 8), (47, 9), (55, 8), (55, 9), (48, 8), (48, 9)]:
+            img.putpixel((x, y), color)
+    return apply
+
+
+def _ring(img, color):
+    for i in range(8):
+        img.putpixel((40 + i, 0), color)
+        img.putpixel((40 + i, 7), color)
+        img.putpixel((40, i), color)
+        img.putpixel((47, i), color)
+
+
+def halo(img):
+    _ring(img, hexc("ffd700"))
+
+
+def halo_dark(img):
+    _ring(img, hexc("6b2fa0"))
+
+
+def mandibles(img):
+    jaw = hexc("1e1e1e")
+    for (x, y) in [(9, 15), (10, 15), (13, 15), (14, 15), (10, 14), (13, 14)]:
+        img.putpixel((x, y), jaw)
+    # Carapace segments on the chest.
+    for x in range(20, 28):
+        for y in (21, 24):
+            img.putpixel((x, y), shade(img.getpixel((x, y)), 0.6))
 
 
 # --------------------------------------------------------------------------- json
@@ -416,6 +575,22 @@ def models_and_states():
                    {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
     write_json(ASSETS / "models" / "item" / "soldier_spawn_egg.json", {"parent": "minecraft:item/template_spawn_egg"})
 
+    for item in ("mana_shard", "mana_crystal", "manabloom_seeds"):
+        write_json(ASSETS / "models" / "item" / f"{item}.json",
+                   {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MODID}:item/{item}"}})
+    for ore in ("mana_ore", "deepslate_mana_ore"):
+        write_json(ASSETS / "blockstates" / f"{ore}.json", {"variants": {"": {"model": f"{MODID}:block/{ore}"}}})
+        write_json(ASSETS / "models" / "block" / f"{ore}.json",
+                   {"parent": "minecraft:block/cube_all", "textures": {"all": f"{MODID}:block/{ore}"}})
+        write_json(ASSETS / "models" / "item" / f"{ore}.json", {"parent": f"{MODID}:block/{ore}"})
+    stage_of_age = [0, 0, 1, 1, 2, 2, 2, 3]
+    write_json(ASSETS / "blockstates" / "manabloom.json", {"variants": {
+        f"age={a}": {"model": f"{MODID}:block/manabloom_stage{st}"} for a, st in enumerate(stage_of_age)}})
+    for st in range(4):
+        write_json(ASSETS / "models" / "block" / f"manabloom_stage{st}.json", {
+            "parent": "minecraft:block/crop", "render_type": "minecraft:cutout",
+            "textures": {"crop": f"{MODID}:block/manabloom_stage{st}"}})
+
 
 def lang():
     names = {
@@ -430,6 +605,12 @@ def lang():
         "item.warfront.war_horn": "War Horn",
         "item.warfront.soldier_spawn_egg": "Raider Spawn Egg",
         "entity.warfront.soldier": "Soldier",
+        "block.warfront.mana_ore": "Mana Ore",
+        "block.warfront.deepslate_mana_ore": "Deepslate Mana Ore",
+        "block.warfront.manabloom": "Manabloom",
+        "item.warfront.mana_shard": "Mana Shard",
+        "item.warfront.mana_crystal": "Mana Crystal",
+        "item.warfront.manabloom_seeds": "Manabloom Seeds",
     }
     for r in ROLES:
         names[f"item.warfront.{r}_contract"] = f"Recruit Contract: {r.capitalize()}"
@@ -475,6 +656,15 @@ def recipes():
            {"G": "minecraft:glistering_melon_slice", "W": W, "A": "minecraft:golden_apple",
             "M": "minecraft:mossy_stone_bricks"}, "warfront:healing_shrine")
     shapeless("emerald_from_war_marks", [W, W, W, W], "minecraft:emerald")
+    M = "warfront:mana_shard"
+    shaped("mana_crystal", ["MMM", "MAM", "MMM"], {"M": M, "A": "minecraft:amethyst_shard"}, "warfront:mana_crystal")
+    shapeless("manabloom_seeds", [M, "minecraft:wheat_seeds"], "warfront:manabloom_seeds", 2)
+    shapeless("mana_shards_from_war_marks", [W, W, W], M, 2)
+    for kind, time in (("smelting", 200), ("blasting", 100)):
+        for ore in ("mana_ore", "deepslate_mana_ore"):
+            write_json(DATA / MODID / "recipe" / f"mana_shard_from_{kind}_{ore}.json", {
+                "type": f"minecraft:{kind}", "category": "misc", "ingredient": {"item": f"warfront:{ore}"},
+                "result": {"id": M, "count": 1}, "experience": 0.7, "cookingtime": time})
 
     role_items = {
         "shieldbearer": ["minecraft:shield"],
@@ -485,7 +675,7 @@ def recipes():
         "healer": ["minecraft:glistering_melon_slice"],
     }
     for role, extra in role_items.items():
-        shapeless(f"{role}_contract", ["minecraft:paper", "minecraft:emerald"] + extra, f"warfront:{role}_contract")
+        shapeless(f"{role}_contract", ["minecraft:paper", "warfront:mana_shard"] + extra, f"warfront:{role}_contract")
         shapeless(f"{role}_contract_from_war_marks", ["minecraft:paper", W, W] + extra, f"warfront:{role}_contract")
 
 
@@ -498,8 +688,77 @@ def loot_and_tags():
                        "entries": [{"type": "minecraft:item", "name": f"{MODID}:{b}"}],
                        "conditions": [{"condition": "minecraft:survives_explosion"}]}],
             "random_sequence": f"{MODID}:blocks/{b}"})
+    ores = ["mana_ore", "deepslate_mana_ore"]
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "pickaxe.json",
-               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3]]})
+               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + ores]})
+    write_json(DATA / "minecraft" / "tags" / "block" / "needs_iron_tool.json",
+               {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
+    write_json(DATA / "c" / "tags" / "block" / "ores.json", {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
+    write_json(DATA / "c" / "tags" / "item" / "ores.json", {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
+    write_json(DATA / "minecraft" / "tags" / "item" / "villager_plantable_seeds.json",
+               {"replace": False, "values": [f"{MODID}:manabloom_seeds"]})
+
+    silk = {"condition": "minecraft:match_tool", "predicate": {"predicates": {"minecraft:enchantments": [
+        {"enchantments": "minecraft:silk_touch", "levels": {"min": 1}}]}}}
+    for o in ores:
+        write_json(DATA / MODID / "loot_table" / "blocks" / f"{o}.json", {
+            "type": "minecraft:block",
+            "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:alternatives", "children": [
+                {"type": "minecraft:item", "name": f"{MODID}:{o}", "conditions": [silk]},
+                {"type": "minecraft:item", "name": f"{MODID}:mana_shard", "functions": [
+                    {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}},
+                    {"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune",
+                     "formula": "minecraft:ore_drops"},
+                    {"function": "minecraft:explosion_decay"}]}]}]}],
+            "random_sequence": f"{MODID}:blocks/{o}"})
+
+    mature = {"condition": "minecraft:block_state_property", "block": f"{MODID}:manabloom",
+              "properties": {"age": "7"}}
+    write_json(DATA / MODID / "loot_table" / "blocks" / "manabloom.json", {
+        "type": "minecraft:block",
+        "pools": [
+            {"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:alternatives", "children": [
+                {"type": "minecraft:item", "name": f"{MODID}:mana_shard", "conditions": [mature], "functions": [
+                    {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 1, "max": 3}}]},
+                {"type": "minecraft:item", "name": f"{MODID}:manabloom_seeds"}]}]},
+            {"rolls": 1, "bonus_rolls": 0, "conditions": [mature], "entries": [
+                {"type": "minecraft:item", "name": f"{MODID}:manabloom_seeds", "functions": [
+                    {"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune",
+                     "formula": "minecraft:binomial_with_bonus_count", "parameters": {"extra": 1, "probability": 0.57}}]}]}],
+        "functions": [{"function": "minecraft:explosion_decay"}],
+        "random_sequence": f"{MODID}:blocks/manabloom"})
+
+    # Mana ore worldgen.
+    wg = DATA / MODID / "worldgen"
+    write_json(wg / "configured_feature" / "mana_ore.json", {"type": "minecraft:ore", "config": {
+        "size": 7, "discard_chance_on_air_exposure": 0.0, "targets": [
+            {"target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:stone_ore_replaceables"},
+             "state": {"Name": f"{MODID}:mana_ore"}},
+            {"target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:deepslate_ore_replaceables"},
+             "state": {"Name": f"{MODID}:deepslate_mana_ore"}}]}})
+    write_json(wg / "placed_feature" / "mana_ore.json", {"feature": f"{MODID}:mana_ore", "placement": [
+        {"type": "minecraft:count", "count": 9},
+        {"type": "minecraft:in_square"},
+        {"type": "minecraft:height_range", "height": {"type": "minecraft:trapezoid",
+                                                       "min_inclusive": {"above_bottom": 0},
+                                                       "max_inclusive": {"absolute": 80}}},
+        {"type": "minecraft:biome"}]})
+    write_json(DATA / MODID / "neoforge" / "biome_modifier" / "mana_ore.json", {
+        "type": "neoforge:add_features", "biomes": "#minecraft:is_overworld",
+        "features": f"{MODID}:mana_ore", "step": "underground_ores"})
+
+    # Manabloom seeds drop from grass (5%).
+    write_json(DATA / MODID / "loot_table" / "gameplay" / "manabloom_seeds.json", {
+        "type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+            {"type": "minecraft:item", "name": f"{MODID}:manabloom_seeds"}]}]})
+    for grass in ("short_grass", "tall_grass", "fern"):
+        write_json(DATA / MODID / "loot_modifiers" / f"seeds_from_{grass}.json", {
+            "type": "neoforge:add_table",
+            "conditions": [{"condition": "neoforge:loot_table_id", "loot_table_id": f"minecraft:blocks/{grass}"},
+                           {"condition": "minecraft:random_chance", "chance": 0.05}],
+            "table": f"{MODID}:gameplay/manabloom_seeds"})
+    write_json(DATA / "neoforge" / "loot_modifiers" / "global_loot_modifiers.json", {
+        "replace": False, "entries": [f"{MODID}:seeds_from_{g}" for g in ("short_grass", "tall_grass", "fern")]})
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "axe.json",
                {"replace": False, "values": [f"{MODID}:war_standard"]})
 
@@ -554,6 +813,7 @@ def platform_structure():
 
 if __name__ == "__main__":
     platform_structure()
+    mana_textures()
     item_textures()
     block_textures()
     soldier_skins()

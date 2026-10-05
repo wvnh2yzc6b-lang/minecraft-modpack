@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-/** Sound the horn near your War Standard to call the next siege wave early (better rewards, sooner). */
+/** Sound the horn near your War Standard to begin an endless wave campaign; sneak-use to stand down. */
 public class WarHornItem extends Item {
     public WarHornItem(Properties properties) {
         super(properties);
@@ -36,8 +36,15 @@ public class WarHornItem extends Item {
                     .withStyle(ChatFormatting.RED), true);
             return InteractionResultHolder.fail(stack);
         }
-        if (!standard.startSiege(server)) {
-            player.displayClientMessage(Component.literal("A siege is already underway!")
+        if (player.isShiftKeyDown()) {
+            if (!standard.isCampaignActive()) {
+                player.displayClientMessage(Component.literal("No wave campaign is running here.")
+                        .withStyle(ChatFormatting.GRAY), true);
+                return InteractionResultHolder.fail(stack);
+            }
+            standard.stopCampaign(server);
+        } else if (!standard.startCampaign(server)) {
+            player.displayClientMessage(Component.literal("The campaign is already underway! Sneak + use to stand down.")
                     .withStyle(ChatFormatting.RED), true);
             return InteractionResultHolder.fail(stack);
         }
@@ -70,6 +77,7 @@ public class WarHornItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.literal("Use near your War Standard to call the next siege wave").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.literal("Use near your War Standard: begin endless escalating waves").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.literal("Sneak + use: stand down after the current wave").withStyle(ChatFormatting.GRAY));
     }
 }

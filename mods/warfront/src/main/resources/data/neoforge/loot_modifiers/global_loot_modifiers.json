@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "entries": [
+    "warfront:seeds_from_short_grass",
+    "warfront:seeds_from_tall_grass",
+    "warfront:seeds_from_fern"
+  ]
+}

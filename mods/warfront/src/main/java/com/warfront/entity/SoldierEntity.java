@@ -27,6 +27,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -62,7 +63,7 @@ public class SoldierEntity extends PathfinderMob {
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER =
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
-    public static final int SKIN_COUNT = 6;
+    public static final int SKIN_COUNT = Race.values().length + NpcFaction.values().length;
 
     private Race race = Race.HUMAN;
     private Formation formation = Formation.LINE;
@@ -77,6 +78,10 @@ public class SoldierEntity extends PathfinderMob {
 
     private float morale = 100f;
     private int routTicks;
+    private boolean warlord;
+    /** Seconds this soldier has failed to make progress towards its objective (for block breaching). */
+    private int stuckSeconds;
+    @Nullable private Vec3 lastProgressPos;
     @Nullable private Vec3 slot;
     private boolean marchLeader;
 
@@ -110,6 +115,7 @@ public class SoldierEntity extends PathfinderMob {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new RoutGoal(this));
+        this.goalSelector.addGoal(2, new BreachGoal(this));
         this.goalSelector.addGoal(2, new HealerGoal(this));
         this.goalSelector.addGoal(2, new ShieldGoal(this));
         this.goalSelector.addGoal(3, new ArcherGoal(this));
@@ -154,7 +160,7 @@ public class SoldierEntity extends PathfinderMob {
         this.anchor = objective;
         this.siegeTarget = siegeTarget;
         this.entityData.set(DATA_ROLE, role.ordinal());
-        this.entityData.set(DATA_SKIN, faction.skin);
+        this.entityData.set(DATA_SKIN, faction.skin());
         this.entityData.set(DATA_ORDER, (objective != null ? Order.MARCH : Order.CHARGE).ordinal());
         this.formation = siegeTarget != null ? Formation.WEDGE : Formation.LINE;
         if (siegeTarget != null) this.setPersistenceRequired();
@@ -169,7 +175,7 @@ public class SoldierEntity extends PathfinderMob {
                                         @Nullable SpawnGroupData data) {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, spawnType, data);
         if (!configured) {
-            NpcFaction f = NpcFaction.values()[random.nextInt(NpcFaction.values().length)];
+            NpcFaction f = NpcFaction.random(random);
             SoldierRole[] roles = SoldierRole.values();
             setupAsRaider(f, roles[random.nextInt(roles.length)], UUID.randomUUID(), null, null,
                     1 + (int) difficulty.getEffectiveDifficulty() / 2);
@@ -328,6 +334,44 @@ public class SoldierEntity extends PathfinderMob {
         return marchLeader;
     }
 
+    public boolean isWarlord() {
+        return warlord;
+    }
+
+    /** Turns this soldier into a boss: a towering warlord with triple health. */
+    public void makeWarlord() {
+        warlord = true;
+        Objects.requireNonNull(getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier(
+                com.warfront.Warfront.id("warlord_health"), 2.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        Objects.requireNonNull(getAttribute(Attributes.SCALE)).addPermanentModifier(new AttributeModifier(
+                com.warfront.Warfront.id("warlord_scale"), 0.45, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        Objects.requireNonNull(getAttribute(Attributes.ATTACK_DAMAGE)).addPermanentModifier(new AttributeModifier(
+                com.warfront.Warfront.id("warlord_attack"), 4.0, AttributeModifier.Operation.ADD_VALUE));
+        Objects.requireNonNull(getAttribute(Attributes.KNOCKBACK_RESISTANCE)).addPermanentModifier(new AttributeModifier(
+                com.warfront.Warfront.id("warlord_knockback"), 0.8, AttributeModifier.Operation.ADD_VALUE));
+        setHealth(getMaxHealth());
+        refreshName();
+    }
+
+    /** Where this soldier is trying to get to: its target, or its march/charge objective. */
+    @Nullable
+    public Vec3 currentObjective() {
+        LivingEntity target = getTarget();
+        if (target != null && target.isAlive()) return target.position();
+        Order order = getOrder();
+        if ((order == Order.CHARGE || order == Order.MARCH) && anchor != null) return anchor;
+        return null;
+    }
+
+    public boolean isStuck() {
+        return stuckSeconds >= 2;
+    }
+
+    public void resetStuck() {
+        stuckSeconds = 0;
+        lastProgressPos = position();
+    }
+
     public float getMorale() {
         return morale;
     }
@@ -476,6 +520,11 @@ public class SoldierEntity extends PathfinderMob {
     private void secondTick() {
         refreshFactionKey();
         recomputeSlot();
+        trackProgress();
+
+        if (race == Race.ANGEL && getHealth() < getMaxHealth()) {
+            heal(0.5f);
+        }
 
         // Morale recovers over time; faster near a captain.
         float regen = (float) race.moraleRegen * 2f;
@@ -519,6 +568,20 @@ public class SoldierEntity extends PathfinderMob {
         }
     }
 
+    private void trackProgress() {
+        Vec3 objective = currentObjective();
+        if (objective == null || position().distanceToSqr(objective) < 3.0 * 3.0) {
+            resetStuck();
+            return;
+        }
+        if (lastProgressPos != null && position().distanceToSqr(lastProgressPos) < 0.5 * 0.5) {
+            stuckSeconds++;
+        } else {
+            stuckSeconds = 0;
+            lastProgressPos = position();
+        }
+    }
+
     /** Captain's rallying cry: strength and morale for allies close by. */
     private void rally() {
         for (LivingEntity ally : nearbyAllies(10, LivingEntity.class)) {
@@ -546,8 +609,9 @@ public class SoldierEntity extends PathfinderMob {
         String key = getFactionKey();
         Component name = Component.literal("[" + Factions.displayName(server, key) + "] ")
                 .withStyle(Factions.colorOf(server, key))
-                .append(Component.literal(race.displayName() + " " + getRole().displayName())
-                        .withStyle(ChatFormatting.WHITE));
+                .append(Component.literal(warlord ? race.displayName() + " Warlord"
+                        : race.displayName() + " " + getRole().displayName())
+                        .withStyle(warlord ? ChatFormatting.DARK_RED : ChatFormatting.WHITE));
         setCustomName(name);
         setCustomNameVisible(false);
     }
@@ -558,6 +622,13 @@ public class SoldierEntity extends PathfinderMob {
     protected AABB getAttackBoundingBox() {
         AABB box = super.getAttackBoundingBox();
         return getRole() == SoldierRole.SPEARMAN ? box.inflate(1.25, 0.0, 1.25) : box;
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        boolean hit = super.doHurtTarget(target);
+        if (hit && race == Race.DEMON) target.igniteForSeconds(3.0F);
+        return hit;
     }
 
     @Override
@@ -584,8 +655,12 @@ public class SoldierEntity extends PathfinderMob {
             owner.displayClientMessage(Component.literal("Your " + race.displayName() + " "
                     + getRole().displayName() + " has fallen.").withStyle(ChatFormatting.RED), true);
         } else if (source.getEntity() != null) {
-            int marks = 1 + random.nextInt(2) + tier / 2 + (getRole() == SoldierRole.CAPTAIN ? 3 : 0);
+            int marks = 1 + random.nextInt(2) + tier / 2 + (getRole() == SoldierRole.CAPTAIN ? 3 : 0)
+                    + (warlord ? 12 : 0);
             spawnAtLocation(new ItemStack(WFRegistry.WAR_MARK.get(), marks));
+            if (random.nextFloat() < (warlord ? 1.0F : 0.35F)) {
+                spawnAtLocation(new ItemStack(WFRegistry.MANA_SHARD.get(), warlord ? 8 : 1 + random.nextInt(2)));
+            }
         }
     }
 
@@ -645,6 +720,7 @@ public class SoldierEntity extends PathfinderMob {
         tag.putFloat("Morale", morale);
         tag.putInt("Given", givenMask);
         tag.putBoolean("Configured", configured);
+        tag.putBoolean("Warlord", warlord);
         if (anchor != null) {
             tag.putDouble("AnchorX", anchor.x);
             tag.putDouble("AnchorY", anchor.y);
@@ -670,6 +746,7 @@ public class SoldierEntity extends PathfinderMob {
         morale = tag.contains("Morale") ? tag.getFloat("Morale") : 100f;
         givenMask = tag.getInt("Given");
         configured = tag.getBoolean("Configured");
+        warlord = tag.getBoolean("Warlord");
         anchor = tag.contains("AnchorX")
                 ? new Vec3(tag.getDouble("AnchorX"), tag.getDouble("AnchorY"), tag.getDouble("AnchorZ")) : null;
         anchorYaw = tag.getFloat("AnchorYaw");

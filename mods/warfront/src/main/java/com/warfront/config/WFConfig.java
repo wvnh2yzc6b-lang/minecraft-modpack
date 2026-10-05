@@ -20,6 +20,10 @@ public final class WFConfig {
 
     public static final ModConfigSpec.IntValue TOWER_RANGE;
 
+    public static final ModConfigSpec.BooleanValue RAIDERS_BREAK_BLOCKS;
+    public static final ModConfigSpec.DoubleValue MAX_BREAK_HARDNESS;
+    public static final ModConfigSpec.IntValue WAVE_INTERMISSION;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
@@ -50,6 +54,14 @@ public final class WFConfig {
                 .defineInRange("chance", 0.2, 0.0, 1.0);
         STANDARD_HEALTH = b.comment("How many hits a War Standard can take from attackers before it falls.")
                 .defineInRange("standardHealth", 30, 1, 1000);
+
+        RAIDERS_BREAK_BLOCKS = b.comment("Raiders hack through blocks that stand between them and their objective.",
+                        "Also requires the mobGriefing game rule.")
+                .define("raidersBreakBlocks", true);
+        MAX_BREAK_HARDNESS = b.comment("Hardest block raiders can break. Stone is 1.5, iron block 5, obsidian 50.")
+                .defineInRange("maxBreakHardness", 10.0, 0.0, 100.0);
+        WAVE_INTERMISSION = b.comment("Ticks between waves in a War Horn wave campaign.")
+                .defineInRange("waveIntermissionTicks", 600, 100, 24000);
         b.pop();
 
         b.push("towers");

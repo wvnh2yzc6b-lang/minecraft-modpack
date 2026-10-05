@@ -13,11 +13,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,18 +32,33 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-/** Tracks a stronghold's health and its sieges: wave number, the attacking warband, rewards. */
+/**
+ * Tracks a stronghold's integrity and its sieges.
+ * <p>
+ * A single siege comes at night on its own. Sounding a War Horn starts a <b>wave campaign</b>:
+ * endless, escalating waves with a short break between them, tracked on a boss bar. From wave 4
+ * attackers come from several directions, and every 5th wave is led by a Warlord.
+ */
 public class WarStandardBlockEntity extends BlockEntity {
+    private static final double BAR_RANGE = 96;
+
     @Nullable private UUID owner;
     private int health = -1;
     private int wave;
     @Nullable private UUID warband;
+    private int waveSize;
     private long siegeStart;
     private long lastSiege;
+    private boolean campaign;
+    private long nextWaveAt;
+    @Nullable private String attackerName;
+
+    @Nullable private ServerBossEvent bar;
 
     public WarStandardBlockEntity(BlockPos pos, BlockState state) {
         super(WFRegistry.WAR_STANDARD_BE.get(), pos, state);
@@ -55,13 +72,25 @@ public class WarStandardBlockEntity extends BlockEntity {
     public boolean isDefender(Player player) {
         if (owner == null || owner.equals(player.getUUID())) return true;
         if (level == null || level.getServer() == null) return false;
-        FactionData data = FactionData.get(level.getServer());
-        FactionData.Faction f = data.factionOf(owner);
+        FactionData.Faction f = FactionData.get(level.getServer()).factionOf(owner);
         return f != null && f.members.contains(player.getUUID());
     }
 
     public boolean isUnderSiege() {
         return warband != null;
+    }
+
+    public boolean isCampaignActive() {
+        return campaign;
+    }
+
+    @Nullable
+    public UUID getWarbandId() {
+        return warband;
+    }
+
+    public int getWave() {
+        return wave;
     }
 
     private int maxHealth() {
@@ -73,20 +102,30 @@ public class WarStandardBlockEntity extends BlockEntity {
         return health;
     }
 
+    // ------------------------------------------------------------------ ticking
+
     public static void serverTick(Level level, BlockPos pos, BlockState state, WarStandardBlockEntity be) {
         ServerLevel server = (ServerLevel) level;
         long time = level.getGameTime();
 
         if (be.warband != null && time % 20 == 0) {
-            UUID id = be.warband;
-            List<SoldierEntity> left = level.getEntitiesOfClass(SoldierEntity.class, new AABB(pos).inflate(96),
-                    s -> s.isAlive() && id.equals(s.getWarbandId()));
-            if (left.isEmpty() || time - be.siegeStart > 12000) {
+            int left = be.countAttackers(server);
+            if (left == 0 || time - be.siegeStart > 12000) {
                 be.victory(server);
+            } else {
+                be.updateBar(server, left);
             }
         }
 
-        if (be.warband == null && time % 600 == 0) {
+        if (be.warband == null && be.campaign && time % 20 == 0) {
+            if (time >= be.nextWaveAt) {
+                be.startSiege(server);
+            } else {
+                be.updateBar(server, 0);
+            }
+        }
+
+        if (be.warband == null && !be.campaign && time % 600 == 0) {
             if (be.health() < be.maxHealth()) {
                 be.health++;
                 be.setChanged();
@@ -99,35 +138,87 @@ public class WarStandardBlockEntity extends BlockEntity {
         }
     }
 
+    private int countAttackers(ServerLevel level) {
+        UUID id = warband;
+        if (id == null) return 0;
+        return level.getEntitiesOfClass(SoldierEntity.class, new AABB(worldPosition).inflate(BAR_RANGE),
+                s -> s.isAlive() && id.equals(s.getWarbandId())).size();
+    }
+
     private boolean ownerNearby(ServerLevel level) {
         if (owner == null) return false;
         Player p = level.getPlayerByUUID(owner);
         return p != null && p.distanceToSqr(Vec3.atCenterOf(worldPosition)) < 64 * 64;
     }
 
-    /** Begins the next siege wave. Returns false if a siege is already underway. */
+    // ------------------------------------------------------------------ campaign control
+
+    /** Starts an endless wave campaign. Returns false if one is already running. */
+    public boolean startCampaign(ServerLevel level) {
+        if (campaign) return false;
+        campaign = true;
+        setChanged();
+        announce(level, Component.literal("The war horn sounds! Hold the standard against endless waves. "
+                + "Sneak and sound the horn again to stand down after the current wave.")
+                .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+        if (warband == null) startSiege(level);
+        return true;
+    }
+
+    public void stopCampaign(ServerLevel level) {
+        if (!campaign) return;
+        campaign = false;
+        setChanged();
+        announce(level, Component.literal("The campaign ends after " + (warband != null ? wave - 1 : wave)
+                + " waves survived.").withStyle(ChatFormatting.GOLD));
+        if (warband == null) clearBar();
+    }
+
+    /** Begins the next siege wave. Returns false if a wave is already underway. */
     public boolean startSiege(ServerLevel level) {
         if (warband != null) return false;
         wave++;
-        NpcFaction faction = NpcFaction.values()[level.random.nextInt(NpcFaction.values().length)];
-        List<SoldierRole> roles = WarbandSpawner.siegeComposition(wave);
+        BlockPos biomePos = worldPosition;
+        NpcFaction faction = NpcFaction.pick(level.getBiome(biomePos), level, level.random);
+        List<SoldierRole> roles = WarbandSpawner.siegeComposition(wave, faction);
         int tier = Math.min(4, 1 + wave / 3);
+        int groups = wave >= 8 ? 3 : wave >= 4 ? 2 : 1;
 
-        float angle = level.random.nextFloat() * Mth.TWO_PI;
-        double dist = 36 + level.random.nextInt(8);
-        int x = worldPosition.getX() + Mth.floor(Mth.cos(angle) * dist);
-        int z = worldPosition.getZ() + Mth.floor(Mth.sin(angle) * dist);
-        BlockPos spawn = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
+        UUID id = UUID.randomUUID();
+        float baseAngle = level.random.nextFloat() * Mth.TWO_PI;
+        List<String> fronts = new ArrayList<>();
+        List<SoldierEntity> spawned = new ArrayList<>();
+        for (int g = 0; g < groups; g++) {
+            float angle = baseAngle + g * Mth.TWO_PI / groups + (level.random.nextFloat() - 0.5F) * 0.6F;
+            double dist = 36 + level.random.nextInt(8);
+            int x = worldPosition.getX() + Mth.floor(Mth.cos(angle) * dist);
+            int z = worldPosition.getZ() + Mth.floor(Mth.sin(angle) * dist);
+            BlockPos spawn = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
+            List<SoldierRole> share = new ArrayList<>();
+            for (int i = g; i < roles.size(); i += groups) share.add(roles.get(i));
+            spawned.addAll(WarbandSpawner.spawnInto(level, id, faction, share, spawn,
+                    Vec3.atBottomCenterOf(worldPosition), worldPosition, tier));
+            fronts.add(direction(angle));
+        }
 
-        warband = WarbandSpawner.spawn(level, faction, roles, spawn, Vec3.atBottomCenterOf(worldPosition),
-                worldPosition, tier);
+        boolean bossWave = wave % 5 == 0;
+        if (bossWave) {
+            spawned.stream().filter(s -> s.getRole() == SoldierRole.CAPTAIN).findFirst()
+                    .or(() -> spawned.stream().findFirst())
+                    .ifPresent(SoldierEntity::makeWarlord);
+        }
+
+        warband = id;
+        waveSize = Math.max(1, spawned.size());
+        attackerName = faction.displayName;
         siegeStart = level.getGameTime();
         setChanged();
 
         level.playSound(null, worldPosition, SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 64.0F, 1.0F);
-        announce(level, Component.literal("Siege! Wave " + wave + ": the " + faction.displayName + " march on your "
-                        + "War Standard with " + roles.size() + " soldiers from the " + direction(angle) + "!")
-                .withStyle(faction.color, ChatFormatting.BOLD));
+        announce(level, Component.literal("Wave " + wave + (bossWave ? " (WARLORD)" : "") + ": the "
+                + faction.displayName + " attack with " + spawned.size() + " soldiers from the "
+                + String.join(" and ", fronts) + "!").withStyle(faction.color, ChatFormatting.BOLD));
+        updateBar(level, spawned.size());
         return true;
     }
 
@@ -141,22 +232,32 @@ public class WarStandardBlockEntity extends BlockEntity {
         warband = null;
         lastSiege = level.getGameTime();
         health = maxHealth();
-        setChanged();
 
         int marks = 4 + wave * 2;
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.WAR_MARK.get(), marks));
+        Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.MANA_SHARD.get(), 2 + wave));
         if (wave % 5 == 0) Block.popResource(level, worldPosition.above(), new ItemStack(Items.DIAMOND, wave / 5));
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, worldPosition.getX() + 0.5, worldPosition.getY() + 1.5,
                 worldPosition.getZ() + 0.5, 40, 0.5, 1.0, 0.5, 0.4);
         level.playSound(null, worldPosition, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1.0F, 0.8F);
-        announce(level, Component.literal("Wave " + wave + " repelled! The standard still flies. (+" + marks
-                + " War Marks)").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+
+        String next = "";
+        if (campaign) {
+            int pause = WFConfig.WAVE_INTERMISSION.get();
+            nextWaveAt = level.getGameTime() + pause;
+            next = " Next wave in " + pause / 20 + "s.";
+        } else {
+            clearBar();
+        }
+        setChanged();
+        announce(level, Component.literal("Wave " + wave + " repelled! (+" + marks + " War Marks)" + next)
+                .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
     }
 
     /** Called when an attacker reaches the standard and strikes it. */
     public void takeHit(SoldierEntity attacker) {
         if (!(level instanceof ServerLevel server)) return;
-        health = health() - 1;
+        health = health() - (attacker.isWarlord() ? 3 : 1);
         setChanged();
         server.sendParticles(ParticleTypes.CRIT, worldPosition.getX() + 0.5, worldPosition.getY() + 1.0,
                 worldPosition.getZ() + 0.5, 8, 0.3, 0.5, 0.3, 0.2);
@@ -166,15 +267,59 @@ public class WarStandardBlockEntity extends BlockEntity {
                     + ")").withStyle(ChatFormatting.RED));
         }
         if (health <= 0) {
-            announce(server, Component.literal("The War Standard has fallen after " + (wave - 1)
-                    + " successful defences.").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
+            announce(server, Component.literal("The War Standard has fallen on wave " + wave + ".")
+                    .withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
             warband = null;
+            campaign = false;
+            clearBar();
             server.destroyBlock(worldPosition, true);
         }
     }
 
+    // ------------------------------------------------------------------ boss bar
+
+    private void updateBar(ServerLevel level, int attackersLeft) {
+        if (bar == null) {
+            bar = new ServerBossEvent(Component.empty(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10);
+        }
+        if (warband != null) {
+            bar.setName(Component.literal("Wave " + wave + " - " + attackerName + " - " + attackersLeft
+                    + " remaining  |  Standard " + health() + "/" + maxHealth()));
+            bar.setColor(wave % 5 == 0 ? BossEvent.BossBarColor.PURPLE : BossEvent.BossBarColor.RED);
+            bar.setProgress(Mth.clamp(attackersLeft / (float) waveSize, 0F, 1F));
+        } else {
+            long left = Math.max(0, nextWaveAt - level.getGameTime());
+            bar.setName(Component.literal("Wave " + (wave + 1) + " in " + (left / 20) + "s  |  Standard "
+                    + health() + "/" + maxHealth()));
+            bar.setColor(BossEvent.BossBarColor.GREEN);
+            bar.setProgress(Mth.clamp(left / (float) WFConfig.WAVE_INTERMISSION.get(), 0F, 1F));
+        }
+        Vec3 c = Vec3.atCenterOf(worldPosition);
+        for (ServerPlayer p : level.players()) {
+            boolean near = p.distanceToSqr(c) < BAR_RANGE * BAR_RANGE;
+            if (near && !bar.getPlayers().contains(p)) bar.addPlayer(p);
+            else if (!near && bar.getPlayers().contains(p)) bar.removePlayer(p);
+        }
+    }
+
+    private void clearBar() {
+        if (bar != null) {
+            bar.removeAllPlayers();
+            bar = null;
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        clearBar();
+        super.setRemoved();
+    }
+
+    // ------------------------------------------------------------------ misc
+
     public void describeTo(Player player) {
-        String status = warband != null ? "UNDER SIEGE (wave " + wave + ")" : "Peaceful";
+        String status = warband != null ? "UNDER SIEGE (wave " + wave + ")"
+                : campaign ? "Campaign: next wave soon" : "Peaceful";
         player.displayClientMessage(Component.literal("War Standard: " + status + "  |  Integrity " + health() + "/"
                 + maxHealth() + "  |  Waves survived: " + Math.max(0, warband != null ? wave - 1 : wave))
                 .withStyle(warband != null ? ChatFormatting.RED : ChatFormatting.GOLD), true);
@@ -196,8 +341,12 @@ public class WarStandardBlockEntity extends BlockEntity {
         if (warband != null) tag.putUUID("Warband", warband);
         tag.putInt("Health", health);
         tag.putInt("Wave", wave);
+        tag.putInt("WaveSize", waveSize);
         tag.putLong("SiegeStart", siegeStart);
         tag.putLong("LastSiege", lastSiege);
+        tag.putBoolean("Campaign", campaign);
+        tag.putLong("NextWaveAt", nextWaveAt);
+        if (attackerName != null) tag.putString("Attacker", attackerName);
     }
 
     @Override
@@ -207,7 +356,11 @@ public class WarStandardBlockEntity extends BlockEntity {
         warband = tag.hasUUID("Warband") ? tag.getUUID("Warband") : null;
         health = tag.contains("Health") ? tag.getInt("Health") : -1;
         wave = tag.getInt("Wave");
+        waveSize = tag.getInt("WaveSize");
         siegeStart = tag.getLong("SiegeStart");
         lastSiege = tag.getLong("LastSiege");
+        campaign = tag.getBoolean("Campaign");
+        nextWaveAt = tag.getLong("NextWaveAt");
+        attackerName = tag.contains("Attacker") ? tag.getString("Attacker") : null;
     }
 }

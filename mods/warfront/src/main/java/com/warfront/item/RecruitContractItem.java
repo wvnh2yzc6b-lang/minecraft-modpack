@@ -6,6 +6,7 @@ import com.warfront.army.SoldierRole;
 import com.warfront.config.WFConfig;
 import com.warfront.entity.SoldierEntity;
 import com.warfront.faction.Race;
+import com.warfront.mana.Mana;
 import com.warfront.registry.WFRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -50,13 +51,24 @@ public class RecruitContractItem extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
+        Race race = Race.byId(player.getData(WFRegistry.RACE));
+        if (race == null) race = Race.HUMAN;
+        int cost = role.manaCost(race);
+        if (!Mana.trySpend(player, cost)) {
+            player.displayClientMessage(Component.literal("Not enough mana to summon a " + role.displayName()
+                    + ": need " + cost + ", have " + (int) Mana.get(player) + ".").withStyle(ChatFormatting.AQUA), true);
+            return InteractionResultHolder.fail(stack);
+        }
+
         SoldierEntity soldier = WFRegistry.SOLDIER.get().create(level);
-        if (soldier == null) return InteractionResultHolder.fail(stack);
+        if (soldier == null) {
+            Mana.add(player, cost);
+            return InteractionResultHolder.fail(stack);
+        }
         float rad = player.getYRot() * Mth.DEG_TO_RAD;
         soldier.moveTo(player.getX() - Mth.sin(rad) * 2.0, player.getY(), player.getZ() + Mth.cos(rad) * 2.0,
                 player.getYRot() + 180F, 0F);
-        Race race = Race.byId(player.getData(WFRegistry.RACE));
-        soldier.setupAsRecruit(player, role, race != null ? race : Race.HUMAN);
+        soldier.setupAsRecruit(player, role, race);
 
         Order order = Order.byOrdinal(player.getData(WFRegistry.ARMY_ORDER));
         Formation formation = Formation.byOrdinal(player.getData(WFRegistry.ARMY_FORMATION));
@@ -69,7 +81,7 @@ public class RecruitContractItem extends Item {
 
         level.playSound(null, soldier.blockPosition(), SoundEvents.ARMOR_EQUIP_IRON.value(), SoundSource.NEUTRAL, 1F, 1F);
         player.displayClientMessage(Component.literal("A " + soldier.getRace().displayName() + " "
-                + role.displayName() + " joins your banner. (" + (count + 1) + "/" + max + ")")
+                + role.displayName() + " answers your summons. (" + (count + 1) + "/" + max + ", -" + cost + " mana)")
                 .withStyle(ChatFormatting.GREEN), true);
         if (!player.getAbilities().instabuild) stack.shrink(1);
         return InteractionResultHolder.consume(stack);
@@ -78,6 +90,8 @@ public class RecruitContractItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.literal(role.description).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.literal("Costs " + role.manaCost + " mana (scaled by your race)")
+                .withStyle(ChatFormatting.AQUA));
         tooltip.add(Component.literal("Right-click to recruit").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

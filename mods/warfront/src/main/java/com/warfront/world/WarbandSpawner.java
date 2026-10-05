@@ -18,24 +18,27 @@ import java.util.UUID;
 
 /** Spawns NPC warbands: roaming raiding parties and siege armies. */
 public final class WarbandSpawner {
+    private static final int MAX_WAVE_SIZE = 40;
+
     private WarbandSpawner() {}
 
     /** Army composition for a siege wave; grows with every wave survived. */
-    public static List<SoldierRole> siegeComposition(int wave) {
+    public static List<SoldierRole> siegeComposition(int wave, NpcFaction faction) {
         List<SoldierRole> roles = new ArrayList<>();
-        add(roles, SoldierRole.SHIELDBEARER, 2 + wave / 2);
-        add(roles, SoldierRole.SPEARMAN, 1 + wave / 3);
-        add(roles, SoldierRole.SWORDSMAN, 1 + wave / 2);
-        add(roles, SoldierRole.ARCHER, 1 + wave / 2);
+        double m = faction.sizeMultiplier;
+        add(roles, SoldierRole.SHIELDBEARER, (int) Math.round((2 + wave / 2) * m));
+        add(roles, SoldierRole.SPEARMAN, (int) Math.round((1 + wave / 3) * m));
+        add(roles, SoldierRole.SWORDSMAN, (int) Math.round((1 + wave / 2) * m));
+        add(roles, SoldierRole.ARCHER, (int) Math.round((1 + wave / 2) * m));
         add(roles, SoldierRole.HEALER, wave >= 3 ? 1 + wave / 5 : 0);
-        add(roles, SoldierRole.CAPTAIN, wave >= 2 ? 1 + wave / 6 : 0);
-        return roles.size() > 32 ? roles.subList(0, 32) : roles;
+        add(roles, SoldierRole.CAPTAIN, wave >= 2 || wave % 5 == 0 ? 1 + wave / 6 : 0);
+        return roles.size() > MAX_WAVE_SIZE ? new ArrayList<>(roles.subList(0, MAX_WAVE_SIZE)) : roles;
     }
 
     /** A small raiding party. */
-    public static List<SoldierRole> raidComposition(RandomSource random) {
+    public static List<SoldierRole> raidComposition(RandomSource random, NpcFaction faction) {
         List<SoldierRole> roles = new ArrayList<>();
-        int size = 4 + random.nextInt(4);
+        int size = (int) Math.round((4 + random.nextInt(4)) * faction.sizeMultiplier);
         add(roles, SoldierRole.SHIELDBEARER, 1 + random.nextInt(2));
         add(roles, SoldierRole.ARCHER, 1 + random.nextInt(2));
         if (random.nextBoolean()) roles.add(SoldierRole.CAPTAIN);
@@ -48,10 +51,19 @@ public final class WarbandSpawner {
         for (int i = 0; i < n; i++) list.add(role);
     }
 
-    /** Spawns the warband around {@code center} and returns its id. */
+    /** Spawns a new warband around {@code center} and returns its id. */
     public static UUID spawn(ServerLevel level, NpcFaction faction, List<SoldierRole> roles, BlockPos center,
                              @Nullable Vec3 objective, @Nullable BlockPos siegeTarget, int tier) {
         UUID warband = UUID.randomUUID();
+        spawnInto(level, warband, faction, roles, center, objective, siegeTarget, tier);
+        return warband;
+    }
+
+    /** Spawns soldiers into an existing warband (sieges split one warband across several fronts). */
+    public static List<SoldierEntity> spawnInto(ServerLevel level, UUID warband, NpcFaction faction,
+                                                List<SoldierRole> roles, BlockPos center, @Nullable Vec3 objective,
+                                                @Nullable BlockPos siegeTarget, int tier) {
+        List<SoldierEntity> out = new ArrayList<>();
         float yaw = objective == null ? 0F
                 : (float) (Mth.atan2(objective.z - center.getZ(), objective.x - center.getX()) * Mth.RAD_TO_DEG) - 90F;
         for (SoldierRole role : roles) {
@@ -63,7 +75,8 @@ public final class WarbandSpawner {
             soldier.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, yaw, 0F);
             soldier.setupAsRaider(faction, role, warband, objective, siegeTarget, tier);
             level.addFreshEntity(soldier);
+            out.add(soldier);
         }
-        return warband;
+        return out;
     }
 }

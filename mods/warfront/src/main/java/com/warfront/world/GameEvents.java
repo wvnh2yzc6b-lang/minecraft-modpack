@@ -9,7 +9,12 @@ import com.warfront.faction.Factions;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
 import com.warfront.faction.Relation;
+import com.warfront.mana.Mana;
 import com.warfront.registry.WFRegistry;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -50,6 +55,7 @@ public final class GameEvents {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
+        Mana.sync(player);
         Race race = Race.byId(player.getData(WFRegistry.RACE));
         if (race != null) {
             race.apply(player);
@@ -63,8 +69,10 @@ public final class GameEvents {
             give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.SWORDSMAN).get(), 1));
             give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.ARCHER).get(), 2));
             give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.HEALER).get(), 1));
-            player.sendSystemMessage(Component.literal("You have been granted a Commander's Baton and recruit contracts. "
-                    + "Raise an army, place a War Standard, and hold it against the hordes.")
+            give(player, new ItemStack(WFRegistry.MANA_SHARD.get(), 8));
+            give(player, new ItemStack(WFRegistry.MANABLOOM_SEEDS.get(), 4));
+            player.sendSystemMessage(Component.literal("You have been granted a Commander's Baton, recruit contracts and Mana Shards. Summoning troops "
+                    + "costs mana: mine Mana Ore and grow Manabloom to raise an army, place a War Standard, and hold it against the hordes.")
                     .withStyle(ChatFormatting.GOLD));
         }
     }
@@ -73,6 +81,12 @@ public final class GameEvents {
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Race race = Race.byId(event.getEntity().getData(WFRegistry.RACE));
         if (race != null) race.apply(event.getEntity());
+        Mana.sync(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        Mana.sync(event.getEntity());
     }
 
     private static void give(Player player, ItemStack stack) {
@@ -95,23 +109,52 @@ public final class GameEvents {
 
     // ------------------------------------------------------------ combat
 
-    /** No friendly fire between allied soldiers, players and towers. */
+    /** Racial traits, then no friendly fire between allied soldiers, players and towers. */
     @SubscribeEvent
     public static void onIncomingDamage(LivingIncomingDamageEvent event) {
-        if (WFConfig.FRIENDLY_FIRE.get()) return;
-        Entity victim = event.getEntity();
+        LivingEntity victim = event.getEntity();
         if (victim.level().isClientSide) return;
         MinecraftServer server = victim.level().getServer();
-        Entity attacker = event.getSource().getEntity();
-        Entity direct = event.getSource().getDirectEntity();
+        DamageSource source = event.getSource();
+        Entity attacker = source.getEntity();
+        Entity direct = source.getDirectEntity();
 
-        if (attacker != null && attacker != victim && (attacker instanceof SoldierEntity || victim instanceof SoldierEntity)) {
-            if (Factions.relation(attacker, victim) == Relation.ALLY) event.setCanceled(true);
+        Race victimRace = Race.of(victim);
+        if (victimRace == Race.DEMON && source.is(DamageTypeTags.IS_FIRE)) {
+            event.setCanceled(true);
+            victim.clearFire();
             return;
         }
-        if (attacker == null && direct != null && direct.getPersistentData().contains(Factions.PROJECTILE_TAG)) {
-            String key = direct.getPersistentData().getString(Factions.PROJECTILE_TAG);
-            if (Factions.relation(server, key, Factions.keyOf(server, victim)) == Relation.ALLY) event.setCanceled(true);
+        if (victimRace == Race.ANGEL && source.is(DamageTypeTags.IS_FALL)) {
+            event.setCanceled(true);
+            return;
+        }
+
+        if (!WFConfig.FRIENDLY_FIRE.get()) {
+            if (attacker != null && attacker != victim
+                    && (attacker instanceof SoldierEntity || victim instanceof SoldierEntity)) {
+                if (Factions.relation(attacker, victim) == Relation.ALLY) {
+                    event.setCanceled(true);
+                    return;
+                }
+            } else if (attacker == null && direct != null && direct.getPersistentData().contains(Factions.PROJECTILE_TAG)) {
+                String key = direct.getPersistentData().getString(Factions.PROJECTILE_TAG);
+                if (Factions.relation(server, key, Factions.keyOf(server, victim)) == Relation.ALLY) {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
+        }
+
+        if (attacker instanceof LivingEntity living) {
+            Race attackerRace = Race.of(living);
+            if (attackerRace == Race.ANGEL && (victim.getType().is(EntityTypeTags.UNDEAD) || victimRace == Race.DEMON)) {
+                event.setAmount(event.getAmount() * 1.5F);
+            } else if (attackerRace == Race.HIVE && living instanceof SoldierEntity hive) {
+                long pack = hive.nearbyAllies(6, SoldierEntity.class).stream()
+                        .filter(s -> s.getRace() == Race.HIVE).count();
+                event.setAmount(event.getAmount() + Math.min(3.0F, pack * 0.5F));
+            }
         }
     }
 
@@ -129,14 +172,31 @@ public final class GameEvents {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         MinecraftServer server = event.getServer();
+        if (server.getTickCount() % 60 == 0) {
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (Mana.get(player) < Mana.PASSIVE_LIMIT) Mana.add(player, 1F);
+                if (Race.of(player) == Race.ANGEL && player.getHealth() < player.getMaxHealth()) player.heal(1F);
+            }
+        }
         if (server.getTickCount() % 200 != 0 || !WFConfig.WARBANDS_ENABLED.get()) return;
         double chance = WFConfig.WARBAND_CHANCE.get() * 200.0 / WFConfig.WARBAND_INTERVAL.get();
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             if (player.isCreative() || player.isSpectator()) continue;
-            if (player.level().dimension() != Level.OVERWORLD) continue;
+            if (player.level().dimension() != Level.OVERWORLD && player.level().dimension() != Level.NETHER) continue;
             if (player.getRandom().nextDouble() >= chance) continue;
             trySpawnWarband(player);
         }
+    }
+
+    /** Finds a standable spot in the Nether near the player's height (the heightmap would hit the roof). */
+    @org.jetbrains.annotations.Nullable
+    private static BlockPos findNetherGround(ServerLevel level, int x, int y, int z) {
+        for (int dy = 8; dy >= -8; dy--) {
+            BlockPos p = new BlockPos(x, y + dy, z);
+            if (level.getBlockState(p.below()).isSolid() && level.getBlockState(p).isAir()
+                    && level.getBlockState(p.above()).isAir()) return p;
+        }
+        return null;
     }
 
     public static boolean trySpawnWarband(ServerPlayer player) {
@@ -150,12 +210,14 @@ public final class GameEvents {
         int x = Mth.floor(player.getX() + Mth.cos(angle) * dist);
         int z = Mth.floor(player.getZ() + Mth.sin(angle) * dist);
         if (!level.hasChunkAt(new BlockPos(x, 0, z))) return false;
-        BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
-        if (!level.getFluidState(ground.below()).isEmpty()) return false;
+        BlockPos ground = level.dimension() == Level.NETHER
+                ? findNetherGround(level, x, player.getBlockY(), z)
+                : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
+        if (ground == null || !level.getFluidState(ground.below()).isEmpty()) return false;
 
-        NpcFaction faction = NpcFaction.values()[player.getRandom().nextInt(NpcFaction.values().length)];
+        NpcFaction faction = NpcFaction.pick(level.getBiome(ground), level, player.getRandom());
         int tier = 1 + (int) (level.getCurrentDifficultyAt(player.blockPosition()).getEffectiveDifficulty() / 2);
-        WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom()), ground,
+        WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction), ground,
                 player.position(), null, tier);
         player.sendSystemMessage(Component.literal("War drums echo in the distance... a " + faction.displayName
                 + " warband is marching on you.").withStyle(faction.color, ChatFormatting.ITALIC));

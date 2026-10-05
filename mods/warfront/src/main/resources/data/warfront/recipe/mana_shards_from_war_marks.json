@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "warfront:war_mark"
+    },
+    {
+      "item": "warfront:war_mark"
+    }
+  ],
+  "result": {
+    "id": "warfront:mana_shard",
+    "count": 2
+  }
+}
