@@ -22,6 +22,16 @@ jobs:
         working-directory: mods/warfront
         run: ./gradlew build --stacktrace
 
+      - name: Boot test (dedicated server + game tests)
+        working-directory: mods/warfront
+        run: |
+          set -o pipefail
+          timeout 900 ./gradlew runGameTestServer --stacktrace 2>&1 | tee gametest.log
+          if grep -E "ERROR|Exception" gametest.log | grep -i warfront; then
+            echo "::error::Warfront logged errors during server boot"
+            exit 1
+          fi
+
       - uses: actions/setup-go@v5
         with:
           go-version: stable

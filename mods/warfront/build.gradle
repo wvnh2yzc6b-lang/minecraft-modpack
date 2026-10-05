@@ -23,6 +23,11 @@ neoForge {
             server()
             programArgument '--nogui'
         }
+        // Boots a dedicated server, runs Warfront's game tests and exits. Used by CI as a smoke test.
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             logLevel = org.slf4j.event.Level.INFO

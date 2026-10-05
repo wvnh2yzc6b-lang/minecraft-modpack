@@ -52,18 +52,13 @@ yungs-better-nether-fortresses
 yungs-bridges
 yungs-extras
 towns-and-towers
-repurposed-structures
 explorify
 dungeons-and-taverns
 the-aether
-the-twilight-forest
 
 # --- World generation ------------------------------------------------------
 terralith
 tectonic
-
-# --- Mobs ------------------------------------------------------------------
-friends-and-foes
 
 # --- Building and atmosphere ----------------------------------------------
 supplementaries

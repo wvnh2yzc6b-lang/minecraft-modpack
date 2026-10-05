@@ -504,7 +504,56 @@ def loot_and_tags():
                {"replace": False, "values": [f"{MODID}:war_standard"]})
 
 
+# --------------------------------------------------------------------------- game test structure
+
+def _nbt_payload(tag_type, value):
+    import struct
+    if tag_type == 3:
+        return struct.pack(">i", value)
+    if tag_type == 8:
+        b = value.encode("utf-8")
+        return struct.pack(">H", len(b)) + b
+    if tag_type == 9:
+        elem_type, items = value
+        out = struct.pack(">bi", elem_type if items else 0, len(items))
+        for it in items:
+            out += _nbt_payload(elem_type, it)
+        return out
+    if tag_type == 10:
+        out = b""
+        for name, (t, v) in value.items():
+            nb = name.encode("utf-8")
+            out += struct.pack(">bH", t, len(nb)) + nb + _nbt_payload(t, v)
+        return out + b"\x00"
+    raise ValueError(tag_type)
+
+
+def platform_structure():
+    """A 9x4x9 test arena: stone floor, open air above. Used by the mod's game tests."""
+    import gzip
+    import struct
+    size = (9, 4, 9)
+    blocks = []
+    for x in range(size[0]):
+        for z in range(size[2]):
+            blocks.append({"pos": (9, (3, [x, 0, z])), "state": (3, 0)})
+            for y in range(1, size[1]):
+                blocks.append({"pos": (9, (3, [x, y, z])), "state": (3, 1)})
+    root = {
+        "DataVersion": (3, 3955),
+        "size": (9, (3, list(size))),
+        "palette": (9, (10, [{"Name": (8, "minecraft:stone")}, {"Name": (8, "minecraft:air")}])),
+        "blocks": (9, (10, blocks)),
+        "entities": (9, (10, [])),
+    }
+    data = struct.pack(">bH", 10, 0) + _nbt_payload(10, root)
+    p = DATA / MODID / "structure" / "platform.nbt"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_bytes(gzip.compress(data))
+
+
 if __name__ == "__main__":
+    platform_structure()
     item_textures()
     block_textures()
     soldier_skins()
