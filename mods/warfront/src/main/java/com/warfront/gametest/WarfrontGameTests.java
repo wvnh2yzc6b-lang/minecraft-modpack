@@ -178,7 +178,8 @@ public final class WarfrontGameTests {
         BlockPos crop = new BlockPos(4, 2, 4);
         h.setBlock(crop.below(), Blocks.FARMLAND.defaultBlockState());
         h.setBlock(crop, WFRegistry.MANABLOOM.get().getStateForAge(CropBlock.MAX_AGE));
-        h.destroyBlock(crop);
+        // GameTestHelper.destroyBlock breaks without drops; break it for real so the loot table runs.
+        h.getLevel().destroyBlock(h.absolutePos(crop), true);
         h.succeedWhen(() -> h.assertItemEntityPresent(WFRegistry.MANA_SHARD.get(), crop, 2.0));
     }
 
