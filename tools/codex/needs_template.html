@@ -1,0 +1,141 @@
+<title>Warfront Design Needs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a commission board. Open questions first as a ranked list, then the full race-by-role roster grid. Shares the Codex palette. */
+:root {
+  --bg: #eceff2;
+  --surface: #f8f9fa;
+  --plate: #d9e1e7;
+  --ink: #1b2330;
+  --muted: #586374;
+  --line: #ccd3da;
+  --accent: #9a6a12;
+  --need: #a5521b;
+  --need-bg: #f6e6d8;
+  --good: #2f6b3a;
+  --good-bg: #e1efe3;
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --body: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171f; --surface: #1a212b; --plate: #222c39; --ink: #e4e8ee; --muted: #9aa6b6; --line: #2e3947;
+    --accent: #e2b55a; --need: #f0a065; --need-bg: #3a2618; --good: #7fc58b; --good-bg: #1c3222; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171f; --surface: #1a212b; --plate: #222c39; --ink: #e4e8ee; --muted: #9aa6b6; --line: #2e3947;
+  --accent: #e2b55a; --need: #f0a065; --need-bg: #3a2618; --good: #7fc58b; --good-bg: #1c3222; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.55 var(--body); padding-inline: 20px; padding-block: 0 64px; }
+.wrap { max-width: 1240px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; letter-spacing: 0.02em; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.04rem; font-family: var(--body); font-weight: 700; letter-spacing: 0; }
+p { margin: 0; }
+.eyebrow { font: 600 0.74rem var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+header.masthead { padding-block: 48px 24px; border-bottom: 1px solid var(--line); display: grid; gap: 12px; }
+.lede { color: var(--muted); max-width: 64ch; font-size: 1.1rem; }
+.tally { display: flex; flex-wrap: wrap; gap: 8px 28px; font: 0.86rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tally b { font-size: 1.1rem; margin-right: 6px; color: var(--ink); }
+.tally .n { color: var(--need); }
+.tally .d { color: var(--good); }
+section { padding-block: 40px 4px; display: grid; gap: 16px; }
+section > header { display: grid; gap: 6px; }
+section > header p { color: var(--muted); max-width: 70ch; }
+
+.questions { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.q { display: grid; grid-template-columns: 5.5rem 1fr; gap: 14px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.q > div { display: grid; gap: 4px; min-width: 0; }
+.q p { color: var(--muted); max-width: 72ch; }
+.pri { font: 600 0.7rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; align-self: start; justify-self: start;
+  padding: 2px 7px; border-radius: 3px; border: 1px solid currentColor; margin-top: 3px; }
+.q.high .pri { color: var(--need); background: var(--need-bg); }
+.q.medium .pri { color: var(--accent); }
+.q.low .pri { color: var(--muted); }
+.topic { font: 600 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.92rem; color: var(--muted); align-items: center; }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 1100px; font-size: 0.88rem; }
+th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); vertical-align: top; }
+thead th { font: 600 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--plate);
+  position: sticky; top: 0; }
+tbody th { width: 11rem; font-family: var(--display); font-size: 0.95rem; background: var(--plate); }
+tbody th span { display: block; font: 400 0.8rem/1.35 var(--body); color: var(--muted); margin-top: 4px; letter-spacing: 0; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+td.done { background: var(--good-bg); }
+.unit { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; }
+.unit img { image-rendering: pixelated; background: var(--plate); border-radius: 2px; }
+.unit > div { display: grid; gap: 3px; min-width: 0; }
+.unit p { color: var(--muted); font-size: 0.8rem; line-height: 1.35; }
+.chip { justify-self: start; font: 600 0.64rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; }
+.chip.ok { color: var(--good); border: 1px solid currentColor; }
+.chip.need { color: var(--need); background: var(--need-bg); }
+
+.settled { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; max-width: 80ch; }
+.settled li::marker { color: var(--good); }
+footer { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+code { font-family: var(--mono); font-size: 0.84em; }
+@media (max-width: 560px) {
+  body { font-size: 16px; padding-inline: 16px; }
+  .q { grid-template-columns: 1fr; gap: 6px; }
+}
+</style>
+
+<div class="wrap">
+<header class="masthead">
+  <span class="eyebrow">Warfront · open decisions · updated %%UPDATED%%</span>
+  <h1>Design Needs</h1>
+  <p class="lede">Everything in the mod that still needs your direction: questions I can't settle on my own, and every unit in the roster with whether it has its own design yet. This page is rebuilt from the repository whenever something changes.</p>
+  <div class="tally">
+    <span><b>%%OPEN%%</b>open questions</span>
+    <span><b class="n">%%HIGH%%</b>high priority</span>
+    <span><b class="n">%%NEED%%</b>units need a design</span>
+    <span><b class="d">%%DONE%%</b>of %%TOTAL%% designed</span>
+  </div>
+</header>
+
+<section id="questions">
+  <header>
+    <span class="eyebrow">Ranked by what they block</span>
+    <h2>Questions for you</h2>
+    <p>Answer any of these in chat, in any order. Pictures, sketches, a game or film you want it to look like, or a few words all work.</p>
+  </header>
+  <ol class="questions">
+%%QUESTIONS%%
+  </ol>
+</section>
+
+<section id="roster">
+  <header>
+    <span class="eyebrow">7 races × every role</span>
+    <h2>Unit roster</h2>
+    <p>Each cell is one unit. <b>Needs input</b> units currently wear the plain race skin shown in the thumbnail, plus whatever weapon or armor they carry. The note under each role says what that role is for, to help you picture it.</p>
+  </header>
+  <div class="legend"><span class="chip need">Needs input</span> no design yet <span class="chip ok">Designed</span> has its own look, changes still welcome</div>
+  <div class="tablewrap"><table>
+    <thead><tr><th scope="col">Role</th>%%HEAD%%</tr></thead>
+    <tbody>
+%%ROWS%%
+    </tbody>
+  </table></div>
+</section>
+
+<section id="settled">
+  <header>
+    <span class="eyebrow">Already decided</span>
+    <h2>Settled</h2>
+  </header>
+  <ul class="settled">
+%%SETTLED%%
+  </ul>
+</section>
+
+<footer>Generated %%UPDATED%% by <code>tools/codex/build_needs.py</code> from <code>tools/codex/needs.json</code> and the mod's unit lists. The full build record is in the Warfront Codex.</footer>
+</div>
