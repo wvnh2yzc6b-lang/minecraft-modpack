@@ -343,17 +343,20 @@ def demon_player():
         part("brow_l", pivot=(2.6, -6.2, -4.3), rot=(0, 0, -0.35), boxes=[box((-1.5, -0.5, -0.5), (3, 1, 1), "oryx_plate")]),
     ])
 
-    # Huge wings rising well above the head: a long arm strut, a hooked claw at the joint and the tip,
-    # and three finger struts through a black-rimmed membrane glowing blood red.
-    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.2, 0.42, 1.28), boxes=[
-        box((-27, -1, -1), (27, 2, 2), "wing_bone_dark"),
-        box((-27, 1, 0), (27, 30, 0), "membrane_ember"),
+    # Wings: a blade-like membrane that tapers to a hard point at the tip, its trailing edge scalloped
+    # between the finger struts, each finger ending in a sharp spike.
+    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.2, 0.42, 1.2), boxes=[
+        box((-20, -0.75, -0.75), (20, 1.5, 1.5), "wing_bone_dark"),
+        box((-20, 0.75, 0), (20, 22, 0), "membrane_blade"),
     ], children=[
-        part("wing_r_claw", pivot=(-27, 0, 0), rot=(0, 0, -1.1), boxes=[box((-0.5, -5, -0.5), (1, 5, 1), "claw")]),
-        part("wing_r_hook", pivot=(-13, -1, 0), rot=(0, 0, 0.5), boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "claw")]),
-        part("wing_r_finger1", pivot=(-9, 1, 0), rot=(0, 0, -0.25), boxes=[box((-0.5, 0, -0.5), (1, 29, 1), "wing_bone_dark")]),
-        part("wing_r_finger2", pivot=(-17, 1, 0), rot=(0, 0, -0.08), boxes=[box((-0.5, 0, -0.5), (1, 27, 1), "wing_bone_dark")]),
-        part("wing_r_finger3", pivot=(-24, 1, 0), rot=(0, 0, 0.1), boxes=[box((-0.5, 0, -0.5), (1, 21, 1), "wing_bone_dark")]),
+        part("wing_r_claw", pivot=(-20, 0, 0), rot=(0, 0, -1.15), boxes=[box((-0.5, -5, -0.5), (1, 5, 1), "claw")]),
+        part("wing_r_hook", pivot=(-10, -0.75, 0), rot=(0, 0, 0.5), boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "claw")]),
+        part("wing_r_finger1", pivot=(-6, 0.75, 0), rot=(0, 0, -0.18), boxes=[box((-0.5, 0, -0.5), (1, 20, 1), "wing_bone_dark")],
+             children=[part("wing_r_finger1_tip", pivot=(0, 20, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
+        part("wing_r_finger2", pivot=(-12, 0.75, 0), rot=(0, 0, -0.06), boxes=[box((-0.5, 0, -0.5), (1, 15, 1), "wing_bone_dark")],
+             children=[part("wing_r_finger2_tip", pivot=(0, 15, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
+        part("wing_r_finger3", pivot=(-17, 0.75, 0), rot=(0, 0, 0.05), boxes=[box((-0.5, 0, -0.5), (1, 9, 1), "wing_bone_dark")],
+             children=[part("wing_r_finger3_tip", pivot=(0, 9, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
     ])
     body = part("body", children=[
         wing_r, mirror(wing_r),
@@ -442,6 +445,32 @@ def demon_material(mat, side, x, y, w, h, pal, rng):
         return c
     if mat == "wing_bone_dark":
         return shade(mix(hexc("1a1416"), hexc("3a2a2a"), rng.uniform(0, 0.6)), 1.15 if side == "top" else 1)
+    if mat == "membrane_blade":
+        if side not in ("front", "back"):
+            return None
+        # t runs from the wing tip (0) to the body (1); the front face has the tip on the left.
+        t = x / max(1, w - 1) if side == "front" else 1 - x / max(1, w - 1)
+        # Blade outline: narrow at the tip, deep at the body, scalloped between fingers at
+        # t = 0.15, 0.4 and 0.7 so each finger ends in a point.
+        depth = h * (0.2 + 0.8 * t ** 0.6)
+        fingers = [0.0, 0.15, 0.4, 0.7, 1.0]
+        for f0, f1 in zip(fingers, fingers[1:]):
+            if f0 <= t <= f1:
+                frac = (t - f0) / (f1 - f0)
+                depth -= h * 0.14 * math.sin(math.pi * frac) * (0.5 + t * 0.6)
+                break
+        if y > depth:
+            return None
+        edge_dist = min(depth - y, y, t * w)
+        if edge_dist < 1.2 or (x + y // 2) % 7 == 0:
+            return mix(hexc("0a0707"), hexc("1c1010"), rng.uniform(0, 1))     # black rim and sinews
+        tt = min(1.0, (edge_dist - 1) / 5)
+        c = mix(hexc("2a0505"), hexc(pal["ember"]), tt * rng.uniform(0.55, 1.0))
+        if side == "back":
+            c = shade(c, 0.6)
+        if tt > 0.6 and rng.random() < 0.45:
+            return glow(mix(c, hexc(pal["ember_hi"]), rng.uniform(0, 0.25)))
+        return c
     if mat == "membrane_ember":
         if side not in ("front", "back"):
             return None

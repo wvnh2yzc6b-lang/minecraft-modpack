@@ -8,12 +8,36 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
+import com.warfront.flight.WingFlight;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 
 /** Client-only game events. */
 @EventBusSubscriber(modid = Warfront.MODID, value = Dist.CLIENT)
 public final class ClientGameEvents {
     private ClientGameEvents() {}
+
+    private static boolean jumpWasDown;
+
+    /**
+     * Wing takeoff. Vanilla only offers takeoff to players wearing an elytra, so winged players get the
+     * same gesture here: press jump while falling. The server double-checks via the same rule.
+     */
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return;
+        boolean jumpDown = mc.options.keyJump.isDown();
+        if (jumpDown && !jumpWasDown && player.getDeltaMovement().y < 0.0
+                && !WingFlight.wearsWorkingElytra(player) && player.tryToStartFallFlying()) {
+            player.connection.send(new ServerboundPlayerCommandPacket(player,
+                    ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
+        }
+        jumpWasDown = jumpDown;
+    }
 
     /** Demon players see their own clawed demon arm in first person. */
     @SubscribeEvent

@@ -47,6 +47,7 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     private final float wingZ;
     private final float wingY;
     private final float cloakX;
+    private final float wingX;
 
     public DemonPlayerLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent,
                             EntityModelSet models) {
@@ -64,6 +65,7 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         this.wingZ = wingR.getInitialPose().zRot;
         this.wingY = wingR.getInitialPose().yRot;
         this.cloakX = cloak.getInitialPose().xRot;
+        this.wingX = wingR.getInitialPose().xRot;
         instance = this;
     }
 
@@ -112,6 +114,21 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     }
 
     private void animate(AbstractClientPlayer player, float limbSwingAmount, float ageInTicks) {
+        if (player.isFallFlying()) {
+            // In flight: wings spread wide and swept back, beating in slow powerful strokes;
+            // the cloak streams out behind.
+            float beat = Mth.sin(ageInTicks * 0.32F);
+            wingR.zRot = 0.35F + beat * 0.35F;
+            wingL.zRot = -0.35F - beat * 0.35F;
+            wingR.yRot = 0.2F;
+            wingL.yRot = -0.2F;
+            wingR.xRot = 0.1F + beat * 0.08F;
+            wingL.xRot = 0.1F + beat * 0.08F;
+            cloak.xRot = 1.25F + Mth.sin(ageInTicks * 0.4F) * 0.06F;
+            return;
+        }
+        wingR.xRot = wingX;
+        wingL.xRot = wingX;
         boolean airborne = !player.onGround() && !player.isInWater();
         float effort = Math.min(1F, limbSwingAmount * 1.5F + (airborne ? 1F : 0F));
         float flap = Mth.sin(ageInTicks * (0.12F + effort * 0.35F)) * (0.05F + effort * 0.3F);

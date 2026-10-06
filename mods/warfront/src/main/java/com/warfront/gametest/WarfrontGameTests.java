@@ -259,4 +259,24 @@ public final class WarfrontGameTests {
         h.assertTrue("Ironbreaker".equals(ironbreaker.getUnitName()), "dwarf champion should be an Ironbreaker");
         h.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void demonsTakeWingWithoutAnElytra(GameTestHelper h) {
+        Player demon = h.makeMockPlayer(GameType.SURVIVAL);
+        demon.setData(WFRegistry.RACE, Race.DEMON.id());
+        demon.moveTo(h.absoluteVec(new Vec3(4.5, 6, 4.5)));
+        demon.setOnGround(false);
+        h.assertTrue(demon.tryToStartFallFlying() && demon.isFallFlying(), "a demon in mid-air should spread its wings");
+
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        human.moveTo(h.absoluteVec(new Vec3(2.5, 6, 2.5)));
+        human.setOnGround(false);
+        h.assertTrue(!human.tryToStartFallFlying(), "a human without an elytra cannot glide");
+
+        Vec3 before = demon.getDeltaMovement();
+        com.warfront.flight.WingFlight.applyThrust(demon);
+        h.assertTrue(demon.getDeltaMovement().subtract(before).length() > 0.01, "wings should add thrust");
+        h.succeed();
+    }
 }

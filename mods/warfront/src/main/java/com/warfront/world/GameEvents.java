@@ -174,6 +174,22 @@ public final class GameEvents {
         }
     }
 
+    // ------------------------------------------------------------ wing flight
+
+    /** Powered wing flight: thrust on the side that simulates the player, hunger on the server. */
+    @SubscribeEvent
+    public static void onPlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        if (!player.isFallFlying() || !com.warfront.flight.WingFlight.hasWings(player)
+                || com.warfront.flight.WingFlight.wearsWorkingElytra(player)) return;
+        if (player.isLocalPlayer()) {
+            com.warfront.flight.WingFlight.applyThrust(player);
+        } else if (!player.level().isClientSide && !player.getAbilities().instabuild
+                && player.getFoodData().getFoodLevel() > 6) {
+            player.causeFoodExhaustion(com.warfront.flight.WingFlight.EXHAUSTION);
+        }
+    }
+
     // ------------------------------------------------------------ roaming warbands
 
     @SubscribeEvent
