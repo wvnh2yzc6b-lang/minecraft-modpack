@@ -24,3 +24,22 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - **Hands:** long fingers with long black talons.
 - **Legs:** digitigrade (bent backwards, beast-like), with black clawed feet and dark shins fading
   from the red skin.
+
+## Imp role variants (owner direction)
+- Each role of a unit should look a little different, and this applies to every race.
+- Impaler: rugged and sharper, with some armor. Firecaster: a magical look. Imps are low tier, so
+  keep it modest.
+- Armor and clothes need real texture (grain, stitching, rivets, wear), not flat pixels.
+
+## Demon player character (owner reference painting, not stored as a file)
+- **Size:** same as a normal player.
+- **Head:** a black, armored, helm-like horned visage. Two long horns sweep up and curve inward like a
+  lyre, with a crown of smaller spikes and thorns around them. The face is a dark beaked mask.
+- **Body:** pale grey, heavily muscled bare torso with defined abs and pecs.
+- **Arms:** dark, thorny bramble-like growths wrap the forearms and shoulders. The hands are long and
+  black with hooked talons.
+- **Wings:** huge and dark, wider than the body, with ragged black edges. The inner membranes glow
+  ember red. Each wing has a hooked claw at the top joint.
+- **Lower body:** a long tattered black robe or loincloth from the waist to the feet, with a flowing
+  black cloak behind, frayed into strips.
+- **Feet:** black clawed feet.
