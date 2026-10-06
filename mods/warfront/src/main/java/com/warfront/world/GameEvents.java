@@ -56,6 +56,10 @@ public final class GameEvents {
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
         Mana.sync(player);
+        if (player instanceof ServerPlayer sp) {
+            com.warfront.network.RaceSync.broadcast(sp);
+            com.warfront.network.RaceSync.sendAllTo(sp);
+        }
         Race race = Race.byId(player.getData(WFRegistry.RACE));
         if (race != null) {
             race.apply(player);

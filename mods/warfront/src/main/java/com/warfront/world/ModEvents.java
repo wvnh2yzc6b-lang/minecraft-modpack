@@ -20,6 +20,9 @@ public final class ModEvents {
 
     @SubscribeEvent
     public static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToClient(ManaPayload.TYPE, ManaPayload.STREAM_CODEC, ManaPayload::handle);
+        var registrar = event.registrar("1");
+        registrar.playToClient(ManaPayload.TYPE, ManaPayload.STREAM_CODEC, ManaPayload::handle);
+        registrar.playToClient(com.warfront.network.RacePayload.TYPE, com.warfront.network.RacePayload.STREAM_CODEC,
+                com.warfront.network.RacePayload::handle);
     }
 }

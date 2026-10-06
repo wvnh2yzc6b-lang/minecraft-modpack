@@ -2,6 +2,8 @@ package com.warfront.client;
 
 import com.warfront.Warfront;
 import com.warfront.client.model.UnitGeometry;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import com.warfront.registry.WFRegistry;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,6 +27,16 @@ public final class ClientSetup {
         event.registerLayerDefinition(WFModelLayers.IMP_BULWARK, UnitGeometry::imp_bulwark);
         event.registerLayerDefinition(WFModelLayers.IMP_IMPALER, UnitGeometry::imp_impaler);
         event.registerLayerDefinition(WFModelLayers.IMP_FIRECASTER, UnitGeometry::imp_firecaster);
+        event.registerLayerDefinition(WFModelLayers.DEMON_PLAYER, UnitGeometry::demon_player);
+    }
+
+    @SubscribeEvent
+    public static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+        for (PlayerSkin.Model skin : event.getSkins()) {
+            if (event.getSkin(skin) instanceof PlayerRenderer renderer) {
+                renderer.addLayer(new DemonPlayerLayer(renderer, event.getEntityModels()));
+            }
+        }
     }
 
     @SubscribeEvent

@@ -26,7 +26,7 @@ public enum Race {
             "Stout and stubborn. Extra health and armor; dwarven soldiers never rout."),
     ORC(ChatFormatting.DARK_GREEN,     2,   0.00,  1.5,  0,    1.10,  0.6,    true,  1.0,
             "Brutal and towering. Hits harder, but morale is fragile."),
-    DEMON(ChatFormatting.DARK_RED,     2,   0.00,  1.0,  1,    1.05,  1.0,    true,  1.15,
+    DEMON(ChatFormatting.DARK_RED,     2,   0.00,  1.0,  1,    1.00,  1.0,    true,  1.15,
             "Born of hellfire. Immune to fire and lava; demon soldiers set their foes ablaze."),
     ANGEL(ChatFormatting.YELLOW,       0,   0.05,  0.0,  0,    1.08,  2.0,    false, 1.2,
             "Radiant and unbreakable. No fall damage, slow regeneration, +50% damage to undead and demons."),

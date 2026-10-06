@@ -276,39 +276,57 @@ def player_base():
 
 def demon_player():
     """Extra parts worn by players of the demon race, attached to the vanilla player model's parts."""
-    def horn(side):
-        sx = -1 if side == "r" else 1
-        tip = part(f"horn_{side}4", pivot=(0, -4, 0), rot=(0.1, 0, sx * -0.75),
-                   boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "horn_black")])
-        s3 = part(f"horn_{side}3", pivot=(0, -4, 0), rot=(0.05, 0, sx * -0.45),
-                  boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "horn_black")], children=[tip])
-        s2 = part(f"horn_{side}2", pivot=(0, -4, 0), rot=(-0.1, 0, sx * -0.15),
-                  boxes=[box((-1, -4, -1), (2, 4, 2), "horn_black", grow=-0.2)], children=[s3])
-        return part(f"horn_{side}", pivot=(sx * 2.6, -7.5, -0.5), rot=(-0.2, 0, sx * 0.55),
-                    boxes=[box((-1, -4, -1), (2, 4, 2), "horn_black")], children=[s2])
+    # Oryx-like skull crown: a crescent crest sweeping up and back, blades along the sides of the
+    # skull, a heavy brow plate, flared cheek plates and a mandibled jaw.
+    crest = part("crest_1", pivot=(0, -7.5, 0.5), rot=(-0.3, 0, 0), boxes=[box((-1.5, -6, -2), (3, 6, 4), "chitin")],
+                 children=[part("crest_2", pivot=(0, -6, 0.5), rot=(-0.22, 0, 0),
+                                boxes=[box((-1, -6, -1.5), (2, 6, 3), "chitin")],
+                                children=[part("crest_3", pivot=(0, -6, 0.5), rot=(-0.25, 0, 0),
+                                               boxes=[box((-1, -5, -1), (2, 5, 2), "chitin", grow=-0.2)],
+                                               children=[part("crest_4", pivot=(0, -5, 0), rot=(-0.3, 0, 0),
+                                                              boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "chitin")])])])])
 
-    crown = []
-    for i, (x, z, rx, rz, ln) in enumerate([(-1.2, -2.5, -0.35, -0.2, 3), (1.2, -2.5, -0.35, 0.2, 3), (0, -1.5, -0.5, 0, 4),
-                                            (-3.2, 1.5, -0.6, -0.6, 3), (3.2, 1.5, -0.6, 0.6, 3), (0, 2.5, -0.9, 0, 3),
-                                            (-2, 3.5, -1.0, -0.3, 2), (2, 3.5, -1.0, 0.3, 2)]):
-        crown.append(part(f"spike_{i}", pivot=(x, -8, z), rot=(rx, 0, rz),
-                          boxes=[box((-0.5, -ln, -0.5), (1, ln, 1), "horn_black")]))
-    head = part("head", children=[horn("r"), horn("l"), *crown,
-        part("beak", pivot=(0, -3.5, -4), rot=(0.15, 0, 0), boxes=[box((-1.5, -1.5, -1.5), (3, 3, 2), "horn_black")],
-             children=[part("beak_tip", pivot=(0, 1, -1.5), rot=(0.4, 0, 0), boxes=[box((-0.5, 0, -1), (1, 2, 1), "horn_black")])]),
-        part("brow_r", pivot=(-2.5, -5.5, -4.2), rot=(0, 0, 0.25), boxes=[box((-2, -0.5, -0.5), (3, 1, 1), "horn_black")]),
-        part("brow_l", pivot=(2.5, -5.5, -4.2), rot=(0, 0, -0.25), boxes=[box((-1, -0.5, -0.5), (3, 1, 1), "horn_black")]),
+    def blade(side):
+        sx = -1 if side == "r" else 1
+        tip = part(f"blade_{side}3", pivot=(0, 0, 4), rot=(0.25, sx * -0.15, 0),
+                   boxes=[box((-0.5, -0.5, 0), (1, 1, 4), "chitin")])
+        mid = part(f"blade_{side}2", pivot=(0, 0, 5), rot=(0.12, sx * -0.12, 0),
+                   boxes=[box((-0.5, -1, 0), (1, 2, 4), "chitin")], children=[tip])
+        return part(f"blade_{side}", pivot=(sx * 4.3, -6.5, -2.5), rot=(0.08, sx * 0.2, sx * 0.1),
+                    boxes=[box((-0.5, -1.5, 0), (1, 3, 5), "chitin")], children=[mid])
+
+    def cheek(side):
+        sx = -1 if side == "r" else 1
+        return part(f"cheek_{side}", pivot=(sx * 4.2, -3.5, -2.5), rot=(0, sx * -0.35, sx * -0.2),
+                    boxes=[box((-0.5, -2, -1), (1, 4, 3), "chitin")])
+
+    def mandible(side):
+        sx = -1 if side == "r" else 1
+        return part(f"mandible_{side}", pivot=(sx * 2.2, -1, -4), rot=(-0.25, sx * 0.25, 0),
+                    boxes=[box((-1, 0, -1), (2, 3, 1), "chitin")],
+                    children=[part(f"mandible_{side}_fang", pivot=(sx * -0.3, 3, -0.5), rot=(-0.3, 0, sx * -0.35),
+                                   boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "fang")])])
+
+    ridge = [part(f"ridge_{i}", pivot=(0, -8, z), rot=(rx, 0, 0), boxes=[box((-0.5, -h, -0.5), (1, h, 1), "chitin")])
+             for i, (z, rx, h) in enumerate([(-3, -0.2, 2), (-1.2, -0.35, 3)])]
+    head = part("head", children=[
+        crest, blade("r"), blade("l"), cheek("r"), cheek("l"), mandible("r"), mandible("l"), *ridge,
+        part("brow_plate", pivot=(0, -5.8, -4.2), rot=(0.25, 0, 0), boxes=[box((-4.5, -1, -1.5), (9, 2, 2), "chitin")],
+             children=[part("brow_spike", pivot=(0, -1, -1.5), rot=(-0.9, 0, 0),
+                            boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "chitin")])]),
     ])
 
-    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.3, 0.55, 0.75), boxes=[
-        box((-19, -0.75, -0.75), (19, 1.5, 1.5), "wing_bone_dark"),
-        box((-19, 0.5, 0), (19, 22, 0), "membrane_ember"),
+    # Huge wings rising well above the head: a long arm strut, a hooked claw at the joint and the tip,
+    # and three finger struts through a black-rimmed membrane glowing blood red.
+    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.2, 0.42, 1.28), boxes=[
+        box((-27, -1, -1), (27, 2, 2), "wing_bone_dark"),
+        box((-27, 1, 0), (27, 30, 0), "membrane_ember"),
     ], children=[
-        part("wing_r_claw", pivot=(-19, 0, 0), rot=(0, 0, -1.0), boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "claw")]),
-        part("wing_r_hook", pivot=(-9, -0.5, 0), rot=(0, 0, 0.4), boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "claw")]),
-        part("wing_r_finger1", pivot=(-7, 0.5, 0), rot=(0, 0, -0.2), boxes=[box((-0.5, 0, -0.5), (1, 21, 1), "wing_bone_dark")]),
-        part("wing_r_finger2", pivot=(-13, 0.5, 0), rot=(0, 0, -0.05), boxes=[box((-0.5, 0, -0.5), (1, 19, 1), "wing_bone_dark")]),
-        part("wing_r_finger3", pivot=(-17.5, 0.5, 0), rot=(0, 0, 0.12), boxes=[box((-0.5, 0, -0.5), (1, 15, 1), "wing_bone_dark")]),
+        part("wing_r_claw", pivot=(-27, 0, 0), rot=(0, 0, -1.1), boxes=[box((-0.5, -5, -0.5), (1, 5, 1), "claw")]),
+        part("wing_r_hook", pivot=(-13, -1, 0), rot=(0, 0, 0.5), boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "claw")]),
+        part("wing_r_finger1", pivot=(-9, 1, 0), rot=(0, 0, -0.25), boxes=[box((-0.5, 0, -0.5), (1, 29, 1), "wing_bone_dark")]),
+        part("wing_r_finger2", pivot=(-17, 1, 0), rot=(0, 0, -0.08), boxes=[box((-0.5, 0, -0.5), (1, 27, 1), "wing_bone_dark")]),
+        part("wing_r_finger3", pivot=(-24, 1, 0), rot=(0, 0, 0.1), boxes=[box((-0.5, 0, -0.5), (1, 21, 1), "wing_bone_dark")]),
     ])
     body = part("body", children=[
         wing_r, mirror(wing_r),
@@ -329,8 +347,9 @@ def demon_player():
                        children=[part(f"talon_{side}{i}_tip", pivot=(0, 3, 0), rot=(-0.5, 0, 0),
                                       boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw", grow=-0.15)])]) for i in range(4)]
         thorns = [part(f"thorn_{side}{i}", pivot=(x0 + (0 if side == "r" else 4), y, z), rot=(rx, 0, sx * 0.9),
-                       boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "horn_black")])
-                  for i, (y, z, rx) in enumerate([(-1, 0, -0.3), (3, -1, 0.2), (6, 1, -0.4), (8, -0.5, 0.3)])]
+                       boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "horn_black")])
+                  for i, (y, z, rx) in enumerate([(-1.5, 0, -0.3), (1, 1, 0.3), (3, -1, 0.2), (5, 1.2, -0.4),
+                                                  (6.5, -1, 0.4), (8.5, 0.5, -0.2)])]
         return part(name, pivot=(sx * 5, 2, 0), children=[
             part(f"brambles_{side}", boxes=[box((x0, 3, -2), (4, 7, 4), "brambles", grow=0.3)]), *thorns, *talons])
 
@@ -348,10 +367,24 @@ DEMON_PLAYER_PAL = dict(skin="9a9a98", dark="3a3a3c", hi="cfcfcb", deep="101012"
                         eye="ff2a1a", eye_hi="ff9a7a", tuft="0c0c0c", leather="1e1c1c", leather_dark="0a0909",
                         iron="3a3a3e", iron_dark="1a1a1e", rust="5a1a10", cloth="161414", cloth_dark="080707",
                         bone="cfc6b0", bone_dark="6a6050", rune="ff3a1a", rune_hi="ff9a6a", mantle="141212",
-                        mantle_trim="8a1a10", orb="ff3a10", orb_core="ffc0a0", ember="ff2a10", ember_hi="ff8a40")
+                        mantle_trim="8a1a10", orb="ff3a10", orb_core="ffc0a0", ember="b0140c", ember_hi="ff3a22")
 
 
 def demon_material(mat, side, x, y, w, h, pal, rng):
+    if mat == "chitin":
+        # Pale bone-chitin with dark crevices and growth ridges.
+        c = mix(hexc("d6cdb6"), hexc("8e8570"), rng.uniform(0, 0.45))
+        if (y % 3 == 0 and side in ("left", "right", "front", "back")) or rng.random() < 0.07:
+            c = shade(c, 0.62)                                   # ridges and pits
+        if side == "top":
+            c = shade(c, 1.1)
+        if side == "bottom":
+            c = shade(c, 0.6)
+        if edge(x, y, w, h) and side in ("left", "right") and rng.random() < 0.5:
+            c = shade(c, 0.75)
+        return c
+    if mat == "fang":
+        return shade(mix(hexc("e8e0cc"), hexc("6a6050"), y / max(1, h - 1)), rng.uniform(0.95, 1.05))
     if mat == "horn_black":
         c = shade(hexc(pal["horn"]), rng.uniform(0.8, 1.25))
         if side == "top" or (side in ("left", "front") and x == 0):
@@ -370,16 +403,16 @@ def demon_material(mat, side, x, y, w, h, pal, rng):
         if rng.random() < 0.02 and y > h // 2:
             return None
         edge_dist = min(x, w - 1 - x, y, ragged - y)
-        dark = mix(hexc("0c0808"), hexc("221212"), rng.uniform(0, 1))
-        if edge_dist <= 1 or (x + y // 2) % 6 == 0:
+        dark = mix(hexc("0a0707"), hexc("1c1010"), rng.uniform(0, 1))
+        if edge_dist <= 2 or (x + y // 2) % 7 == 0:
             return dark                                         # black ragged rim and sinews
-        # Glowing ember-red panes between the sinews, brightest near the middle.
-        t = min(1.0, edge_dist / 5)
-        c = mix(hexc("3a0806"), hexc(pal["ember"]), t * rng.uniform(0.6, 1.0))
+        # Blood-red panes between the sinews, smouldering brighter toward the middle.
+        t = min(1.0, (edge_dist - 2) / 6)
+        c = mix(hexc("2a0505"), hexc(pal["ember"]), t * rng.uniform(0.55, 1.0))
         if side == "back":
-            c = shade(c, 0.7)
-        if t > 0.55 and rng.random() < 0.6:
-            return glow(mix(c, hexc(pal["ember_hi"]), rng.uniform(0, 0.3)))
+            c = shade(c, 0.6)
+        if t > 0.6 and rng.random() < 0.45:
+            return glow(mix(c, hexc(pal["ember_hi"]), rng.uniform(0, 0.25)))
         return c
     if mat in ("robe", "cloak"):
         # Tattered black cloth, torn into strips at the bottom.
@@ -404,10 +437,13 @@ def demon_material(mat, side, x, y, w, h, pal, rng):
         if side in ("top", "bottom"):
             return None
         # Thorny vines spiralling around the forearm.
-        on = (x + y) % 4 == 0 or (x - y) % 5 == 0
+        on = (x + y) % 3 == 0 or (x - y) % 4 == 0
         if not on:
             return None
-        return shade(hexc("16110f"), rng.uniform(0.7, 1.4))
+        c = shade(hexc("1a1411"), rng.uniform(0.7, 1.3))
+        if (x * 3 + y) % 5 == 0:
+            c = shade(hexc("4a3a30"), 1.0)                       # thorn highlights
+        return c
     return NotImplemented
 
 
@@ -442,50 +478,76 @@ def paint_demon_skin(pal):
         return c
 
     def helm(side, x, y, w, h):
-        c = shade(hexc("17171a"), rng.uniform(0.8, 1.3))
+        # Bone-chitin skull with deep black sockets and three burning eyes, like a Hive king.
+        c = mix(hexc("cfc6ae"), hexc("8a816c"), rng.uniform(0, 0.4))
+        if y % 3 == 1 and side in ("left", "right", "back"):
+            c = shade(c, 0.65)                                   # growth ridges
         if side == "front":
-            if y == 3 and x in (1, 2, 5, 6):
-                return glow(hexc(pal["eye"]) if x in (1, 6) else hexc(pal["eye_hi"]))   # burning eye slits
-            if y == 2 and x in (1, 2, 5, 6):
-                c = shade(hexc("2e2e34"), 1.2)                   # brow ridge
-            if x in (3, 4) and y >= 4:
-                c = shade(hexc("26262c"), 1.2)                   # beak ridge
-            if y == 7 and x in (2, 5):
-                c = hexc("0a0a0b")
-        if side in ("left", "right") and y in (2, 5):
-            c = shade(c, 1.5)                                    # plate seams
+            sockets = {(1, 3), (2, 3), (1, 4), (2, 4), (5, 3), (6, 3), (5, 4), (6, 4), (3, 2), (4, 2)}
+            if (x, y) in sockets:
+                c = hexc("0b0a0a")
+            if (x, y) in ((2, 3), (5, 3)):
+                return glow(hexc(pal["eye_hi"]))
+            if (x, y) in ((1, 3), (6, 3)):
+                return glow(hexc(pal["eye"]))
+            if (x, y) == (3, 2) or (x, y) == (4, 2):
+                return glow(hexc(pal["eye"]) if x == 3 else hexc(pal["eye_hi"]))   # third eye
+            if y in (0, 1):
+                c = shade(c, 0.85)                               # under the brow plate
+            if x in (3, 4) and y in (4, 5):
+                c = shade(c, 0.55)                               # nasal pit
+            if y == 6 and 1 <= x <= 6:
+                c = hexc("120f0e")                               # mouth
+            if y == 6 and x in (2, 3, 4, 5) and (x % 2 == 0):
+                c = hexc("e2dac6")                               # teeth
+            if y == 7:
+                c = shade(c, 0.7)
+            if x in (0, 7) and y >= 3:
+                c = shade(c, 0.6)                                # sunken cheeks
         if side == "top" and (x + y) % 3 == 0:
-            c = shade(c, 1.4)
+            c = shade(c, 0.75)
         return c
 
     def torso(side, x, y, w, h):
         c = grey(side, x, y, w, h)
-        if side == "front":
-            if y in (0, 1) and x in (0, w - 1):
-                c = shade(c, 0.8)                                # shoulders shading into the chest
-            if y == 3 and 0 < x < w - 1:
-                c = shade(c, 0.72)                               # under the pecs
-            if y in (2,) and x in (2, 5):
-                c = shade(c, 1.12)
-            if x in (3, 4) and 1 <= y <= 9:
-                c = shade(c, 0.86 if x == 3 else 0.92)           # sternum / linea alba
-            if y in (5, 7) and 1 <= x <= 6 and x not in (3, 4):
-                c = shade(c, 0.78)                               # abs
-            if y in (4, 6, 8) and x in (2, 5):
-                c = shade(c, 1.12)
-            if x in (0, 7) and 4 <= y <= 9:
-                c = shade(c, 0.82)                               # obliques
-        if side == "back" and x in (3, 4):
-            c = shade(c, 0.8)                                    # spine
         if y >= 10:
-            c = shade(hexc("121011"), rng.uniform(0.8, 1.2))     # robe top
+            return shade(hexc("121011"), rng.uniform(0.8, 1.2))  # robe top
+        if side == "front":
+            # Deeply cut chest and abdomen: pecs, then three rows of abs either side of the linea alba.
+            if y in (0, 1):
+                c = shade(c, 1.15 if x in (1, 2, 5, 6) else 0.95)  # clavicles / upper pecs
+            if y == 2:
+                c = shade(c, 1.22 if x in (1, 2, 5, 6) else 1.0)   # pec highlight
+            if y == 3:
+                c = shade(c, 0.58 if 0 < x < w - 1 else 0.8)       # shadow under the pecs
+            if x in (3, 4) and 1 <= y <= 9:
+                c = shade(c, 0.62)                               # linea alba
+            if y in (4, 6, 8) and x in (1, 2, 5, 6):
+                c = shade(c, 1.2)                                # ab highlights
+            if y in (5, 7, 9) and x in (1, 2, 5, 6):
+                c = shade(c, 0.68)                               # ab separations
+            if x in (0, 7) and y >= 3:
+                c = shade(c, 0.66)                               # obliques
+        elif side == "back":
+            if x in (3, 4):
+                c = shade(c, 0.62)                               # spine
+            if y in (1, 2) and x in (1, 2, 5, 6):
+                c = shade(c, 1.18)                               # shoulder blades
+            if y == 3 and x in (1, 2, 5, 6):
+                c = shade(c, 0.7)
+            if y in (5, 6, 7) and x in (1, 6):
+                c = shade(c, 1.1)                                # lats
+        elif side in ("left", "right") and y in (3, 6):
+            c = shade(c, 0.75)                                   # ribs
         return c
 
     def arm_fn(side, x, y, w, h):
         if y <= 3:
             c = grey(side, x, y, w, h)
-            if y == 0 and side in ("front", "back", "left", "right"):
-                c = shade(c, 0.85)
+            if y == 1 and side in ("front", "left", "right"):
+                c = shade(c, 1.2)                                # deltoid highlight
+            if y == 3:
+                c = shade(c, 0.75)
             return c
         t = min(1, (y - 3) / 4)
         c = mix(hexc(pal["skin"]), hexc("1a1718"), t)
@@ -505,10 +567,6 @@ def paint_demon_skin(pal):
 
     def hat(side, x, y, w, h):
         # Helm ridges standing proud of the face.
-        if side == "front" and y in (0, 1) and x in (0, 7):
-            return shade(hexc("1e1e22"), 1.2)
-        if side == "top" and x in (3, 4):
-            return shade(hexc("26262c"), rng.uniform(1.0, 1.4))
         return None
 
     def jacket(side, x, y, w, h):

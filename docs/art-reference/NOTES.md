@@ -43,3 +43,11 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - **Lower body:** a long tattered black robe or loincloth from the waist to the feet, with a flowing
   black cloak behind, frayed into strips.
 - **Feet:** black clawed feet.
+
+## Working agreement
+- Whenever a visual change is made, render the model and show it right away, without being asked.
+
+## Demon player head (revision)
+- Model the head on Oryx, the Taken King from Destiny: a bone-chitin skull, a tall crescent crest
+  sweeping up and back, crown blades along the sides, a jutting brow plate, three deep-set glowing
+  eyes, flared cheek plates and a mandibled jaw. The eyes stay demon red to match the race.

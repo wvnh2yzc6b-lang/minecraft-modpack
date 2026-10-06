@@ -102,6 +102,7 @@ public final class WFCommands {
         }
         p.setData(WFRegistry.RACE, race.id());
         race.apply(p);
+        com.warfront.network.RaceSync.broadcast(p);
         p.setHealth(p.getMaxHealth());
         ok(ctx, Component.literal("You are now of the " + race.displayName() + " race. " + race.description)
                 .withStyle(race.color, ChatFormatting.BOLD));
