@@ -49,6 +49,12 @@
       "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
     },
     {
+      "topic": "Hive",
+      "priority": "high",
+      "question": "How far should the Hive's cave theme go?",
+      "why": "Options: sculk-covered Warden-style bodies; blind units that hunt by sound; weaker in daylight or on the surface; Swarm raids that come up from caves; Hive players start underground. Tell me which of these you want."
+    },
+    {
       "topic": "Units",
       "priority": "medium",
       "question": "Which units should be bigger or smaller than the rest?",
@@ -98,6 +104,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Hive",
+      "answer": "The Hive becomes a Warden and sculk-like underground race that builds its keeps in caves. Redesign comes after the mana system."
+    },
     {
       "topic": "Imps",
       "answer": "Imps are one demon species. They only fill the Impaler and Firecaster roles."

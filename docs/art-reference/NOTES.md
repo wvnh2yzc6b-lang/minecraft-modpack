@@ -32,6 +32,9 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - Impaler: rugged and sharper, with some armor. Firecaster: a magical look. Imps are low tier, so
   keep it modest.
 
+## Hive (owner direction)
+- The Hive should be more Warden and sculk-like: an underground race that builds its keeps in caves.
+
 ## Workers (owner direction)
 - Builders, farmers and guards should not be extravagant. They look like plain humanoid working
   folk: simple hats, smocks, aprons and helms in the race's colors, with no horns, antennae, wings
