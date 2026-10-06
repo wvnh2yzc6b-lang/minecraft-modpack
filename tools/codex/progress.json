@@ -10,48 +10,21 @@
     },
     {
       "status": "done",
-      "title": "Demon player: hand and foot claws removed",
-      "detail": "Bare hands and feet. The forearm brambles, thorns and wing hooks stay.",
+      "title": "Demon player model",
+      "detail": "Player-sized demon skin drawn over any player of the demon race and seen by everyone on the server. Head built from the Oryx reference: spiked cowl blades that flare over the shoulders, a sharpened V jaw, a flat mouthless face and a band of violet eyes. Robe, cloak, forearm brambles and thorns, with bare hands and feet so held weapons sit cleanly.",
       "image": "demon-player-no-claws.png"
     },
     {
       "status": "done",
-      "title": "Fluid wing animation",
-      "detail": "Phase-driven wingbeat with a fast downstroke and slow recovery, wingtip follow-through, effort that tracks takeoff, climbs and dives, staggered unfolding, and frame-rate-independent easing. The cloak rides the beat a moment late.",
+      "title": "Demon wings and flight",
+      "detail": "Demon players take off like an elytra (jump while falling) without wearing one, with a gentle thrust toward where they look and a hunger cost. Wings fold at the elbow: tucked flat down the back on the ground, half-open in a jump, fully spread in flight. The wingbeat has a fast downstroke, slow recovery and wingtip follow-through, and its effort tracks takeoff, climbs and dives. The cloak rides the beat a moment late.",
       "image": "demon-flight.gif"
     },
     {
       "status": "done",
-      "title": "Wings fold at the elbow",
-      "detail": "Tucked flat down the back on the ground, half-open in a jump, fully spread in flight.",
-      "image": "demon-player-wing-fold.png"
-    },
-    {
-      "status": "done",
-      "title": "Demon wing flight",
-      "detail": "Demon players take off like an elytra (jump while falling) without wearing one, with a gentle constant thrust toward where they look and a hunger cost."
-    },
-    {
-      "status": "done",
-      "title": "Demon player head rebuilt from the Oryx reference",
-      "detail": "Spiked cowl blades that flare over the shoulders, a sharpened V jaw, a flat mouthless face and a band of violet eyes.",
-      "image": "demon-player-model.png"
-    },
-    {
-      "status": "done",
-      "title": "Demon player model",
-      "detail": "Player-sized demon skin with wings, robe, cloak and brambles, drawn over any player of the demon race and seen by everyone on the server."
-    },
-    {
-      "status": "done",
-      "title": "Imp roles with their own look",
-      "detail": "Imp, Imp Bulwark (scrap armor), Imp Impaler (studded harness, bone spikes) and Imp Firecaster (rune mantle, ember orb, fire bolts). Gear is textured, with a glow layer.",
-      "image": "imp-model-preview.png"
-    },
-    {
-      "status": "done",
       "title": "Imps: demon foot soldiers",
-      "detail": "A custom winged, scorpion-tailed model at 0.7× size for low-rank demon troops."
+      "detail": "A custom winged, scorpion-tailed model at 0.7× size for low-rank demon troops, in four roles: Imp, Imp Bulwark (scrap armor), Imp Impaler (studded harness, bone spikes) and Imp Firecaster (rune mantle, ember orb, fire bolts). Gear is textured, with a glow layer.",
+      "image": "imp-model-preview.png"
     },
     {
       "status": "done",
