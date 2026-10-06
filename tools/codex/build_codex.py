@@ -34,8 +34,9 @@ def uri(img, fmt="PNG"):
     return f"data:image/{fmt.lower()};base64," + base64.b64encode(b.getvalue()).decode()
 
 
-def file_uri(path, max_w=1100, animate=True):
-    """Embeds a render: GIFs as-is (or a still of their middle frame), stills as JPEG scaled to max_w."""
+def file_uri(path, max_w=2400, animate=True):
+    """Embeds a render: GIFs as-is (or a still of their middle frame), stills as lossless PNG at full
+    resolution so the pixel edges stay sharp, only scaled down when wider than max_w."""
     if path.suffix == ".gif" and animate:
         return "data:image/gif;base64," + base64.b64encode(path.read_bytes()).decode()
     img = Image.open(path)
@@ -46,7 +47,7 @@ def file_uri(path, max_w=1100, animate=True):
     flat.paste(img, mask=img.split()[3])
     if flat.width > max_w:
         flat = flat.resize((max_w, round(flat.height * max_w / flat.width)), Image.LANCZOS)
-    return uri(flat, "JPEG")
+    return uri(flat, "PNG")
 
 
 def crop(img, x, y, w, h):
@@ -202,7 +203,7 @@ def log():
         cls, label = STATUS[e["status"]]
         img = ""
         if e.get("image") and (ART / e["image"]).exists():
-            img = f'<figure><img src="{file_uri(ART / e["image"], 560, animate=False)}" alt="{esc(e["title"])}" loading="lazy"></figure>'
+            img = f'<figure><img src="{file_uri(ART / e["image"], animate=False)}" alt="{esc(e["title"])}" loading="lazy"></figure>'
         out.append(f'<article class="entry"><div class="when"><span class="status {cls}">{label}</span></div>'
                    f'<div class="what"><h3>{esc(e["title"])}</h3><p>{esc(e["detail"])}</p>{img}</div></article>')
     return "\n".join(out)
