@@ -289,16 +289,34 @@ def demon_player():
                             boxes=[box((-0.5, -ln, -0.5), (1, ln, 1), "oryx_spike")]))
         return out
 
+    def tapered_plate(name, segs, lean):
+        """A plate built from stacked segments that shrink and curve back, so it reads as a curved,
+        layered blade from the side rather than a flat slab. ``segs`` is [(height, depth, z_offset)]."""
+        child = None
+        for i in range(len(segs) - 1, -1, -1):
+            h, d, z = segs[i]
+            kids = [child] if child else []
+            if i == len(segs) - 1:
+                kids.append(part(f"{name}_tip", pivot=(0, -h, z + d / 2), rot=(0.35, 0, lean),
+                                 boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "oryx_spike")]))
+            # a short spike off the back edge of each segment breaks up the silhouette
+            kids.append(part(f"{name}_barb{i}", pivot=(0, -h + 0.5, z + d - 0.5), rot=(0.9, 0, lean),
+                             boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "oryx_spike")]))
+            child = part(f"{name}_{i}" if i else name, pivot=(0, -segs[i - 1][0], 0) if i else (0, 0, 0),
+                         rot=(0.18, 0, lean * 0.3) if i else (0, 0, 0),
+                         boxes=[box((-0.5, -h, z), (1, h, d), "oryx_plate")], children=kids)
+        return child
+
     def cowl(side):
-        # Two panels per side: one rises from beside the jaw and leans out, the next flares further
-        # out and back over the shoulder. Both wrap forward around the face and carry spikes.
+        # Inner blade rises beside the jaw and leans out; the outer blade flares further out and
+        # back over the shoulder. Each is a tapering, back-curving stack of segments.
         sx = -1 if side == "r" else 1
-        outer = part(f"cowl_{side}_outer", pivot=(0, -10, 0.5), rot=(0.12, sx * 0.2, sx * 0.32),
-                     boxes=[box((-0.5, -8, -4), (1, 8, 9), "oryx_plate")],
-                     children=spikes(f"cowl_{side}_outer_spike", 4, 4, -8, -3.5, 4, 0, sx * 0.35))
-        return part(f"cowl_{side}", pivot=(sx * 4.3, -0.5, -2.5), rot=(0.12, sx * -0.55, sx * 0.5),
-                    boxes=[box((-0.5, -10, -1), (1, 10, 10), "oryx_plate")],
-                    children=[outer, *spikes(f"cowl_{side}_spike", 3, 3, -10, -0.5, 8, 0, sx * 0.25)])
+        inner = tapered_plate(f"cowl_{side}_blade", [(5, 9, -3), (4, 7, -2), (4, 4, -0.5)], sx * 0.15)
+        outer = tapered_plate(f"cowl_{side}_outer_blade", [(4, 8, -2.5), (4, 5, -1), (3, 3, 0)], sx * 0.2)
+        return part(f"cowl_{side}", pivot=(sx * 4.3, -0.5, -2.5), rot=(0.1, sx * -0.55, sx * 0.5), children=[
+            inner,
+            part(f"cowl_{side}_outer", pivot=(0, -7, 0.5), rot=(0.1, sx * 0.2, sx * 0.42), children=[outer]),
+        ])
 
     def chin(side):
         sx = -1 if side == "r" else 1
