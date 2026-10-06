@@ -20,6 +20,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 /**
  * Makes players of the demon race look the part: a bone-chitin skull crown, huge blood-glowing
  * wings, a tattered robe and cloak, brambles and talons, over a demon skin. Player-sized.
@@ -43,11 +46,15 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     private final ModelPart leftLeg;
     private final ModelPart wingR;
     private final ModelPart wingL;
+    private final ModelPart wingROuter;
+    private final ModelPart wingLOuter;
     private final ModelPart cloak;
-    private final float wingZ;
-    private final float wingY;
     private final float cloakX;
-    private final float wingX;
+    /** Per player: how far the wings are spread (0 tucked, 1 flight) and the age it was last eased at. */
+    private final Map<AbstractClientPlayer, float[]> spread = new WeakHashMap<>();
+
+    // Tucked: the wrist folds up over the shoulder and the membrane hangs flat down the back.
+    private static final float TUCK_X = 0.77F, TUCK_Y = 1.26F, TUCK_Z = 0.7F, TUCK_OUTER_Z = -2.95F;
 
     public DemonPlayerLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent,
                             EntityModelSet models) {
@@ -61,11 +68,10 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         this.leftLeg = root.getChild("left_leg");
         this.wingR = body.getChild("wing_r");
         this.wingL = body.getChild("wing_l");
+        this.wingROuter = wingR.getChild("wing_r_outer");
+        this.wingLOuter = wingL.getChild("wing_l_outer");
         this.cloak = body.getChild("cloak");
-        this.wingZ = wingR.getInitialPose().zRot;
-        this.wingY = wingR.getInitialPose().yRot;
         this.cloakX = cloak.getInitialPose().xRot;
-        this.wingX = wingR.getInitialPose().xRot;
         instance = this;
     }
 
@@ -114,30 +120,39 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
     }
 
     private void animate(AbstractClientPlayer player, float limbSwingAmount, float ageInTicks) {
-        if (player.isFallFlying()) {
-            // In flight: wings spread wide and swept back, beating in slow powerful strokes;
-            // the cloak streams out behind.
-            float beat = Mth.sin(ageInTicks * 0.32F);
-            wingR.zRot = 0.35F + beat * 0.35F;
-            wingL.zRot = -0.35F - beat * 0.35F;
-            wingR.yRot = 0.2F;
-            wingL.yRot = -0.2F;
-            wingR.xRot = 0.1F + beat * 0.08F;
-            wingL.xRot = 0.1F + beat * 0.08F;
-            cloak.xRot = 1.25F + Mth.sin(ageInTicks * 0.4F) * 0.06F;
-            return;
+        boolean flying = player.isFallFlying();
+        boolean airborne = !player.onGround() && !player.isInWater() && !player.onClimbable()
+                && !player.getAbilities().flying;
+        // Wings open fully in flight, half-open to balance in a jump or fall, and fold away on the ground.
+        float target = flying ? 1F : airborne ? 0.4F : 0F;
+        float[] state = spread.computeIfAbsent(player, p -> new float[] {target, ageInTicks});
+        float dt = Mth.clamp(ageInTicks - state[1], 0F, 5F);
+        state[1] = ageInTicks;
+        state[0] += (target - state[0]) * Math.min(1F, dt * (target > state[0] ? 0.3F : 0.18F));
+        float s = state[0];
+
+        // Spread pose: wide and swept back, beating in slow powerful strokes; faster flaps when only
+        // half-open, like catching balance. The beat fades in with the spread.
+        float beat = Mth.sin(ageInTicks * (flying ? 0.32F : 0.6F)) * s;
+        float x = Mth.lerp(s, TUCK_X, 0.1F) + beat * 0.08F;
+        float y = Mth.lerp(s, TUCK_Y, 0.2F);
+        float z = Mth.lerp(s, TUCK_Z, 0.35F) + beat * 0.35F;
+        // Folded, the wings breathe a little; walking jostles them.
+        float idle = (1F - s) * (Mth.sin(ageInTicks * 0.08F) * 0.03F + limbSwingAmount * 0.06F);
+        wingR.setRotation(x, y, z + idle);
+        wingL.setRotation(x, -y, -z - idle);
+        // The elbow: folded flat against the inner wing when tucked, straight when spread, and
+        // trailing the beat slightly so the tip flexes.
+        float outer = Mth.lerp(s, TUCK_OUTER_Z, 0F) - Mth.cos(ageInTicks * 0.32F) * 0.12F * s;
+        wingROuter.setRotation(0F, 0F, outer);
+        wingLOuter.setRotation(0F, 0F, -outer);
+
+        if (flying) {
+            cloak.xRot = 0.18F + Mth.sin(ageInTicks * 0.45F) * 0.08F;   // streams back along the body
+        } else {
+            cloak.xRot = cloakX + limbSwingAmount * 0.7F + (player.isSprinting() ? 0.3F : 0F)
+                    + Mth.sin(ageInTicks * 0.05F) * 0.03F;
         }
-        wingR.xRot = wingX;
-        wingL.xRot = wingX;
-        boolean airborne = !player.onGround() && !player.isInWater();
-        float effort = Math.min(1F, limbSwingAmount * 1.5F + (airborne ? 1F : 0F));
-        float flap = Mth.sin(ageInTicks * (0.12F + effort * 0.35F)) * (0.05F + effort * 0.3F);
-        wingR.zRot = wingZ + flap;
-        wingL.zRot = -wingZ - flap;
-        wingR.yRot = wingY - effort * 0.25F;
-        wingL.yRot = -wingY + effort * 0.25F;
-        cloak.xRot = cloakX + limbSwingAmount * 0.7F + (player.isSprinting() ? 0.3F : 0F)
-                + Mth.sin(ageInTicks * 0.05F) * 0.03F;
     }
 
     /** Draws the demon arm, brambles and talons in first person. */

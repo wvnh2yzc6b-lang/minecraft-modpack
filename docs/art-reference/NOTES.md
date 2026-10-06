@@ -51,3 +51,14 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - Model the head on Oryx, the Taken King from Destiny: a bone-chitin skull, a tall crescent crest
   sweeping up and back, crown blades along the sides, a jutting brow plate, three deep-set glowing
   eyes, flared cheek plates and a mandibled jaw. The eyes stay demon red to match the race.
+
+## Demon player wings: folding
+
+- Each wing hinges at an elbow (`wing_r` → `wing_r_outer`). The inner panel carries the deep membrane;
+  the outer panel carries the pointed tip membrane, two finger struts and the tip claw.
+- **Tucked** (default, on the ground): the wrist folds up over the shoulder and the membrane hangs flat
+  down the back like a cape; the outer panel folds back onto the inner. A slight idle sway.
+- **Half-open** when jumping or falling (quick balancing flaps); **full spread** in flight, with the
+  elbow straightened and the tip flexing behind each beat. The layer eases between states over about
+  half a second. See `demon-player-wing-fold.png`.
+

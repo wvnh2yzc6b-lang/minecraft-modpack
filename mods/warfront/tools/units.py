@@ -343,20 +343,28 @@ def demon_player():
         part("brow_l", pivot=(2.6, -6.2, -4.3), rot=(0, 0, -0.35), boxes=[box((-1.5, -0.5, -0.5), (3, 1, 1), "oryx_plate")]),
     ])
 
-    # Wings: a blade-like membrane that tapers to a hard point at the tip, its trailing edge scalloped
-    # between the finger struts, each finger ending in a sharp spike.
-    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.2, 0.42, 1.2), boxes=[
-        box((-20, -0.75, -0.75), (20, 1.5, 1.5), "wing_bone_dark"),
-        box((-20, 0.75, 0), (20, 22, 0), "membrane_blade"),
+    # Wings fold at an elbow. The inner segment (upper arm) carries the deep inner membrane; the
+    # outer segment (forearm) hinges at the elbow and carries the pointed outer membrane, the finger
+    # struts and the tip claw. Defined tucked (wrist over the shoulder, membrane down the back);
+    # DemonPlayerLayer eases them open into the flight spread.
+    outer_r = part("wing_r_outer", pivot=(-10, 0, 0), rot=(0, 0, -2.95), boxes=[
+        box((-10, -0.75, -0.75), (10, 1.5, 1.5), "wing_bone_dark"),
+        box((-10, 0.75, 0), (10, 22, 0), "membrane_blade_outer"),
     ], children=[
-        part("wing_r_claw", pivot=(-20, 0, 0), rot=(0, 0, -1.15), boxes=[box((-0.5, -5, -0.5), (1, 5, 1), "claw")]),
+        part("wing_r_claw", pivot=(-10, 0, 0), rot=(0, 0, -1.15), boxes=[box((-0.5, -5, -0.5), (1, 5, 1), "claw")]),
+        part("wing_r_finger2", pivot=(-2, 0.75, 0), rot=(0, 0, -0.06), boxes=[box((-0.5, 0, -0.5), (1, 15, 1), "wing_bone_dark")],
+             children=[part("wing_r_finger2_tip", pivot=(0, 15, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
+        part("wing_r_finger3", pivot=(-7, 0.75, 0), rot=(0, 0, 0.05), boxes=[box((-0.5, 0, -0.5), (1, 9, 1), "wing_bone_dark")],
+             children=[part("wing_r_finger3_tip", pivot=(0, 9, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
+    ])
+    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.77, 1.26, 0.7), boxes=[
+        box((-10, -0.75, -0.75), (10, 1.5, 1.5), "wing_bone_dark"),
+        box((-10, 0.75, 0), (10, 22, 0), "membrane_blade_inner"),
+    ], children=[
+        outer_r,
         part("wing_r_hook", pivot=(-10, -0.75, 0), rot=(0, 0, 0.5), boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "claw")]),
         part("wing_r_finger1", pivot=(-6, 0.75, 0), rot=(0, 0, -0.18), boxes=[box((-0.5, 0, -0.5), (1, 20, 1), "wing_bone_dark")],
              children=[part("wing_r_finger1_tip", pivot=(0, 20, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
-        part("wing_r_finger2", pivot=(-12, 0.75, 0), rot=(0, 0, -0.06), boxes=[box((-0.5, 0, -0.5), (1, 15, 1), "wing_bone_dark")],
-             children=[part("wing_r_finger2_tip", pivot=(0, 15, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
-        part("wing_r_finger3", pivot=(-17, 0.75, 0), rot=(0, 0, 0.05), boxes=[box((-0.5, 0, -0.5), (1, 9, 1), "wing_bone_dark")],
-             children=[part("wing_r_finger3_tip", pivot=(0, 9, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")])]),
     ])
     body = part("body", children=[
         wing_r, mirror(wing_r),
@@ -445,11 +453,15 @@ def demon_material(mat, side, x, y, w, h, pal, rng):
         return c
     if mat == "wing_bone_dark":
         return shade(mix(hexc("1a1416"), hexc("3a2a2a"), rng.uniform(0, 0.6)), 1.15 if side == "top" else 1)
-    if mat == "membrane_blade":
+    if mat in ("membrane_blade", "membrane_blade_outer", "membrane_blade_inner"):
         if side not in ("front", "back"):
             return None
         # t runs from the wing tip (0) to the body (1); the front face has the tip on the left.
         t = x / max(1, w - 1) if side == "front" else 1 - x / max(1, w - 1)
+        if mat == "membrane_blade_outer":
+            t = t * 0.5
+        elif mat == "membrane_blade_inner":
+            t = 0.5 + t * 0.5
         # Blade outline: narrow at the tip, deep at the body, scalloped between fingers at
         # t = 0.15, 0.4 and 0.7 so each finger ends in a point.
         depth = h * (0.2 + 0.8 * t ** 0.6)
