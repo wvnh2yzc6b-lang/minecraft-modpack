@@ -160,7 +160,7 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
 </header>
 
 <nav class="toc" aria-label="Contents">
-  <a href="#progress">Progress</a><a href="#models">3D models</a><a href="#demon">Demon player</a><a href="#imps">Imps</a><a href="#skins">Race skins</a><a href="#foes">Enemy skins</a><a href="#textures">Textures</a>
+  <a href="#progress">Progress</a><a href="#models">3D models</a><a href="#demon">Demon player</a><a href="#imps">Imps</a><a href="#workers">Workers</a><a href="#skins">Race skins</a><a href="#foes">Enemy skins</a><a href="#textures">Textures</a>
   <a href="#races">Races</a><a href="#roles">Soldiers</a><a href="#command">Command</a>
   <a href="#mana">Mana</a><a href="#factions">Factions</a><a href="#defense">Tower defense</a>
   <a href="#breach">Breaching</a><a href="#items">Items &amp; recipes</a><a href="#commands">Commands</a>
@@ -192,6 +192,8 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
     <div class="side">
       <fieldset><legend>Model</legend><div class="seg" id="pick-model"></div></fieldset>
       <fieldset id="palette-set"><legend>Colors</legend><div class="seg" id="pick-palette"></div></fieldset>
+      <fieldset id="role-set" hidden><legend>Role</legend><div class="seg" id="pick-role"></div></fieldset>
+      <fieldset id="race-set" hidden><legend>Race</legend><div class="seg" id="pick-race"></div></fieldset>
       <fieldset id="pose-set" hidden><legend>Wings</legend><div class="seg" id="pick-pose"></div></fieldset>
       <p class="about" id="about"></p>
     </div>
@@ -246,6 +248,26 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
   </table></div>
   <div class="shots">
 %%IMP_SHOTS%%
+  </div>
+</section>
+
+<section id="workers">
+  <header>
+    <span class="eyebrow">Posted roles · every race</span>
+    <h2>Workers and guards</h2>
+    <p>Farmers, builders and guards keep a base running instead of marching with the army. They take up a post where you summon them and ignore the Commander's Baton. Sneak + right-click one with an empty hand to have it follow you, and again to post it where it stands. Each race dresses its own, and demon workers are imps.</p>
+  </header>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Role</th><th>Mana</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Farmer</b></td><td class="num">10</td><td>Harvests ripe crops, melons and pumpkins within 8 blocks of its post, replants from the seeds it carries, tills dirt and grass near water, and carries the harvest to the nearest chest or barrel. Starts with 8 wheat seeds.</td></tr>
+      <tr><td><b>Builder</b></td><td class="num">15</td><td>Surveys the buildings around its post (21×21 blocks, 3 down, 12 up) and puts back whatever enemies break or explosions destroy, lowest blocks first, using blocks from a nearby chest. Blocks you and your allies place or break update its plan instead of being undone.</td></tr>
+      <tr><td><b>Guard</b></td><td class="num">20</td><td>Holds its post, walks a short patrol, and fights anything hostile within 14 blocks. On spotting an enemy it rings an alarm that sends allied troops within 16 blocks into the fight.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="legend">Farmers and builders never fight and run from enemies. Right-click a worker with seeds or blocks to hand them over. Config: <code>workers.buildersNeedMaterials</code>, <code>workers.guardAlarmRadius</code>.</p>
+  <div class="shots">
+%%WORKER_SHOTS%%
   </div>
 </section>
 

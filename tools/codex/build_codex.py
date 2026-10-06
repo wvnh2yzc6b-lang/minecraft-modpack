@@ -228,9 +228,29 @@ def viewer_data():
                     f = T / "entity" / "soldier" / pal / f"{mid}{suffix}.png"
                     if f.exists():
                         tex[f"{pal}/{mid}{suffix}"] = uri(Image.open(f).convert("RGBA"))
+    for race in ("human", "elf", "dwarf", "orc", "angel", "hive"):
+        tex[f"skin/{race}"] = uri(Image.open(T / "entity" / "soldier" / f"{race}.png").convert("RGBA"))
+        for role in ("farmer", "builder", "guard"):
+            for suffix in ("", "_glow"):
+                f = T / "entity" / "soldier" / race / f"gear_{role}_{race}{suffix}.png"
+                if f.exists():
+                    tex[f"{race}/gear_{role}_{race}{suffix}"] = uri(Image.open(f).convert("RGBA"))
     for n in ("demon_skin", "demon_skin_glow", "demon_extras", "demon_extras_glow"):
         tex[f"player/{n}"] = uri(Image.open(T / "entity" / "player" / f"{n}.png").convert("RGBA"))
-    return {"models": models, "tex": tex}
+    # Only ship the models the viewer shows.
+    keep = {k: v for k, v in models.items() if k.startswith(("imp", "demon_player", "player_base"))
+            or k.startswith("gear_") and k.rsplit("_", 1)[1] in ("human", "elf", "dwarf", "orc", "angel", "hive")}
+    return {"models": keep, "tex": tex, "workerNames": worker_names()}
+
+
+def worker_names():
+    src = (JAVA / "army" / "UnitNames.java").read_text()
+    out = {}
+    for m in re.finditer(r'String\[\] (\w+)\s*=\s*\{([^}]*)\}', src):
+        names = re.findall(r'"([^"]*)"', m.group(2))
+        if len(names) >= 10:
+            out[m.group(1).lower()] = {"farmer": names[7], "builder": names[8], "guard": names[9]}
+    return out
 
 
 def main():
@@ -240,7 +260,7 @@ def main():
     names_table, champions, n_roles = role_names()
     test_rows, n_tests = tests()
     models = viewer_data()
-    n_models = sum(1 for k in models["models"] if k != "player_base")
+    n_models = sum(1 for m in json.loads((MOD / "build" / "unit-models.json").read_text()) if m["id"] != "player_base")
     tally = "".join(f"<span><b>{v}</b>{k}</span>" for k, v in [
         ("playable races", 7), ("enemy factions", 7), ("unit roles", n_roles), ("formations", 5),
         ("custom 3D models", n_models), ("blocks", n_blocks), ("items", n_items), ("game tests", n_tests),
@@ -261,6 +281,7 @@ def main():
             ("imp-model-preview.png", "Imp roles, side by side.", True),
             ("demon-imp.png", "Imp reference.", False),
         ]),
+        "%%WORKER_SHOTS%%": shots([("workers-all-races.png", "Farmers, builders and guards for every race, front and back.", True)]),
         "%%RACES%%": race_cards(),
         "%%FACTIONS%%": faction_cards(),
         "%%ITEMS%%": tiles(ITEMS + contract_tiles()),
