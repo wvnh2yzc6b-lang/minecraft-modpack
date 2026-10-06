@@ -1,7 +1,6 @@
 package com.warfront.world;
 
 import com.warfront.Warfront;
-import com.warfront.army.SoldierRole;
 import com.warfront.command.WFCommands;
 import com.warfront.config.WFConfig;
 import com.warfront.entity.SoldierEntity;
@@ -9,7 +8,6 @@ import com.warfront.faction.Factions;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
 import com.warfront.faction.Relation;
-import com.warfront.mana.Mana;
 import com.warfront.registry.WFRegistry;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -50,12 +48,16 @@ public final class GameEvents {
         WFCommands.register(event.getDispatcher());
     }
 
+    @SubscribeEvent
+    public static void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
+        com.warfront.mana.ManaNetwork.clear();
+    }
+
     // ------------------------------------------------------------ players
 
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        Mana.sync(player);
         if (player instanceof ServerPlayer sp) {
             com.warfront.network.RaceSync.broadcast(sp);
             com.warfront.network.RaceSync.sendAllTo(sp);
@@ -69,14 +71,15 @@ public final class GameEvents {
         if (WFConfig.STARTER_KIT.get() && !player.getData(WFRegistry.STARTER_KIT)) {
             player.setData(WFRegistry.STARTER_KIT, true);
             give(player, new ItemStack(WFRegistry.COMMANDER_BATON.get()));
-            give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.SHIELDBEARER).get(), 2));
-            give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.SWORDSMAN).get(), 1));
-            give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.ARCHER).get(), 2));
-            give(player, new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.HEALER).get(), 1));
-            give(player, new ItemStack(WFRegistry.MANA_SHARD.get(), 8));
+            give(player, new ItemStack(WFRegistry.SUMMONING_ALTAR_ITEM.get()));
+            give(player, new ItemStack(WFRegistry.MANA_BRAZIER_ITEM.get(), 4));
+            give(player, new ItemStack(WFRegistry.MANA_WELL_ITEM.get()));
+            give(player, new ItemStack(WFRegistry.MANA_SHARD.get(), 24));
             give(player, new ItemStack(WFRegistry.MANABLOOM_SEEDS.get(), 4));
-            player.sendSystemMessage(Component.literal("You have been granted a Commander's Baton, recruit contracts and Mana Shards. Summoning troops "
-                    + "costs mana: mine Mana Ore and grow Manabloom to raise an army, place a War Standard, and hold it against the hordes.")
+            player.sendSystemMessage(Component.literal("You have been granted a Commander's Baton, a Summoning Altar with four Mana Braziers, "
+                    + "a Mana Well and Mana Shards. Set the altar on a 3x3 floor of bricks or stone bricks with a brazier two blocks out on "
+                    + "each diagonal, place the well within 16 blocks and fill it with shards, then right-click the altar to summon troops. "
+                    + "Grow Manabloom and mine Mana Ore to keep your wells full; they also power your towers.")
                     .withStyle(ChatFormatting.GOLD));
         }
     }
@@ -85,12 +88,6 @@ public final class GameEvents {
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Race race = Race.byId(event.getEntity().getData(WFRegistry.RACE));
         if (race != null) race.apply(event.getEntity());
-        Mana.sync(event.getEntity());
-    }
-
-    @SubscribeEvent
-    public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        Mana.sync(event.getEntity());
     }
 
     private static void give(Player player, ItemStack stack) {
@@ -197,7 +194,6 @@ public final class GameEvents {
         MinecraftServer server = event.getServer();
         if (server.getTickCount() % 60 == 0) {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                if (Mana.get(player) < Mana.PASSIVE_LIMIT) Mana.add(player, 1F);
                 if (Race.of(player) == Race.ANGEL && player.getHealth() < player.getMaxHealth()) player.heal(1F);
             }
         }

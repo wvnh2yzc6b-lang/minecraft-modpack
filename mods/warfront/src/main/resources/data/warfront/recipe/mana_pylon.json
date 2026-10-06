@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    " W ",
+    "SSS"
+  ],
+  "key": {
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "W": {
+      "item": "minecraft:stone_brick_wall"
+    },
+    "S": {
+      "item": "minecraft:stone_brick_slab"
+    }
+  },
+  "result": {
+    "id": "warfront:mana_pylon",
+    "count": 1
+  }
+}

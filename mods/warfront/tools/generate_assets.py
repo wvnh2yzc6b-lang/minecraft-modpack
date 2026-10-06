@@ -19,8 +19,6 @@ ASSETS = ROOT / "assets" / "warfront"
 DATA = ROOT / "data"
 MODID = "warfront"
 
-ROLES = ["shieldbearer", "spearman", "swordsman", "captain", "champion", "archer", "healer",
-         "farmer", "builder", "guard"]
 
 
 def write_json(path: Path, obj):
@@ -35,6 +33,10 @@ def hexc(s, a=255):
 
 def shade(c, f):
     return tuple(max(0, min(255, int(v * f))) for v in c[:3]) + (c[3],)
+
+
+def mix(a, b, t):
+    return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3)) + (255,)
 
 
 def save(img: Image.Image, rel: str):
@@ -139,34 +141,6 @@ def item_textures():
     ]
     save(sprite(horn, {"B": hexc("4a3728"), "W": hexc("e8dcc0"), "G": hexc("d4a017")}),
          "item/war_horn.png")
-
-    seals = {
-        "shieldbearer": "2f5fa8", "spearman": "7d7d7d", "swordsman": "a83232",
-        "captain": "d4a017", "champion": "6a1b9a", "archer": "3f8f3f", "healer": "e0e0ff",
-        "farmer": "c8a24a", "builder": "8a5a2b", "guard": "4a6a7a",
-    }
-    for role, seal in seals.items():
-        rows = [
-            "................",
-            "..PPPPPPPPPPP...",
-            ".PLLLLLLLLLLLP..",
-            "..PLLLLLLLLLP...",
-            "..PLiiiiiiiLP...",
-            "..PLLLLLLLLLP...",
-            "..PLiiiiiiLLP...",
-            "..PLLLLLLLLLP...",
-            "..PLiiiiiiiLP...",
-            "..PLLLLLLLSSP...",
-            "..PLLLLLLSssS...",
-            "..PLLLLLLSssS...",
-            ".PLLLLLLLLSSLP..",
-            "..PPPPPPPPPPP...",
-            "................",
-            "................",
-        ]
-        save(sprite(rows, {"P": hexc("a0855b"), "L": hexc("f2e3c6"), "i": hexc("6b5a40"),
-                           "S": shade(hexc(seal), 0.7), "s": hexc(seal)}),
-             f"item/{role}_contract.png")
 
 
 def hammer_texture():
@@ -595,8 +569,7 @@ def models_and_states():
     write_json(ASSETS / "models" / "item" / "war_standard.json", {"parent": f"{MODID}:block/war_standard"})
 
     for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"), ("mason_hammer", "handheld"),
-                         ("war_mark", "generated"), ("war_horn", "generated")] + \
-                        [(f"{r}_contract", "generated") for r in ROLES]:
+                         ("war_mark", "generated"), ("war_horn", "generated")]:
         write_json(ASSETS / "models" / "item" / f"{item}.json",
                    {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
     write_json(ASSETS / "models" / "item" / "soldier_spawn_egg.json", {"parent": "minecraft:item/template_spawn_egg"})
@@ -638,9 +611,11 @@ def lang():
         "item.warfront.mana_crystal": "Mana Crystal",
         "item.warfront.manabloom_seeds": "Manabloom Seeds",
         "item.warfront.mason_hammer": "Mason's Hammer",
+        "block.warfront.mana_well": "Mana Well",
+        "block.warfront.mana_pylon": "Mana Pylon",
+        "block.warfront.mana_brazier": "Mana Brazier",
+        "block.warfront.summoning_altar": "Summoning Altar",
     }
-    for r in ROLES:
-        names[f"item.warfront.{r}_contract"] = f"Recruit Contract: {r.capitalize()}"
     write_json(ASSETS / "lang" / "en_us.json", names)
 
 
@@ -684,34 +659,30 @@ def recipes():
             "M": "minecraft:mossy_stone_bricks"}, "warfront:healing_shrine")
     shapeless("emerald_from_war_marks", [W, W, W, W], "minecraft:emerald")
     M = "warfront:mana_shard"
-    shaped("mana_crystal", ["MMM", "MAM", "MMM"], {"M": M, "A": "minecraft:amethyst_shard"}, "warfront:mana_crystal")
+    C = "warfront:mana_crystal"
     shapeless("manabloom_seeds", [M, "minecraft:wheat_seeds"], "warfront:manabloom_seeds", 2)
     shapeless("mana_shards_from_war_marks", [W, W, W], M, 2)
     for kind, time in (("smelting", 200), ("blasting", 100)):
         for ore in ("mana_ore", "deepslate_mana_ore"):
-            write_json(DATA / MODID / "recipe" / f"mana_shard_from_{kind}_{ore}.json", {
+            write_json(DATA / MODID / "recipe" / f"mana_crystal_from_{kind}_{ore}.json", {
                 "type": f"minecraft:{kind}", "category": "misc", "ingredient": {"item": f"warfront:{ore}"},
-                "result": {"id": M, "count": 1}, "experience": 0.7, "cookingtime": time})
+                "result": {"id": C, "count": 1}, "experience": 0.7, "cookingtime": time})
 
-    role_items = {
-        "shieldbearer": ["minecraft:shield"],
-        "spearman": ["minecraft:iron_ingot", "minecraft:stick"],
-        "swordsman": ["minecraft:iron_sword"],
-        "captain": ["minecraft:gold_ingot", "#minecraft:banners"],
-        "archer": ["minecraft:bow"],
-        "healer": ["minecraft:glistering_melon_slice"],
-        "champion": ["minecraft:diamond", "minecraft:iron_sword"],
-        "farmer": ["minecraft:wheat_seeds", "minecraft:stone_hoe"],
-        "builder": ["minecraft:bricks", "minecraft:stone_pickaxe"],
-        "guard": ["minecraft:lantern", "minecraft:iron_sword"],
-    }
-    for role, extra in role_items.items():
-        shapeless(f"{role}_contract", ["minecraft:paper", "warfront:mana_shard"] + extra, f"warfront:{role}_contract")
-        shapeless(f"{role}_contract_from_war_marks", ["minecraft:paper", W, W] + extra, f"warfront:{role}_contract")
+    # Mana infrastructure: built from crystals mined from Mana Ore.
+    shaped("mana_well", ["SCS", "CUC", "SSS"],
+           {"S": "minecraft:stone_bricks", "C": C, "U": "minecraft:cauldron"}, "warfront:mana_well")
+    shaped("mana_pylon", [" C ", " W ", "SSS"],
+           {"C": C, "W": "minecraft:stone_brick_wall", "S": "minecraft:stone_brick_slab"}, "warfront:mana_pylon")
+    shaped("mana_brazier", ["IMI", " I ", "SSS"],
+           {"I": "minecraft:iron_ingot", "M": M, "S": "minecraft:stone_brick_slab"}, "warfront:mana_brazier")
+    shaped("summoning_altar", ["CBC", "GOG", "SSS"],
+           {"C": C, "B": "minecraft:book", "G": "minecraft:gold_ingot", "O": "minecraft:obsidian",
+            "S": "minecraft:stone_bricks"}, "warfront:summoning_altar")
 
 
 def loot_and_tags():
-    blocks = ["arrow_tower", "arcane_spire", "healing_shrine", "war_standard"]
+    blocks = ["arrow_tower", "arcane_spire", "healing_shrine", "war_standard",
+              "mana_well", "mana_pylon", "mana_brazier", "summoning_altar"]
     for b in blocks:
         write_json(DATA / MODID / "loot_table" / "blocks" / f"{b}.json", {
             "type": "minecraft:block",
@@ -721,7 +692,14 @@ def loot_and_tags():
             "random_sequence": f"{MODID}:blocks/{b}"})
     ores = ["mana_ore", "deepslate_mana_ore"]
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "pickaxe.json",
-               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + ores]})
+               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:] + ores]})
+    # Floors a summoning altar can stand on: any brick or stone-brick block, so every race can build in its style.
+    write_json(DATA / MODID / "tags" / "block" / "altar_base.json", {"replace": False, "values": [
+        "#minecraft:stone_bricks", "minecraft:polished_blackstone_bricks", "minecraft:cracked_polished_blackstone_bricks",
+        "minecraft:deepslate_bricks", "minecraft:cracked_deepslate_bricks", "minecraft:deepslate_tiles",
+        "minecraft:cracked_deepslate_tiles", "minecraft:nether_bricks", "minecraft:cracked_nether_bricks",
+        "minecraft:red_nether_bricks", "minecraft:bricks", "minecraft:mud_bricks", "minecraft:quartz_bricks",
+        "minecraft:end_stone_bricks", "minecraft:prismarine_bricks", "minecraft:tuff_bricks"]})
     write_json(DATA / "minecraft" / "tags" / "block" / "needs_iron_tool.json",
                {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
     write_json(DATA / "c" / "tags" / "block" / "ores.json", {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
@@ -736,8 +714,7 @@ def loot_and_tags():
             "type": "minecraft:block",
             "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:alternatives", "children": [
                 {"type": "minecraft:item", "name": f"{MODID}:{o}", "conditions": [silk]},
-                {"type": "minecraft:item", "name": f"{MODID}:mana_shard", "functions": [
-                    {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2, "max": 4}},
+                {"type": "minecraft:item", "name": f"{MODID}:mana_crystal", "functions": [
                     {"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune",
                      "formula": "minecraft:ore_drops"},
                     {"function": "minecraft:explosion_decay"}]}]}]}],
@@ -792,6 +769,111 @@ def loot_and_tags():
         "replace": False, "entries": [f"{MODID}:seeds_from_{g}" for g in ("short_grass", "tall_grass", "fern")]})
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "axe.json",
                {"replace": False, "values": [f"{MODID}:war_standard"]})
+
+
+# --------------------------------------------------------------------------- mana infrastructure
+
+def _crystal_px(x, y, seed):
+    """Facetted pale-blue crystal: bright core, darker facet edges."""
+    rnd = random.Random(seed * 997 + x * 31 + y)
+    c = hexc("7fd8ff") if (x + y) % 3 else hexc("bff0ff")
+    if (x * 2 + y) % 5 == 0:
+        c = hexc("3a8ad0")
+    return shade(c, 1 + rnd.uniform(-0.08, 0.08))
+
+
+def _cube(frm, to, tex, uv_side, uv_top):
+    return {"from": frm, "to": to, "faces": {
+        **{d: {"uv": uv_side, "texture": tex} for d in ("north", "south", "east", "west")},
+        "up": {"uv": uv_top, "texture": tex}, "down": {"uv": uv_top, "texture": tex}}}
+
+
+def mana_blocks():
+    """Textures, models and blockstates for the Mana Well, Pylon, Brazier and Summoning Altar."""
+    stone, mortar = hexc("5c5f6b"), hexc("383a44")
+
+    # Well: dark stone brick with a glowing channel; the top shows the basin filling up.
+    side = brick_face(stone, mortar, 41)
+    for y in range(2, 15):
+        side.putpixel((7, y), hexc("3a8ad0"))
+        side.putpixel((8, y), hexc("7fd8ff") if y % 3 else hexc("bff0ff"))
+    save(side, "block/mana_well_side.png")
+    for fill in range(5):
+        top = brick_face(stone, mortar, 42)
+        for y in range(3, 13):
+            for x in range(3, 13):
+                if fill == 0:
+                    c = shade(hexc("23252c"), 1 + ((x * 7 + y * 3) % 5) * 0.03)
+                else:
+                    c = mix(hexc("1c4a78"), hexc("8fe4ff"), min(1.0, fill / 4 * (0.65 + ((x + y * 2) % 4) * 0.1)))
+                top.putpixel((x, y), c)
+        save(top, f"block/mana_well_top_{fill}.png")
+    write_json(ASSETS / "blockstates" / "mana_well.json", {"variants": {
+        f"fill={f}": {"model": f"{MODID}:block/mana_well_{f}"} for f in range(5)}})
+    for f in range(5):
+        write_json(ASSETS / "models" / "block" / f"mana_well_{f}.json", {
+            "parent": "minecraft:block/cube_bottom_top",
+            "textures": {"top": f"{MODID}:block/mana_well_top_{f}", "bottom": "minecraft:block/stone_bricks",
+                         "side": f"{MODID}:block/mana_well_side"}})
+    write_json(ASSETS / "models" / "item" / "mana_well.json", {"parent": f"{MODID}:block/mana_well_2"})
+
+    # Pylon and brazier share a layout: stone or iron on the left half of the texture, crystal on the right.
+    for name, metal in (("mana_pylon", None), ("mana_brazier", hexc("4a4c54"))):
+        img = Image.new("RGBA", (16, 16))
+        if metal is None:
+            img.paste(brick_face(stone, mortar, 43).crop((0, 0, 8, 16)), (0, 0))
+        else:
+            noise_fill(img, metal, 0.12, 44, (0, 0, 8, 16))
+            for y in (0, 5, 10, 15):
+                for x in range(8):
+                    img.putpixel((x, y), shade(metal, 1.35))
+        for y in range(16):
+            for x in range(8, 16):
+                img.putpixel((x, y), _crystal_px(x, y, 45))
+        save(img, f"block/{name}.png")
+    t = "#t"
+    pylon = [_cube([4, 0, 4], [12, 3, 12], t, [0, 0, 8, 3], [0, 0, 8, 8]),
+             _cube([6, 3, 6], [10, 11, 10], t, [2, 3, 6, 11], [2, 2, 6, 6]),
+             _cube([5.5, 11, 5.5], [10.5, 16, 10.5], t, [9, 0, 14, 5], [9, 6, 14, 11])]
+    brazier = [_cube([3, 0, 3], [13, 2, 13], t, [0, 0, 8, 2], [0, 0, 8, 8]),
+               _cube([6, 2, 6], [10, 8, 10], t, [2, 2, 6, 8], [2, 2, 6, 6]),
+               _cube([3, 8, 3], [13, 11, 13], t, [0, 8, 8, 11], [0, 4, 8, 12]),
+               _cube([5, 11, 5], [11, 15, 11], t, [9, 0, 15, 4], [9, 6, 15, 12])]
+    for name, elements in (("mana_pylon", pylon), ("mana_brazier", brazier)):
+        write_json(ASSETS / "blockstates" / f"{name}.json", {"variants": {"": {"model": f"{MODID}:block/{name}"}}})
+        write_json(ASSETS / "models" / "block" / f"{name}.json", {
+            "parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+            "textures": {"t": f"{MODID}:block/{name}", "particle": f"{MODID}:block/{name}"}, "elements": elements})
+        write_json(ASSETS / "models" / "item" / f"{name}.json", {"parent": f"{MODID}:block/{name}"})
+
+    # Summoning altar: an obsidian-dark pedestal with a glowing summoning circle and a crystal at its heart.
+    dark, seam = hexc("2a2333"), hexc("15111b")
+    side = brick_face(dark, seam, 46)
+    for x in range(1, 15):
+        side.putpixel((x, 3), hexc("9a6ad8") if x % 2 else hexc("c9a0ff"))
+    save(side, "block/summoning_altar_side.png")
+    top = Image.new("RGBA", (16, 16))
+    noise_fill(top, dark, 0.1, 47)
+    for y in range(16):
+        for x in range(16):
+            d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+            if 5.2 < d < 6.4 or 2.6 < d < 3.4:
+                top.putpixel((x, y), hexc("c9a0ff"))
+    for x, y in ((7, 1), (8, 1), (14, 7), (14, 8), (7, 14), (8, 14), (1, 7), (1, 8)):
+        top.putpixel((x, y), hexc("ffe28a"))
+    save(top, "block/summoning_altar_top.png")
+    write_json(ASSETS / "blockstates" / "summoning_altar.json",
+               {"variants": {"": {"model": f"{MODID}:block/summoning_altar"}}})
+    write_json(ASSETS / "models" / "block" / "summoning_altar.json", {
+        "parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+        "textures": {"side": f"{MODID}:block/summoning_altar_side", "top": f"{MODID}:block/summoning_altar_top",
+                     "crystal": f"{MODID}:block/mana_pylon", "particle": f"{MODID}:block/summoning_altar_side"},
+        "elements": [
+            {"from": [1, 0, 1], "to": [15, 10, 15], "faces": {
+                **{d: {"uv": [1, 6, 15, 16], "texture": "#side"} for d in ("north", "south", "east", "west")},
+                "up": {"uv": [1, 1, 15, 15], "texture": "#top"}, "down": {"uv": [1, 1, 15, 15], "texture": "#side"}}},
+            _cube([6.5, 10, 6.5], [9.5, 14, 9.5], "#crystal", [10, 0, 13, 4], [10, 6, 13, 9])]})
+    write_json(ASSETS / "models" / "item" / "summoning_altar.json", {"parent": f"{MODID}:block/summoning_altar"})
 
 
 # --------------------------------------------------------------------------- game test structure
@@ -850,6 +932,7 @@ if __name__ == "__main__":
     block_textures()
     soldier_skins()
     models_and_states()
+    mana_blocks()
     lang()
     recipes()
     loot_and_tags()

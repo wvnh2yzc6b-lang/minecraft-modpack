@@ -5,6 +5,7 @@ import com.warfront.entity.FactionArrow;
 import com.warfront.faction.FactionData;
 import com.warfront.faction.Factions;
 import com.warfront.faction.Relation;
+import com.warfront.mana.ManaNetwork;
 import com.warfront.registry.WFRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -67,14 +68,22 @@ public class TowerBlockEntity extends BlockEntity {
         switch (type) {
             case ARROW -> {
                 LivingEntity target = findEnemy(server, key, eye, box, range);
-                if (target != null) shootArrow(server, key, eye, target);
+                if (target != null && power(server, pos, key, type)) shootArrow(server, key, eye, target);
             }
             case ARCANE -> {
                 LivingEntity target = findEnemy(server, key, eye, box, range);
-                if (target != null) summonFangs(server, pos, target);
+                if (target != null && power(server, pos, key, type)) summonFangs(server, pos, target);
             }
-            case HEALING -> healAllies(server, key, pos);
+            case HEALING -> healAllies(server, key, pos, type);
         }
+    }
+
+    /** Draws this shot's mana from the network; without it the tower sputters and does nothing. */
+    private static boolean power(ServerLevel level, BlockPos pos, String key, TowerType type) {
+        if (!WFConfig.TOWERS_NEED_MANA.get() || ManaNetwork.draw(level, pos, key, type.manaCost)) return true;
+        level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 6, 0.2, 0.1, 0.2, 0.01);
+        level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 1.6F);
+        return false;
     }
 
     @Nullable
@@ -118,13 +127,14 @@ public class TowerBlockEntity extends BlockEntity {
         level.playSound(null, pos, SoundEvents.EVOKER_CAST_SPELL, SoundSource.BLOCKS, 0.8F, 1.2F);
     }
 
-    private static void healAllies(ServerLevel level, String key, BlockPos pos) {
+    private static void healAllies(ServerLevel level, String key, BlockPos pos, TowerType type) {
         AABB box = new AABB(pos).inflate(8);
+        List<LivingEntity> wounded = level.getEntitiesOfClass(LivingEntity.class, box, e -> e.isAlive()
+                && e.getHealth() < e.getMaxHealth()
+                && Factions.relation(level.getServer(), key, Factions.keyOf(level.getServer(), e)) == Relation.ALLY);
+        if (wounded.isEmpty() || !power(level, pos, key, type)) return;
         boolean any = false;
-        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, box,
-                e -> e.isAlive() && e.getHealth() < e.getMaxHealth())) {
-            String other = Factions.keyOf(level.getServer(), e);
-            if (Factions.relation(level.getServer(), key, other) != Relation.ALLY) continue;
+        for (LivingEntity e : wounded) {
             e.heal(2.0F);
             level.sendParticles(ParticleTypes.HAPPY_VILLAGER, e.getX(), e.getY() + 1.0, e.getZ(),
                     4, 0.3, 0.4, 0.3, 0.0);

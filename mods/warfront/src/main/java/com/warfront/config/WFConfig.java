@@ -19,6 +19,10 @@ public final class WFConfig {
     public static final ModConfigSpec.IntValue STANDARD_HEALTH;
 
     public static final ModConfigSpec.IntValue TOWER_RANGE;
+    public static final ModConfigSpec.BooleanValue TOWERS_NEED_MANA;
+
+    public static final ModConfigSpec.IntValue MANA_LINK_RANGE;
+    public static final ModConfigSpec.IntValue WELL_CAPACITY;
 
     public static final ModConfigSpec.BooleanValue BUILDERS_NEED_MATERIALS;
     public static final ModConfigSpec.IntValue GUARD_ALARM_RADIUS;
@@ -70,6 +74,15 @@ public final class WFConfig {
         b.push("towers");
         TOWER_RANGE = b.comment("Detection range of defensive towers in blocks.")
                 .defineInRange("range", 20, 4, 64);
+        TOWERS_NEED_MANA = b.comment("Towers spend mana from a nearby Mana Well each time they fire or heal, and sit idle without it.")
+                .define("needMana", true);
+        b.pop();
+
+        b.push("mana");
+        MANA_LINK_RANGE = b.comment("How far, in blocks, a Mana Well or Pylon reaches: to towers, altars and other wells and pylons.")
+                .defineInRange("linkRange", 16, 2, 64);
+        WELL_CAPACITY = b.comment("How much mana one Mana Well can store.")
+                .defineInRange("wellCapacity", 2000, 10, 1_000_000);
         b.pop();
 
         b.push("workers");

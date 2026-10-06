@@ -1,0 +1,148 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "side": "warfront:block/summoning_altar_side",
+    "top": "warfront:block/summoning_altar_top",
+    "crystal": "warfront:block/mana_pylon",
+    "particle": "warfront:block/summoning_altar_side"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        10,
+        15
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            6,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "south": {
+          "uv": [
+            1,
+            6,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "east": {
+          "uv": [
+            1,
+            6,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "west": {
+          "uv": [
+            1,
+            6,
+            15,
+            16
+          ],
+          "texture": "#side"
+        },
+        "up": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#top"
+        },
+        "down": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#side"
+        }
+      }
+    },
+    {
+      "from": [
+        6.5,
+        10,
+        6.5
+      ],
+      "to": [
+        9.5,
+        14,
+        9.5
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10,
+            0,
+            13,
+            4
+          ],
+          "texture": "#crystal"
+        },
+        "south": {
+          "uv": [
+            10,
+            0,
+            13,
+            4
+          ],
+          "texture": "#crystal"
+        },
+        "east": {
+          "uv": [
+            10,
+            0,
+            13,
+            4
+          ],
+          "texture": "#crystal"
+        },
+        "west": {
+          "uv": [
+            10,
+            0,
+            13,
+            4
+          ],
+          "texture": "#crystal"
+        },
+        "up": {
+          "uv": [
+            10,
+            6,
+            13,
+            9
+          ],
+          "texture": "#crystal"
+        },
+        "down": {
+          "uv": [
+            10,
+            6,
+            13,
+            9
+          ],
+          "texture": "#crystal"
+        }
+      }
+    }
+  ]
+}

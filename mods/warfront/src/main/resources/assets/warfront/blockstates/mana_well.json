@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "fill=0": {
+      "model": "warfront:block/mana_well_0"
+    },
+    "fill=1": {
+      "model": "warfront:block/mana_well_1"
+    },
+    "fill=2": {
+      "model": "warfront:block/mana_well_2"
+    },
+    "fill=3": {
+      "model": "warfront:block/mana_well_3"
+    },
+    "fill=4": {
+      "model": "warfront:block/mana_well_4"
+    }
+  }
+}

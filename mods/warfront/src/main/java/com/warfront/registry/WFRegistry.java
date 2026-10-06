@@ -2,14 +2,12 @@ package com.warfront.registry;
 
 import com.mojang.serialization.Codec;
 import com.warfront.Warfront;
-import com.warfront.army.SoldierRole;
 import com.warfront.block.*;
 import com.warfront.entity.SoldierEntity;
 import com.warfront.item.CommanderBatonItem;
 import com.warfront.item.ManaCrystalItem;
 import com.warfront.item.ManaShardItem;
 import com.warfront.item.HealingStaffItem;
-import com.warfront.item.RecruitContractItem;
 import com.warfront.item.WarHornItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -39,8 +37,6 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.EnumMap;
-import java.util.Map;
 
 public final class WFRegistry {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Warfront.MODID);
@@ -61,10 +57,6 @@ public final class WFRegistry {
             "army_order", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> ARMY_FORMATION = ATTACHMENTS.register(
             "army_formation", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Float>> MANA = ATTACHMENTS.register("mana",
-            () -> AttachmentType.builder(() -> 50F).serialize(Codec.FLOAT).copyOnDeath().build());
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Float>> MAX_MANA = ATTACHMENTS.register(
-            "max_mana", () -> AttachmentType.builder(() -> 100F).serialize(Codec.FLOAT).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> STARTER_KIT = ATTACHMENTS.register(
             "starter_kit", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
@@ -104,18 +96,45 @@ public final class WFRegistry {
                     .randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)
                     .lightLevel(s -> s.getValue(CropBlock.AGE) >= CropBlock.MAX_AGE ? 7 : 2)));
 
+    public static final DeferredBlock<ManaWellBlock> MANA_WELL = BLOCKS.register("mana_well",
+            () -> new ManaWellBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 9.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.STONE)
+                    .lightLevel(s -> s.getValue(ManaWellBlock.FILL) * 3)));
+    public static final DeferredBlock<ManaPylonBlock> MANA_PYLON = BLOCKS.register("mana_pylon",
+            () -> new ManaPylonBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(2.0F, 6.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.STONE).noOcclusion().lightLevel(s -> 6)));
+    public static final DeferredBlock<ManaBrazierBlock> MANA_BRAZIER = BLOCKS.register("mana_brazier",
+            () -> new ManaBrazierBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(2.0F, 6.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.LANTERN).noOcclusion().lightLevel(s -> 12)));
+    public static final DeferredBlock<SummoningAltarBlock> SUMMONING_ALTAR = BLOCKS.register("summoning_altar",
+            () -> new SummoningAltarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(4.0F, 12.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.STONE).noOcclusion().lightLevel(s -> 9)));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowerBlockEntity>> TOWER_BE =
             BLOCK_ENTITIES.register("tower", () -> BlockEntityType.Builder.of(TowerBlockEntity::new,
                     ARROW_TOWER.get(), ARCANE_SPIRE.get(), HEALING_SHRINE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WarStandardBlockEntity>> WAR_STANDARD_BE =
             BLOCK_ENTITIES.register("war_standard", () -> BlockEntityType.Builder.of(WarStandardBlockEntity::new,
                     WAR_STANDARD.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ManaWellBlockEntity>> MANA_WELL_BE =
+            BLOCK_ENTITIES.register("mana_well", () -> BlockEntityType.Builder.of(ManaWellBlockEntity::new,
+                    MANA_WELL.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ManaPylonBlockEntity>> MANA_PYLON_BE =
+            BLOCK_ENTITIES.register("mana_pylon", () -> BlockEntityType.Builder.of(ManaPylonBlockEntity::new,
+                    MANA_PYLON.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SummoningAltarBlockEntity>> SUMMONING_ALTAR_BE =
+            BLOCK_ENTITIES.register("summoning_altar", () -> BlockEntityType.Builder.of(SummoningAltarBlockEntity::new,
+                    SUMMONING_ALTAR.get()).build(null));
 
     // ---- items ----
     public static final DeferredItem<BlockItem> ARROW_TOWER_ITEM = ITEMS.registerSimpleBlockItem(ARROW_TOWER);
     public static final DeferredItem<BlockItem> ARCANE_SPIRE_ITEM = ITEMS.registerSimpleBlockItem(ARCANE_SPIRE);
     public static final DeferredItem<BlockItem> HEALING_SHRINE_ITEM = ITEMS.registerSimpleBlockItem(HEALING_SHRINE);
     public static final DeferredItem<BlockItem> WAR_STANDARD_ITEM = ITEMS.registerSimpleBlockItem(WAR_STANDARD);
+    public static final DeferredItem<BlockItem> MANA_WELL_ITEM = ITEMS.registerSimpleBlockItem(MANA_WELL);
+    public static final DeferredItem<BlockItem> MANA_PYLON_ITEM = ITEMS.registerSimpleBlockItem(MANA_PYLON);
+    public static final DeferredItem<BlockItem> MANA_BRAZIER_ITEM = ITEMS.registerSimpleBlockItem(MANA_BRAZIER);
+    public static final DeferredItem<BlockItem> SUMMONING_ALTAR_ITEM = ITEMS.registerSimpleBlockItem(SUMMONING_ALTAR);
 
     public static final DeferredItem<BlockItem> MANA_ORE_ITEM = ITEMS.registerSimpleBlockItem(MANA_ORE);
     public static final DeferredItem<BlockItem> DEEPSLATE_MANA_ORE_ITEM = ITEMS.registerSimpleBlockItem(DEEPSLATE_MANA_ORE);
@@ -138,15 +157,6 @@ public final class WFRegistry {
             () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<DeferredSpawnEggItem> SOLDIER_SPAWN_EGG = ITEMS.register("soldier_spawn_egg",
             () -> new DeferredSpawnEggItem(SOLDIER, 0x7A1F1F, 0x2B2B2B, new Item.Properties()));
-
-    public static final Map<SoldierRole, DeferredItem<RecruitContractItem>> CONTRACTS = new EnumMap<>(SoldierRole.class);
-
-    static {
-        for (SoldierRole role : SoldierRole.values()) {
-            CONTRACTS.put(role, ITEMS.register(role.id() + "_contract",
-                    () -> new RecruitContractItem(role, new Item.Properties().stacksTo(16))));
-        }
-    }
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB = TABS.register("main",
             () -> CreativeModeTab.builder()

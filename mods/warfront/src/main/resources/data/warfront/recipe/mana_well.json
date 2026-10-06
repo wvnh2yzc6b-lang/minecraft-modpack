@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SCS",
+    "CUC",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:stone_bricks"
+    },
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "U": {
+      "item": "minecraft:cauldron"
+    }
+  },
+  "result": {
+    "id": "warfront:mana_well",
+    "count": 1
+  }
+}

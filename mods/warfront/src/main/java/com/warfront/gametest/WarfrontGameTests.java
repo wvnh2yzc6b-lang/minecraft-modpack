@@ -8,9 +8,10 @@ import com.warfront.entity.SoldierEntity;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
 import com.warfront.block.WarStandardBlockEntity;
-import com.warfront.mana.Mana;
+import com.warfront.block.ManaWellBlockEntity;
+import com.warfront.block.SummoningAltarBlockEntity;
+import com.warfront.block.TowerBlockEntity;
 import com.warfront.registry.WFRegistry;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
@@ -152,25 +153,78 @@ public final class WarfrontGameTests {
 
     // ------------------------------------------------------------------ mana, races, sieges
 
+    /** A complete altar at {@code core}: a 3×3 stone-brick floor and a brazier on each diagonal (optionally one short). */
+    private static SummoningAltarBlockEntity altar(GameTestHelper h, BlockPos core, Player owner, boolean complete) {
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) h.setBlock(core.offset(dx, -1, dz), Blocks.STONE_BRICKS);
+        }
+        h.setBlock(core, WFRegistry.SUMMONING_ALTAR.get());
+        int[][] corners = {{-2, -2}, {2, -2}, {-2, 2}, {2, 2}};
+        for (int i = 0; i < (complete ? 4 : 3); i++) {
+            h.setBlock(core.offset(corners[i][0], 0, corners[i][1]), WFRegistry.MANA_BRAZIER.get());
+        }
+        SummoningAltarBlockEntity altar = (SummoningAltarBlockEntity) h.getBlockEntity(core);
+        altar.setOwner(owner.getUUID());
+        return altar;
+    }
+
+    private static ManaWellBlockEntity well(GameTestHelper h, BlockPos pos, Player owner, float mana) {
+        h.setBlock(pos, WFRegistry.MANA_WELL.get());
+        ManaWellBlockEntity well = (ManaWellBlockEntity) h.getBlockEntity(pos);
+        well.setOwner(owner.getUUID());
+        well.setMana(mana);
+        return well;
+    }
+
     @GameTest(template = ARENA)
-    public static void summoningCostsMana(GameTestHelper h) {
+    public static void altarSummonsWithWellMana(GameTestHelper h) {
         Player player = h.makeMockPlayer(GameType.SURVIVAL);
-        player.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
-        ItemStack contract = new ItemStack(WFRegistry.CONTRACTS.get(SoldierRole.SWORDSMAN).get(), 2);
-        player.setItemInHand(InteractionHand.MAIN_HAND, contract);
+        player.moveTo(h.absoluteVec(new Vec3(4.5, 2, 7.5)));
+        SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), player, true);
+        ManaWellBlockEntity well = well(h, new BlockPos(8, 1, 8), player, 0F);
         int cost = SoldierRole.SWORDSMAN.manaCost(Race.HUMAN);
+        // Block entities join the mana network on their first tick.
+        h.runAfterDelay(2, () -> {
+            h.assertTrue(!altar.summon(player, SoldierRole.SWORDSMAN).ok(), "summoning with an empty well should fail");
+            well.setMana(100F);
+            SummoningAltarBlockEntity.Result result = altar.summon(player, SoldierRole.SWORDSMAN);
+            h.assertTrue(result.ok(), "summoning should work with mana in reach: " + result.message());
+            h.assertTrue(Math.abs(well.getMana() - (100F - cost)) < 0.01F,
+                    "expected " + (100 - cost) + " mana left in the well, had " + well.getMana());
+            h.assertEntityPresent(WFRegistry.SOLDIER.get(), new BlockPos(4, 3, 4), 2.0);
+            h.assertTrue(SoldierRole.SWORDSMAN.manaCost(Race.HIVE) < cost, "hive troops should be cheaper");
+            h.succeed();
+        });
+    }
 
-        Mana.set(player, 0F);
-        contract.getItem().use(h.getLevel(), player, InteractionHand.MAIN_HAND);
-        h.assertTrue(player.getMainHandItem().getCount() == 2, "summoning without mana should fail");
+    @GameTest(template = ARENA)
+    public static void incompleteAltarRefusesToSummon(GameTestHelper h) {
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), player, false);
+        ManaWellBlockEntity well = well(h, new BlockPos(8, 1, 8), player, 500F);
+        h.runAfterDelay(2, () -> {
+            SummoningAltarBlockEntity.Result result = altar.summon(player, SoldierRole.SWORDSMAN);
+            h.assertTrue(!result.ok() && result.message().contains("Brazier"), "a missing brazier should block summoning");
+            h.assertTrue(well.getMana() == 500F, "a failed summon should not spend mana");
+            h.succeed();
+        });
+    }
 
-        Mana.set(player, 100F);
-        contract.getItem().use(h.getLevel(), player, InteractionHand.MAIN_HAND);
-        h.assertTrue(player.getMainHandItem().getCount() == 1, "contract should be consumed");
-        h.assertTrue(Math.abs(Mana.get(player) - (100F - cost)) < 0.01F,
-                "expected " + (100 - cost) + " mana left, had " + Mana.get(player));
-        h.assertTrue(SoldierRole.SWORDSMAN.manaCost(Race.HIVE) < cost, "hive troops should be cheaper");
-        h.succeed();
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void towersFireOnlyWithMana(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos towerPos = new BlockPos(1, 1, 4);
+        h.setBlock(towerPos, WFRegistry.ARROW_TOWER.get());
+        ((TowerBlockEntity) h.getBlockEntity(towerPos)).setOwner(owner.getUUID());
+        ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 7), owner, 0F);
+        Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 4));
+        husk.setPersistenceRequired();
+        h.startSequence()
+                .thenExecuteAfter(80, () -> h.assertTrue(husk.getHealth() >= husk.getMaxHealth(),
+                        "a tower with no mana should not fire"))
+                .thenExecute(() -> well.setMana(50F))
+                .thenWaitUntil(() -> h.assertTrue(well.getMana() < 50F, "a powered tower should draw mana to fire"))
+                .thenSucceed();
     }
 
     @GameTest(template = ARENA)
