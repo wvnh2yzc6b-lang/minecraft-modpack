@@ -310,7 +310,7 @@ def demon_player():
     ridge = [part(f"ridge_{i}", pivot=(0, -8, z), rot=(rx, 0, 0), boxes=[box((-0.5, -h, -0.5), (1, h, 1), "chitin")])
              for i, (z, rx, h) in enumerate([(-3, -0.2, 2), (-1.2, -0.35, 3)])]
     head = part("head", children=[
-        crest, blade("r"), blade("l"), cheek("r"), cheek("l"), mandible("r"), mandible("l"), *ridge,
+        crest, blade("r"), blade("l"), cheek("r"), cheek("l"), *ridge,
         part("brow_plate", pivot=(0, -5.8, -4.2), rot=(0.25, 0, 0), boxes=[box((-4.5, -1, -1.5), (9, 2, 2), "chitin")],
              children=[part("brow_spike", pivot=(0, -1, -1.5), rot=(-0.9, 0, 0),
                             boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "chitin")])]),
@@ -494,14 +494,13 @@ def paint_demon_skin(pal):
                 return glow(hexc(pal["eye"]) if x == 3 else hexc(pal["eye_hi"]))   # third eye
             if y in (0, 1):
                 c = shade(c, 0.85)                               # under the brow plate
-            if x in (3, 4) and y in (4, 5):
-                c = shade(c, 0.55)                               # nasal pit
-            if y == 6 and 1 <= x <= 6:
-                c = hexc("120f0e")                               # mouth
-            if y == 6 and x in (2, 3, 4, 5) and (x % 2 == 0):
-                c = hexc("e2dac6")                               # teeth
-            if y == 7:
-                c = shade(c, 0.7)
+            if y >= 5:
+                # Smooth, flat face plate below the eyes: no mouth, just a faint central seam.
+                c = mix(hexc("d2c9b2"), hexc("b4ab94"), rng.uniform(0, 0.3))
+                if x in (3, 4) and y in (5, 6):
+                    c = shade(c, 0.9)
+                if y == 7:
+                    c = shade(c, 0.82)
             if x in (0, 7) and y >= 3:
                 c = shade(c, 0.6)                                # sunken cheeks
         if side == "top" and (x + y) % 3 == 0:
