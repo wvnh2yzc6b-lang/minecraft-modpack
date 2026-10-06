@@ -19,7 +19,8 @@ ASSETS = ROOT / "assets" / "warfront"
 DATA = ROOT / "data"
 MODID = "warfront"
 
-ROLES = ["shieldbearer", "spearman", "swordsman", "captain", "archer", "healer"]
+ROLES = ["shieldbearer", "spearman", "swordsman", "captain", "champion", "archer", "healer",
+         "farmer", "builder", "guard"]
 
 
 def write_json(path: Path, obj):
@@ -141,7 +142,8 @@ def item_textures():
 
     seals = {
         "shieldbearer": "2f5fa8", "spearman": "7d7d7d", "swordsman": "a83232",
-        "captain": "d4a017", "archer": "3f8f3f", "healer": "e0e0ff",
+        "captain": "d4a017", "champion": "6a1b9a", "archer": "3f8f3f", "healer": "e0e0ff",
+        "farmer": "c8a24a", "builder": "8a5a2b", "guard": "4a6a7a",
     }
     for role, seal in seals.items():
         rows = [
@@ -165,6 +167,30 @@ def item_textures():
         save(sprite(rows, {"P": hexc("a0855b"), "L": hexc("f2e3c6"), "i": hexc("6b5a40"),
                            "S": shade(hexc(seal), 0.7), "s": hexc(seal)}),
              f"item/{role}_contract.png")
+
+
+def hammer_texture():
+    """Mason's Hammer, carried by builders: a squared iron head on a wrapped wooden haft."""
+    rows = [
+        "................",
+        ".........HHHH...",
+        "........HhhhhH..",
+        ".......HhhhhhhH.",
+        "........HhhhhhH.",
+        ".........HhhhH..",
+        "........WwHHH...",
+        ".......Ww.......",
+        "......WwW.......",
+        ".....LwW........",
+        "....LlL.........",
+        "...WwL..........",
+        "..WwW...........",
+        ".WwW............",
+        ".WW.............",
+        "................",
+    ]
+    save(sprite(rows, {"H": hexc("3e4046"), "h": hexc("8f939b"), "W": hexc("4a3020"), "w": hexc("8a5a34"),
+                       "L": hexc("5a4630"), "l": hexc("b8a27a")}), "item/mason_hammer.png")
 
 
 def mana_textures():
@@ -568,7 +594,7 @@ def models_and_states():
     })
     write_json(ASSETS / "models" / "item" / "war_standard.json", {"parent": f"{MODID}:block/war_standard"})
 
-    for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"),
+    for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"), ("mason_hammer", "handheld"),
                          ("war_mark", "generated"), ("war_horn", "generated")] + \
                         [(f"{r}_contract", "generated") for r in ROLES]:
         write_json(ASSETS / "models" / "item" / f"{item}.json",
@@ -611,6 +637,7 @@ def lang():
         "item.warfront.mana_shard": "Mana Shard",
         "item.warfront.mana_crystal": "Mana Crystal",
         "item.warfront.manabloom_seeds": "Manabloom Seeds",
+        "item.warfront.mason_hammer": "Mason's Hammer",
     }
     for r in ROLES:
         names[f"item.warfront.{r}_contract"] = f"Recruit Contract: {r.capitalize()}"
@@ -673,6 +700,10 @@ def recipes():
         "captain": ["minecraft:gold_ingot", "#minecraft:banners"],
         "archer": ["minecraft:bow"],
         "healer": ["minecraft:glistering_melon_slice"],
+        "champion": ["minecraft:diamond", "minecraft:iron_sword"],
+        "farmer": ["minecraft:wheat_seeds", "minecraft:stone_hoe"],
+        "builder": ["minecraft:bricks", "minecraft:stone_pickaxe"],
+        "guard": ["minecraft:lantern", "minecraft:iron_sword"],
     }
     for role, extra in role_items.items():
         shapeless(f"{role}_contract", ["minecraft:paper", "warfront:mana_shard"] + extra, f"warfront:{role}_contract")
@@ -815,6 +846,7 @@ if __name__ == "__main__":
     platform_structure()
     mana_textures()
     item_textures()
+    hammer_texture()
     block_textures()
     soldier_skins()
     models_and_states()

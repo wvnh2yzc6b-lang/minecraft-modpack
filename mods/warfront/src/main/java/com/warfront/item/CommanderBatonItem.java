@@ -81,7 +81,7 @@ public class CommanderBatonItem extends Item {
 
     public static List<SoldierEntity> armyOf(Player player) {
         return player.level().getEntitiesOfClass(SoldierEntity.class, player.getBoundingBox().inflate(96),
-                s -> s.isAlive() && s.isOwnedBy(player));
+                s -> s.isAlive() && s.isOwnedBy(player) && !s.getRole().posted());   // workers and guards keep their posts
     }
 
     @Override

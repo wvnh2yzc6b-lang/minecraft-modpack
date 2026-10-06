@@ -6,14 +6,14 @@ import com.warfront.faction.Race;
 public final class UnitNames {
     private UnitNames() {}
 
-    //                                   SHIELDBEARER      SPEARMAN         SWORDSMAN        CAPTAIN           CHAMPION        ARCHER              HEALER
-    private static final String[] HUMAN = {"Footman",        "Pikeman",       "Man-at-Arms",   "Knight-Captain", "Paladin",      "Longbowman",       "Cleric"};
-    private static final String[] ELF   = {"Thornguard",     "Glaive Warden", "Bladesinger",   "Sylvan Lord",    "Bladedancer",  "Ranger",           "Druid"};
-    private static final String[] DWARF = {"Ironshield",     "Halberdier",    "Axe Thane",     "Hold Captain",   "Ironbreaker",  "Sharpshooter",     "Runepriest"};
-    private static final String[] ORC   = {"Bulwark",        "Gutspear",      "Brute",         "Warboss",        "Berserker",    "Hunter",           "Shaman"};
-    private static final String[] DEMON = {"Imp Bulwark",    "Imp Impaler",   "Imp",           "Archfiend",      "Hellknight",   "Imp Firecaster",   "Blood Witch"};
-    private static final String[] ANGEL = {"Aegis",          "Lancer",        "Valkyrie",      "Archangel",      "Seraph",       "Starbow",          "Lightbearer"};
-    private static final String[] HIVE  = {"Carapace",       "Lancer-Drone",  "Ripper",        "Hive Tyrant",    "Ravager",      "Spitter",          "Synapse Mender"};
+    //                                   SHIELDBEARER      SPEARMAN         SWORDSMAN        CAPTAIN           CHAMPION        ARCHER              HEALER             FARMER             BUILDER            GUARD
+    private static final String[] HUMAN = {"Footman",        "Pikeman",       "Man-at-Arms",   "Knight-Captain", "Paladin",      "Longbowman",       "Cleric", "Farmhand", "Mason", "Watchman"};
+    private static final String[] ELF   = {"Thornguard",     "Glaive Warden", "Bladesinger",   "Sylvan Lord",    "Bladedancer",  "Ranger",           "Druid", "Grovetender", "Treewright", "Sentinel"};
+    private static final String[] DWARF = {"Ironshield",     "Halberdier",    "Axe Thane",     "Hold Captain",   "Ironbreaker",  "Sharpshooter",     "Runepriest", "Hearthfarmer", "Stonemason", "Gatekeeper"};
+    private static final String[] ORC   = {"Bulwark",        "Gutspear",      "Brute",         "Warboss",        "Berserker",    "Hunter",           "Shaman", "Grubber", "Stakebuilder", "Warden"};
+    private static final String[] DEMON = {"Imp Bulwark",    "Imp Impaler",   "Imp",           "Archfiend",      "Hellknight",   "Imp Firecaster",   "Blood Witch", "Imp Tiller", "Imp Mason", "Imp Sentry"};
+    private static final String[] ANGEL = {"Aegis",          "Lancer",        "Valkyrie",      "Archangel",      "Seraph",       "Starbow",          "Lightbearer", "Lightgardener", "Sanctum Builder", "Gatewarden"};
+    private static final String[] HIVE  = {"Carapace",       "Lancer-Drone",  "Ripper",        "Hive Tyrant",    "Ravager",      "Spitter",          "Synapse Mender", "Harvester Drone", "Builder Drone", "Sentry Drone"};
 
     public static String of(Race race, SoldierRole role) {
         String[] names = switch (race) {

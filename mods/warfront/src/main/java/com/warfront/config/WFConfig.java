@@ -20,6 +20,9 @@ public final class WFConfig {
 
     public static final ModConfigSpec.IntValue TOWER_RANGE;
 
+    public static final ModConfigSpec.BooleanValue BUILDERS_NEED_MATERIALS;
+    public static final ModConfigSpec.IntValue GUARD_ALARM_RADIUS;
+
     public static final ModConfigSpec.BooleanValue RAIDERS_BREAK_BLOCKS;
     public static final ModConfigSpec.DoubleValue MAX_BREAK_HARDNESS;
     public static final ModConfigSpec.IntValue WAVE_INTERMISSION;
@@ -67,6 +70,14 @@ public final class WFConfig {
         b.push("towers");
         TOWER_RANGE = b.comment("Detection range of defensive towers in blocks.")
                 .defineInRange("range", 20, 4, 64);
+        b.pop();
+
+        b.push("workers");
+        BUILDERS_NEED_MATERIALS = b.comment("Builders must carry, or fetch from a nearby chest, every block they put back.",
+                        "Turn off to let them rebuild from nothing.")
+                .define("buildersNeedMaterials", true);
+        GUARD_ALARM_RADIUS = b.comment("How far a guard's alarm reaches, in blocks. Allied troops within it join the fight.")
+                .defineInRange("guardAlarmRadius", 16, 0, 64);
         b.pop();
 
         SPEC = b.build();

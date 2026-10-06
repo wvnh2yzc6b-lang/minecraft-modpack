@@ -10,6 +10,11 @@ public final class WFModelLayers {
     public static final ModelLayerLocation IMP_FIRECASTER = layer("imp_firecaster");
     public static final ModelLayerLocation DEMON_PLAYER = new ModelLayerLocation(Warfront.id("player"), "demon");
 
+    /** The layer for a generated unit model (imp variants, worker gear), by its id. */
+    public static ModelLayerLocation of(String id) {
+        return layer(id);
+    }
+
     private static ModelLayerLocation layer(String name) {
         return new ModelLayerLocation(Warfront.id("soldier"), name);
     }

@@ -30,6 +30,9 @@ public enum UnitBody {
             case SHIELDBEARER -> "imp_bulwark";
             case SPEARMAN -> "imp_impaler";
             case ARCHER -> "imp_firecaster";
+            case FARMER -> "imp_farmer";
+            case BUILDER -> "imp_builder";
+            case GUARD -> "imp_guard";
             default -> "imp";
         };
     }
@@ -37,7 +40,7 @@ public enum UnitBody {
     public static UnitBody of(Race race, SoldierRole role) {
         if (race == Race.DEMON) {
             return switch (role) {
-                case SHIELDBEARER, SPEARMAN, SWORDSMAN, ARCHER -> IMP;
+                case SHIELDBEARER, SPEARMAN, SWORDSMAN, ARCHER, FARMER, BUILDER, GUARD -> IMP;
                 default -> HUMANOID;
             };
         }

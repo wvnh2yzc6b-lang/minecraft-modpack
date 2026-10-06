@@ -23,7 +23,7 @@ public final class FormationLayout {
             case SHIELDBEARER -> 0;
             case SPEARMAN, SWORDSMAN, CAPTAIN, CHAMPION -> 1;
             case ARCHER -> 2;
-            case HEALER -> 3;
+            case HEALER, FARMER, BUILDER, GUARD -> 3;
         };
     }
 

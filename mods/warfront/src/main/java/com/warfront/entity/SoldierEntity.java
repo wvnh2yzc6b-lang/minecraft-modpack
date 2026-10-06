@@ -6,6 +6,8 @@ import com.warfront.army.Order;
 import com.warfront.army.SoldierRole;
 import com.warfront.block.WarStandardBlockEntity;
 import com.warfront.entity.ai.*;
+import com.warfront.entity.work.Blueprint;
+import com.warfront.entity.work.WorkSites;
 import com.warfront.faction.*;
 import com.warfront.registry.WFRegistry;
 import net.minecraft.ChatFormatting;
@@ -30,6 +32,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -37,6 +40,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.BannerBlock;
@@ -84,6 +88,10 @@ public class SoldierEntity extends PathfinderMob {
     @Nullable private Vec3 lastProgressPos;
     @Nullable private Vec3 slot;
     private boolean marchLeader;
+    /** What a worker carries: harvest, seeds, building blocks. */
+    private final SimpleContainer workItems = new SimpleContainer(18);
+    @Nullable private Blueprint blueprint;
+    private long alarmQuietUntil;
 
     public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
         super(type, level);
@@ -115,11 +123,17 @@ public class SoldierEntity extends PathfinderMob {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new RoutGoal(this));
+        // Workers run from danger instead of fighting it.
+        this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, LivingEntity.class, 10.0F, 0.9, 1.25,
+                e -> getRole().worker() && isEnemy(e)));
         this.goalSelector.addGoal(2, new BreachGoal(this));
         this.goalSelector.addGoal(2, new HealerGoal(this));
         this.goalSelector.addGoal(2, new ShieldGoal(this));
         this.goalSelector.addGoal(3, new ArcherGoal(this));
         this.goalSelector.addGoal(3, new SoldierMeleeGoal(this));
+        this.goalSelector.addGoal(4, new FarmerGoal(this));
+        this.goalSelector.addGoal(4, new BuilderGoal(this));
+        this.goalSelector.addGoal(4, new GuardPatrolGoal(this));
         this.goalSelector.addGoal(5, new FormationMoveGoal(this));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -176,7 +190,7 @@ public class SoldierEntity extends PathfinderMob {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, spawnType, data);
         if (!configured) {
             NpcFaction f = NpcFaction.random(random);
-            SoldierRole[] roles = SoldierRole.values();
+            SoldierRole[] roles = Arrays.stream(SoldierRole.values()).filter(r -> !r.posted()).toArray(SoldierRole[]::new);
             setupAsRaider(f, roles[random.nextInt(roles.length)], UUID.randomUUID(), null, null,
                     1 + (int) difficulty.getEffectiveDifficulty() / 2);
         }
@@ -276,6 +290,16 @@ public class SoldierEntity extends PathfinderMob {
                 if (!claws && race != Race.DEMON) gear(EquipmentSlot.MAINHAND, Items.BOW);
             }
             case HEALER -> gear(EquipmentSlot.MAINHAND, WFRegistry.HEALING_STAFF.get());
+            case FARMER -> gear(EquipmentSlot.MAINHAND, iron ? Items.IRON_HOE : Items.STONE_HOE);
+            case BUILDER -> gear(EquipmentSlot.MAINHAND, WFRegistry.MASON_HAMMER.get());
+            case GUARD -> {
+                if (race == Race.DEMON) {
+                    gear(EquipmentSlot.MAINHAND, Items.TRIDENT);   // imp sentries carry a pike
+                } else if (!claws) {
+                    gear(EquipmentSlot.MAINHAND, axes ? (iron ? Items.IRON_AXE : Items.STONE_AXE) : Items.IRON_SWORD);
+                    gear(EquipmentSlot.OFFHAND, Items.SHIELD);
+                }
+            }
         }
     }
 
@@ -383,6 +407,34 @@ public class SoldierEntity extends PathfinderMob {
         return anchorYaw;
     }
 
+    public SimpleContainer getWorkItems() {
+        return workItems;
+    }
+
+    @Nullable
+    public Blueprint getBlueprint() {
+        return blueprint;
+    }
+
+    /** Where a posted unit (worker or guard) works or stands watch. */
+    @Nullable
+    public BlockPos getPost() {
+        return getRole().posted() && anchor != null ? BlockPos.containing(anchor) : null;
+    }
+
+    /** Replaces a builder's blueprint (used by tests to survey a small area). */
+    public void setBlueprint(@Nullable Blueprint blueprint) {
+        this.blueprint = blueprint;
+    }
+
+    /** Re-surveys the base for a builder, or posts a unit where it stands. */
+    public void assignPost(Vec3 where, float yaw) {
+        command(Order.HOLD, formation, where, yaw);
+        if (getRole() == SoldierRole.BUILDER && level() instanceof ServerLevel server) {
+            blueprint = Blueprint.survey(server, BlockPos.containing(where));
+        }
+    }
+
     public boolean isMarchLeader() {
         return marchLeader;
     }
@@ -461,6 +513,12 @@ public class SoldierEntity extends PathfinderMob {
         return warbandId != null && warbandId.equals(other.warbandId);
     }
 
+    @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        if (target != null && getRole().worker()) return;   // workers don't pick fights
+        super.setTarget(target);
+    }
+
     public boolean isEnemy(LivingEntity e) {
         if (e == this || !e.isAlive()) return false;
         if (e instanceof Player p && (p.isCreative() || p.isSpectator())) return false;
@@ -479,6 +537,7 @@ public class SoldierEntity extends PathfinderMob {
         if (target == null) return false;
         Order order = getOrder();
         if (order == Order.CHARGE || slot == null) return true;
+        if (getRole() == SoldierRole.GUARD && order == Order.HOLD) return target.position().distanceToSqr(slot) < 14 * 14;
         double leash = switch (order) {
             case HOLD -> formation == Formation.SHIELD_WALL ? 3.5 : 6.0;
             case FOLLOW -> 10.0;
@@ -493,6 +552,22 @@ public class SoldierEntity extends PathfinderMob {
     public void recomputeSlot() {
         Order order = getOrder();
         marchLeader = false;
+        if (getRole().posted()) {
+            // Posted units keep their own post (HOLD) or trail their commander while being moved (FOLLOW).
+            Player owner = getOwner();
+            if (order == Order.FOLLOW && owner != null) {
+                float rad = owner.getYRot() * Mth.DEG_TO_RAD;
+                slot = owner.position().add(Mth.sin(rad) * 2.0, 0, -Mth.cos(rad) * 2.0);
+                anchorYaw = owner.getYRot();
+            } else {
+                if (anchor == null) {
+                    anchor = position();
+                    anchorYaw = getYRot();
+                }
+                slot = anchor;
+            }
+            return;
+        }
         if (order == Order.CHARGE) {
             slot = anchor;
             return;
@@ -607,6 +682,9 @@ public class SoldierEntity extends PathfinderMob {
         if (getRole() == SoldierRole.HEALER && getHealth() < getMaxHealth()) {
             heal(1f);
         }
+        if (getRole() == SoldierRole.GUARD) {
+            soundAlarm();
+        }
 
         Order order = getOrder();
         if (order == Order.MARCH && anchor != null && position().distanceToSqr(anchor) < 14 * 14) {
@@ -677,6 +755,19 @@ public class SoldierEntity extends PathfinderMob {
                 playSound(SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.6F);
             }
             default -> { }
+        }
+    }
+
+    /** A guard who has spotted an enemy rings out and calls nearby troops to the fight. */
+    private void soundAlarm() {
+        LivingEntity foe = getTarget();
+        if (foe == null || !foe.isAlive() || level().getGameTime() < alarmQuietUntil) return;
+        int radius = com.warfront.config.WFConfig.GUARD_ALARM_RADIUS.get();
+        if (radius <= 0) return;
+        alarmQuietUntil = level().getGameTime() + 200;
+        level().playSound(null, getX(), getY(), getZ(), SoundEvents.BELL_BLOCK, SoundSource.NEUTRAL, 1.6F, 1.1F);
+        for (SoldierEntity ally : nearbyAllies(radius, SoldierEntity.class)) {
+            if (!ally.getRole().worker() && ally.getTarget() == null && ally.isEnemy(foe)) ally.setTarget(foe);
         }
     }
 
@@ -763,6 +854,7 @@ public class SoldierEntity extends PathfinderMob {
             ally.morale = Math.max(0f, ally.morale - shock);
         }
 
+        for (ItemStack carried : workItems.removeAllItems()) spawnAtLocation(carried);
         Player owner = getOwner();
         if (owner != null) {
             owner.displayClientMessage(Component.literal("Your " + getUnitName() + " has fallen.").withStyle(ChatFormatting.RED), true);
@@ -787,6 +879,31 @@ public class SoldierEntity extends PathfinderMob {
         if (level().isClientSide) return InteractionResult.SUCCESS;
 
         ItemStack held = player.getItemInHand(hand);
+        if (getRole().posted() && player.isShiftKeyDown() && held.isEmpty()) {
+            // Sneak + empty hand: pick a posted unit up to move it, or set it down at a new post.
+            if (getOrder() == Order.HOLD) {
+                command(Order.FOLLOW, formation, null, player.getYRot());
+                player.displayClientMessage(Component.literal("Your " + getUnitName()
+                        + " follows you. Sneak + right-click it again to post it.").withStyle(ChatFormatting.GOLD), true);
+            } else {
+                assignPost(position(), player.getYRot());
+                player.displayClientMessage(Component.literal("Your " + getUnitName() + " takes up its post here"
+                        + (blueprint != null ? " and surveys " + blueprint.size() + " blocks." : ".")).withStyle(ChatFormatting.GOLD), true);
+            }
+            playSound(SoundEvents.VILLAGER_YES, 0.8F, 1.0F);
+            return InteractionResult.CONSUME;
+        }
+        if (!held.isEmpty() && getRole().worker() && getEquipmentSlotForItem(held).getType() != EquipmentSlot.Type.HUMANOID_ARMOR) {
+            // Hand a worker seeds or building blocks.
+            ItemStack rest = WorkSites.insert(workItems, held.copy());
+            int given = held.getCount() - rest.getCount();
+            if (given > 0) {
+                held.shrink(given);
+                playSound(SoundEvents.ITEM_PICKUP, 0.6F, 1.2F);
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.PASS;
+        }
         if (!held.isEmpty()) {
             EquipmentSlot target = getEquipmentSlotForItem(held);
             boolean armor = target.getType() == EquipmentSlot.Type.HUMANOID_ARMOR;
@@ -810,8 +927,19 @@ public class SoldierEntity extends PathfinderMob {
                 .append(Objects.requireNonNull(getCustomName()))
                 .append(Component.literal(String.format("  %.0f/%.0f HP  morale %.0f  %s, %s",
                         getHealth(), getMaxHealth(), morale, getOrder().title, formation.title))
-                        .withStyle(ChatFormatting.GRAY)), true);
+                        .withStyle(ChatFormatting.GRAY))
+                .append(Component.literal(workStatus()).withStyle(ChatFormatting.DARK_AQUA)), true);
         return InteractionResult.CONSUME;
+    }
+
+    private String workStatus() {
+        if (!getRole().posted()) return "";
+        int carried = 0;
+        for (int i = 0; i < workItems.getContainerSize(); i++) carried += workItems.getItem(i).getCount();
+        String s = getOrder() == Order.HOLD ? "  on post" : "  following";
+        if (getRole().worker()) s += ", carrying " + carried;
+        if (blueprint != null) s += ", " + blueprint.countDamage(level()) + "/" + blueprint.size() + " blocks to rebuild";
+        return s;
     }
 
     // ------------------------------------------------------------------ persistence
@@ -840,6 +968,8 @@ public class SoldierEntity extends PathfinderMob {
         }
         tag.putFloat("AnchorYaw", anchorYaw);
         if (siegeTarget != null) tag.putLong("SiegeTarget", siegeTarget.asLong());
+        if (!workItems.isEmpty()) tag.put("WorkItems", workItems.createTag(registryAccess()));
+        if (blueprint != null) tag.put("Blueprint", blueprint.save());
     }
 
     @Override
@@ -863,5 +993,9 @@ public class SoldierEntity extends PathfinderMob {
                 ? new Vec3(tag.getDouble("AnchorX"), tag.getDouble("AnchorY"), tag.getDouble("AnchorZ")) : null;
         anchorYaw = tag.getFloat("AnchorYaw");
         siegeTarget = tag.contains("SiegeTarget") ? BlockPos.of(tag.getLong("SiegeTarget")) : null;
+        workItems.clearContent();
+        if (tag.contains("WorkItems")) workItems.fromTag(tag.getList("WorkItems", net.minecraft.nbt.Tag.TAG_COMPOUND), registryAccess());
+        blueprint = tag.contains("Blueprint")
+                ? Blueprint.load(tag.getCompound("Blueprint"), level().holderLookup(net.minecraft.core.registries.Registries.BLOCK)) : null;
     }
 }

@@ -279,4 +279,85 @@ public final class WarfrontGameTests {
         h.assertTrue(demon.getDeltaMovement().subtract(before).length() > 0.01, "wings should add thrust");
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ workers and guards
+
+    private static SoldierEntity posted(GameTestHelper h, Player owner, SoldierRole role, Race race, int x, int z) {
+        SoldierEntity s = spawnRaw(h, x, z);
+        s.setupAsRecruit(owner, role, race);
+        h.getLevel().addFreshEntity(s);
+        s.assignPost(s.position(), 0F);
+        return s;
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void farmerHarvestsAndReplants(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos crop = new BlockPos(6, 2, 6);
+        h.setBlock(crop.below(), Blocks.FARMLAND);
+        h.setBlock(crop, Blocks.WHEAT.defaultBlockState().setValue(CropBlock.AGE, 7));
+        SoldierEntity farmer = posted(h, owner, SoldierRole.FARMER, Race.HUMAN, 2, 2);
+        farmer.getWorkItems().addItem(new ItemStack(Items.WHEAT_SEEDS, 4));
+        h.assertTrue(farmer.getMainHandItem().getItem() instanceof net.minecraft.world.item.HoeItem, "farmers carry a hoe");
+        h.succeedWhen(() -> {
+            var state = h.getBlockState(crop);
+            h.assertTrue(state.is(Blocks.WHEAT) && state.getValue(CropBlock.AGE) < 7, "the wheat was not harvested and replanted");
+            h.assertTrue(com.warfront.entity.work.WorkSites.count(farmer.getWorkItems(), Items.WHEAT) > 0, "the farmer kept no wheat");
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void builderRebuildsFromChest(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos low = new BlockPos(6, 2, 4), high = new BlockPos(6, 3, 4);
+        h.setBlock(low, Blocks.STONE_BRICKS);
+        h.setBlock(high, Blocks.STONE_BRICKS);
+        BlockPos chestPos = new BlockPos(2, 2, 7);
+        h.setBlock(chestPos, Blocks.CHEST);
+        var chest = (net.minecraft.world.level.block.entity.ChestBlockEntity) h.getBlockEntity(chestPos);
+        chest.setItem(0, new ItemStack(Items.STONE_BRICKS, 8));
+        SoldierEntity builder = posted(h, owner, SoldierRole.BUILDER, Race.DWARF, 3, 4);
+        // Survey only this arena so the builder never touches neighbouring tests.
+        builder.setBlueprint(com.warfront.entity.work.Blueprint.survey(h.getLevel(), h.absolutePos(new BlockPos(4, 2, 4)), 4, 1, 3));
+        h.assertTrue(builder.getBlueprint().expected(h.absolutePos(high)) != null, "the survey should include the pillar");
+        h.setBlock(low, Blocks.AIR);    // raiders knock the pillar down
+        h.setBlock(high, Blocks.AIR);
+        h.succeedWhen(() -> {
+            h.assertTrue(h.getBlockState(low).is(Blocks.STONE_BRICKS) && h.getBlockState(high).is(Blocks.STONE_BRICKS),
+                    "the builder did not rebuild the pillar");
+            h.assertTrue(chest.getItem(0).getCount() <= 6, "the builder should use bricks from the chest");
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void guardAlarmRallysHiddenAllies(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        // An ally sealed in a stone cell cannot see the raider, so only the guard's alarm can send it.
+        for (int x = 0; x <= 2; x++) for (int y = 2; y <= 4; y++) for (int z = 6; z <= 8; z++) {
+            if (!(x == 1 && z == 7 && y < 4)) h.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+        }
+        SoldierEntity ally = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 1, 7);
+        SoldierEntity guard = posted(h, owner, SoldierRole.GUARD, Race.HUMAN, 4, 2);
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 7, 2);
+        h.assertTrue(guard.getOffhandItem().is(Items.SHIELD), "human guards carry a shield");
+        h.succeedWhen(() -> h.assertTrue(ally.getTarget() == enemy, "the guard's alarm never reached the hidden ally"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void workersFleeAndKeepTheirPosts(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        owner.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
+        SoldierEntity farmer = posted(h, owner, SoldierRole.FARMER, Race.ELF, 4, 4);
+        SoldierEntity soldier = recruit(h, owner, SoldierRole.SWORDSMAN, Race.ELF, 1, 1);
+        h.assertTrue("Grovetender".equals(farmer.getUnitName()), "elven farmers are Grovetenders, was " + farmer.getUnitName());
+        h.assertTrue(com.warfront.item.CommanderBatonItem.armyOf(owner).contains(soldier)
+                && !com.warfront.item.CommanderBatonItem.armyOf(owner).contains(farmer), "the baton commands the army, not workers");
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 7, 4);
+        farmer.setTarget(enemy);
+        h.assertTrue(farmer.getTarget() == null, "workers never take a target");
+        h.runAtTickTime(80, () -> {
+            h.assertTrue(enemy.getLastHurtByMob() != farmer, "a farmer fought back");
+            h.succeed();
+        });
+    }
 }

@@ -133,6 +133,9 @@ public final class WFRegistry {
     public static final DeferredItem<HealingStaffItem> HEALING_STAFF = ITEMS.register("healing_staff",
             () -> new HealingStaffItem(new Item.Properties().durability(128)));
     public static final DeferredItem<Item> WAR_MARK = ITEMS.registerSimpleItem("war_mark");
+    /** Carried by builders; a display tool with no use of its own. */
+    public static final DeferredItem<Item> MASON_HAMMER = ITEMS.register("mason_hammer",
+            () -> new Item(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<DeferredSpawnEggItem> SOLDIER_SPAWN_EGG = ITEMS.register("soldier_spawn_egg",
             () -> new DeferredSpawnEggItem(SOLDIER, 0x7A1F1F, 0x2B2B2B, new Item.Properties()));
 

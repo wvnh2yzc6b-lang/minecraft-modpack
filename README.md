@@ -69,11 +69,27 @@ Signing one costs mana, scaled by your race:
 | **Captain** | 50 | Carries your banner. Rallying cry gives nearby allies Strength and morale. Losing one shakes the army. |
 | **Archer** | 20 | Back ranks. Fires in **synchronized volleys**, and arrows fly through your own troops. |
 | **Healer** | 30 | Stays behind the lines and tends the most wounded ally nearby. |
+| **Champion** | 60 | The race's elite, with a signature weapon and ability. |
 
 Right-click your own soldier with armor or a sword or axe to re-equip them. Empty-handed, it shows
 their health, morale and orders.
 
-### 4. Command with the Commander's Baton
+### 4. Workers and guards
+Three roles keep your base running instead of marching with the army. They take up a **post** where
+you summon them and ignore the Commander's Baton. **Sneak + right-click** one with an empty hand to
+have it follow you, and again to post it where it stands.
+
+| Role | Mana | What it does |
+|---|---|---|
+| **Farmer** | 10 | Harvests ripe crops (and melons and pumpkins) within 8 blocks of its post, replants from the seeds it carries, tills dirt and grass near water, and carries the harvest to the nearest chest or barrel. Starts with 8 wheat seeds. |
+| **Builder** | 15 | Surveys the buildings around its post (21×21 blocks, 3 down and 12 up) and puts back anything enemies break or explosions destroy, lowest blocks first. Takes blocks from a nearby chest. What you and your allies build or break yourselves updates its plan instead. |
+| **Guard** | 20 | Holds its post, walks a short patrol around it, and fights anything hostile within 14 blocks. When it spots an enemy it rings an alarm that sends nearby allied troops (16 blocks) into the fight. |
+
+Hand a worker seeds or blocks by right-clicking it with them. Farmers and builders never fight: they
+run from enemies. Each race has its own workers (Farmhand, Grovetender, Stonemason, Gatekeeper,
+Sentry Drone...), dressed for the job; demon workers are imps.
+
+### 5. Command with the Commander's Baton
 * **Right-click** to cycle orders. **Follow** marches in formation behind you. **Hold the line**
   forms up where you stand, facing where you look, and holds. **Charge!** breaks ranks and attacks
   the spot you're looking at.
@@ -88,7 +104,7 @@ their health, morale and orders.
   hurt soldiers with broken morale **rout** and flee, then regroup. Captains nearby speed recovery.
 * `/army` shows your army's composition, average health and morale.
 
-### 5. Factions and diplomacy
+### 6. Factions and diplomacy
 `/faction create <name>`, `invite <player>`, `join <name>`, `leave`, `info`, `list`,
 `color <color>`, `war <name>`, `peace <name>`, and `ally <name>` (both leaders must agree).
 Soldiers fight for their commander's faction. They attack factions you're at war with, protect
@@ -111,7 +127,7 @@ like yours. They are also at war with each other. Raiders who can't reach you **
 walls, doors and fences**. Harder blocks take longer, and obsidian and anything harder than
 `maxBreakHardness` (default 10) stops them. This needs the `mobGriefing` game rule.
 
-### 6. Tower defense: hold your stronghold
+### 7. Tower defense: hold your stronghold
 * Place a **War Standard** to found a stronghold. At night, while you're nearby, **sieges** come:
   waves of enemies march from a random direction, and each wave is bigger and better equipped.
   Attackers that reach the standard hack at it, and if its integrity hits zero it falls.

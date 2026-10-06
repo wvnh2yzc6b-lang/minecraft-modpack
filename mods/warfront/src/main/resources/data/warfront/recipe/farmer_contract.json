@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "warfront:mana_shard"
+    },
+    {
+      "item": "minecraft:wheat_seeds"
+    },
+    {
+      "item": "minecraft:stone_hoe"
+    }
+  ],
+  "result": {
+    "id": "warfront:farmer_contract",
+    "count": 1
+  }
+}

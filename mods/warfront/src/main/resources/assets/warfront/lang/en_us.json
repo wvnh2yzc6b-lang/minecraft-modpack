@@ -16,10 +16,15 @@
   "item.warfront.mana_shard": "Mana Shard",
   "item.warfront.mana_crystal": "Mana Crystal",
   "item.warfront.manabloom_seeds": "Manabloom Seeds",
+  "item.warfront.mason_hammer": "Mason's Hammer",
   "item.warfront.shieldbearer_contract": "Recruit Contract: Shieldbearer",
   "item.warfront.spearman_contract": "Recruit Contract: Spearman",
   "item.warfront.swordsman_contract": "Recruit Contract: Swordsman",
   "item.warfront.captain_contract": "Recruit Contract: Captain",
+  "item.warfront.champion_contract": "Recruit Contract: Champion",
   "item.warfront.archer_contract": "Recruit Contract: Archer",
-  "item.warfront.healer_contract": "Recruit Contract: Healer"
+  "item.warfront.healer_contract": "Recruit Contract: Healer",
+  "item.warfront.farmer_contract": "Recruit Contract: Farmer",
+  "item.warfront.builder_contract": "Recruit Contract: Builder",
+  "item.warfront.guard_contract": "Recruit Contract: Guard"
 }

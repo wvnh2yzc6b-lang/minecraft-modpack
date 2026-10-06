@@ -35,14 +35,14 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
 
     public SoldierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SoldierModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5F);
-        imps.put("imp", new ImpRenderer(ctx, WFModelLayers.IMP, "imp"));
-        imps.put("imp_bulwark", new ImpRenderer(ctx, WFModelLayers.IMP_BULWARK, "imp_bulwark"));
-        imps.put("imp_impaler", new ImpRenderer(ctx, WFModelLayers.IMP_IMPALER, "imp_impaler"));
-        imps.put("imp_firecaster", new ImpRenderer(ctx, WFModelLayers.IMP_FIRECASTER, "imp_firecaster"));
+        for (String id : com.warfront.client.model.UnitGeometry.all().keySet()) {
+            if (id.startsWith("imp")) imps.put(id, new ImpRenderer(ctx, WFModelLayers.of(id), id));
+        }
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
                 ctx.getModelManager()));
+        this.addLayer(new RoleGearLayer(this, ctx.getModelSet()));
     }
 
     private ImpRenderer impFor(SoldierEntity entity) {

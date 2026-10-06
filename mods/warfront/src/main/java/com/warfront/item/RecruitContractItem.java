@@ -72,16 +72,24 @@ public class RecruitContractItem extends Item {
 
         Order order = Order.byOrdinal(player.getData(WFRegistry.ARMY_ORDER));
         Formation formation = Formation.byOrdinal(player.getData(WFRegistry.ARMY_FORMATION));
-        if (order == Order.FOLLOW) {
+        boolean posted = role.posted();
+        if (posted) {
+            level.addFreshEntity(soldier);   // join the level first so a builder can survey around it
+            soldier.assignPost(soldier.position(), player.getYRot());
+            if (role == SoldierRole.FARMER) {
+                soldier.getWorkItems().addItem(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WHEAT_SEEDS, 8));
+            }
+        } else if (order == Order.FOLLOW) {
             soldier.command(order, formation, null, player.getYRot());
         } else {
             soldier.command(Order.HOLD, formation, soldier.position(), player.getYRot());
         }
-        level.addFreshEntity(soldier);
+        if (!posted) level.addFreshEntity(soldier);
 
         level.playSound(null, soldier.blockPosition(), SoundEvents.ARMOR_EQUIP_IRON.value(), SoundSource.NEUTRAL, 1F, 1F);
         player.displayClientMessage(Component.literal("A " + soldier.getRace().displayName() + " "
-                + role.displayName() + " answers your summons. (" + (count + 1) + "/" + max + ", -" + cost + " mana)")
+                + role.displayName() + " answers your summons. (" + (count + 1) + "/" + max + ", -" + cost + " mana)"
+                + (posted ? " It works here; sneak + right-click it to move its post." : ""))
                 .withStyle(ChatFormatting.GREEN), true);
         if (!player.getAbilities().instabuild) stack.shrink(1);
         return InteractionResultHolder.consume(stack);
