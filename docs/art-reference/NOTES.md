@@ -77,3 +77,10 @@ Animations should look and feel fluid and real, not like a metronome. Rules used
 - Technique follows procedural creature animation used by mods such as Citadel / Ice and Fire
   (phase-offset chain waves), implemented in-house to avoid a dependency.
 - Every animation change ships with a short preview GIF (e.g. `demon-flight.gif`).
+
+## Working agreement: the Codex
+
+The Warfront Codex page (https://claude.ai/artifact/8mbSQF2ZteBXw5VcU7Aef1) shows everything built so
+far and is updated as work lands. To update it: add or change an entry in `tools/codex/progress.json`,
+run `python3 mods/warfront/tools/units.py` then `python3 tools/codex/build_codex.py`, and republish
+`build/codex/warfront-codex.html` to the same link.

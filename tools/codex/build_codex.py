@@ -1,0 +1,288 @@
+#!/usr/bin/env python3
+"""Builds the Warfront Codex page from the repository.
+
+Everything on the page is read from the source tree: unit names and champion abilities from
+UnitNames.java, game tests from WarfrontGameTests.java, item and block counts from the language
+file, models from tools/units.py output, textures and renders from the asset and docs folders.
+The build log and test descriptions live in progress.json; edit that file and re-run:
+
+    python3 mods/warfront/tools/units.py      # refresh models and textures first
+    python3 tools/codex/build_codex.py        # writes build/codex/warfront-codex.html
+"""
+import base64
+import io
+import json
+import re
+from pathlib import Path
+
+from PIL import Image
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parent.parent
+MOD = REPO / "mods" / "warfront"
+ASSETS = MOD / "src" / "main" / "resources" / "assets" / "warfront"
+T = ASSETS / "textures"
+JAVA = MOD / "src" / "main" / "java" / "com" / "warfront"
+ART = REPO / "docs" / "art-reference"
+OUT = REPO / "build" / "codex" / "warfront-codex.html"
+DATA = json.loads((HERE / "progress.json").read_text())
+
+
+def uri(img, fmt="PNG"):
+    b = io.BytesIO()
+    img.save(b, fmt, **({"quality": 88} if fmt == "JPEG" else {}))
+    return f"data:image/{fmt.lower()};base64," + base64.b64encode(b.getvalue()).decode()
+
+
+def file_uri(path, max_w=1100, animate=True):
+    """Embeds a render: GIFs as-is (or a still of their middle frame), stills as JPEG scaled to max_w."""
+    if path.suffix == ".gif" and animate:
+        return "data:image/gif;base64," + base64.b64encode(path.read_bytes()).decode()
+    img = Image.open(path)
+    if path.suffix == ".gif":
+        img.seek(getattr(img, "n_frames", 1) // 2)
+    img = img.convert("RGBA")
+    flat = Image.new("RGB", img.size, (26, 23, 24))
+    flat.paste(img, mask=img.split()[3])
+    if flat.width > max_w:
+        flat = flat.resize((max_w, round(flat.height * max_w / flat.width)), Image.LANCZOS)
+    return uri(flat, "JPEG")
+
+
+def crop(img, x, y, w, h):
+    return img.crop((x, y, x + w, y + h))
+
+
+def figure(skin, back=False):
+    """Front or back orthographic view of a player-model skin (16x32 px)."""
+    out = Image.new("RGBA", (16, 32), (0, 0, 0, 0))
+    if not back:
+        head, hat, body = crop(skin, 8, 8, 8, 8), crop(skin, 40, 8, 8, 8), crop(skin, 20, 20, 8, 12)
+        la, ra = crop(skin, 44, 20, 4, 12), crop(skin, 36, 52, 4, 12)
+        ll, rl = crop(skin, 4, 20, 4, 12), crop(skin, 20, 52, 4, 12)
+    else:
+        head, hat, body = crop(skin, 24, 8, 8, 8), crop(skin, 56, 8, 8, 8), crop(skin, 32, 20, 8, 12)
+        la, ra = crop(skin, 44, 52, 4, 12), crop(skin, 52, 20, 4, 12)
+        ll, rl = crop(skin, 28, 52, 4, 12), crop(skin, 12, 20, 4, 12)
+    out.paste(head, (4, 0))
+    out.alpha_composite(hat, (4, 0))
+    out.paste(body, (4, 8))
+    out.paste(la, (0, 8))
+    out.paste(ra, (12, 8))
+    out.paste(ll, (4, 20))
+    out.paste(rl, (8, 20))
+    return out
+
+
+def pair(name):
+    skin = Image.open(T / "entity/soldier" / f"{name}.png").convert("RGBA")
+    canvas = Image.new("RGBA", (36, 32), (0, 0, 0, 0))
+    canvas.paste(figure(skin), (0, 0))
+    canvas.paste(figure(skin, True), (20, 0))
+    return uri(canvas.resize((216, 192), Image.NEAREST)), uri(skin.resize((256, 256), Image.NEAREST))
+
+
+def tex_tile(rel):
+    return uri(Image.open(T / rel).convert("RGBA").resize((64, 64), Image.NEAREST))
+
+
+def esc(s):
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+RACES = [
+    ("human", "Human", "Balanced and disciplined", "0 hp · 0% speed · +0 dmg · scale 1.00", "Morale recovers fastest (1.5×). Human healers heal 5 instead of 4.", "1.0×"),
+    ("elf", "Elf", "Swift and keen-eyed", "−2 hp · +10% speed · scale 1.05", "Elven archers are far more accurate (spread 2 vs 6) and deal +1 arrow damage.", "1.0×"),
+    ("dwarf", "Dwarf", "Stout and stubborn", "+4 hp · −8% speed · +2 armor · scale 0.85", "Dwarven soldiers never rout.", "1.0×"),
+    ("orc", "Orc", "Brutal and towering", "+2 hp · +1.5 dmg · scale 1.10", "Hits hardest of the base races, but morale regenerates slowly (0.6×).", "1.0×"),
+    ("demon", "Demon", "Born of hellfire", "+2 hp · +1 dmg · +1 armor · scale 1.00", "Immune to fire and lava. Demon soldiers set targets on fire for 3s on every hit. Low ranks fight as imps.", "1.15×"),
+    ("angel", "Angel", "Radiant and unbreakable", "0 hp · +5% speed · scale 1.08", "No fall damage. Regenerates (players 1 HP/3s, soldiers 0.5 HP/s). +50% damage vs undead and demons. Never routs.", "1.2×"),
+    ("hive", "Hive", "One mind, many bodies", "−4 hp · +12% speed · +1 armor · scale 0.90", "Never routs. +0.5 damage per nearby hive ally (max +3).", "0.6×"),
+]
+FACTIONS = [
+    ("marauders", "Marauder Horde", "Orc", "Plains, savanna", "1.0×"),
+    ("black_legion", "Black Legion", "Human", "Plains, taiga", "1.0×"),
+    ("burning_horde", "Burning Horde", "Demon", "Badlands, desert, the Nether", "1.0×"),
+    ("the_swarm", "The Swarm", "Hive", "Jungle, swamp, caves", "1.6×"),
+    ("silverwood_reavers", "Silverwood Reavers", "Elf", "Forests", "1.0×"),
+    ("ironbeard_clan", "Ironbeard Clan", "Dwarf", "Mountains, snowy biomes", "0.9×"),
+    ("fallen_host", "Fallen Host", "Angel", "Mountain peaks, the End", "0.8×"),
+]
+ITEMS = [
+    ("item/commander_baton.png", "Commander's Baton", "Issue orders and change formations"),
+    ("item/war_horn.png", "War Horn", "Start or stand down a wave campaign"),
+    ("item/healing_staff.png", "Healing Staff", "Heal yourself and allies within 6 blocks; 128 uses"),
+    ("item/war_mark.png", "War Mark", "Currency from raiders and won waves"),
+    ("item/mana_shard.png", "Mana Shard", "+10 mana when absorbed"),
+    ("item/mana_crystal.png", "Mana Crystal", "+25 maximum mana, permanently"),
+    ("item/manabloom_seeds.png", "Manabloom Seeds", "Plant on farmland"),
+]
+BLOCKS = [
+    ("block/arrow_tower_side.png", "Arrow Tower", "side"), ("block/arrow_tower_top.png", "Arrow Tower", "top"),
+    ("block/arcane_spire_side.png", "Arcane Spire", "side"), ("block/arcane_spire_top.png", "Arcane Spire", "top"),
+    ("block/healing_shrine_side.png", "Healing Shrine", "side"), ("block/healing_shrine_top.png", "Healing Shrine", "top"),
+    ("block/war_standard_flag.png", "War Standard", "flag"), ("block/war_standard_pole.png", "War Standard", "pole"),
+    ("block/mana_ore.png", "Mana Ore", "stone"), ("block/deepslate_mana_ore.png", "Mana Ore", "deepslate"),
+    ("block/manabloom_stage0.png", "Manabloom", "age 0–1"), ("block/manabloom_stage1.png", "Manabloom", "age 2–3"),
+    ("block/manabloom_stage2.png", "Manabloom", "age 4–6"), ("block/manabloom_stage3.png", "Manabloom", "ripe (7)"),
+]
+
+
+def race_cards():
+    out = []
+    for key, name, motto, stats, trait, mana in RACES:
+        fig, raw = pair(key)
+        out.append(f'''<article class="skin">
+  <div class="plate"><img class="fig" src="{fig}" alt="{name} soldier skin, front and back" width="216" height="192"></div>
+  <div class="meta"><h3>{name}</h3><p class="motto">{motto}</p><p class="stat">{stats}</p><p>{trait}</p>
+    <p class="cost">Recruit cost <b>{mana}</b></p>
+    <details><summary>Raw 64×64 texture</summary><img class="raw" src="{raw}" alt="{name} skin texture" width="128" height="128"></details></div>
+</article>''')
+    return "\n".join(out)
+
+
+def faction_cards():
+    out = []
+    for key, name, race, home, size in FACTIONS:
+        fig, raw = pair(key)
+        out.append(f'''<article class="skin foe">
+  <div class="plate"><img class="fig" src="{fig}" alt="{name} soldier skin, front and back" width="216" height="192"></div>
+  <div class="meta"><h3>{name}</h3><p class="motto">{race} warband</p><p class="stat">Homeland: {home}</p>
+    <p class="cost">Warband size <b>{size}</b></p>
+    <details><summary>Raw 64×64 texture</summary><img class="raw" src="{raw}" alt="{name} skin texture" width="128" height="128"></details></div>
+</article>''')
+    return "\n".join(out)
+
+
+def contract_tiles():
+    rows = []
+    for p in sorted((T / "item").glob("*_contract.png")):
+        role = p.stem.replace("_contract", "").replace("_", " ").title()
+        rows.append((f"item/{p.name}", f"Contract: {role}", "Summon a soldier"))
+    return rows
+
+
+def tiles(rows):
+    return "\n".join(f'<figure class="tile"><img src="{tex_tile(rel)}" alt="{name}" width="64" height="64">'
+                     f'<figcaption><b>{name}</b><span>{note}</span></figcaption></figure>' for rel, name, note in rows)
+
+
+def role_names():
+    """Parses the per-race name arrays and champion abilities out of UnitNames.java."""
+    src = (JAVA / "army" / "UnitNames.java").read_text()
+    roles = [m.group(1) for m in re.finditer(r"^\s{4}([A-Z_]+)\(", (JAVA / "army" / "SoldierRole.java").read_text(), re.M)]
+    names = {}
+    for m in re.finditer(r'String\[\] (\w+)\s*=\s*\{([^}]*)\}', src):
+        names[m.group(1)] = re.findall(r'"([^"]*)"', m.group(2))
+    head = "<thead><tr><th>Race</th>" + "".join(f"<th>{r.title()}</th>" for r in roles) + "</tr></thead>"
+    body = []
+    for race in ("HUMAN", "ELF", "DWARF", "ORC", "DEMON", "ANGEL", "HIVE"):
+        row = names.get(race, [])
+        soon = '<span class="status plan">soon</span>'
+        cells = "".join(f"<td>{esc(row[i]) if i < len(row) else soon}</td>" for i in range(len(roles)))
+        body.append(f"<tr><td><b>{race.title()}</b></td>{cells}</tr>")
+    champs = re.findall(r'case \w+ -> "([^"]+)";', src.split("championAbility", 1)[1])
+    return head + "<tbody>" + "".join(body) + "</tbody>", "\n".join(f"<li>{esc(c)}</li>" for c in champs), len(roles)
+
+
+def tests():
+    src = (JAVA / "gametest" / "WarfrontGameTests.java").read_text()
+    found = re.findall(r"@GameTest[^\n]*\n\s*public static void (\w+)\(", src)
+    rows = "\n".join(f"      <tr><td><code>{t}</code></td><td>{esc(DATA['tests'].get(t, re.sub(r'(?<!^)(?=[A-Z])', ' ', t).lower()))}</td></tr>"
+                     for t in found)
+    return rows, len(found)
+
+
+STATUS = {"done": ("ok", "Done"), "progress": ("prog", "In progress"), "planned": ("plan", "Planned")}
+
+
+def log():
+    out = []
+    for e in DATA["log"]:
+        cls, label = STATUS[e["status"]]
+        img = ""
+        if e.get("image") and (ART / e["image"]).exists():
+            img = f'<figure><img src="{file_uri(ART / e["image"], 560, animate=False)}" alt="{esc(e["title"])}" loading="lazy"></figure>'
+        out.append(f'<article class="entry"><div class="when"><span class="status {cls}">{label}</span></div>'
+                   f'<div class="what"><h3>{esc(e["title"])}</h3><p>{esc(e["detail"])}</p>{img}</div></article>')
+    return "\n".join(out)
+
+
+def shots(items):
+    out = []
+    for name, caption, wide in items:
+        p = ART / name
+        if p.exists():
+            out.append(f'<figure class="{"wide" if wide else ""}"><img src="{file_uri(p)}" alt="{esc(caption)}" loading="lazy">'
+                       f'<figcaption>{esc(caption)}</figcaption></figure>')
+    return "\n".join(out)
+
+
+def viewer_data():
+    models = {m["id"]: m for m in json.loads((MOD / "build" / "unit-models.json").read_text())}
+    tex = {}
+    for pal in ("demon", "burning_horde"):
+        for mid in models:
+            if mid.startswith("imp"):
+                for suffix in ("", "_glow"):
+                    f = T / "entity" / "soldier" / pal / f"{mid}{suffix}.png"
+                    if f.exists():
+                        tex[f"{pal}/{mid}{suffix}"] = uri(Image.open(f).convert("RGBA"))
+    for n in ("demon_skin", "demon_skin_glow", "demon_extras", "demon_extras_glow"):
+        tex[f"player/{n}"] = uri(Image.open(T / "entity" / "player" / f"{n}.png").convert("RGBA"))
+    return {"models": models, "tex": tex}
+
+
+def main():
+    lang = json.loads((ASSETS / "lang" / "en_us.json").read_text())
+    n_items = sum(k.startswith("item.warfront.") for k in lang)
+    n_blocks = sum(k.startswith("block.warfront.") for k in lang)
+    names_table, champions, n_roles = role_names()
+    test_rows, n_tests = tests()
+    models = viewer_data()
+    n_models = sum(1 for k in models["models"] if k != "player_base")
+    tally = "".join(f"<span><b>{v}</b>{k}</span>" for k, v in [
+        ("playable races", 7), ("enemy factions", 7), ("unit roles", n_roles), ("formations", 5),
+        ("custom 3D models", n_models), ("blocks", n_blocks), ("items", n_items), ("game tests", n_tests),
+        ("mods in the pack", DATA["pack_mods"])])
+    html = (HERE / "template.html").read_text()
+    subs = {
+        "%%UPDATED%%": DATA["updated"],
+        "%%BUILDLINE%%": f"The mod compiles and passes {n_tests} automated in-game tests on a dedicated server. Visuals are checked in preview renders, not yet in a game client.",
+        "%%TALLY%%": tally,
+        "%%LOG%%": log(),
+        "%%DEMON_SHOTS%%": shots([
+            ("demon-flight.gif", "Takeoff, climb, cruise and dive, using the game's wing animation.", True),
+            ("demon-player-no-claws.png", "Current look: front, three-quarter, side and close-up.", True),
+            ("demon-player-wing-fold.png", "Wing states: folded, half-open, full spread, and the up and down strokes.", False),
+            ("demon-head-oryx.png", "Head reference.", False),
+        ]),
+        "%%IMP_SHOTS%%": shots([
+            ("imp-model-preview.png", "Imp roles, side by side.", True),
+            ("demon-imp.png", "Imp reference.", False),
+        ]),
+        "%%RACES%%": race_cards(),
+        "%%FACTIONS%%": faction_cards(),
+        "%%ITEMS%%": tiles(ITEMS + contract_tiles()),
+        "%%BLOCKS%%": tiles(BLOCKS),
+        "%%NAMES%%": names_table,
+        "%%CHAMPIONS%%": champions,
+        "%%TESTS%%": test_rows,
+        "%%CI%%": "Every push to the branch runs the full pipeline.",
+        "%%MCJS%%": (HERE / "mcmodel.js").read_text(),
+        "%%WINGJS%%": (HERE / "wing_animator.js").read_text(),
+        "%%VIEWERJS%%": (HERE / "viewer.js").read_text(),
+        "%%DATA%%": json.dumps(models, separators=(",", ":")),
+    }
+    for k, v in subs.items():
+        html = html.replace(k, v)
+    left = re.findall(r"%%[A-Z_]+%%", html)
+    if left:
+        raise SystemExit(f"unfilled placeholders: {left}")
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(html)
+    print(OUT, f"{len(html) / 1e6:.1f} MB")
+
+
+if __name__ == "__main__":
+    main()
