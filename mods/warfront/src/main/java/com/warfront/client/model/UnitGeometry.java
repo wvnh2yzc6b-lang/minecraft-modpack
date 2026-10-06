@@ -608,157 +608,183 @@ public final class UnitGeometry {
         PartDefinition root = mesh.getRoot();
         PartDefinition p0 = root.addOrReplaceChild("head", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-        PartDefinition p1 = p0.addOrReplaceChild("crest_1", CubeListBuilder.create().texOffs(0, 54).addBox(-1.5F, -6F, -2F, 3F, 6F, 4F),
-                PartPose.offsetAndRotation(0F, -7.5F, 0.5F, -0.3F, 0F, 0F));
-        PartDefinition p2 = p1.addOrReplaceChild("crest_2", CubeListBuilder.create().texOffs(14, 54).addBox(-1F, -6F, -1.5F, 2F, 6F, 3F),
-                PartPose.offsetAndRotation(0F, -6F, 0.5F, -0.22F, 0F, 0F));
-        PartDefinition p3 = p2.addOrReplaceChild("crest_3", CubeListBuilder.create().texOffs(48, 54).addBox(-1F, -5F, -1F, 2F, 5F, 2F, new CubeDeformation(-0.2F)),
-                PartPose.offsetAndRotation(0F, -6F, 0.5F, -0.25F, 0F, 0F));
-        PartDefinition p4 = p3.addOrReplaceChild("crest_4", CubeListBuilder.create().texOffs(124, 54).addBox(-0.5F, -4F, -0.5F, 1F, 4F, 1F),
-                PartPose.offsetAndRotation(0F, -5F, 0F, -0.3F, 0F, 0F));
-        PartDefinition p5 = p0.addOrReplaceChild("blade_r", CubeListBuilder.create().texOffs(24, 54).addBox(-0.5F, -1.5F, 0F, 1F, 3F, 5F),
-                PartPose.offsetAndRotation(-4.3F, -6.5F, -2.5F, 0.08F, -0.2F, -0.1F));
-        PartDefinition p6 = p5.addOrReplaceChild("blade_r2", CubeListBuilder.create().texOffs(72, 54).addBox(-0.5F, -1F, 0F, 1F, 2F, 4F),
-                PartPose.offsetAndRotation(0F, 0F, 5F, 0.12F, 0.12F, 0F));
-        PartDefinition p7 = p6.addOrReplaceChild("blade_r3", CubeListBuilder.create().texOffs(0, 64).addBox(-0.5F, -0.5F, 0F, 1F, 1F, 4F),
-                PartPose.offsetAndRotation(0F, 0F, 4F, 0.25F, 0.15F, 0F));
-        PartDefinition p8 = p0.addOrReplaceChild("blade_l", CubeListBuilder.create().texOffs(36, 54).addBox(-0.5F, -1.5F, 0F, 1F, 3F, 5F),
-                PartPose.offsetAndRotation(4.3F, -6.5F, -2.5F, 0.08F, 0.2F, 0.1F));
-        PartDefinition p9 = p8.addOrReplaceChild("blade_l2", CubeListBuilder.create().texOffs(82, 54).addBox(-0.5F, -1F, 0F, 1F, 2F, 4F),
-                PartPose.offsetAndRotation(0F, 0F, 5F, 0.12F, -0.12F, 0F));
-        PartDefinition p10 = p9.addOrReplaceChild("blade_l3", CubeListBuilder.create().texOffs(10, 64).addBox(-0.5F, -0.5F, 0F, 1F, 1F, 4F),
-                PartPose.offsetAndRotation(0F, 0F, 4F, 0.25F, -0.15F, 0F));
-        PartDefinition p11 = p0.addOrReplaceChild("cheek_r", CubeListBuilder.create().texOffs(56, 54).addBox(-0.5F, -2F, -1F, 1F, 4F, 3F),
-                PartPose.offsetAndRotation(-4.2F, -3.5F, -2.5F, 0F, 0.35F, 0.2F));
-        PartDefinition p12 = p0.addOrReplaceChild("cheek_l", CubeListBuilder.create().texOffs(64, 54).addBox(-0.5F, -2F, -1F, 1F, 4F, 3F),
-                PartPose.offsetAndRotation(4.2F, -3.5F, -2.5F, 0F, -0.35F, -0.2F));
-        PartDefinition p13 = p0.addOrReplaceChild("ridge_0", CubeListBuilder.create().texOffs(64, 73).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
-                PartPose.offsetAndRotation(0F, -8F, -3F, -0.2F, 0F, 0F));
-        PartDefinition p14 = p0.addOrReplaceChild("ridge_1", CubeListBuilder.create().texOffs(20, 64).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
-                PartPose.offsetAndRotation(0F, -8F, -1.2F, -0.35F, 0F, 0F));
-        PartDefinition p15 = p0.addOrReplaceChild("brow_plate", CubeListBuilder.create().texOffs(24, 64).addBox(-4.5F, -1F, -1.5F, 9F, 2F, 2F),
-                PartPose.offsetAndRotation(0F, -5.8F, -4.2F, 0.25F, 0F, 0F));
-        PartDefinition p16 = p15.addOrReplaceChild("brow_spike", CubeListBuilder.create().texOffs(46, 64).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
-                PartPose.offsetAndRotation(0F, -1F, -1.5F, -0.9F, 0F, 0F));
-        PartDefinition p17 = root.addOrReplaceChild("hat", CubeListBuilder.create(),
+        PartDefinition p1 = p0.addOrReplaceChild("cowl_r", CubeListBuilder.create().texOffs(28, 30).addBox(-0.5F, -10F, -1F, 1F, 10F, 10F),
+                PartPose.offsetAndRotation(-4.3F, -0.5F, -2.5F, 0.12F, 0.55F, -0.5F));
+        PartDefinition p2 = p1.addOrReplaceChild("cowl_r_outer", CubeListBuilder.create().texOffs(72, 30).addBox(-0.5F, -8F, -4F, 1F, 8F, 9F),
+                PartPose.offsetAndRotation(0F, -10F, 0.5F, 0.12F, -0.2F, -0.32F));
+        PartDefinition p3 = p2.addOrReplaceChild("cowl_r_outer_spike0", CubeListBuilder.create().texOffs(8, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, -3.5F, -0.25F, 0F, -0.35F));
+        PartDefinition p4 = p2.addOrReplaceChild("cowl_r_outer_spike1", CubeListBuilder.create().texOffs(114, 54).addBox(-0.5F, -4F, -0.5F, 1F, 4F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, -1F, -0.0833F, 0F, -0.35F));
+        PartDefinition p5 = p2.addOrReplaceChild("cowl_r_outer_spike2", CubeListBuilder.create().texOffs(12, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, 1.5F, 0.0833F, 0F, -0.35F));
+        PartDefinition p6 = p2.addOrReplaceChild("cowl_r_outer_spike3", CubeListBuilder.create().texOffs(124, 80).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, 4F, 0.25F, 0F, -0.35F));
+        PartDefinition p7 = p1.addOrReplaceChild("cowl_r_spike0", CubeListBuilder.create().texOffs(0, 84).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(0F, -10F, -0.5F, -0.25F, 0F, -0.25F));
+        PartDefinition p8 = p1.addOrReplaceChild("cowl_r_spike1", CubeListBuilder.create().texOffs(16, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -10F, 3.75F, 0F, 0F, -0.25F));
+        PartDefinition p9 = p1.addOrReplaceChild("cowl_r_spike2", CubeListBuilder.create().texOffs(4, 84).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(0F, -10F, 8F, 0.25F, 0F, -0.25F));
+        PartDefinition p10 = p0.addOrReplaceChild("cowl_l", CubeListBuilder.create().texOffs(50, 30).addBox(-0.5F, -10F, -1F, 1F, 10F, 10F),
+                PartPose.offsetAndRotation(4.3F, -0.5F, -2.5F, 0.12F, -0.55F, 0.5F));
+        PartDefinition p11 = p10.addOrReplaceChild("cowl_l_outer", CubeListBuilder.create().texOffs(92, 30).addBox(-0.5F, -8F, -4F, 1F, 8F, 9F),
+                PartPose.offsetAndRotation(0F, -10F, 0.5F, 0.12F, 0.2F, 0.32F));
+        PartDefinition p12 = p11.addOrReplaceChild("cowl_l_outer_spike0", CubeListBuilder.create().texOffs(20, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, -3.5F, -0.25F, 0F, 0.35F));
+        PartDefinition p13 = p11.addOrReplaceChild("cowl_l_outer_spike1", CubeListBuilder.create().texOffs(118, 54).addBox(-0.5F, -4F, -0.5F, 1F, 4F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, -1F, -0.0833F, 0F, 0.35F));
+        PartDefinition p14 = p11.addOrReplaceChild("cowl_l_outer_spike2", CubeListBuilder.create().texOffs(24, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, 1.5F, 0.0833F, 0F, 0.35F));
+        PartDefinition p15 = p11.addOrReplaceChild("cowl_l_outer_spike3", CubeListBuilder.create().texOffs(8, 84).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, 4F, 0.25F, 0F, 0.35F));
+        PartDefinition p16 = p10.addOrReplaceChild("cowl_l_spike0", CubeListBuilder.create().texOffs(12, 84).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(0F, -10F, -0.5F, -0.25F, 0F, 0.25F));
+        PartDefinition p17 = p10.addOrReplaceChild("cowl_l_spike1", CubeListBuilder.create().texOffs(28, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -10F, 3.75F, 0F, 0F, 0.25F));
+        PartDefinition p18 = p10.addOrReplaceChild("cowl_l_spike2", CubeListBuilder.create().texOffs(16, 84).addBox(-0.5F, -2F, -0.5F, 1F, 2F, 1F),
+                PartPose.offsetAndRotation(0F, -10F, 8F, 0.25F, 0F, 0.25F));
+        PartDefinition p19 = p0.addOrReplaceChild("chin_r", CubeListBuilder.create().texOffs(32, 71).addBox(-6F, -1F, -1F, 6F, 3F, 1F),
+                PartPose.offsetAndRotation(-4.6F, -2.5F, -4.6F, 0F, -0.35F, -0.62F));
+        PartDefinition p20 = p19.addOrReplaceChild("chin_r_edge", CubeListBuilder.create().texOffs(46, 71).addBox(-0.5F, -0.5F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(-6F, 0.5F, 0F, 0F, 0F, 0.4F));
+        PartDefinition p21 = p0.addOrReplaceChild("chin_l", CubeListBuilder.create().texOffs(50, 71).addBox(0F, -1F, -1F, 6F, 3F, 1F),
+                PartPose.offsetAndRotation(4.6F, -2.5F, -4.6F, 0F, 0.35F, 0.62F));
+        PartDefinition p22 = p21.addOrReplaceChild("chin_l_edge", CubeListBuilder.create().texOffs(64, 71).addBox(-0.5F, -0.5F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(6F, 0.5F, 0F, 0F, 0F, -0.4F));
+        PartDefinition p23 = p0.addOrReplaceChild("crest", CubeListBuilder.create().texOffs(122, 54).addBox(-1F, -4F, -0.5F, 2F, 4F, 1F),
+                PartPose.offsetAndRotation(0F, -8F, -3.8F, -0.25F, 0F, 0F));
+        PartDefinition p24 = p23.addOrReplaceChild("crest_tip", CubeListBuilder.create().texOffs(68, 71).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(0F, -4F, 0F, -0.2F, 0F, 0F));
+        PartDefinition p25 = p0.addOrReplaceChild("back_spine_0", CubeListBuilder.create().texOffs(0, 71).addBox(-0.5F, -4F, -0.5F, 1F, 4F, 1F),
+                PartPose.offsetAndRotation(-2.5F, -7.5F, 3F, -0.9F, 0F, -0.3F));
+        PartDefinition p26 = p0.addOrReplaceChild("back_spine_1", CubeListBuilder.create().texOffs(78, 54).addBox(-0.5F, -6F, -0.5F, 1F, 6F, 1F),
+                PartPose.offsetAndRotation(0F, -7.5F, 3F, -0.9F, 0F, 0F));
+        PartDefinition p27 = p0.addOrReplaceChild("back_spine_2", CubeListBuilder.create().texOffs(4, 71).addBox(-0.5F, -4F, -0.5F, 1F, 4F, 1F),
+                PartPose.offsetAndRotation(2.5F, -7.5F, 3F, -0.9F, 0F, 0.3F));
+        PartDefinition p28 = p0.addOrReplaceChild("brow_r", CubeListBuilder.create().texOffs(52, 84).addBox(-1.5F, -0.5F, -0.5F, 3F, 1F, 1F),
+                PartPose.offsetAndRotation(-2.6F, -6.2F, -4.3F, 0F, 0F, 0.35F));
+        PartDefinition p29 = p0.addOrReplaceChild("brow_l", CubeListBuilder.create().texOffs(60, 84).addBox(-1.5F, -0.5F, -0.5F, 3F, 1F, 1F),
+                PartPose.offsetAndRotation(2.6F, -6.2F, -4.3F, 0F, 0F, -0.35F));
+        PartDefinition p30 = root.addOrReplaceChild("hat", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-        PartDefinition p18 = root.addOrReplaceChild("body", CubeListBuilder.create(),
+        PartDefinition p31 = root.addOrReplaceChild("body", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-        PartDefinition p19 = p18.addOrReplaceChild("wing_r", CubeListBuilder.create().texOffs(50, 64).addBox(-27F, -1F, -1F, 27F, 2F, 2F).texOffs(0, 0).addBox(-27F, 1F, 0F, 27F, 30F, 0F),
+        PartDefinition p32 = p31.addOrReplaceChild("wing_r", CubeListBuilder.create().texOffs(0, 76).addBox(-27F, -1F, -1F, 27F, 2F, 2F).texOffs(0, 0).addBox(-27F, 1F, 0F, 27F, 30F, 0F),
                 PartPose.offsetAndRotation(-2F, 2F, 2.2F, 0.2F, 0.42F, 1.28F));
-        PartDefinition p20 = p19.addOrReplaceChild("wing_r_claw", CubeListBuilder.create().texOffs(92, 54).addBox(-0.5F, -5F, -0.5F, 1F, 5F, 1F),
+        PartDefinition p33 = p32.addOrReplaceChild("wing_r_claw", CubeListBuilder.create().texOffs(82, 54).addBox(-0.5F, -5F, -0.5F, 1F, 5F, 1F),
                 PartPose.offsetAndRotation(-27F, 0F, 0F, 0F, 0F, -1.1F));
-        PartDefinition p21 = p19.addOrReplaceChild("wing_r_hook", CubeListBuilder.create().texOffs(108, 64).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p34 = p32.addOrReplaceChild("wing_r_hook", CubeListBuilder.create().texOffs(58, 76).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-13F, -1F, 0F, 0F, 0F, 0.5F));
-        PartDefinition p22 = p19.addOrReplaceChild("wing_r_finger1", CubeListBuilder.create().texOffs(54, 0).addBox(-0.5F, 0F, -0.5F, 1F, 29F, 1F),
+        PartDefinition p35 = p32.addOrReplaceChild("wing_r_finger1", CubeListBuilder.create().texOffs(54, 0).addBox(-0.5F, 0F, -0.5F, 1F, 29F, 1F),
                 PartPose.offsetAndRotation(-9F, 1F, 0F, 0F, 0F, -0.25F));
-        PartDefinition p23 = p19.addOrReplaceChild("wing_r_finger2", CubeListBuilder.create().texOffs(116, 0).addBox(-0.5F, 0F, -0.5F, 1F, 27F, 1F),
+        PartDefinition p36 = p32.addOrReplaceChild("wing_r_finger2", CubeListBuilder.create().texOffs(116, 0).addBox(-0.5F, 0F, -0.5F, 1F, 27F, 1F),
                 PartPose.offsetAndRotation(-17F, 1F, 0F, 0F, 0F, -0.08F));
-        PartDefinition p24 = p19.addOrReplaceChild("wing_r_finger3", CubeListBuilder.create().texOffs(20, 30).addBox(-0.5F, 0F, -0.5F, 1F, 21F, 1F),
+        PartDefinition p37 = p32.addOrReplaceChild("wing_r_finger3", CubeListBuilder.create().texOffs(20, 30).addBox(-0.5F, 0F, -0.5F, 1F, 21F, 1F),
                 PartPose.offsetAndRotation(-24F, 1F, 0F, 0F, 0F, 0.1F));
-        PartDefinition p25 = p18.addOrReplaceChild("wing_l", CubeListBuilder.create().texOffs(0, 69).mirror().addBox(0F, -1F, -1F, 27F, 2F, 2F).mirror(false).texOffs(58, 0).mirror().addBox(0F, 1F, 0F, 27F, 30F, 0F).mirror(false),
+        PartDefinition p38 = p31.addOrReplaceChild("wing_l", CubeListBuilder.create().texOffs(62, 76).mirror().addBox(0F, -1F, -1F, 27F, 2F, 2F).mirror(false).texOffs(58, 0).mirror().addBox(0F, 1F, 0F, 27F, 30F, 0F).mirror(false),
                 PartPose.offsetAndRotation(2F, 2F, 2.2F, 0.2F, -0.42F, -1.28F));
-        PartDefinition p26 = p25.addOrReplaceChild("wing_l_claw", CubeListBuilder.create().texOffs(96, 54).mirror().addBox(-0.5F, -5F, -0.5F, 1F, 5F, 1F).mirror(false),
+        PartDefinition p39 = p38.addOrReplaceChild("wing_l_claw", CubeListBuilder.create().texOffs(86, 54).mirror().addBox(-0.5F, -5F, -0.5F, 1F, 5F, 1F).mirror(false),
                 PartPose.offsetAndRotation(27F, 0F, 0F, 0F, 0F, 1.1F));
-        PartDefinition p27 = p25.addOrReplaceChild("wing_l_hook", CubeListBuilder.create().texOffs(58, 69).mirror().addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F).mirror(false),
+        PartDefinition p40 = p38.addOrReplaceChild("wing_l_hook", CubeListBuilder.create().texOffs(120, 76).mirror().addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F).mirror(false),
                 PartPose.offsetAndRotation(13F, -1F, 0F, 0F, 0F, -0.5F));
-        PartDefinition p28 = p25.addOrReplaceChild("wing_l_finger1", CubeListBuilder.create().texOffs(112, 0).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 29F, 1F).mirror(false),
+        PartDefinition p41 = p38.addOrReplaceChild("wing_l_finger1", CubeListBuilder.create().texOffs(112, 0).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 29F, 1F).mirror(false),
                 PartPose.offsetAndRotation(9F, 1F, 0F, 0F, 0F, 0.25F));
-        PartDefinition p29 = p25.addOrReplaceChild("wing_l_finger2", CubeListBuilder.create().texOffs(120, 0).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 27F, 1F).mirror(false),
+        PartDefinition p42 = p38.addOrReplaceChild("wing_l_finger2", CubeListBuilder.create().texOffs(120, 0).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 27F, 1F).mirror(false),
                 PartPose.offsetAndRotation(17F, 1F, 0F, 0F, 0F, 0.08F));
-        PartDefinition p30 = p25.addOrReplaceChild("wing_l_finger3", CubeListBuilder.create().texOffs(24, 30).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 21F, 1F).mirror(false),
+        PartDefinition p43 = p38.addOrReplaceChild("wing_l_finger3", CubeListBuilder.create().texOffs(24, 30).mirror().addBox(-0.5F, 0F, -0.5F, 1F, 21F, 1F).mirror(false),
                 PartPose.offsetAndRotation(24F, 1F, 0F, 0F, 0F, -0.1F));
-        PartDefinition p31 = p18.addOrReplaceChild("thorn_belt", CubeListBuilder.create().texOffs(100, 54).addBox(-4F, 10F, -2F, 8F, 2F, 4F, new CubeDeformation(0.35F)),
+        PartDefinition p44 = p31.addOrReplaceChild("thorn_belt", CubeListBuilder.create().texOffs(90, 54).addBox(-4F, 10F, -2F, 8F, 2F, 4F, new CubeDeformation(0.35F)),
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-        PartDefinition p32 = p18.addOrReplaceChild("robe_front", CubeListBuilder.create().texOffs(48, 30).addBox(-4.5F, 0F, 0F, 9F, 13F, 0F),
+        PartDefinition p45 = p31.addOrReplaceChild("robe_front", CubeListBuilder.create().texOffs(10, 54).addBox(-4.5F, 0F, 0F, 9F, 13F, 0F),
                 PartPose.offsetAndRotation(0F, 11F, -2.45F, -0.03F, 0F, 0F));
-        PartDefinition p33 = p18.addOrReplaceChild("robe_back", CubeListBuilder.create().texOffs(66, 30).addBox(-4.5F, 0F, 0F, 9F, 13F, 0F),
+        PartDefinition p46 = p31.addOrReplaceChild("robe_back", CubeListBuilder.create().texOffs(28, 54).addBox(-4.5F, 0F, 0F, 9F, 13F, 0F),
                 PartPose.offsetAndRotation(0F, 11F, 2.45F, 0.05F, 0F, 0F));
-        PartDefinition p34 = p18.addOrReplaceChild("robe_side_r", CubeListBuilder.create().texOffs(28, 30).addBox(0F, 0F, -2.5F, 0F, 12F, 5F),
+        PartDefinition p47 = p31.addOrReplaceChild("robe_side_r", CubeListBuilder.create().texOffs(112, 30).addBox(0F, 0F, -2.5F, 0F, 12F, 5F),
                 PartPose.offsetAndRotation(-4.45F, 11F, 0F, 0F, 0F, 0.04F));
-        PartDefinition p35 = p18.addOrReplaceChild("robe_side_l", CubeListBuilder.create().texOffs(38, 30).addBox(0F, 0F, -2.5F, 0F, 12F, 5F),
+        PartDefinition p48 = p31.addOrReplaceChild("robe_side_l", CubeListBuilder.create().texOffs(0, 54).addBox(0F, 0F, -2.5F, 0F, 12F, 5F),
                 PartPose.offsetAndRotation(4.45F, 11F, 0F, 0F, 0F, -0.04F));
-        PartDefinition p36 = p18.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(0, 30).addBox(-5F, 0F, 0F, 10F, 24F, 0F),
+        PartDefinition p49 = p31.addOrReplaceChild("cloak", CubeListBuilder.create().texOffs(0, 30).addBox(-5F, 0F, 0F, 10F, 24F, 0F),
                 PartPose.offsetAndRotation(0F, 0.2F, 2.6F, 0.1F, 0F, 0F));
-        PartDefinition p37 = root.addOrReplaceChild("right_arm", CubeListBuilder.create(),
+        PartDefinition p50 = root.addOrReplaceChild("right_arm", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(-5F, 2F, 0F, 0F, 0F, 0F));
-        PartDefinition p38 = p37.addOrReplaceChild("brambles_r", CubeListBuilder.create().texOffs(84, 30).addBox(-3F, 3F, -2F, 4F, 7F, 4F, new CubeDeformation(0.3F)),
+        PartDefinition p51 = p50.addOrReplaceChild("brambles_r", CubeListBuilder.create().texOffs(46, 54).addBox(-3F, 3F, -2F, 4F, 7F, 4F, new CubeDeformation(0.3F)),
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-        PartDefinition p39 = p37.addOrReplaceChild("thorn_r0", CubeListBuilder.create().texOffs(62, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p52 = p50.addOrReplaceChild("thorn_r0", CubeListBuilder.create().texOffs(124, 76).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-3F, -1.5F, 0F, -0.3F, 0F, -0.9F));
-        PartDefinition p40 = p37.addOrReplaceChild("thorn_r1", CubeListBuilder.create().texOffs(66, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p53 = p50.addOrReplaceChild("thorn_r1", CubeListBuilder.create().texOffs(0, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-3F, 1F, 1F, 0.3F, 0F, -0.9F));
-        PartDefinition p41 = p37.addOrReplaceChild("thorn_r2", CubeListBuilder.create().texOffs(70, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p54 = p50.addOrReplaceChild("thorn_r2", CubeListBuilder.create().texOffs(4, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-3F, 3F, -1F, 0.2F, 0F, -0.9F));
-        PartDefinition p42 = p37.addOrReplaceChild("thorn_r3", CubeListBuilder.create().texOffs(74, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p55 = p50.addOrReplaceChild("thorn_r3", CubeListBuilder.create().texOffs(8, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-3F, 5F, 1.2F, -0.4F, 0F, -0.9F));
-        PartDefinition p43 = p37.addOrReplaceChild("thorn_r4", CubeListBuilder.create().texOffs(78, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p56 = p50.addOrReplaceChild("thorn_r4", CubeListBuilder.create().texOffs(12, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-3F, 6.5F, -1F, 0.4F, 0F, -0.9F));
-        PartDefinition p44 = p37.addOrReplaceChild("thorn_r5", CubeListBuilder.create().texOffs(82, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p57 = p50.addOrReplaceChild("thorn_r5", CubeListBuilder.create().texOffs(16, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-3F, 8.5F, 0.5F, -0.2F, 0F, -0.9F));
-        PartDefinition p45 = p37.addOrReplaceChild("talon_r0", CubeListBuilder.create().texOffs(86, 69).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p58 = p50.addOrReplaceChild("talon_r0", CubeListBuilder.create().texOffs(20, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-2.5F, 10F, -1.3F, -0.35F, 0F, -0.15F));
-        PartDefinition p46 = p45.addOrReplaceChild("talon_r0_tip", CubeListBuilder.create().texOffs(68, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p59 = p58.addOrReplaceChild("talon_r0_tip", CubeListBuilder.create().texOffs(20, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p47 = p37.addOrReplaceChild("talon_r1", CubeListBuilder.create().texOffs(90, 69).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p60 = p50.addOrReplaceChild("talon_r1", CubeListBuilder.create().texOffs(24, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-1.5F, 10F, -0.7F, -0.35F, 0F, -0.05F));
-        PartDefinition p48 = p47.addOrReplaceChild("talon_r1_tip", CubeListBuilder.create().texOffs(72, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p61 = p60.addOrReplaceChild("talon_r1_tip", CubeListBuilder.create().texOffs(24, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p49 = p37.addOrReplaceChild("talon_r2", CubeListBuilder.create().texOffs(94, 69).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p62 = p50.addOrReplaceChild("talon_r2", CubeListBuilder.create().texOffs(28, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-0.5F, 10F, -1.3F, -0.35F, 0F, 0.05F));
-        PartDefinition p50 = p49.addOrReplaceChild("talon_r2_tip", CubeListBuilder.create().texOffs(76, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p63 = p62.addOrReplaceChild("talon_r2_tip", CubeListBuilder.create().texOffs(28, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p51 = p37.addOrReplaceChild("talon_r3", CubeListBuilder.create().texOffs(98, 69).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p64 = p50.addOrReplaceChild("talon_r3", CubeListBuilder.create().texOffs(32, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(0.5F, 10F, -0.7F, -0.35F, 0F, 0.15F));
-        PartDefinition p52 = p51.addOrReplaceChild("talon_r3_tip", CubeListBuilder.create().texOffs(80, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p65 = p64.addOrReplaceChild("talon_r3_tip", CubeListBuilder.create().texOffs(32, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p53 = root.addOrReplaceChild("left_arm", CubeListBuilder.create(),
+        PartDefinition p66 = root.addOrReplaceChild("left_arm", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(5F, 2F, 0F, 0F, 0F, 0F));
-        PartDefinition p54 = p53.addOrReplaceChild("brambles_l", CubeListBuilder.create().texOffs(100, 30).addBox(-1F, 3F, -2F, 4F, 7F, 4F, new CubeDeformation(0.3F)),
+        PartDefinition p67 = p66.addOrReplaceChild("brambles_l", CubeListBuilder.create().texOffs(62, 54).addBox(-1F, 3F, -2F, 4F, 7F, 4F, new CubeDeformation(0.3F)),
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-        PartDefinition p55 = p53.addOrReplaceChild("thorn_l0", CubeListBuilder.create().texOffs(102, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p68 = p66.addOrReplaceChild("thorn_l0", CubeListBuilder.create().texOffs(36, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(3F, -1.5F, 0F, -0.3F, 0F, 0.9F));
-        PartDefinition p56 = p53.addOrReplaceChild("thorn_l1", CubeListBuilder.create().texOffs(106, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p69 = p66.addOrReplaceChild("thorn_l1", CubeListBuilder.create().texOffs(40, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(3F, 1F, 1F, 0.3F, 0F, 0.9F));
-        PartDefinition p57 = p53.addOrReplaceChild("thorn_l2", CubeListBuilder.create().texOffs(110, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p70 = p66.addOrReplaceChild("thorn_l2", CubeListBuilder.create().texOffs(44, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(3F, 3F, -1F, 0.2F, 0F, 0.9F));
-        PartDefinition p58 = p53.addOrReplaceChild("thorn_l3", CubeListBuilder.create().texOffs(114, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p71 = p66.addOrReplaceChild("thorn_l3", CubeListBuilder.create().texOffs(48, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(3F, 5F, 1.2F, -0.4F, 0F, 0.9F));
-        PartDefinition p59 = p53.addOrReplaceChild("thorn_l4", CubeListBuilder.create().texOffs(118, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p72 = p66.addOrReplaceChild("thorn_l4", CubeListBuilder.create().texOffs(52, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(3F, 6.5F, -1F, 0.4F, 0F, 0.9F));
-        PartDefinition p60 = p53.addOrReplaceChild("thorn_l5", CubeListBuilder.create().texOffs(122, 69).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p73 = p66.addOrReplaceChild("thorn_l5", CubeListBuilder.create().texOffs(56, 80).addBox(-0.5F, -3F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(3F, 8.5F, 0.5F, -0.2F, 0F, 0.9F));
-        PartDefinition p61 = p53.addOrReplaceChild("talon_l0", CubeListBuilder.create().texOffs(0, 73).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p74 = p66.addOrReplaceChild("talon_l0", CubeListBuilder.create().texOffs(60, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(-0.5F, 10F, -1.3F, -0.35F, 0F, 0.15F));
-        PartDefinition p62 = p61.addOrReplaceChild("talon_l0_tip", CubeListBuilder.create().texOffs(84, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p75 = p74.addOrReplaceChild("talon_l0_tip", CubeListBuilder.create().texOffs(36, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p63 = p53.addOrReplaceChild("talon_l1", CubeListBuilder.create().texOffs(4, 73).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p76 = p66.addOrReplaceChild("talon_l1", CubeListBuilder.create().texOffs(64, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(0.5F, 10F, -0.7F, -0.35F, 0F, 0.05F));
-        PartDefinition p64 = p63.addOrReplaceChild("talon_l1_tip", CubeListBuilder.create().texOffs(88, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p77 = p76.addOrReplaceChild("talon_l1_tip", CubeListBuilder.create().texOffs(40, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p65 = p53.addOrReplaceChild("talon_l2", CubeListBuilder.create().texOffs(8, 73).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p78 = p66.addOrReplaceChild("talon_l2", CubeListBuilder.create().texOffs(68, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(1.5F, 10F, -1.3F, -0.35F, 0F, -0.05F));
-        PartDefinition p66 = p65.addOrReplaceChild("talon_l2_tip", CubeListBuilder.create().texOffs(92, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p79 = p78.addOrReplaceChild("talon_l2_tip", CubeListBuilder.create().texOffs(44, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p67 = p53.addOrReplaceChild("talon_l3", CubeListBuilder.create().texOffs(12, 73).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+        PartDefinition p80 = p66.addOrReplaceChild("talon_l3", CubeListBuilder.create().texOffs(72, 80).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
                 PartPose.offsetAndRotation(2.5F, 10F, -0.7F, -0.35F, 0F, -0.15F));
-        PartDefinition p68 = p67.addOrReplaceChild("talon_l3_tip", CubeListBuilder.create().texOffs(96, 73).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
+        PartDefinition p81 = p80.addOrReplaceChild("talon_l3_tip", CubeListBuilder.create().texOffs(48, 84).addBox(-0.5F, 0F, -0.5F, 1F, 2F, 1F, new CubeDeformation(-0.15F)),
                 PartPose.offsetAndRotation(0F, 3F, 0F, -0.5F, 0F, 0F));
-        PartDefinition p69 = root.addOrReplaceChild("right_leg", CubeListBuilder.create(),
+        PartDefinition p82 = root.addOrReplaceChild("right_leg", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(-1.9F, 12F, 0F, 0F, 0F, 0F));
-        PartDefinition p70 = p69.addOrReplaceChild("toe_r0", CubeListBuilder.create().texOffs(16, 73).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
+        PartDefinition p83 = p82.addOrReplaceChild("toe_r0", CubeListBuilder.create().texOffs(76, 80).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
                 PartPose.offsetAndRotation(-1.3F, 12F, -1.6F, 0.2F, 0.15F, 0F));
-        PartDefinition p71 = p69.addOrReplaceChild("toe_r1", CubeListBuilder.create().texOffs(24, 73).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
+        PartDefinition p84 = p82.addOrReplaceChild("toe_r1", CubeListBuilder.create().texOffs(84, 80).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
                 PartPose.offsetAndRotation(0F, 12F, -1.6F, 0.2F, 0F, 0F));
-        PartDefinition p72 = p69.addOrReplaceChild("toe_r2", CubeListBuilder.create().texOffs(32, 73).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
+        PartDefinition p85 = p82.addOrReplaceChild("toe_r2", CubeListBuilder.create().texOffs(92, 80).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
                 PartPose.offsetAndRotation(1.3F, 12F, -1.6F, 0.2F, -0.15F, 0F));
-        PartDefinition p73 = root.addOrReplaceChild("left_leg", CubeListBuilder.create(),
+        PartDefinition p86 = root.addOrReplaceChild("left_leg", CubeListBuilder.create(),
                 PartPose.offsetAndRotation(1.9F, 12F, 0F, 0F, 0F, 0F));
-        PartDefinition p74 = p73.addOrReplaceChild("toe_l0", CubeListBuilder.create().texOffs(40, 73).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
+        PartDefinition p87 = p86.addOrReplaceChild("toe_l0", CubeListBuilder.create().texOffs(100, 80).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
                 PartPose.offsetAndRotation(-1.3F, 12F, -1.6F, 0.2F, -0.15F, 0F));
-        PartDefinition p75 = p73.addOrReplaceChild("toe_l1", CubeListBuilder.create().texOffs(48, 73).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
+        PartDefinition p88 = p86.addOrReplaceChild("toe_l1", CubeListBuilder.create().texOffs(108, 80).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
                 PartPose.offsetAndRotation(0F, 12F, -1.6F, 0.2F, 0F, 0F));
-        PartDefinition p76 = p73.addOrReplaceChild("toe_l2", CubeListBuilder.create().texOffs(56, 73).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
+        PartDefinition p89 = p86.addOrReplaceChild("toe_l2", CubeListBuilder.create().texOffs(116, 80).addBox(-0.5F, -1F, -3F, 1F, 1F, 3F),
                 PartPose.offsetAndRotation(1.3F, 12F, -1.6F, 0.2F, 0.15F, 0F));
         return LayerDefinition.create(mesh, 128, 128);
     }

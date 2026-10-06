@@ -276,44 +276,49 @@ def player_base():
 
 def demon_player():
     """Extra parts worn by players of the demon race, attached to the vanilla player model's parts."""
-    # Oryx-like skull crown: a crescent crest sweeping up and back, blades along the sides of the
-    # skull, a heavy brow plate, flared cheek plates and a mandibled jaw.
-    crest = part("crest_1", pivot=(0, -7.5, 0.5), rot=(-0.3, 0, 0), boxes=[box((-1.5, -6, -2), (3, 6, 4), "chitin")],
-                 children=[part("crest_2", pivot=(0, -6, 0.5), rot=(-0.22, 0, 0),
-                                boxes=[box((-1, -6, -1.5), (2, 6, 3), "chitin")],
-                                children=[part("crest_3", pivot=(0, -6, 0.5), rot=(-0.25, 0, 0),
-                                               boxes=[box((-1, -5, -1), (2, 5, 2), "chitin", grow=-0.2)],
-                                               children=[part("crest_4", pivot=(0, -5, 0), rot=(-0.3, 0, 0),
-                                                              boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "chitin")])])])])
+    # Hive-king head (reference: docs/art-reference/demon-head-oryx.png). A huge cowl of spiked chitin
+    # plates flares up and out over the shoulders, a V-shaped guard closes under the chin, and the
+    # narrow maroon face sits recessed between them with a cluster of glowing eyes.
+    def spikes(prefix, count, length, along, z0, z1, x, lean):
+        out = []
+        for i in range(count):
+            t = i / max(1, count - 1)
+            z = z0 + (z1 - z0) * t
+            ln = max(2, round(length * (1 - abs(t - 0.4) * 0.9)))
+            out.append(part(f"{prefix}{i}", pivot=(x, along, z), rot=(-0.25 + t * 0.5, 0, lean),
+                            boxes=[box((-0.5, -ln, -0.5), (1, ln, 1), "oryx_spike")]))
+        return out
 
-    def blade(side):
+    def cowl(side):
+        # Two panels per side: one rises from beside the jaw and leans out, the next flares further
+        # out and back over the shoulder. Both wrap forward around the face and carry spikes.
         sx = -1 if side == "r" else 1
-        tip = part(f"blade_{side}3", pivot=(0, 0, 4), rot=(0.25, sx * -0.15, 0),
-                   boxes=[box((-0.5, -0.5, 0), (1, 1, 4), "chitin")])
-        mid = part(f"blade_{side}2", pivot=(0, 0, 5), rot=(0.12, sx * -0.12, 0),
-                   boxes=[box((-0.5, -1, 0), (1, 2, 4), "chitin")], children=[tip])
-        return part(f"blade_{side}", pivot=(sx * 4.3, -6.5, -2.5), rot=(0.08, sx * 0.2, sx * 0.1),
-                    boxes=[box((-0.5, -1.5, 0), (1, 3, 5), "chitin")], children=[mid])
+        outer = part(f"cowl_{side}_outer", pivot=(0, -10, 0.5), rot=(0.12, sx * 0.2, sx * 0.32),
+                     boxes=[box((-0.5, -8, -4), (1, 8, 9), "oryx_plate")],
+                     children=spikes(f"cowl_{side}_outer_spike", 4, 4, -8, -3.5, 4, 0, sx * 0.35))
+        return part(f"cowl_{side}", pivot=(sx * 4.3, -0.5, -2.5), rot=(0.12, sx * -0.55, sx * 0.5),
+                    boxes=[box((-0.5, -10, -1), (1, 10, 10), "oryx_plate")],
+                    children=[outer, *spikes(f"cowl_{side}_spike", 3, 3, -10, -0.5, 8, 0, sx * 0.25)])
 
-    def cheek(side):
+    def chin(side):
         sx = -1 if side == "r" else 1
-        return part(f"cheek_{side}", pivot=(sx * 4.2, -3.5, -2.5), rot=(0, sx * -0.35, sx * -0.2),
-                    boxes=[box((-0.5, -2, -1), (1, 4, 3), "chitin")])
+        return part(f"chin_{side}", pivot=(sx * 4.6, -2.5, -4.6), rot=(0, sx * 0.35, sx * 0.62),
+                    boxes=[box((-6 if sx < 0 else 0, -1, -1), (6, 3, 1), "oryx_plate")],
+                    children=[part(f"chin_{side}_edge", pivot=(sx * 6, 0.5, 0), rot=(0, 0, sx * -0.4),
+                                   boxes=[box((-0.5, -0.5, -0.5), (1, 3, 1), "oryx_spike")])])
 
-    def mandible(side):
-        sx = -1 if side == "r" else 1
-        return part(f"mandible_{side}", pivot=(sx * 2.2, -1, -4), rot=(-0.25, sx * 0.25, 0),
-                    boxes=[box((-1, 0, -1), (2, 3, 1), "chitin")],
-                    children=[part(f"mandible_{side}_fang", pivot=(sx * -0.3, 3, -0.5), rot=(-0.3, 0, sx * -0.35),
-                                   boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "fang")])])
-
-    ridge = [part(f"ridge_{i}", pivot=(0, -8, z), rot=(rx, 0, 0), boxes=[box((-0.5, -h, -0.5), (1, h, 1), "chitin")])
-             for i, (z, rx, h) in enumerate([(-3, -0.2, 2), (-1.2, -0.35, 3)])]
     head = part("head", children=[
-        crest, blade("r"), blade("l"), cheek("r"), cheek("l"), *ridge,
-        part("brow_plate", pivot=(0, -5.8, -4.2), rot=(0.25, 0, 0), boxes=[box((-4.5, -1, -1.5), (9, 2, 2), "chitin")],
-             children=[part("brow_spike", pivot=(0, -1, -1.5), rot=(-0.9, 0, 0),
-                            boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "chitin")])]),
+        cowl("r"), cowl("l"), chin("r"), chin("l"),
+        # Crest over the brow and a fan of spines behind the skull.
+        part("crest", pivot=(0, -8, -3.8), rot=(-0.25, 0, 0), boxes=[box((-1, -4, -0.5), (2, 4, 1), "oryx_plate")],
+             children=[part("crest_tip", pivot=(0, -4, 0), rot=(-0.2, 0, 0),
+                            boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "oryx_spike")])]),
+        *[part(f"back_spine_{i}", pivot=(x, -7.5, 3), rot=(-0.9, 0, x * 0.12),
+               boxes=[box((-0.5, -h, -0.5), (1, h, 1), "oryx_spike")])
+          for i, (x, h) in enumerate([(-2.5, 4), (0, 6), (2.5, 4)])],
+        # Brow ridges framing the recessed face.
+        part("brow_r", pivot=(-2.6, -6.2, -4.3), rot=(0, 0, 0.35), boxes=[box((-1.5, -0.5, -0.5), (3, 1, 1), "oryx_plate")]),
+        part("brow_l", pivot=(2.6, -6.2, -4.3), rot=(0, 0, -0.35), boxes=[box((-1.5, -0.5, -0.5), (3, 1, 1), "oryx_plate")]),
     ])
 
     # Huge wings rising well above the head: a long arm strut, a hooked claw at the joint and the tip,
@@ -370,7 +375,29 @@ DEMON_PLAYER_PAL = dict(skin="9a9a98", dark="3a3a3c", hi="cfcfcb", deep="101012"
                         mantle_trim="8a1a10", orb="ff3a10", orb_core="ffc0a0", ember="b0140c", ember_hi="ff3a22")
 
 
+def oryx_px(rng, x, y, w, h, side):
+    # Dark teal-grey chitin with organic, vein-like bone ridges and pale worn edges.
+    base = mix(hexc("2b3c3a"), hexc("111918"), rng.uniform(0, 0.6))
+    vein = (math.sin(x * 0.9 + y * 0.45) + math.sin(y * 1.3 - x * 0.35)) > 1.1
+    if vein:
+        base = mix(base, hexc("6f7f72"), 0.5)
+    if rng.random() < 0.06:
+        base = shade(base, 0.6)
+    if edge(x, y, w, h) and side in ("front", "back", "left", "right"):
+        base = mix(base, hexc("8e9886"), 0.4)                    # pale rim
+    if side == "top":
+        base = mix(base, hexc("7c8676"), 0.35)
+    if side == "bottom":
+        base = shade(base, 0.6)
+    return base
+
+
 def demon_material(mat, side, x, y, w, h, pal, rng):
+    if mat == "oryx_plate":
+        return oryx_px(rng, x, y, w, h, side)
+    if mat == "oryx_spike":
+        t = 1 - y / max(1, h - 1)                                 # y=0 is the tip
+        return shade(mix(hexc("2c3a38"), hexc("b8c0ae"), t * 0.8), rng.uniform(0.9, 1.1))
     if mat == "chitin":
         # Pale bone-chitin with dark crevices and growth ridges.
         c = mix(hexc("d6cdb6"), hexc("8e8570"), rng.uniform(0, 0.45))
@@ -478,33 +505,24 @@ def paint_demon_skin(pal):
         return c
 
     def helm(side, x, y, w, h):
-        # Bone-chitin skull with deep black sockets and three burning eyes, like a Hive king.
-        c = mix(hexc("cfc6ae"), hexc("8a816c"), rng.uniform(0, 0.4))
-        if y % 3 == 1 and side in ("left", "right", "back"):
-            c = shade(c, 0.65)                                   # growth ridges
-        if side == "front":
-            sockets = {(1, 3), (2, 3), (1, 4), (2, 4), (5, 3), (6, 3), (5, 4), (6, 4), (3, 2), (4, 2)}
-            if (x, y) in sockets:
-                c = hexc("0b0a0a")
-            if (x, y) in ((2, 3), (5, 3)):
-                return glow(hexc(pal["eye_hi"]))
-            if (x, y) in ((1, 3), (6, 3)):
-                return glow(hexc(pal["eye"]))
-            if (x, y) == (3, 2) or (x, y) == (4, 2):
-                return glow(hexc(pal["eye"]) if x == 3 else hexc(pal["eye_hi"]))   # third eye
-            if y in (0, 1):
-                c = shade(c, 0.85)                               # under the brow plate
-            if y >= 5:
-                # Smooth, flat face plate below the eyes: no mouth, just a faint central seam.
-                c = mix(hexc("d2c9b2"), hexc("b4ab94"), rng.uniform(0, 0.3))
-                if x in (3, 4) and y in (5, 6):
-                    c = shade(c, 0.9)
-                if y == 7:
-                    c = shade(c, 0.82)
-            if x in (0, 7) and y >= 3:
-                c = shade(c, 0.6)                                # sunken cheeks
-        if side == "top" and (x + y) % 3 == 0:
-            c = shade(c, 0.75)
+        # Dark chitin skull; the narrow face is maroon flesh with a central ridge and glowing eyes.
+        if side != "front":
+            return oryx_px(rng, x, y, w, h, side)
+        if x in (0, 7) or y == 0:
+            return oryx_px(rng, x, y, w, h, side)                 # plates frame the face
+        c = mix(hexc("5a2624"), hexc("2a1212"), rng.uniform(0, 0.45))
+        if x in (3, 4):
+            c = mix(hexc("7a3a34"), hexc("4a1c1a"), 0.3 if y < 6 else 0.6)   # central ridge
+        if y in (1, 2) and x in (1, 2, 5, 6):
+            c = shade(c, 0.6)                                     # brow shadow
+        if (x, y) in ((3, 3), (4, 3), (3, 4), (4, 4)):
+            return glow(hexc("c4b0f4") if y == 3 else hexc("9e86e6"))   # large central eye
+        if (x, y) in ((2, 3), (5, 3)):
+            return glow(hexc("7a5cc0"))                           # small eyes either side
+        if (x, y) in ((1, 4), (6, 4)):
+            return glow(hexc("5a3e98"))                           # and fainter ones beyond
+        if y == 7:
+            c = shade(c, 0.6)
         return c
 
     def torso(side, x, y, w, h):
