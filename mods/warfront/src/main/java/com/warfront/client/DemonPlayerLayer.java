@@ -94,10 +94,21 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         boolean elytra = player.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof net.minecraft.world.item.ElytraItem;
         wingR.visible = !elytra;
         wingL.visible = !elytra;
+        // Claws tuck away on a hand that is holding something.
+        boolean rightMain = player.getMainArm() == HumanoidArm.RIGHT;
+        setClaws(rightArm, "r", (rightMain ? player.getMainHandItem() : player.getOffhandItem()).isEmpty());
+        setClaws(leftArm, "l", (rightMain ? player.getOffhandItem() : player.getMainHandItem()).isEmpty());
         animate(player, limbSwingAmount, ageInTicks);
 
         root.render(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(EXTRAS)), packedLight, overlay);
         root.render(poseStack, buffer.getBuffer(RenderType.eyes(EXTRAS_GLOW)), FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+    }
+
+    private static void setClaws(ModelPart arm, String side, boolean visible) {
+        for (int i = 0; i < 3; i++) {
+            String name = "talon_" + side + i;
+            if (arm.hasChild(name)) arm.getChild(name).visible = visible;
+        }
     }
 
     private void animate(AbstractClientPlayer player, float limbSwingAmount, float ageInTicks) {
@@ -123,6 +134,7 @@ public class DemonPlayerLayer extends RenderLayer<AbstractClientPlayer, PlayerMo
         arm.render(poseStack, skin, packedLight, OverlayTexture.NO_OVERLAY);
         sleeve.render(poseStack, skin, packedLight, OverlayTexture.NO_OVERLAY);
         extras.copyFrom(arm);
+        setClaws(extras, right ? "r" : "l", false);   // first-person hands are usually holding something
         extras.render(poseStack, buffer.getBuffer(RenderType.entityCutoutNoCull(EXTRAS)), packedLight, OverlayTexture.NO_OVERLAY);
     }
 }

@@ -369,14 +369,13 @@ def demon_player():
         sx = -1 if side == "r" else 1
         name = "right_arm" if side == "r" else "left_arm"
         x0 = -3 if side == "r" else -1
-        talons = [part(f"talon_{side}{i}", pivot=(x0 + 0.5 + i * 1.0, 10, -1.3 + (i % 2) * 0.6), rot=(-0.35, 0, sx * -0.1 * (i - 1.5)),
-                       boxes=[box((-0.5, 0, -0.5), (1, 3, 1), "claw")],
-                       children=[part(f"talon_{side}{i}_tip", pivot=(0, 3, 0), rot=(-0.5, 0, 0),
-                                      boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw", grow=-0.15)])]) for i in range(4)]
+        # Three short claws at the fingertips, curled slightly forward; simple enough to look right
+        # wrapped around a weapon grip (and hidden in-game while the hand holds something).
+        talons = [part(f"talon_{side}{i}", pivot=(x0 + 1 + i * 1.0, 11.5, -1.6), rot=(-0.55, 0, 0),
+                       boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")]) for i in range(3)]
         thorns = [part(f"thorn_{side}{i}", pivot=(x0 + (0 if side == "r" else 4), y, z), rot=(rx, 0, sx * 0.9),
-                       boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "horn_black")])
-                  for i, (y, z, rx) in enumerate([(-1.5, 0, -0.3), (1, 1, 0.3), (3, -1, 0.2), (5, 1.2, -0.4),
-                                                  (6.5, -1, 0.4), (8.5, 0.5, -0.2)])]
+                       boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "horn_black")])
+                  for i, (y, z, rx) in enumerate([(0, 0, -0.3), (4, 1, 0.3), (7.5, -0.5, -0.2)])]
         return part(name, pivot=(sx * 5, 2, 0), children=[
             part(f"brambles_{side}", boxes=[box((x0, 3, -2), (4, 7, 4), "brambles", grow=0.3)]), *thorns, *talons])
 
