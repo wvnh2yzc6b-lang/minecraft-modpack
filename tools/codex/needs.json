@@ -1,11 +1,26 @@
 {
   "updated": "2026-10-06",
   "cells": {
-    "demon/spearman": {"status": "done", "note": "Imp Impaler: winged imp at 0.7× size, studded harness and bone spikes."},
-    "demon/archer": {"status": "done", "note": "Imp Firecaster: winged imp at 0.7× size, rune mantle, ember orb, fire bolts."},
-    "*/farmer": {"status": "done", "note": "Plain work clothes in the race's colors, as you asked."},
-    "*/builder": {"status": "done", "note": "Plain work clothes in the race's colors, as you asked."},
-    "*/guard": {"status": "done", "note": "Plain kettle helm, mail and tabard in the race's colors, as you asked."}
+    "demon/spearman": {
+      "status": "done",
+      "note": "Imp Impaler: winged imp at 0.7× size, studded harness and bone spikes."
+    },
+    "demon/archer": {
+      "status": "done",
+      "note": "Imp Firecaster: winged imp at 0.7× size, rune mantle, ember orb, fire bolts."
+    },
+    "*/farmer": {
+      "status": "partial",
+      "note": "Plain work clothes are done. The body underneath is still the basic race skin."
+    },
+    "*/builder": {
+      "status": "partial",
+      "note": "Plain work clothes are done. The body underneath is still the basic race skin."
+    },
+    "*/guard": {
+      "status": "partial",
+      "note": "Plain work clothes are done. The body underneath is still the basic race skin."
+    }
   },
   "default_note": "Placeholder: the basic race skin plus held gear. Needs a look.",
   "role_asks": {
@@ -15,36 +30,97 @@
     "captain": "Leader who rallies troops. Should stand out: banner, cape, crest, bigger build?",
     "champion": "The race's hero with a unique ability. Should be the most distinct unit of the race.",
     "archer": "Back-rank ranged unit. Hood, quiver, robes?",
-    "healer": "Support caster. Priestly, shamanic, druidic?"
+    "healer": "Support caster. Priestly, shamanic, druidic?",
+    "farmer": "Grows and harvests crops at its post.",
+    "builder": "Repairs the base from a chest of blocks.",
+    "guard": "Patrols its post and raises the alarm."
   },
   "questions": [
-    {"topic": "Units", "priority": "high", "question": "Reference images for each race's soldiers.",
-     "why": "Every unit marked Needs input uses the plain race skin. Pictures or descriptions let me give each one its own model, gear and size."},
-    {"topic": "Units", "priority": "high", "question": "How should each Champion look?",
-     "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."},
-    {"topic": "Units", "priority": "medium", "question": "Which units should be bigger or smaller than the rest?",
-     "why": "Sizes today come only from the race (dwarves 0.85×, orcs 1.10×) plus imps at 0.7×. Brutes, champions or captains could be larger."},
-    {"topic": "Units", "priority": "medium", "question": "Should the other demons (Hellguard, Fiend, Archfiend, Blood Witch) be a species of their own?",
-     "why": "Imps are now one species. The full-sized demons need a look: horned humanoids, armored knights, something else?"},
-    {"topic": "Players", "priority": "medium", "question": "Should players of other races get their own player model, like demons do?",
-     "why": "Only demon players look different. Angels with wings, dwarves shorter, hive with carapace are all possible."},
-    {"topic": "Enemies", "priority": "low", "question": "Should the enemy factions look different from the player races beyond color?",
-     "why": "The Black Legion, Marauders and the others reuse their race's models with their own colors."},
-    {"topic": "Mana", "priority": "medium", "question": "Any look in mind for the Mana Well, Pylon, Summoning Altar and Braziers?",
-     "why": "I'm building a first version now. Reference images would let me match your style."},
-    {"topic": "Mana", "priority": "medium", "question": "Should Captains and Champions need a bigger altar, or be limited to one each?",
-     "why": "Right now any complete altar can summon every role if the mana is there."},
-    {"topic": "Towers", "priority": "low", "question": "Do you want more tower types, or a new look for the existing three?",
-     "why": "Arrow Tower, Arcane Spire and Healing Shrine are simple textured blocks."},
-    {"topic": "Pack", "priority": "low", "question": "Twilight Forest is CurseForge-only. Skip it, or pick a replacement?",
-     "why": "The pack is built from Modrinth, so it can't include Twilight Forest."}
+    {
+      "topic": "Units",
+      "priority": "high",
+      "question": "Reference images for each race's soldiers.",
+      "why": "Every unit marked Needs input uses the plain race skin. Pictures or descriptions let me give each one its own model, gear and size."
+    },
+    {
+      "topic": "Units",
+      "priority": "high",
+      "question": "How should each Champion look?",
+      "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
+    },
+    {
+      "topic": "Units",
+      "priority": "medium",
+      "question": "Which units should be bigger or smaller than the rest?",
+      "why": "Sizes today come only from the race (dwarves 0.85×, orcs 1.10×) plus imps at 0.7×. Brutes, champions or captains could be larger."
+    },
+    {
+      "topic": "Units",
+      "priority": "medium",
+      "question": "Should the other demons (Hellguard, Fiend, Archfiend, Blood Witch) be a species of their own?",
+      "why": "Imps are now one species. The full-sized demons need a look: horned humanoids, armored knights, something else?"
+    },
+    {
+      "topic": "Players",
+      "priority": "medium",
+      "question": "Should players of other races get their own player model, like demons do?",
+      "why": "Only demon players look different. Angels with wings, dwarves shorter, hive with carapace are all possible."
+    },
+    {
+      "topic": "Enemies",
+      "priority": "low",
+      "question": "Should the enemy factions look different from the player races beyond color?",
+      "why": "The Black Legion, Marauders and the others reuse their race's models with their own colors."
+    },
+    {
+      "topic": "Mana",
+      "priority": "medium",
+      "question": "Any look in mind for the Mana Well, Pylon, Summoning Altar and Braziers?",
+      "why": "I'm building a first version now. Reference images would let me match your style."
+    },
+    {
+      "topic": "Mana",
+      "priority": "medium",
+      "question": "Should Captains and Champions need a bigger altar, or be limited to one each?",
+      "why": "Right now any complete altar can summon every role if the mana is there."
+    },
+    {
+      "topic": "Towers",
+      "priority": "low",
+      "question": "Do you want more tower types, or a new look for the existing three?",
+      "why": "Arrow Tower, Arcane Spire and Healing Shrine are simple textured blocks."
+    },
+    {
+      "topic": "Pack",
+      "priority": "low",
+      "question": "Twilight Forest is CurseForge-only. Skip it, or pick a replacement?",
+      "why": "The pack is built from Modrinth, so it can't include Twilight Forest."
+    }
   ],
   "settled": [
-    {"topic": "Imps", "answer": "Imps are one demon species. They only fill the Impaler and Firecaster roles."},
-    {"topic": "Workers", "answer": "Builders, farmers and guards look plain and humanoid in every race."},
-    {"topic": "Mana", "answer": "Mana is base power: wells store it, pylons extend range, towers and the altar draw from it. No personal mana bar."},
-    {"topic": "Mana", "answer": "Manabloom grows shards (everyday fuel); mana ore gives crystals (dense fuel and building material)."},
-    {"topic": "Mana", "answer": "Units are summoned at a multiblock altar with a menu."},
-    {"topic": "Demon player", "answer": "Oryx-style head, bare hands and feet, wings that fold at the elbow, flight without an elytra."}
+    {
+      "topic": "Imps",
+      "answer": "Imps are one demon species. They only fill the Impaler and Firecaster roles."
+    },
+    {
+      "topic": "Workers",
+      "answer": "Builders, farmers and guards look plain and humanoid in every race."
+    },
+    {
+      "topic": "Mana",
+      "answer": "Mana is base power: wells store it, pylons extend range, towers and the altar draw from it. No personal mana bar."
+    },
+    {
+      "topic": "Mana",
+      "answer": "Manabloom grows shards (everyday fuel); mana ore gives crystals (dense fuel and building material)."
+    },
+    {
+      "topic": "Mana",
+      "answer": "Units are summoned at a multiblock altar with a menu."
+    },
+    {
+      "topic": "Demon player",
+      "answer": "Oryx-style head, bare hands and feet, wings that fold at the elbow, flight without an elytra."
+    }
   ]
 }

@@ -60,29 +60,35 @@ section > header p { color: var(--muted); max-width: 70ch; }
 .q.low .pri { color: var(--muted); }
 .topic { font: 600 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
-.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.92rem; color: var(--muted); align-items: center; }
-.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
-table { border-collapse: collapse; width: 100%; min-width: 1100px; font-size: 0.88rem; }
-th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); vertical-align: top; }
-thead th { font: 600 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--plate);
-  position: sticky; top: 0; }
-tbody th { width: 11rem; font-family: var(--display); font-size: 0.95rem; background: var(--plate); }
-tbody th span { display: block; font: 400 0.8rem/1.35 var(--body); color: var(--muted); margin-top: 4px; letter-spacing: 0; }
-tr:last-child td, tr:last-child th { border-bottom: 0; }
-td.done { background: var(--good-bg); }
-.unit { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: start; }
-.unit img { image-rendering: pixelated; background: var(--plate); border-radius: 2px; }
-.unit > div { display: grid; gap: 3px; min-width: 0; }
-.unit p { color: var(--muted); font-size: 0.8rem; line-height: 1.35; }
-.chip { justify-self: start; font: 600 0.64rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; }
+.jump { display: flex; flex-wrap: wrap; gap: 6px 8px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.jump a { font-size: 0.95rem; color: var(--ink); text-decoration: none; padding: 4px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+.jump a span { font: 600 0.75rem var(--mono); color: var(--need); margin-left: 4px; }
+.jump a:hover, .jump a:focus-visible { border-color: var(--accent); }
+.races { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; align-items: start; }
+.race { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 14px; scroll-margin-top: 12px; min-width: 0; }
+.race > header { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+.race > header img { image-rendering: pixelated; background: var(--plate); border-radius: 3px; padding: 4px; box-sizing: content-box; }
+.race > header p { color: var(--muted); font-size: 0.9rem; }
+.group { display: grid; gap: 6px; }
+.group h3 { display: flex; align-items: center; gap: 8px; }
+.count { font: 600 0.8rem var(--mono); color: var(--muted); }
+.group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.group li { padding-block: 7px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; }
+.group li p { grid-column: 1 / -1; color: var(--muted); font-size: 0.86rem; line-height: 1.4; }
+.group li b { font-size: 1rem; }
+.role { font: 600 0.66rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); align-self: center; }
+.chip { justify-self: start; font: 600 0.64rem var(--mono); letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; }
 .chip.ok { color: var(--good); border: 1px solid currentColor; }
 .chip.need { color: var(--need); background: var(--need-bg); }
+.chip.part { color: var(--accent); border: 1px solid currentColor; }
+.tally .p { color: var(--accent); }
 
 .settled { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; max-width: 80ch; }
 .settled li::marker { color: var(--good); }
 footer { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
 code { font-family: var(--mono); font-size: 0.84em; }
 @media (max-width: 560px) {
+  .races { grid-template-columns: 1fr; }
   body { font-size: 16px; padding-inline: 16px; }
   .q { grid-template-columns: 1fr; gap: 6px; }
 }
@@ -92,39 +98,38 @@ code { font-family: var(--mono); font-size: 0.84em; }
 <header class="masthead">
   <span class="eyebrow">Warfront · open decisions · updated %%UPDATED%%</span>
   <h1>Design Needs</h1>
-  <p class="lede">Everything in the mod that still needs your direction: questions I can't settle on my own, and every unit in the roster with whether it has its own design yet. This page is rebuilt from the repository whenever something changes.</p>
+  <p class="lede">Every unit in every race that still needs a design, named one by one, plus the other decisions I can't make on my own. This page is rebuilt from the repository whenever something changes.</p>
   <div class="tally">
     <span><b>%%OPEN%%</b>open questions</span>
     <span><b class="n">%%HIGH%%</b>high priority</span>
     <span><b class="n">%%NEED%%</b>units need a design</span>
+    <span><b class="p">%%PARTIAL%%</b>partly done</span>
     <span><b class="d">%%DONE%%</b>of %%TOTAL%% designed</span>
   </div>
 </header>
 
+<nav class="jump" aria-label="Races">%%NAV%%</nav>
+
+<section id="races">
+  <header>
+    <span class="eyebrow">Race by race</span>
+    <h2>Units to design</h2>
+    <p>Every unit in each race, by name. <b>Needs a design</b> units wear the plain race skin shown beside the race name, plus whatever weapon or armor they carry. For each one, a picture, a sketch or a few words on how it should look and how big it should be is enough to start.</p>
+  </header>
+  <div class="races">
+%%RACES%%
+  </div>
+</section>
+
 <section id="questions">
   <header>
     <span class="eyebrow">Ranked by what they block</span>
-    <h2>Questions for you</h2>
+    <h2>Other questions</h2>
     <p>Answer any of these in chat, in any order. Pictures, sketches, a game or film you want it to look like, or a few words all work.</p>
   </header>
   <ol class="questions">
 %%QUESTIONS%%
   </ol>
-</section>
-
-<section id="roster">
-  <header>
-    <span class="eyebrow">7 races × every role</span>
-    <h2>Unit roster</h2>
-    <p>Each cell is one unit. <b>Needs input</b> units currently wear the plain race skin shown in the thumbnail, plus whatever weapon or armor they carry. The note under each role says what that role is for, to help you picture it.</p>
-  </header>
-  <div class="legend"><span class="chip need">Needs input</span> no design yet <span class="chip ok">Designed</span> has its own look, changes still welcome</div>
-  <div class="tablewrap"><table>
-    <thead><tr><th scope="col">Role</th>%%HEAD%%</tr></thead>
-    <tbody>
-%%ROWS%%
-    </tbody>
-  </table></div>
 </section>
 
 <section id="settled">

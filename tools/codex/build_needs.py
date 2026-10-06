@@ -38,25 +38,40 @@ def thumb(race):
     return uri(figure(skin).resize((48, 96), Image.NEAREST))
 
 
+RACE_LABEL = {"human": "Human", "elf": "Elf", "dwarf": "Dwarf", "orc": "Orc", "demon": "Demon", "angel": "Angel", "hive": "Hive"}
+GROUPS = [("need", "Needs a design", "need"), ("partial", "Partly done", "part"), ("done", "Designed", "ok")]
+
+
+def race_section(race, roles, names, thumb_uri):
+    units = {"need": [], "partial": [], "done": []}
+    for i, role in enumerate(roles):
+        status, note = cell(race, role)
+        name = names.get(race, [])[i] if i < len(names.get(race, [])) else role.title()
+        ask = NEEDS["role_asks"].get(role, "")
+        units[status].append(f'<li><b>{esc(name)}</b> <span class="role">{role.title()}</span>'
+                             f'<p>{esc(note if status != "need" else ask)}</p></li>')
+    blocks = []
+    for key, label, cls in GROUPS:
+        if units[key]:
+            blocks.append(f'<div class="group {cls}"><h3><span class="chip {cls}">{label}</span> '
+                          f'<span class="count">{len(units[key])}</span></h3><ul>{"".join(units[key])}</ul></div>')
+    need = len(units["need"]) + len(units["partial"])
+    return (f'<article class="race" id="{race}"><header><img src="{thumb_uri}" alt="" width="36" height="72">'
+            f'<div><h2>{RACE_LABEL[race]}</h2><p>{need} of {len(roles)} units still need design work</p></div></header>'
+            f'{"".join(blocks)}</article>'), units
+
+
 def main():
     roles, names = roster()
-    thumbs = {r: thumb(r) for r in RACES}
-    total = done = 0
-    rows = []
-    for role in roles:
-        tds = []
-        for race in RACES:
-            status, note = cell(race, role)
-            total += 1
-            done += status == "done"
-            name = names.get(race, [])[roles.index(role)] if race in names else "?"
-            chip = '<span class="chip ok">Designed</span>' if status == "done" else '<span class="chip need">Needs input</span>'
-            pic = "" if status == "done" else f'<img src="{thumbs[race]}" alt="" width="24" height="48">'
-            tds.append(f'<td class="{status}"><div class="unit">{pic}<div><b>{esc(name)}</b>{chip}'
-                       f'<p>{esc(note)}</p></div></div></td>')
-        ask = NEEDS["role_asks"].get(role, "")
-        rows.append(f'<tr><th scope="row">{role.title()}<span>{esc(ask)}</span></th>{"".join(tds)}</tr>')
-    head = "".join(f"<th scope=\"col\">{r.title()}</th>" for r in RACES)
+    total = done = partial = 0
+    sections, nav = [], []
+    for race in RACES:
+        html_, units = race_section(race, roles, names, thumb(race))
+        sections.append(html_)
+        total += len(roles)
+        done += len(units["done"])
+        partial += len(units["partial"])
+        nav.append(f'<a href="#{race}">{RACE_LABEL[race]} <span>{len(units["need"]) + len(units["partial"])}</span></a>')
 
     order = {"high": 0, "medium": 1, "low": 2}
     qs = sorted(NEEDS["questions"], key=lambda q: order[q["priority"]])
@@ -69,9 +84,9 @@ def main():
     high = sum(q["priority"] == "high" for q in qs)
 
     html = (HERE / "needs_template.html").read_text()
-    for k, v in {"%%UPDATED%%": NEEDS["updated"], "%%HEAD%%": head, "%%ROWS%%": "\n".join(rows),
+    for k, v in {"%%UPDATED%%": NEEDS["updated"], "%%RACES%%": "\n".join(sections), "%%NAV%%": "".join(nav),
                  "%%QUESTIONS%%": questions, "%%SETTLED%%": settled, "%%DONE%%": str(done),
-                 "%%NEED%%": str(total - done), "%%TOTAL%%": str(total), "%%OPEN%%": str(len(qs)),
+                 "%%NEED%%": str(total - done - partial), "%%PARTIAL%%": str(partial), "%%TOTAL%%": str(total), "%%OPEN%%": str(len(qs)),
                  "%%HIGH%%": str(high)}.items():
         html = html.replace(k, v)
     OUT.parent.mkdir(parents=True, exist_ok=True)
