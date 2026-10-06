@@ -1,6 +1,7 @@
 package com.warfront.client;
 
 import com.warfront.Warfront;
+import com.warfront.client.model.UnitGeometry;
 import com.warfront.registry.WFRegistry;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,6 +17,11 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(WFRegistry.SOLDIER.get(), SoldierRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(WFModelLayers.IMP, UnitGeometry::imp);
     }
 
     @SubscribeEvent

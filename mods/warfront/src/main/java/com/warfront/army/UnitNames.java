@@ -11,7 +11,7 @@ public final class UnitNames {
     private static final String[] ELF   = {"Thornguard",     "Glaive Warden", "Bladesinger",   "Sylvan Lord",    "Bladedancer",  "Ranger",           "Druid"};
     private static final String[] DWARF = {"Ironshield",     "Halberdier",    "Axe Thane",     "Hold Captain",   "Ironbreaker",  "Sharpshooter",     "Runepriest"};
     private static final String[] ORC   = {"Bulwark",        "Gutspear",      "Brute",         "Warboss",        "Berserker",    "Hunter",           "Shaman"};
-    private static final String[] DEMON = {"Hellshield",     "Impaler",       "Fiend",         "Archfiend",      "Hellknight",   "Hellfire Archer",  "Blood Witch"};
+    private static final String[] DEMON = {"Imp Bulwark",    "Imp Impaler",   "Imp",           "Archfiend",      "Hellknight",   "Imp Firecaster",   "Blood Witch"};
     private static final String[] ANGEL = {"Aegis",          "Lancer",        "Valkyrie",      "Archangel",      "Seraph",       "Starbow",          "Lightbearer"};
     private static final String[] HIVE  = {"Carapace",       "Lancer-Drone",  "Ripper",        "Hive Tyrant",    "Ravager",      "Spitter",          "Synapse Mender"};
 

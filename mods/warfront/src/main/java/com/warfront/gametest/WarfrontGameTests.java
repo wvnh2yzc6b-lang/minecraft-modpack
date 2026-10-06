@@ -235,4 +235,28 @@ public final class WarfrontGameTests {
         attackers.forEach(SoldierEntity::discard);
         h.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void demonFootSoldiersAreWingedImps(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity imp = recruit(h, owner, SoldierRole.SWORDSMAN, Race.DEMON, 3, 4);
+        SoldierEntity archfiend = recruit(h, owner, SoldierRole.CAPTAIN, Race.DEMON, 6, 4);
+        h.assertTrue(imp.getBody() == com.warfront.army.UnitBody.IMP, "demon swordsmen should be imps");
+        h.assertTrue("Imp".equals(imp.getUnitName()), "unit name should be Imp, was " + imp.getUnitName());
+        h.assertTrue(imp.getScale() < 0.8F, "imps should be small, scale was " + imp.getScale());
+        h.assertTrue(archfiend.getBody() == com.warfront.army.UnitBody.HUMANOID, "archfiends are not imps");
+        h.assertTrue(!imp.hurt(h.getLevel().damageSources().fall(), 10.0F), "winged imps take no fall damage");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void championsGetSignatureGear(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity ironbreaker = recruit(h, owner, SoldierRole.CHAMPION, Race.DWARF, 3, 4);
+        SoldierEntity berserker = recruit(h, owner, SoldierRole.CHAMPION, Race.ORC, 6, 4);
+        h.assertTrue(ironbreaker.getMainHandItem().is(Items.MACE), "Ironbreakers wield a mace");
+        h.assertTrue(berserker.getOffhandItem().is(Items.IRON_AXE), "Berserkers dual-wield axes");
+        h.assertTrue("Ironbreaker".equals(ironbreaker.getUnitName()), "dwarf champion should be an Ironbreaker");
+        h.succeed();
+    }
 }

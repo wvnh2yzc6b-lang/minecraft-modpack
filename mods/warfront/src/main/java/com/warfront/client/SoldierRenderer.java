@@ -1,7 +1,10 @@
 package com.warfront.client;
 
 import com.warfront.Warfront;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.warfront.army.UnitBody;
 import com.warfront.entity.SoldierEntity;
+import net.minecraft.client.renderer.MultiBufferSource;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
 import net.minecraft.client.model.HumanoidModel;
@@ -28,8 +31,11 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
         return out;
     }
 
+    private final ImpRenderer imp;
+
     public SoldierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SoldierModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5F);
+        this.imp = new ImpRenderer(ctx);
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
@@ -37,7 +43,18 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
     }
 
     @Override
+    public void render(SoldierEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+                       MultiBufferSource buffer, int packedLight) {
+        if (entity.getBody() == UnitBody.IMP) {
+            imp.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+            return;
+        }
+        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    }
+
+    @Override
     public ResourceLocation getTextureLocation(SoldierEntity entity) {
+        if (entity.getBody() == UnitBody.IMP) return imp.getTextureLocation(entity);
         return SKINS[entity.getSkin()];
     }
 }

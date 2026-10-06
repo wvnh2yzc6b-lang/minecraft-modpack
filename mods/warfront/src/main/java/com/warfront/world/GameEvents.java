@@ -125,7 +125,8 @@ public final class GameEvents {
             victim.clearFire();
             return;
         }
-        if (victimRace == Race.ANGEL && source.is(DamageTypeTags.IS_FALL)) {
+        if (source.is(DamageTypeTags.IS_FALL)
+                && (victimRace == Race.ANGEL || victim instanceof SoldierEntity flier && flier.getBody().winged)) {
             event.setCanceled(true);
             return;
         }

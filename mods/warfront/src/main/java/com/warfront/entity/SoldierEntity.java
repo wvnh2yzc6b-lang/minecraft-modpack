@@ -191,12 +191,15 @@ public class SoldierEntity extends PathfinderMob {
         // Hive warriors fight with their own claws instead of weapons.
         if (race == Race.HIVE && role.melee) damage += 4.0;
         if (champion && race == Race.DWARF) armor += 6.0;
-        Objects.requireNonNull(getAttribute(Attributes.MAX_HEALTH)).setBaseValue(role.health + tier * 2);
+        com.warfront.army.UnitBody unitBody = com.warfront.army.UnitBody.of(race, role);
+        Objects.requireNonNull(getAttribute(Attributes.MAX_HEALTH)).setBaseValue(
+                Math.round((role.health + tier * 2) * unitBody.healthMultiplier));
         Objects.requireNonNull(getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(damage);
         Objects.requireNonNull(getAttribute(Attributes.ARMOR)).setBaseValue(Math.min(30.0, armor));
         Objects.requireNonNull(getAttribute(Attributes.ARMOR_TOUGHNESS)).setBaseValue(champion ? 4.0 : tier >= 3 ? 2.0 : 0.0);
-        Objects.requireNonNull(getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(role.speed);
+        Objects.requireNonNull(getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(role.speed * unitBody.speedMultiplier);
         race.apply(this);
+        setModifier(Attributes.SCALE, "unit_scale", unitBody.scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         if (champion) {
             double scale = race == Race.HIVE ? 0.35 : race == Race.ORC || race == Race.DWARF ? 0.15 : 0.1;
             setModifier(Attributes.SCALE, "champion_scale", scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -308,6 +311,17 @@ public class SoldierEntity extends PathfinderMob {
     }
 
     // ------------------------------------------------------------------ accessors
+
+    /** The unit's race as both server and client know it (derived from the synced skin). */
+    public Race getVisualRace() {
+        int skin = getSkin();
+        Race[] races = Race.values();
+        return skin < races.length ? races[skin] : NpcFaction.values()[skin - races.length].race;
+    }
+
+    public com.warfront.army.UnitBody getBody() {
+        return com.warfront.army.UnitBody.of(getVisualRace(), getRole());
+    }
 
     public SoldierRole getRole() {
         return SoldierRole.byOrdinal(entityData.get(DATA_ROLE));
