@@ -62,3 +62,18 @@ These drive the soldier models (3D parts), skins and unit sizes.
   elbow straightened and the tip flexing behind each beat. The layer eases between states over about
   half a second. See `demon-player-wing-fold.png`.
 
+
+## Working agreement: animation
+
+Animations should look and feel fluid and real, not like a metronome. Rules used so far (see
+`WingAnimator`):
+
+- Drive cycles from an accumulated phase, never `sin(age * speed)` with a changing speed (that jumps).
+- Ease every blend exponentially by elapsed time, so motion is the same at any frame rate.
+- Asymmetric strokes: fast power stroke, slow recovery. Outer joints lag inner ones (follow-through),
+  and secondary parts (cloak, tail) ride the main motion a beat late.
+- Effort follows context: hard beats on takeoff and climbs, a swept-back glide in dives.
+- Multi-joint transitions are staggered: shoulder then elbow when opening, the reverse when closing.
+- Technique follows procedural creature animation used by mods such as Citadel / Ice and Fire
+  (phase-offset chain waves), implemented in-house to avoid a dependency.
+- Every animation change ships with a short preview GIF (e.g. `demon-flight.gif`).
