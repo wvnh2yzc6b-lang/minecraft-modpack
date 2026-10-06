@@ -114,8 +114,8 @@ ITEMS = [
     ("item/war_horn.png", "War Horn", "Start or stand down a wave campaign"),
     ("item/healing_staff.png", "Healing Staff", "Heal yourself and allies within 6 blocks; 128 uses"),
     ("item/war_mark.png", "War Mark", "Currency from raiders and won waves"),
-    ("item/mana_shard.png", "Mana Shard", "+10 mana when absorbed"),
-    ("item/mana_crystal.png", "Mana Crystal", "+25 maximum mana, permanently"),
+    ("item/mana_shard.png", "Mana Shard", "+10 mana in a Mana Well"),
+    ("item/mana_crystal.png", "Mana Crystal", "+50 mana; builds wells and altars"),
     ("item/manabloom_seeds.png", "Manabloom Seeds", "Plant on farmland"),
 ]
 BLOCKS = [
@@ -123,6 +123,9 @@ BLOCKS = [
     ("block/arcane_spire_side.png", "Arcane Spire", "side"), ("block/arcane_spire_top.png", "Arcane Spire", "top"),
     ("block/healing_shrine_side.png", "Healing Shrine", "side"), ("block/healing_shrine_top.png", "Healing Shrine", "top"),
     ("block/war_standard_flag.png", "War Standard", "flag"), ("block/war_standard_pole.png", "War Standard", "pole"),
+    ("block/mana_well_side.png", "Mana Well", "side"), ("block/mana_well_top_4.png", "Mana Well", "top, full"),
+    ("block/mana_pylon.png", "Mana Pylon", "stone and crystal"), ("block/mana_brazier.png", "Mana Brazier", "iron and crystal"),
+    ("block/summoning_altar_side.png", "Summoning Altar", "side"), ("block/summoning_altar_top.png", "Summoning Altar", "top"),
     ("block/mana_ore.png", "Mana Ore", "stone"), ("block/deepslate_mana_ore.png", "Mana Ore", "deepslate"),
     ("block/manabloom_stage0.png", "Manabloom", "age 0–1"), ("block/manabloom_stage1.png", "Manabloom", "age 2–3"),
     ("block/manabloom_stage2.png", "Manabloom", "age 4–6"), ("block/manabloom_stage3.png", "Manabloom", "ripe (7)"),
@@ -153,14 +156,6 @@ def faction_cards():
     <details><summary>Raw 64×64 texture</summary><img class="raw" src="{raw}" alt="{name} skin texture" width="128" height="128"></details></div>
 </article>''')
     return "\n".join(out)
-
-
-def contract_tiles():
-    rows = []
-    for p in sorted((T / "item").glob("*_contract.png")):
-        role = p.stem.replace("_contract", "").replace("_", " ").title()
-        rows.append((f"item/{p.name}", f"Contract: {role}", "Summon a soldier"))
-    return rows
 
 
 def tiles(rows):
@@ -285,7 +280,7 @@ def main():
         "%%WORKER_SHOTS%%": shots([("workers-all-races.png", "Farmers, builders and guards for every race, front and back.", True)]),
         "%%RACES%%": race_cards(),
         "%%FACTIONS%%": faction_cards(),
-        "%%ITEMS%%": tiles(ITEMS + contract_tiles()),
+        "%%ITEMS%%": tiles(ITEMS),
         "%%BLOCKS%%": tiles(BLOCKS),
         "%%NAMES%%": names_table,
         "%%CHAMPIONS%%": champions,

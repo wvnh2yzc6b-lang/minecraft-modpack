@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Mana is base power: wells, pylons, powered towers and a summoning altar",
+      "detail": "Mana no longer lives on the player. Mana Wells store it, Mana Pylons carry it across the base, and towers spend it on every shot. Troops are summoned at a Summoning Altar: a core on a 3×3 brick floor with a Mana Brazier on each corner, with a menu of your race's units and costs. Manabloom grows shards for everyday fuel; Mana Ore gives crystals, which are denser fuel and the material the new blocks are built from. Recruit contracts are gone."
+    },
+    {
+      "status": "done",
       "title": "Demon roster: imps are one species, not the whole faction",
       "detail": "Imps now only fill the Impaler and Firecaster roles. The other demon ranks are full-sized: Hellguard (shieldbearer), Fiend (swordsman), Archfiend, Hellknight and Blood Witch, plus the Ash Tiller, Brimstone Mason and Hellwarden workers. The extra imp variants are gone. Worker gear for every race is now plain: simple hats, smocks, aprons and kettle helms, with no horns, antennae, wings or crests.",
       "image": "workers-all-races.png"
@@ -60,7 +65,6 @@
     "raidersAndRecruitsFight": "An enemy raider and your recruit actually fight",
     "archerShootsEnemy": "An archer's volley hits a husk",
     "healerMendsWoundedAlly": "A healer restores a wounded soldier",
-    "summoningCostsMana": "A contract fails with no mana and deducts the exact cost; hive is cheaper",
     "ripeManabloomDropsShards": "A ripe crop drops Mana Shards",
     "demonsAreImmuneToFire": "Fire spares demons and hurts humans",
     "raidersBreakThroughWalls": "A boxed-in raider hacks its way out toward its objective",
@@ -71,6 +75,9 @@
     "builderRebuildsFromChest": "A builder rebuilds a knocked-down pillar with bricks from a chest",
     "guardAlarmRallysHiddenAllies": "A guard's alarm sends an ally that can't see the enemy into the fight",
     "workersFleeAndKeepTheirPosts": "Workers never take targets or fight, and the baton leaves them at their posts",
-    "demonImpsAreImpalersAndFirecasters": "Only demon spearmen and archers are imps; Fiends and demon workers are full-sized"
+    "demonImpsAreImpalersAndFirecasters": "Only demon spearmen and archers are imps; Fiends and demon workers are full-sized",
+    "altarSummonsWithWellMana": "An altar summons only with mana in a linked well, and spends exactly the unit's cost; hive is cheaper",
+    "incompleteAltarRefusesToSummon": "An altar missing a brazier refuses to summon and spends nothing",
+    "towersFireOnlyWithMana": "An arrow tower holds fire with an empty well and draws mana once it is filled"
   }
 }
