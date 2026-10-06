@@ -64,8 +64,8 @@ def mirror(p):
 
 # ----------------------------------------------------------------------------- the Imp
 
-def imp():
-    """Basic demon soldier. Small, gaunt, bat-winged, scorpion-tailed, digitigrade."""
+def imp_base(model_id):
+    """Shared imp body. Small, gaunt, bat-winged, scorpion-tailed, digitigrade."""
     head = part("head", pivot=(0, 1, -1.5), boxes=[
         box((-3.5, -7, -3.5), (7, 7, 7), "imp_head"),
         box((-3.5, -5, -4.5), (7, 1, 1), "skin_dark"),           # heavy brow
@@ -136,20 +136,131 @@ def imp():
                  ])
 
     return {
-        "id": "imp",
+        "id": model_id,
         "tex": [128, 128],
         "parts": [head, part("hat"), body, arm_r, mirror(arm_r), leg_r, mirror(leg_r)],
     }
 
 
-MODELS = [imp()]
+
+
+def find(model, name):
+    def walk(parts):
+        for p in parts:
+            if p["name"] == name:
+                return p
+            r = walk(p["children"])
+            if r:
+                return r
+        return None
+    found = walk(model["parts"])
+    if found is None:
+        raise KeyError(name)
+    return found
+
+
+def attach(model, parent, *parts):
+    find(model, parent)["children"].extend(parts)
+
+
+def overlay(name, origin, size, mat, grow):
+    """A shell box drawn over a body part (armor, clothing, tattoos), inflated by ``grow`` px."""
+    return part(name, boxes=[box(origin, size, mat, grow=grow)])
+
+
+def belt_and_loincloth(m, cloth="rag"):
+    attach(m, "body",
+           overlay("belt", (-2.5, 9, -1.5), (5, 2, 3), "leather_belt", 0.35),
+           part("loin_front", pivot=(0, 10.5, -1.9), rot=(-0.08, 0, 0), boxes=[box((-2, 0, 0), (4, 5, 0), cloth)]),
+           part("loin_back", pivot=(0, 10.5, 1.9), rot=(0.12, 0, 0), boxes=[box((-2, 0, 0), (4, 5, 0), cloth)]))
+
+
+def imp():
+    """Imp (swordsman): scrappy and light. Stitched belt, ragged loincloth, wrist wraps."""
+    m = imp_base("imp")
+    belt_and_loincloth(m)
+    attach(m, "belt", part("trinket_1", pivot=(1.6, 10.6, -1.9), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "bone")]),
+           part("trinket_2", pivot=(-1.4, 10.6, -1.9), rot=(0, 0, 0.3), boxes=[box((-0.5, 0, -0.5), (1, 1, 1), "bone")]))
+    for side in ("r", "l"):
+        attach(m, f"forearm_{side}", overlay(f"wrap_{side}", (-1, 3, -1), (2, 4, 2), "wrap", 0.3))
+    return m
+
+
+def imp_bulwark():
+    """Imp Bulwark (shieldbearer): scavenged scrap armor. Dented riveted breastplate, skullcap, one spiked pauldron."""
+    m = imp_base("imp_bulwark")
+    belt_and_loincloth(m, cloth="rag_dark")
+    attach(m, "body", overlay("breastplate", (-3, 0, -1.5), (6, 8, 3), "iron_scrap", 0.55),
+           overlay("strap_back", (-3, 1, -1.5), (6, 2, 3), "leather", 0.7))
+    attach(m, "head", overlay("skullcap", (-3.5, -7, -3.5), (7, 3, 7), "iron_cap", 0.45),
+           part("cap_nasal", pivot=(0, -4.2, -4.1), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "iron_scrap")]))
+    attach(m, "left_arm",
+           part("pauldron_l", pivot=(0.5, -1.2, 0), rot=(0, 0, -0.25), boxes=[box((-1.5, -1, -2), (4, 2, 4), "iron_scrap")],
+                children=[part("pauldron_spike_1", pivot=(1.2, -1, -0.6), rot=(0, 0, -0.5),
+                               boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "iron_spike")]),
+                          part("pauldron_spike_2", pivot=(1.2, -1, 1.0), rot=(0.2, 0, -0.7),
+                               boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "iron_spike")])]))
+    attach(m, "right_arm", overlay("shoulder_strap_r", (-1, -1, -1), (2, 2, 2), "leather", 0.4))
+    for side in ("r", "l"):
+        attach(m, f"forearm_{side}", overlay(f"vambrace_{side}", (-1, 2, -1), (2, 5, 2), "iron_scrap", 0.35))
+    return m
+
+
+def bone_spike(name, pivot, rot, length=3):
+    return part(name, pivot=pivot, rot=rot, boxes=[box((-0.5, -length, -0.5), (1, length, 1), "bone_spike")])
+
+
+def imp_impaler():
+    """Imp Impaler (spearman): rugged and sharp. Studded harness, bone spikes, bracers, scars."""
+    m = imp_base("imp_impaler")
+    belt_and_loincloth(m, cloth="rag_torn")
+    attach(m, "body", overlay("harness", (-3, 0, -1.5), (6, 9, 3), "harness", 0.3))
+    # Longer, sharper horns: two extra swept spikes.
+    attach(m, "head", bone_spike("horn_x_r", (-2.6, -7, 0), (-0.9, 0, -0.55), 5),
+           bone_spike("horn_x_l", (2.6, -7, 0), (-0.9, 0, 0.55), 5))
+    for side, sx in (("r", -1), ("l", 1)):
+        arm = "right_arm" if side == "r" else "left_arm"
+        attach(m, arm, overlay(f"shoulder_pad_{side}", (-1, -1, -1), (2, 3, 2), "studded", 0.4),
+               bone_spike(f"shoulder_spike_{side}1", (sx * 0.8, -1.8, -0.4), (-0.25, 0, sx * 0.75), 5),
+               bone_spike(f"shoulder_spike_{side}2", (sx * 0.5, -1.6, 0.9), (0.45, 0, sx * 0.55), 4))
+        attach(m, f"forearm_{side}", overlay(f"bracer_{side}", (-1, 1, -1), (2, 5, 2), "studded", 0.35),
+               part(f"forearm_spike_{side}", pivot=(0, 2, 1.2), rot=(0.9, 0, 0),
+                    boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "bone_spike")]))
+        attach(m, f"shin_{side}", part(f"knee_spike_{side}", pivot=(0, 0.5, -0.8), rot=(-1.2, 0, 0),
+                                        boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "bone_spike")]))
+    return m
+
+
+def imp_firecaster():
+    """Imp Firecaster (archer): magical. Rune-trimmed tattered mantle, glowing tattoos, charms, ember orb."""
+    m = imp_base("imp_firecaster")
+    belt_and_loincloth(m, cloth="rag_rune")
+    attach(m, "body",
+           overlay("runes_body", (-3, 0, -1.5), (6, 9, 3), "rune_tattoo", 0.05),
+           overlay("mantle", (-3.5, -0.5, -2), (7, 2, 4), "mantle", 0.55),
+           part("mantle_back", pivot=(0, 3.4, 2.6), rot=(0.12, 0, 0), boxes=[box((-3, 0, 0), (6, 6, 0), "mantle_hang")]),
+           part("necklace", pivot=(0, 0.3, -2.1), rot=(0.1, 0, 0), boxes=[box((-2, 0, -0.5), (4, 1, 1), "charms")],
+                children=[part("charm_skull", pivot=(0, 1, 0), boxes=[box((-0.5, 0, -0.7), (1, 1, 1), "bone")])]))
+    for side in ("r", "l"):
+        arm = "right_arm" if side == "r" else "left_arm"
+        attach(m, arm, overlay(f"runes_arm_{side}", (-1, -1, -1), (2, 7, 2), "rune_tattoo", 0.05))
+    attach(m, "hand_l", part("ember_orb", pivot=(0, 3.5, -1.5), boxes=[box((-1, -1, -1), (2, 2, 2), "orb")],
+                             children=[part("ember_orb_core", boxes=[box((-0.5, -0.5, -0.5), (1, 1, 1), "orb_core")])]))
+    # Glowing horn tips.
+    for name in ("horn_c", "horn_r1", "horn_l1", "horn_r2", "horn_l2"):
+        for b in find(m, name)["boxes"]:
+            b["mat"] = "horn_glow"
+    return m
+
+
+MODELS = [imp(), imp_bulwark(), imp_impaler(), imp_firecaster()]
 
 
 # ----------------------------------------------------------------------------- UV packing
 
 def footprint(size):
-    w, h, d = size
-    return math.ceil(2 * (d + w)), math.ceil(d + h)
+    w, h, d = [math.ceil(v) for v in size]
+    return 2 * (d + w), d + h
 
 
 def all_boxes(parts):
@@ -205,22 +316,32 @@ IMP_PALETTES = {
     # player demons: crimson with dark mottling, bone tail
     "demon": dict(skin="9e211b", dark="56100d", hi="c9483a", deep="230807", claw="140c0b", horn="2b1a15",
                   horn_tip="7a5a48", membrane="6e1612", vein="3e0a08", tail="b38c5c", tail_dark="6a4e2e",
-                  eye="ffd23a", eye_hi="fff4b8", tuft="2a1410"),
+                  eye="ffd23a", eye_hi="fff4b8", tuft="2a1410",
+                  leather="6b4226", leather_dark="3a2414", iron="7c7f84", iron_dark="45474c", rust="8a4a22",
+                  cloth="5a3a2a", cloth_dark="2e1d15", bone="d8cdb0", bone_dark="8c7c5c", rune="ff9a2e",
+                  rune_hi="ffe28a", mantle="3a1020", mantle_trim="c9772a", orb="ff6a10", orb_core="fff1a0"),
     # Burning Horde: darker, ember-veined
     "burning_horde": dict(skin="7a1712", dark="3a0a07", hi="e0602a", deep="160504", claw="0c0808", horn="1a1210",
                           horn_tip="ff7a1a", membrane="4a0d0a", vein="ff5a10", tail="8a6a48", tail_dark="3e2a18",
-                          eye="ff7a00", eye_hi="ffe0a0", tuft="1a0a06"),
+                          eye="ff7a00", eye_hi="ffe0a0", tuft="1a0a06", vein_glow=True,
+                          leather="3e2616", leather_dark="1e120a", iron="4a4448", iron_dark="242026", rust="a04a18",
+                          cloth="2e1a14", cloth_dark="140a08", bone="b8a888", bone_dark="6a5a40", rune="ff5a10",
+                          rune_hi="ffd060", mantle="1a0808", mantle_trim="ff6a1a", orb="ff4a00", orb_core="ffe080"),
 }
 
 
-def paint_box(img, b, pal, rng):
+def paint_box(img, glow_img, b, pal, rng):
     mat = b["mat"]
     for side, (x0, y0, w, h) in faces(b).items():
         for yy in range(h):
             for xx in range(w):
                 c = material(mat, side, xx, yy, w, h, pal, rng)
-                if c is not None:
-                    img.putpixel((x0 + xx, y0 + yy), c)
+                if c is None:
+                    continue
+                if isinstance(c, tuple) and c and c[0] == "glow":
+                    c = c[1]
+                    glow_img.putpixel((x0 + xx, y0 + yy), shade(c, 0.5))
+                img.putpixel((x0 + xx, y0 + yy), c)
 
 
 def mottled(pal, rng, x, y, w, h, side):
@@ -240,7 +361,200 @@ def mottled(pal, rng, x, y, w, h, side):
     return c
 
 
+def glow(c):
+    """Marks a pixel as emissive: drawn in the base texture and in the glow layer."""
+    return ("glow", c)
+
+
+def edge(x, y, w, h):
+    return x == 0 or y == 0 or x == w - 1 or y == h - 1
+
+
+def leather_px(pal, rng, x, y, w, h, side, stitch_row=None):
+    c = mix(hexc(pal["leather"]), hexc(pal["leather_dark"]), rng.uniform(0, 0.35))
+    if rng.random() < 0.12:
+        c = mix(c, hexc(pal["leather_dark"]), 0.6)          # grain pits
+    if rng.random() < 0.05:
+        c = mix(c, hexc("c8a07a"), 0.35)                     # scuffs
+    if edge(x, y, w, h) and side in ("front", "back", "left", "right"):
+        c = shade(c, 0.78)                                    # worn, darkened edges
+    if stitch_row is not None and y == stitch_row and x % 2 == 0 and side in ("front", "back"):
+        c = hexc("d8c49a")                                    # stitching
+    if side == "top":
+        c = shade(c, 1.12)
+    return c
+
+
+def iron_px(pal, rng, x, y, w, h, side, rivets=True):
+    t = y / max(1, h - 1)
+    c = mix(hexc(pal["iron"]), hexc(pal["iron_dark"]), 0.15 + 0.5 * t)    # light from above
+    c = shade(c, rng.uniform(0.92, 1.08))
+    if rng.random() < 0.07:
+        c = mix(c, hexc(pal["rust"]), 0.65)                  # rust spots
+    if rng.random() < 0.05:
+        c = shade(c, 0.7)                                     # dents
+    if (x + y) % 7 == 0 and rng.random() < 0.4:
+        c = mix(c, hexc("d0d4da"), 0.35)                     # scratches
+    if rivets and side in ("front", "back") and y in (0, h - 1) and x % 3 == 1:
+        c = hexc("c4c8ce")                                    # rivet heads
+    if rivets and side in ("front", "back") and y in (1,) and x % 3 == 1:
+        c = shade(hexc(pal["iron_dark"]), 0.8)               # rivet shadow
+    if side == "top":
+        c = shade(c, 1.18)
+    if side == "bottom":
+        c = shade(c, 0.7)
+    return c
+
+
+def cloth_px(pal, rng, x, y, w, h, side, base="cloth", fray=0, holes=0.0):
+    if fray and y >= h - fray and (x * 5 + y * 3) % 3 == 0:
+        return None                                           # frayed hem
+    if holes and rng.random() < holes:
+        return None
+    c = hexc(pal[base]) if base in pal else hexc(base)
+    if (x + y) % 2 == 0:
+        c = shade(c, 1.07)                                    # weave
+    if x % 3 == 0:
+        c = shade(c, 0.93)
+    if rng.random() < 0.08:
+        c = mix(c, hexc(pal["cloth_dark"]), 0.5)             # stains
+    if y >= h - 1:
+        c = shade(c, 0.8)
+    return c
+
+
+def gear_material(mat, side, x, y, w, h, pal, rng):
+    """Clothing and armor materials. Returns NotImplemented for anything else."""
+    if mat == "leather_belt":
+        if side in ("top", "bottom"):
+            return leather_px(pal, rng, x, y, w, h, side)
+        c = leather_px(pal, rng, x, y, w, h, side, stitch_row=0)
+        if side == "front" and x in (w // 2 - 1, w // 2) :
+            return hexc("b89a50") if y == 1 else shade(hexc("8a7038"), 0.9)     # buckle
+        return c
+    if mat == "leather":
+        return leather_px(pal, rng, x, y, w, h, side, stitch_row=h - 1)
+    if mat == "wrap":
+        c = cloth_px(pal, rng, x, y, w, h, side, base="bone_dark")
+        if c is None:
+            return None
+        if (y + x // 2) % 2 == 0:
+            c = shade(c, 0.78)                                # wound bands
+        return c
+    if mat in ("rag", "rag_dark", "rag_torn", "rag_rune"):
+        base = "cloth_dark" if mat == "rag_dark" else "cloth"
+        c = cloth_px(pal, rng, x, y, w, h, side, base=base, fray=2 if mat != "rag_torn" else 3,
+                     holes=0.06 if mat == "rag_torn" else 0.0)
+        if c is None:
+            return None
+        if mat == "rag_torn" and x in (0, w - 1) and y > 1 and rng.random() < 0.5:
+            return None                                       # ripped sides
+        if mat == "rag_rune" and side in ("front", "back") and y == 1 and x % 2 == 0:
+            return glow(hexc(pal["rune"]))                    # ember-stitched trim
+        return c
+    if mat == "bone":
+        c = mix(hexc(pal["bone"]), hexc(pal["bone_dark"]), rng.uniform(0, 0.3))
+        return shade(c, 1.1 if side == "top" else 0.95)
+    if mat in ("bone_spike", "iron_spike"):
+        t = 1 - y / max(1, h - 1)    # spikes grow upward from their pivot: y=0 is the tip
+        if mat == "bone_spike":
+            c = mix(hexc(pal["bone"]), hexc(pal["bone_dark"]), t * 0.8)
+            if rng.random() < 0.12:
+                c = shade(c, 0.75)                            # cracks
+        else:
+            c = mix(hexc(pal["iron"]), hexc("d8dce2"), t * 0.6)
+        return shade(c, rng.uniform(0.92, 1.06))
+    if mat in ("iron_scrap", "iron_cap"):
+        if mat == "iron_cap" and side in ("front", "back", "left", "right") and y >= h - 1 and x % 2 == 0:
+            return hexc("c4c8ce")                             # rim rivets
+        return iron_px(pal, rng, x, y, w, h, side, rivets=(mat == "iron_scrap"))
+    if mat == "harness":
+        # Two straps crossing the chest and back, studded; everything else is see-through.
+        on = abs((x - y * w / h)) < 1.0 or abs((w - 1 - x) - y * w / h) < 1.0 or y in (h - 3, h - 2)
+        if side in ("left", "right"):
+            on = y in (1, 2, h - 3, h - 2)
+        if side in ("top", "bottom"):
+            on = x in (1, w - 2)
+        if not on:
+            return None
+        c = leather_px(pal, rng, x, y, w, h, side)
+        if y % 3 == 0 and side in ("front", "back"):
+            c = hexc("b8bcc2")                                # studs
+        return c
+    if mat == "studded":
+        c = leather_px(pal, rng, x, y, w, h, side)
+        if side in ("front", "back", "left", "right") and x % 2 == 1 and y % 2 == 1:
+            c = hexc("a8acb2")
+        return c
+    if mat == "rune_tattoo":
+        if side not in ("front", "back", "left", "right"):
+            return None
+        if w >= 6 and side == "front":
+            # A burning sigil over the heart: a ring with a downward fork.
+            sigil = ["..###.",
+                     ".#...#",
+                     ".#.#.#",
+                     ".#...#",
+                     "..###.",
+                     "...#..",
+                     "..#.#.",
+                     ".#...#"]
+            sy = y - 1
+            if 0 <= sy < len(sigil) and x < len(sigil[sy]) and sigil[sy][x] == "#":
+                return glow(hexc(pal["rune_hi"]) if sy in (2, 5) else hexc(pal["rune"]))
+            return None
+        if w >= 6 and side == "back":
+            return glow(hexc(pal["rune"])) if x in (2, 3) and y % 3 != 2 and 0 < y < h - 1 else None
+        # Limbs: two angular bands of glyph marks.
+        if y in (1, 4) and x % 2 == 0:
+            return glow(hexc(pal["rune"]))
+        if y in (2, 5) and x % 2 == 1:
+            return glow(hexc(pal["rune_hi"]))
+        return None
+    if mat in ("mantle", "mantle_hang"):
+        fray = 2 if mat == "mantle_hang" else 1
+        if y >= h - fray and (x * 7 + y) % 3 == 0:
+            return None
+        if mat == "mantle_hang" and side not in ("front", "back"):
+            return None
+        c = hexc(pal["mantle"])
+        if (x + y) % 2 == 0:
+            c = shade(c, 1.1)
+        if rng.random() < 0.1:
+            c = shade(c, 0.75)
+        trim_row = h - 1 if mat == "mantle" else 0
+        if y == trim_row and side in ("front", "back", "left", "right"):
+            return glow(hexc(pal["mantle_trim"])) if x % 2 == 0 else hexc(pal["mantle_trim"])
+        if mat == "mantle_hang" and side == "back" and x in (w // 2 - 1, w // 2) and 1 < y < h - 2:
+            return glow(hexc(pal["rune"]))                    # sigil down the back
+        return c
+    if mat == "charms":
+        if side in ("top", "bottom"):
+            return None
+        return hexc("d8cdb0") if x % 2 == 0 else hexc(pal["leather_dark"])
+    if mat == "rune_band":
+        if side in ("top", "bottom"):
+            return None
+        c = hexc(pal["mantle"])
+        if x % 3 == 1:
+            return glow(hexc(pal["rune"]))
+        return c
+    if mat == "orb":
+        return glow(mix(hexc(pal["orb"]), hexc(pal["orb_core"]), rng.uniform(0, 0.4)))
+    if mat == "orb_core":
+        return glow(hexc(pal["orb_core"]))
+    if mat == "horn_glow":
+        t = 1 - y / max(1, h - 1)
+        if t > 0.6:
+            return glow(mix(hexc(pal["rune"]), hexc(pal["rune_hi"]), t))
+        return shade(mix(hexc(pal["horn"]), hexc(pal["horn_tip"]), t * 0.8), rng.uniform(0.9, 1.1))
+    return NotImplemented
+
+
 def material(mat, side, x, y, w, h, pal, rng):
+    g = gear_material(mat, side, x, y, w, h, pal, rng)
+    if g is not NotImplemented:
+        return g
     if mat in ("skin", "torso"):
         c = mottled(pal, rng, x, y, w, h, side)
         if mat == "torso" and side == "front":
@@ -291,6 +605,8 @@ def material(mat, side, x, y, w, h, pal, rng):
         c = mix(hexc(pal["membrane"]), hexc(pal["skin"]), 0.15 + 0.25 * (1 - y / h))
         if (x + y // 3) % 5 == 0:
             c = mix(c, hexc(pal["vein"]), 0.5)
+            if pal.get("vein_glow") and y % 4 != 3:
+                return glow(c)
         if side == "back":
             c = shade(c, 0.8)
         return shade(c, rng.uniform(0.94, 1.06))
@@ -319,7 +635,7 @@ def material(mat, side, x, y, w, h, pal, rng):
             if y == 2 and x in (1, 2, 4, 5):
                 c = hexc(pal["deep"])                     # brow shadow
             if y == 3 and x in (1, 2, 4, 5):
-                c = hexc(pal["eye"]) if x in (1, 5) else hexc(pal["eye_hi"])
+                return glow(hexc(pal["eye"]) if x in (1, 5) else hexc(pal["eye_hi"]))
             if y == 4 and x == 3:
                 c = mix(c, hexc(pal["dark"]), 0.6)        # nose
             if y == 5 and 1 <= x <= 5:
@@ -337,12 +653,14 @@ def material(mat, side, x, y, w, h, pal, rng):
 def paint(model, key, pal):
     tw, th = model["tex"]
     img = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
+    glow_img = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
     rng = random.Random(f"{model['id']}:{key}")
     for _, b in all_boxes(model["parts"]):
-        paint_box(img, b, pal, rng)
+        paint_box(img, glow_img, b, pal, rng)
     out = RES / key / f"{model['id']}.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     img.save(out)
+    glow_img.save(RES / key / f"{model['id']}_glow.png")
     return out
 
 
@@ -364,7 +682,9 @@ def java_part(p, parent_var, lines, counter):
         cubes += f".texOffs({b['uv'][0]}, {b['uv'][1]})"
         if b.get("mirror"):
             cubes += ".mirror()"
-        cubes += f".addBox({jf(x)}, {jf(y)}, {jf(z)}, {jf(w)}, {jf(h)}, {jf(d)})"
+        grow = b.get("grow")
+        deform = f", new CubeDeformation({jf(grow)})" if grow else ""
+        cubes += f".addBox({jf(x)}, {jf(y)}, {jf(z)}, {jf(w)}, {jf(h)}, {jf(d)}{deform})"
         if b.get("mirror"):
             cubes += ".mirror(false)"
     (px, py, pz), (rx, ry, rz) = p["pivot"], p["rot"]
@@ -392,6 +712,7 @@ def write_java(models):
     src = f'''package com.warfront.client.model;
 
 import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
@@ -414,8 +735,10 @@ public final class UnitGeometry {{
 if __name__ == "__main__":
     for m in MODELS:
         pack(m)
-    for key, pal in IMP_PALETTES.items():
-        print("painted", paint(MODELS[0], key, pal))
+    for m in MODELS:
+        if m["id"].startswith("imp"):
+            for key, pal in IMP_PALETTES.items():
+                print("painted", paint(m, key, pal))
     write_java(MODELS)
     JSON_OUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUT.write_text(json.dumps(MODELS))

@@ -23,6 +23,17 @@ public enum UnitBody {
         this.winged = winged;
     }
 
+    /** Model and texture name for this body and role, e.g. "imp_impaler". */
+    public String variant(SoldierRole role) {
+        if (this != IMP) return "humanoid";
+        return switch (role) {
+            case SHIELDBEARER -> "imp_bulwark";
+            case SPEARMAN -> "imp_impaler";
+            case ARCHER -> "imp_firecaster";
+            default -> "imp";
+        };
+    }
+
     public static UnitBody of(Race race, SoldierRole role) {
         if (race == Race.DEMON) {
             return switch (role) {

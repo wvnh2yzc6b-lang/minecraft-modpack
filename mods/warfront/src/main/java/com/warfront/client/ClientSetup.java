@@ -22,6 +22,9 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(WFModelLayers.IMP, UnitGeometry::imp);
+        event.registerLayerDefinition(WFModelLayers.IMP_BULWARK, UnitGeometry::imp_bulwark);
+        event.registerLayerDefinition(WFModelLayers.IMP_IMPALER, UnitGeometry::imp_impaler);
+        event.registerLayerDefinition(WFModelLayers.IMP_FIRECASTER, UnitGeometry::imp_firecaster);
     }
 
     @SubscribeEvent

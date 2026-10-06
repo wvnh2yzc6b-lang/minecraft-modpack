@@ -31,21 +31,30 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
         return out;
     }
 
-    private final ImpRenderer imp;
+    private final java.util.Map<String, ImpRenderer> imps = new java.util.HashMap<>();
 
     public SoldierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SoldierModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5F);
-        this.imp = new ImpRenderer(ctx);
+        imps.put("imp", new ImpRenderer(ctx, WFModelLayers.IMP, "imp"));
+        imps.put("imp_bulwark", new ImpRenderer(ctx, WFModelLayers.IMP_BULWARK, "imp_bulwark"));
+        imps.put("imp_impaler", new ImpRenderer(ctx, WFModelLayers.IMP_IMPALER, "imp_impaler"));
+        imps.put("imp_firecaster", new ImpRenderer(ctx, WFModelLayers.IMP_FIRECASTER, "imp_firecaster"));
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
                 ctx.getModelManager()));
     }
 
+    private ImpRenderer impFor(SoldierEntity entity) {
+        UnitBody body = entity.getBody();
+        return body == UnitBody.IMP ? imps.get(body.variant(entity.getRole())) : null;
+    }
+
     @Override
     public void render(SoldierEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight) {
-        if (entity.getBody() == UnitBody.IMP) {
+        ImpRenderer imp = impFor(entity);
+        if (imp != null) {
             imp.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
             return;
         }
@@ -54,7 +63,8 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
 
     @Override
     public ResourceLocation getTextureLocation(SoldierEntity entity) {
-        if (entity.getBody() == UnitBody.IMP) return imp.getTextureLocation(entity);
+        ImpRenderer imp = impFor(entity);
+        if (imp != null) return imp.getTextureLocation(entity);
         return SKINS[entity.getSkin()];
     }
 }

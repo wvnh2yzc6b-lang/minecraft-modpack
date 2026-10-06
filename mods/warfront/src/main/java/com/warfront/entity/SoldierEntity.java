@@ -272,7 +272,8 @@ public class SoldierEntity extends PathfinderMob {
                 }
             }
             case ARCHER -> {
-                if (!claws) gear(EquipmentSlot.MAINHAND, Items.BOW);
+                // Hive spitters and demon firecasters need no bow.
+                if (!claws && race != Race.DEMON) gear(EquipmentSlot.MAINHAND, Items.BOW);
             }
             case HEALER -> gear(EquipmentSlot.MAINHAND, WFRegistry.HEALING_STAFF.get());
         }

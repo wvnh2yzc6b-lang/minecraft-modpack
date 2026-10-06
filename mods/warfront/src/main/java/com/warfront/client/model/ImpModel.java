@@ -19,6 +19,9 @@ public class ImpModel extends HumanoidModel<SoldierEntity> {
     private final float wingY;
     private final float bodyPitch;
     private final float legPitch;
+    /** The Firecaster's floating ember orb, if this variant has one. */
+    private final ModelPart orb;
+    private final float orbY;
 
     public ImpModel(ModelPart root) {
         super(root);
@@ -33,6 +36,9 @@ public class ImpModel extends HumanoidModel<SoldierEntity> {
         this.wingY = wingR.getInitialPose().yRot;
         this.bodyPitch = body.getInitialPose().xRot;
         this.legPitch = rightLeg.getInitialPose().xRot;
+        ModelPart hand = leftArm.getChild("forearm_l").getChild("hand_l");
+        this.orb = hand.hasChild("ember_orb") ? hand.getChild("ember_orb") : null;
+        this.orbY = orb != null ? orb.getInitialPose().y : 0F;
     }
 
     @Override
@@ -58,6 +64,12 @@ public class ImpModel extends HumanoidModel<SoldierEntity> {
         wingL.zRot = -wingZ - flap;
         wingR.yRot = wingY - effort * 0.2F;
         wingL.yRot = -wingY + effort * 0.2F;
+
+        if (orb != null) {
+            orb.y = orbY + Mth.sin(ageInTicks * 0.15F) * 0.6F;
+            orb.yRot = ageInTicks * 0.12F;
+            orb.xRot = ageInTicks * 0.07F;
+        }
 
         // Lazy tail sway, travelling down the segments.
         for (int i = 0; i < tail.length; i++) {

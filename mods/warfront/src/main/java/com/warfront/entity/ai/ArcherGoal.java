@@ -79,9 +79,10 @@ public class ArcherGoal extends Goal {
         }
     }
 
-    /** Hive archers have no bow: they spit poison darts. */
+    /** Hive archers spit poison darts; demon firecasters hurl fire bolts. Neither needs a bow. */
     private boolean spitter() {
-        return soldier.getRace() == Race.HIVE && soldier.getMainHandItem().isEmpty();
+        return (soldier.getRace() == Race.HIVE || soldier.getRace() == Race.DEMON)
+                && soldier.getMainHandItem().isEmpty();
     }
 
     private void shoot(LivingEntity target) {
@@ -95,12 +96,20 @@ public class ArcherGoal extends Goal {
         arrow.shoot(dx, dy + h * 0.2, dz, 1.7F, elf ? 2.0F : 6.0F);
         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
         if (elf) arrow.setBaseDamage(arrow.getBaseDamage() + 1.0);
-        if (spitter()) {
+        if (spitter() && soldier.getRace() == Race.HIVE) {
             arrow.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                     net.minecraft.world.effect.MobEffects.POISON, 60, 0));
             arrow.setBaseDamage(1.5);
+        } else if (spitter()) {
+            arrow.igniteForSeconds(10.0F);   // a fire bolt: burning, sets the target alight
+            arrow.setBaseDamage(2.5);
+            if (soldier.level() instanceof net.minecraft.server.level.ServerLevel server) {
+                server.sendParticles(net.minecraft.core.particles.ParticleTypes.FLAME, soldier.getX(),
+                        soldier.getEyeY() - 0.3, soldier.getZ(), 8, 0.2, 0.2, 0.2, 0.02);
+            }
         }
         soldier.level().addFreshEntity(arrow);
-        soldier.playSound(spitter() ? SoundEvents.LLAMA_SPIT : SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (soldier.getRandom().nextFloat() * 0.4F + 0.8F));
+        soldier.playSound(!spitter() ? SoundEvents.SKELETON_SHOOT
+                        : soldier.getRace() == Race.HIVE ? SoundEvents.LLAMA_SPIT : SoundEvents.BLAZE_SHOOT, 1.0F, 1.0F / (soldier.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 }
