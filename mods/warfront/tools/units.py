@@ -311,22 +311,26 @@ def demon_player():
         # Inner blade rises beside the jaw and leans out; the outer blade flares further out and
         # back over the shoulder. Each is a tapering, back-curving stack of segments.
         sx = -1 if side == "r" else 1
-        inner = tapered_plate(f"cowl_{side}_blade", [(5, 9, -3), (4, 7, -2), (4, 4, -0.5)], sx * 0.15)
-        outer = tapered_plate(f"cowl_{side}_outer_blade", [(4, 8, -2.5), (4, 5, -1), (3, 3, 0)], sx * 0.2)
+        inner = tapered_plate(f"cowl_{side}_blade", [(5, 6, -2), (4, 4, -1), (4, 2, 0)], sx * 0.15)
+        outer = tapered_plate(f"cowl_{side}_outer_blade", [(4, 5, -1.5), (4, 3, -0.5), (3, 2, 0)], sx * 0.2)
         return part(f"cowl_{side}", pivot=(sx * 4.3, -0.5, -2.5), rot=(0.1, sx * -0.55, sx * 0.5), children=[
             inner,
             part(f"cowl_{side}_outer", pivot=(0, -7, 0.5), rot=(0.1, sx * 0.2, sx * 0.42), children=[outer]),
         ])
 
     def chin(side):
+        # Sharpened jaw: a plate runs from below the cheek down and inward to a point under the chin,
+        # with a serrated lower edge.
         sx = -1 if side == "r" else 1
-        return part(f"chin_{side}", pivot=(sx * 4.6, -2.5, -4.6), rot=(0, sx * 0.35, sx * 0.62),
-                    boxes=[box((-6 if sx < 0 else 0, -1, -1), (6, 3, 1), "oryx_plate")],
-                    children=[part(f"chin_{side}_edge", pivot=(sx * 6, 0.5, 0), rot=(0, 0, sx * -0.4),
-                                   boxes=[box((-0.5, -0.5, -0.5), (1, 3, 1), "oryx_spike")])])
+        serrations = [part(f"chin_{side}_tooth{i}", pivot=(sx * -(1.2 + i * 1.6), 0.6, 0), rot=(0, 0, sx * -0.5),
+                           boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "oryx_spike")]) for i in range(3)]
+        return part(f"chin_{side}", pivot=(sx * 4.4, -2.2, -4.5), rot=(0.12, sx * 0.25, sx * -0.72),
+                    boxes=[box((-6 if sx > 0 else 0, -1, -0.5), (6, 2, 1), "oryx_plate")],
+                    children=serrations)
 
     head = part("head", children=[
         cowl("r"), cowl("l"), chin("r"), chin("l"),
+        part("chin_point", pivot=(0, 2.3, -4.7), rot=(-0.2, 0, 0), boxes=[box((-0.5, 0, -0.5), (1, 3, 1), "oryx_spike")]),
         # Crest over the brow and a fan of spines behind the skull.
         part("crest", pivot=(0, -8, -3.8), rot=(-0.25, 0, 0), boxes=[box((-1, -4, -0.5), (2, 4, 1), "oryx_plate")],
              children=[part("crest_tip", pivot=(0, -4, 0), rot=(-0.2, 0, 0),
