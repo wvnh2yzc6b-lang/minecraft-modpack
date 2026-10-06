@@ -219,9 +219,11 @@ public final class WarfrontGameTests {
         ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 7), owner, 0F);
         Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 4));
         husk.setPersistenceRequired();
+        // Compare with the starting health: zombies can spawn with bonus max health they haven't filled.
+        float startHealth = husk.getHealth();
         h.startSequence()
-                .thenExecuteAfter(80, () -> h.assertTrue(husk.getHealth() >= husk.getMaxHealth(),
-                        "a tower with no mana should not fire"))
+                .thenExecuteAfter(80, () -> h.assertTrue(husk.getHealth() >= startHealth && husk.getLastHurtByMob() == null,
+                        "a tower with no mana should not fire (health " + husk.getHealth() + " of " + startHealth + ")"))
                 .thenExecute(() -> well.setMana(50F))
                 .thenWaitUntil(() -> h.assertTrue(well.getMana() < 50F, "a powered tower should draw mana to fire"))
                 .thenSucceed();
