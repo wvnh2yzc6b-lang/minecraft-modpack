@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Renders one imp variant (imp, imp_bulwark, imp_impaler, imp_firecaster). {@link SoldierRenderer}
+ * Renders one imp variant (imp_impaler, imp_firecaster). {@link SoldierRenderer}
  * picks the variant per entity.
  */
 public class ImpRenderer extends HumanoidMobRenderer<SoldierEntity, ImpModel> {

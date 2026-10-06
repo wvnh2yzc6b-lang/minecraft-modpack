@@ -1,9 +1,10 @@
 """Gear for the posted roles (farmer, builder, guard): one model per role and humanoid race, worn
-over the soldier's body, plus the imp versions for demons. Imported by units.py.
+over the soldier's body. Imported by units.py.
 
 Humanoid gear models use the vanilla player rig (head, body, arms, legs) so the game can copy the
-soldier's pose straight onto them. Each race gets its own headgear and details; NPC factions reuse
-their race's geometry with their own colors.
+soldier's pose straight onto them. Workers are kept plain and humanoid: simple hats, smocks, aprons
+and helms, told apart by the race's colors rather than by horns or crests. NPC factions reuse their
+race's geometry with their own colors.
 """
 # part, box, overlay, attach and the pixel helpers are injected by units.py (see bind()).
 
@@ -11,9 +12,9 @@ their race's geometry with their own colors.
 RACE_OF = {
     "human": "human", "elf": "elf", "dwarf": "dwarf", "orc": "orc", "angel": "angel", "hive": "hive",
     "marauders": "orc", "black_legion": "human", "silverwood_reavers": "elf", "ironbeard_clan": "dwarf",
-    "fallen_host": "angel", "the_swarm": "hive",
+    "fallen_host": "angel", "the_swarm": "hive", "demon": "demon", "burning_horde": "demon",
 }
-HUMANOID_RACES = ["human", "elf", "dwarf", "orc", "angel", "hive"]
+HUMANOID_RACES = ["human", "elf", "dwarf", "orc", "angel", "hive", "demon"]
 ROLES = ["farmer", "builder", "guard"]
 
 
@@ -65,7 +66,7 @@ GEAR_PALETTES = {
                             chitin="3a4a1a", chitin_dark="1a240a", apron="3a4a24", glow_c="b8ff4a")),
 }
 
-# Extra keys the imp palettes need for worker gear.
+# Extra keys the imp palettes need for the gear materials they share with worker gear.
 IMP_WORKER_KEYS = {
     "demon": dict(accent="7a1a14", accent_dark="3e0a08", trim="c9772a", straw="b8944a", straw_dark="7a5a2a",
                   wood="7a5030", wood_dark="4a2c18", apron="6a4a3a", leaf="5a6a2a", leaf_dark="2e3a14", linen="c8b8a0",
@@ -74,6 +75,13 @@ IMP_WORKER_KEYS = {
                           wood="4a3020", wood_dark="24160c", apron="3a2a20", leaf="4a4a1a", leaf_dark="24240a",
                           linen="8a7a68", chitin="2a1010", chitin_dark="140606", glow_c="ff6a1a"),
 }
+
+GEAR_PALETTES["demon"] = _base(dict(leather="5a2a1e", leather_dark="2a120c", iron="4a4448", iron_dark="242026",
+                                    rust="a04a18", cloth="4a1c18", cloth_dark="22100c", bone="cbb89a",
+                                    bone_dark="7a6450", **IMP_WORKER_KEYS["demon"]))
+GEAR_PALETTES["burning_horde"] = _base(dict(leather="3e2616", leather_dark="1e120a", iron="3a3438", iron_dark="1a1618",
+                                            rust="c05a18", cloth="2e1210", cloth_dark="140806", bone="a8987a",
+                                            bone_dark="5a4a38", **IMP_WORKER_KEYS["burning_horde"]))
 
 
 # ----------------------------------------------------------------------------- shared pieces
@@ -103,93 +111,60 @@ def boots(m, mat="leather"):
 # ----------------------------------------------------------------------------- farmer
 
 def farmer_hat(race):
-    if race == "human":
-        return [part("hat_brim", pivot=(0, -6.3, 0), rot=(0.06, 0, 0), boxes=[box((-6.5, 0, -6.5), (13, 1, 13), "straw")]),
-                overlay("hat_crown", (-4, -10, -4), (8, 4, 8), "straw", 0.3),
-                overlay("hat_band", (-4, -7.4, -4), (8, 1, 8), "accent_cloth", 0.5)]
+    """Plain work hats: a straw hat for most, a knit cap for dwarves, a cloth hood for elves and hive."""
     if race == "dwarf":
         return [overlay("cap_knit", (-4, -9, -4), (8, 3, 8), "wool", 0.4),
-                overlay("cap_fold", (-4, -6.6, -4), (8, 1.5, 8), "wool", 0.65),
-                part("cap_pompom", pivot=(0, -9.6, 1.5), boxes=[box((-1, -2, -1), (2, 2, 2), "wool")])]
-    if race == "elf":
-        return [overlay("hood", (-4, -8, -4), (8, 6, 8), "leafweave", 0.5),
-                part("hood_leaf_r", pivot=(-2, -7.5, 4), rot=(0.9, -0.3, 0.2), boxes=[box((-1.5, 0, 0), (3, 5, 0), "leaf")]),
-                part("hood_leaf_l", pivot=(2, -7.5, 4), rot=(0.9, 0.3, -0.2), boxes=[box((-1.5, 0, 0), (3, 5, 0), "leaf")])]
+                overlay("cap_fold", (-4, -6.6, -4), (8, 1.5, 8), "wool", 0.65)]
+    if race in ("elf", "hive"):
+        return [overlay("hood", (-4, -8, -4), (8, 6, 8), "smock", 0.5)]
     if race == "orc":
-        return [overlay("bandana", (-4, -8, -4), (8, 3, 8), "accent_cloth", 0.35),
-                part("bandana_tail_r", pivot=(-1, -6.5, 4.4), rot=(0.4, 0.2, 0.25), boxes=[box((-1, 0, 0), (2, 4, 0), "accent_cloth")]),
-                part("bandana_tail_l", pivot=(1, -6.5, 4.4), rot=(0.5, -0.2, -0.3), boxes=[box((-1, 0, 0), (2, 3, 0), "accent_cloth")])]
-    if race == "angel":
-        return [part("sunhat_brim", pivot=(0, -6.4, 0), rot=(0.08, 0, 0), boxes=[box((-6, 0, -6), (12, 0.5, 12), "linen")]),
-                overlay("sunhat_crown", (-3.5, -9.5, -3.5), (7, 3.5, 7), "linen", 0.3),
-                overlay("sunhat_band", (-3.5, -7, -3.5), (7, 0.8, 7), "gold", 0.5)]
-    # hive: harvester drones get a carapace hood with feeler antennae
-    return [overlay("carapace_hood", (-4, -8.5, -4), (8, 3, 8), "chitin_plate", 0.45),
-            part("antenna_r", pivot=(-1.5, -8.6, -2.5), rot=(-0.6, 0, -0.35), boxes=[box((-0.5, -6, -0.5), (1, 6, 1), "antenna")]),
-            part("antenna_l", pivot=(1.5, -8.6, -2.5), rot=(-0.6, 0, 0.35), boxes=[box((-0.5, -6, -0.5), (1, 6, 1), "antenna")])]
+        return [overlay("bandana", (-4, -8, -4), (8, 3, 8), "accent_cloth", 0.35)]
+    return [part("hat_brim", pivot=(0, -6.3, 0), rot=(0.06, 0, 0), boxes=[box((-6, 0, -6), (12, 0.8, 12), "straw")]),
+            overlay("hat_crown", (-4, -10, -4), (8, 4, 8), "straw", 0.3),
+            overlay("hat_band", (-4, -7.4, -4), (8, 1, 8), "accent_cloth", 0.5)]
 
 
 def gear_farmer(race):
     m = rig(f"gear_farmer_{race}")
     attach(m, "head", *farmer_hat(race))
-    hive = race == "hive"
     attach(m, "body",
-           overlay("smock", (-4, 0, -2), (8, 12, 4), "chitin_plate" if hive else "smock", 0.3),
+           overlay("smock", (-4, 0, -2), (8, 12, 4), "smock", 0.3),
            part("apron", pivot=(0, 4, -2.55), rot=(-0.04, 0, 0), boxes=[box((-3, 0, 0), (6, 8, 0), "apron")]),
            overlay("belt", (-4, 9, -2), (8, 1, 4), "leather_belt", 0.5),
            part("seed_pouch", pivot=(3.4, 9.6, -1), rot=(0, 0, -0.12), boxes=[box((-1, 0, -1), (2, 3, 2), "pouch")]),
-           part("basket" if not hive else "bio_sac", pivot=(0, 2, 2.4), rot=(0.08, 0, 0),
-                boxes=[box((-3, 0, 0), (6, 6, 3.5), "bio_sac" if hive else "wicker")]),
+           part("basket", pivot=(0, 2, 2.4), rot=(0.08, 0, 0), boxes=[box((-3, 0, 0), (6, 6, 3.5), "wicker")]),
            part("basket_strap_r", pivot=(-2.5, 0, -2.4), boxes=[box((-0.5, 0, 0), (1, 3, 0), "leather")]),
            part("basket_strap_l", pivot=(2.5, 0, -2.4), boxes=[box((-0.5, 0, 0), (1, 3, 0), "leather")]))
-    both_arms(m, lambda s, sx: [overlay(f"sleeve_{s}", (-3 if s == "r" else -1, -2, -2), (4, 4, 4),
-                                        "chitin_plate" if hive else "smock", 0.35)])
-    boots(m, "chitin_plate" if hive else "leather")
+    both_arms(m, lambda s, sx: [overlay(f"sleeve_{s}", (-3 if s == "r" else -1, -2, -2), (4, 4, 4), "smock", 0.35)])
+    boots(m)
     return m
 
 
 # ----------------------------------------------------------------------------- builder
 
 def builder_hat(race):
-    if race == "human":
-        return [overlay("cap", (-4, -8.5, -4), (8, 3, 8), "leather", 0.4),
-                part("cap_visor", pivot=(0, -6.1, -4.3), rot=(0.25, 0, 0), boxes=[box((-4, 0, -2.5), (8, 0.6, 2.5), "leather")])]
+    """A plain leather work cap with a short visor; dwarves wear an iron mining helm instead."""
     if race == "dwarf":
         return [overlay("mining_helm", (-4, -8.8, -4), (8, 3.5, 8), "plate", 0.55),
-                part("helm_rim", pivot=(0, -5.6, 0), boxes=[box((-5, 0, -5), (10, 0.6, 10), "plate")]),
-                part("candle", pivot=(0, -9.2, -3.2), boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "wax")],
-                     children=[part("flame", pivot=(0, -2, 0), boxes=[box((-0.5, -1, -0.5), (1, 1, 1), "flame")])])]
-    if race == "elf":
-        return [overlay("circlet", (-4, -6.8, -4), (8, 1, 8), "wood", 0.5),
-                part("circlet_leaf", pivot=(0, -6.6, -4.6), rot=(-0.2, 0, 0), boxes=[box((-1, -3, 0), (2, 3, 0), "leaf")])]
-    if race == "orc":
-        return [overlay("skull_cap", (-4, -8.5, -4), (8, 3, 8), "iron_scrap", 0.45),
-                part("cap_tusk_r", pivot=(-3, -8.3, -1), rot=(-0.4, 0, -0.6), boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "bone")]),
-                part("cap_tusk_l", pivot=(3, -8.3, -1), rot=(-0.4, 0, 0.6), boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "bone")])]
-    if race == "angel":
-        return [overlay("cap", (-4, -8.5, -4), (8, 2.5, 8), "linen", 0.4),
-                overlay("cap_trim", (-4, -6.4, -4), (8, 0.8, 8), "gold", 0.55)]
-    return [part("crest_ridge", pivot=(0, -8.4, 0), boxes=[box((-0.5, -2, -3.5), (1, 2, 7), "chitin_plate")])]
+                part("helm_rim", pivot=(0, -5.6, 0), boxes=[box((-5, 0, -5), (10, 0.6, 10), "plate")])]
+    return [overlay("cap", (-4, -8.5, -4), (8, 3, 8), "leather", 0.4),
+            part("cap_visor", pivot=(0, -6.1, -4.3), rot=(0.25, 0, 0), boxes=[box((-4, 0, -2.5), (8, 0.6, 2.5), "leather")])]
 
 
 def gear_builder(race):
     m = rig(f"gear_builder_{race}")
     attach(m, "head", *builder_hat(race))
-    hive = race == "hive"
-    load = ([part("resin_lump_1", pivot=(-1.5, 2, 2.3), boxes=[box((-1.5, 0, 0), (3, 3, 2), "resin")]),
-             part("resin_lump_2", pivot=(1.5, 4.5, 2.3), boxes=[box((-1, 0, 0), (2, 3, 1.5), "resin")])] if hive else
-            [part("plank_bundle", pivot=(0, 0.5, 2.3), rot=(0, 0, 0.22), boxes=[
-                box((-3.5, -2, 0), (2, 11, 1), "planks"), box((-1, -3, 0), (2, 12, 1), "planks"),
-                box((1.5, -1.5, 0), (2, 10, 1), "planks")],
-                children=[part("bundle_strap", pivot=(0, 4, 0), boxes=[box((-4, 0, -0.1), (8, 1, 1.2), "leather")])])])
     attach(m, "body",
-           overlay("work_shirt", (-4, 0, -2), (8, 12, 4), "chitin_plate" if hive else "smock", 0.25),
+           overlay("work_shirt", (-4, 0, -2), (8, 12, 4), "smock", 0.25),
            part("heavy_apron", pivot=(0, 1, -2.5), boxes=[box((-3.5, 0, 0), (7, 10, 0), "heavy_apron")]),
            overlay("tool_belt", (-4, 9, -2), (8, 1.5, 4), "tool_belt", 0.55),
            part("chisel", pivot=(-3.6, 10.3, -1.2), rot=(0.1, 0, 0.15), boxes=[box((-0.5, 0, -0.5), (1, 3, 1), "plate")]),
            part("trowel", pivot=(3.7, 10.3, 0.4), rot=(0, 0, -0.2), boxes=[box((-0.5, 0, -1), (1, 1.5, 2), "wood"),
                                                                         box((-0.5, 1.5, -1.5), (1, 2, 3), "plate")]),
-           *load)
+           part("plank_bundle", pivot=(0, 0.5, 2.3), rot=(0, 0, 0.22), boxes=[
+               box((-3.5, -2, 0), (2, 11, 1), "planks"), box((-1, -3, 0), (2, 12, 1), "planks"),
+               box((1.5, -1.5, 0), (2, 10, 1), "planks")],
+               children=[part("bundle_strap", pivot=(0, 4, 0), boxes=[box((-4, 0, -0.1), (8, 1, 1.2), "leather")])]))
     both_arms(m, lambda s, sx: [overlay(f"glove_{s}", (-3 if s == "r" else -1, 6, -2), (4, 4, 4), "leather", 0.35)])
     both_legs(m, lambda s, sx: [overlay(f"knee_pad_{s}", (-2, 4, -2), (4, 2, 4), "leather", 0.35)])
     boots(m)
@@ -199,90 +174,26 @@ def gear_builder(race):
 # ----------------------------------------------------------------------------- guard
 
 def guard_helm(race):
-    if race == "human":
-        return [overlay("kettle_helm", (-4, -8.5, -4), (8, 4, 8), "plate", 0.55),
-                part("kettle_brim", pivot=(0, -5, 0), rot=(0.05, 0, 0), boxes=[box((-5.5, 0, -5.5), (11, 0.7, 11), "plate")])]
-    if race == "elf":
-        return [overlay("leaf_helm", (-4, -8.5, -4), (8, 4.5, 8), "plate", 0.55),
-                part("helm_crest", pivot=(0, -9, 0), rot=(-0.15, 0, 0), boxes=[box((-0.5, -3, -3.5), (1, 3, 7), "accent_cloth")]),
-                part("cheek_r", pivot=(-4.3, -4, -2), rot=(0, 0.15, 0), boxes=[box((-0.5, 0, -2), (1, 3, 3), "plate")]),
-                part("cheek_l", pivot=(4.3, -4, -2), rot=(0, -0.15, 0), boxes=[box((-0.5, 0, -2), (1, 3, 3), "plate")])]
-    if race == "dwarf":
-        horn = lambda s, sx: part(f"helm_horn_{s}", pivot=(sx * 4.3, -6.5, 0), rot=(-0.3, 0, sx * 0.9),
-                                  boxes=[box((-0.75, -3, -0.75), (1.5, 3, 1.5), "bone")],
-                                  children=[part(f"helm_horn_{s}_tip", pivot=(0, -3, 0), rot=(0, 0, -sx * 0.6),
-                                                 boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "bone")])])
-        return [overlay("great_helm", (-4, -8, -4), (8, 8, 8), "great_helm", 0.6), horn("r", -1), horn("l", 1)]
-    if race == "orc":
-        spike = lambda n, x, z, r: part(n, pivot=(x, -8.7, z), rot=r, boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "iron_spike")])
-        return [overlay("spiked_cap", (-4, -8.5, -4), (8, 3.5, 8), "iron_scrap", 0.5),
-                spike("cap_spike_c", 0, 0, (0, 0, 0)), spike("cap_spike_r", -2.5, 1, (0.2, 0, -0.35)),
-                spike("cap_spike_l", 2.5, 1, (0.2, 0, 0.35)),
-                part("jaw_guard", pivot=(0, -1.5, -4.5), boxes=[box((-3, 0, -0.5), (6, 2, 1), "iron_scrap")])]
-    if race == "angel":
-        wing = lambda s, sx: part(f"helm_wing_{s}", pivot=(sx * 4.4, -6.5, 0), rot=(0.2, sx * -0.35, sx * 0.25),
-                                  boxes=[box((-0.5 if sx > 0 else -0.5, -5, 0), (0, 5, 4), "feather")])
-        return [overlay("winged_helm", (-4, -8.5, -4), (8, 4, 8), "gold", 0.55), wing("r", -1), wing("l", 1)]
-    crest = [part(f"crest_spine_{i}", pivot=(0, -8.6, -2.5 + i * 2.5), rot=(-0.5, 0, 0),
-                  boxes=[box((-0.5, -3 + i * 0.5, -0.5), (1, 3 - i * 0.5, 1), "antenna")]) for i in range(3)]
-    return [overlay("carapace_helm", (-4, -8.5, -4), (8, 4.5, 8), "chitin_plate", 0.55), *crest]
+    """A plain open-faced kettle helm, the same shape for every race; only its colors differ."""
+    return [overlay("kettle_helm", (-4, -8.5, -4), (8, 4, 8), "plate", 0.55),
+            part("kettle_brim", pivot=(0, -5, 0), rot=(0.05, 0, 0), boxes=[box((-5.5, 0, -5.5), (11, 0.7, 11), "plate")])]
 
 
 def gear_guard(race):
     m = rig(f"gear_guard_{race}")
     attach(m, "head", *guard_helm(race))
-    hive = race == "hive"
-    plate = "chitin_plate" if hive else "plate"
-    body = [overlay("mail", (-4, 0, -2), (8, 12, 4), "chitin_plate" if hive else "mail", 0.35),
+    plate = "plate"
+    body = [overlay("mail", (-4, 0, -2), (8, 12, 4), "mail", 0.35),
             overlay("guard_belt", (-4, 9, -2), (8, 1, 4), "leather_belt", 0.6),
             part("lantern", pivot=(4.7, 9.5, -0.5), boxes=[box((-1, 0, -1), (2, 3, 2), "lantern")],
                  children=[part("lantern_hook", pivot=(0, 0, 0), boxes=[box((-0.5, -1, -0.5), (1, 1, 1), "plate")])])]
-    if not hive:
-        body += [part("tabard_front", pivot=(0, 1, -2.7), boxes=[box((-3, 0, 0), (6, 11, 0), "tabard")]),
-                 part("tabard_back", pivot=(0, 1, 2.7), boxes=[box((-3, 0, 0), (6, 11, 0), "tabard")])]
+    body += [part("tabard_front", pivot=(0, 1, -2.7), boxes=[box((-3, 0, 0), (6, 11, 0), "tabard")]),
+             part("tabard_back", pivot=(0, 1, 2.7), boxes=[box((-3, 0, 0), (6, 11, 0), "tabard")])]
     attach(m, "body", *body)
     both_arms(m, lambda s, sx: [
-        part(f"pauldron_{s}", pivot=(sx * 1, -2.4, 0), rot=(0, 0, sx * -0.18),
-             boxes=[box((-3 if s == "r" else -2, -1, -2.5), (5, 2.5, 5), plate)]),
         overlay(f"vambrace_{s}", (-3 if s == "r" else -1, 5, -2), (4, 5, 4), plate, 0.35)])
     both_legs(m, lambda s, sx: [overlay(f"greave_{s}", (-2, 5, -2), (4, 7, 4), plate, 0.35)])
     return m
-
-
-# ----------------------------------------------------------------------------- imp workers
-
-def imp_workers(imp_base, belt_and_loincloth):
-    farmer = imp_base("imp_farmer")
-    belt_and_loincloth(farmer, cloth="rag")
-    attach(farmer, "head",
-           part("hat_brim", pivot=(0, -7.4, 0), rot=(0.12, 0, 0.08), boxes=[box((-5.5, 0, -5.5), (11, 0.6, 11), "straw")]),
-           overlay("hat_crown", (-2.5, -9.6, -2.5), (5, 2.4, 5), "straw", 0.25),
-           overlay("hat_band", (-2.5, -8, -2.5), (5, 0.7, 5), "accent_cloth", 0.4))
-    attach(farmer, "body", overlay("smock", (-3, 0, -1.5), (6, 9, 3), "smock", 0.3),
-           part("seed_sack", pivot=(2.6, 9.5, -1), rot=(0, 0, -0.2), boxes=[box((-1, 0, -1), (2, 2.5, 2), "pouch")]))
-
-    builder = imp_base("imp_builder")
-    belt_and_loincloth(builder, cloth="rag_dark")
-    attach(builder, "head", overlay("cap", (-3.5, -7.6, -3.5), (7, 2.5, 7), "leather", 0.35))
-    attach(builder, "body", overlay("tool_belt", (-2.5, 8.6, -1.5), (5, 1.5, 3), "tool_belt", 0.55),
-           part("chisel", pivot=(-2.4, 9.8, -1.4), rot=(0.1, 0, 0.2), boxes=[box((-0.5, 0, -0.5), (1, 2.5, 1), "plate")]),
-           part("plank_bundle", pivot=(0, 1, 1.7), rot=(0, 0, 0.3), boxes=[
-               box((-2.5, -1, 0), (1.5, 8, 1), "planks"), box((-0.75, -2, 0), (1.5, 9, 1), "planks"),
-               box((1, -1, 0), (1.5, 7, 1), "planks")]))
-    for side in ("r", "l"):
-        attach(builder, f"forearm_{side}", overlay(f"glove_{side}", (-1, 4, -1), (2, 3, 2), "leather", 0.3))
-
-    guard = imp_base("imp_guard")
-    belt_and_loincloth(guard, cloth="rag_dark")
-    attach(guard, "head", overlay("kettle_cap", (-3.5, -7.5, -3.5), (7, 3, 7), "plate", 0.45),
-           part("kettle_brim", pivot=(0, -4.9, 0), boxes=[box((-4.5, 0, -4.5), (9, 0.6, 9), "plate")]))
-    attach(guard, "body", overlay("mail", (-3, 0, -1.5), (6, 9, 3), "mail", 0.35),
-           part("lantern", pivot=(3.2, 9, -0.4), boxes=[box((-1, 0, -1), (2, 2.5, 2), "lantern")]))
-    for side, arm in (("r", "right_arm"), ("l", "left_arm")):
-        sx = -1 if side == "r" else 1
-        attach(guard, arm, part(f"pauldron_{side}", pivot=(0, -1, 0), rot=(0, 0, sx * -0.2),
-                                boxes=[box((-1.5, -1, -1.5), (3, 2, 3), "plate")]))
-    return [farmer, builder, guard]
 
 
 def all_gear():
@@ -331,21 +242,6 @@ def worker_material(mat, side, x, y, w, h, pal, rng):
         if y % 2 == 1:
             c = shade(c, 0.95)
         return shade(c, 1.1) if top else c
-    if mat in ("leafweave", "leaf"):
-        c = mix(hexc(pal["leaf"]), hexc(pal["leaf_dark"]), rng.uniform(0, 0.5))
-        if (x + y) % 3 == 0:
-            c = mix(c, hexc(pal["leaf_dark"]), 0.5)                       # veins
-        if rng.random() < 0.08:
-            c = shade(c, 1.3)
-        if mat == "leaf" and side in ("front", "back") and (x in (0, w - 1)) and y < 2:
-            return None                                                   # pointed leaf tip
-        return c
-    if mat == "gold":
-        t = y / max(1, h - 1)
-        c = mix(hexc("f0d070"), hexc("a07818"), 0.2 + 0.5 * t)
-        if rng.random() < 0.08:
-            c = shade(c, 1.2)
-        return c
     if mat == "pouch":
         c = leather_px(pal, rng, x, y, w, h, side)
         if y == 0 and side != "top":
@@ -377,18 +273,10 @@ def worker_material(mat, side, x, y, w, h, pal, rng):
     if mat == "wood":
         c = mix(hexc(pal["wood"]), hexc(pal["wood_dark"]), rng.uniform(0.1, 0.4))
         return shade(c, 0.9) if x % 2 else c
-    if mat == "wax":
-        return shade(hexc("ece0c0"), 1.0 if top else 0.92)
-    if mat == "flame":
-        return glow(hexc("ffd060") if top or y == 0 else hexc("ff8a20"))
-    if mat in ("plate", "great_helm"):
-        c = iron_px(pal, rng, x, y, w, h, side, rivets=(mat == "great_helm"))
+    if mat == "plate":
+        c = iron_px(pal, rng, x, y, w, h, side, rivets=False)
         if side in ("front", "back", "left", "right") and y == 1:
             c = mix(c, hexc("eef2f6"), 0.4)                               # polished highlight
-        if mat == "great_helm" and side == "front" and y == 3 and 1 <= x <= w - 2 and x != w // 2:
-            return hexc("0a0a0c")                                         # eye slit
-        if mat == "great_helm" and side == "front" and x == w // 2 and y >= 3:
-            c = shade(c, 1.2)                                             # nasal bar
         return c
     if mat == "mail":
         ring = (x + (y % 2)) % 2 == 0
@@ -409,27 +297,4 @@ def worker_material(mat, side, x, y, w, h, pal, rng):
         if edge(x, y, w, h) or side in ("top", "bottom"):
             return shade(hexc(pal["iron_dark"]), 0.9)
         return glow(hexc(pal["glow_c"]))
-    if mat == "feather":
-        c = mix(hexc("f4f0e8"), hexc(pal["trim"]), 0.25 * (y % 3 == 0))
-        if x % 2 == 0:
-            c = shade(c, 0.92)
-        return c
-    if mat in ("chitin_plate", "antenna"):
-        t = y / max(1, h - 1)
-        c = mix(hexc(pal["chitin"]), hexc(pal["chitin_dark"]), 0.2 + 0.5 * t)
-        if (x + y) % 5 == 0:
-            c = mix(c, hexc(pal["accent"]), 0.35)                         # sheen
-        if mat == "chitin_plate" and y % 3 == 2 and side != "top":
-            c = shade(c, 0.75)                                            # segment ridges
-        return shade(c, 1.15) if top else c
-    if mat == "bio_sac":
-        c = mix(hexc(pal["chitin"]), hexc(pal["accent"]), 0.4)
-        if not edge(x, y, w, h) and (x + y) % 3 != 0:
-            return glow(mix(hexc(pal["glow_c"]), c, 0.4))
-        return c
-    if mat == "resin":
-        c = mix(hexc("c88a2a"), hexc("7a4a10"), rng.uniform(0, 0.5))
-        if rng.random() < 0.2:
-            return glow(shade(c, 1.3))
-        return c
     return NotImplemented

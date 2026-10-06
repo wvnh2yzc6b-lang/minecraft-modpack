@@ -4,8 +4,14 @@
   "log": [
     {
       "status": "done",
+      "title": "Demon roster: imps are one species, not the whole faction",
+      "detail": "Imps now only fill the Impaler and Firecaster roles. The other demon ranks are full-sized: Hellguard (shieldbearer), Fiend (swordsman), Archfiend, Hellknight and Blood Witch, plus the Ash Tiller, Brimstone Mason and Hellwarden workers. The extra imp variants are gone. Worker gear for every race is now plain: simple hats, smocks, aprons and kettle helms, with no horns, antennae, wings or crests.",
+      "image": "workers-all-races.png"
+    },
+    {
+      "status": "done",
       "title": "Builders, farmers and guards for every race",
-      "detail": "Three new posted roles. Builders survey the base around their post and rebuild anything enemies or explosions destroy, using blocks from a nearby chest. Farmers harvest ripe crops, replant, till near water and store the harvest in a chest. Guards hold a post, patrol it and ring an alarm that calls nearby troops. Every race has its own names and work gear; demon workers are imps. All four new in-game tests pass in CI.",
+      "detail": "Three new posted roles. Builders survey the base around their post and rebuild anything enemies or explosions destroy, using blocks from a nearby chest. Farmers harvest ripe crops, replant, till near water and store the harvest in a chest. Guards hold a post, patrol it and ring an alarm that calls nearby troops. Workers look like plain humanoid working folk in each race's colors, demons included. All four new in-game tests pass in CI.",
       "image": "workers-all-races.png"
     },
     {
@@ -22,8 +28,8 @@
     },
     {
       "status": "done",
-      "title": "Imps: demon foot soldiers",
-      "detail": "A custom winged, scorpion-tailed model at 0.7× size for low-rank demon troops, in four roles: Imp, Imp Bulwark (scrap armor), Imp Impaler (studded harness, bone spikes) and Imp Firecaster (rune mantle, ember orb, fire bolts). Gear is textured, with a glow layer.",
+      "title": "Imps: Impalers and Firecasters",
+      "detail": "Imps are one species within the demon faction. They fill two roles, the Imp Impaler (studded harness, bone spikes) and the Imp Firecaster (rune mantle, ember orb, fire bolts), on a custom winged, scorpion-tailed model at 0.7× size. Gear is textured, with a glow layer.",
       "image": "imp-model-preview.png"
     },
     {
@@ -59,12 +65,12 @@
     "demonsAreImmuneToFire": "Fire spares demons and hurts humans",
     "raidersBreakThroughWalls": "A boxed-in raider hacks its way out toward its objective",
     "warHornStartsWaveCampaign": "The horn starts wave 1 with attackers spawned",
-    "demonFootSoldiersAreWingedImps": "Demon foot soldiers spawn as small, winged imps",
     "championsGetSignatureGear": "Champions carry their race's signature weapon",
     "demonsTakeWingWithoutAnElytra": "A demon player can start flying with no elytra equipped",
     "farmerHarvestsAndReplants": "A farmer harvests ripe wheat, keeps the grain and replants",
     "builderRebuildsFromChest": "A builder rebuilds a knocked-down pillar with bricks from a chest",
     "guardAlarmRallysHiddenAllies": "A guard's alarm sends an ally that can't see the enemy into the fight",
-    "workersFleeAndKeepTheirPosts": "Workers never take targets or fight, and the baton leaves them at their posts"
+    "workersFleeAndKeepTheirPosts": "Workers never take targets or fight, and the baton leaves them at their posts",
+    "demonImpsAreImpalersAndFirecasters": "Only demon spearmen and archers are imps; Fiends and demon workers are full-sized"
   }
 }

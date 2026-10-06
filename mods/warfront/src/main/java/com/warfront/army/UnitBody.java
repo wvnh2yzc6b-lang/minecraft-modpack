@@ -6,7 +6,7 @@ import com.warfront.faction.Race;
 public enum UnitBody {
     /** Standard humanoid soldier. */
     HUMANOID(0.0, 1.0, 1.0, false),
-    /** Demon low ranks: small, gaunt, bat-winged and scorpion-tailed. */
+    /** Imps, one demon species among several: small, gaunt, bat-winged and scorpion-tailed. */
     IMP(-0.33, 0.75, 1.12, true);
 
     /** Added to the SCALE attribute (multiplied by base), on top of the race's size. */
@@ -26,24 +26,11 @@ public enum UnitBody {
     /** Model and texture name for this body and role, e.g. "imp_impaler". */
     public String variant(SoldierRole role) {
         if (this != IMP) return "humanoid";
-        return switch (role) {
-            case SHIELDBEARER -> "imp_bulwark";
-            case SPEARMAN -> "imp_impaler";
-            case ARCHER -> "imp_firecaster";
-            case FARMER -> "imp_farmer";
-            case BUILDER -> "imp_builder";
-            case GUARD -> "imp_guard";
-            default -> "imp";
-        };
+        return role == SoldierRole.ARCHER ? "imp_firecaster" : "imp_impaler";
     }
 
     public static UnitBody of(Race race, SoldierRole role) {
-        if (race == Race.DEMON) {
-            return switch (role) {
-                case SHIELDBEARER, SPEARMAN, SWORDSMAN, ARCHER, FARMER, BUILDER, GUARD -> IMP;
-                default -> HUMANOID;
-            };
-        }
-        return HUMANOID;
+        // Demons field imps only as Impalers and Firecasters; every other demon is full-sized.
+        return race == Race.DEMON && (role == SoldierRole.SPEARMAN || role == SoldierRole.ARCHER) ? IMP : HUMANOID;
     }
 }

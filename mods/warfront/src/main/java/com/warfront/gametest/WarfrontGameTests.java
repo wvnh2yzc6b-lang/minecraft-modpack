@@ -237,14 +237,18 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
-    public static void demonFootSoldiersAreWingedImps(GameTestHelper h) {
+    public static void demonImpsAreImpalersAndFirecasters(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
-        SoldierEntity imp = recruit(h, owner, SoldierRole.SWORDSMAN, Race.DEMON, 3, 4);
-        SoldierEntity archfiend = recruit(h, owner, SoldierRole.CAPTAIN, Race.DEMON, 6, 4);
-        h.assertTrue(imp.getBody() == com.warfront.army.UnitBody.IMP, "demon swordsmen should be imps");
-        h.assertTrue("Imp".equals(imp.getUnitName()), "unit name should be Imp, was " + imp.getUnitName());
+        SoldierEntity imp = recruit(h, owner, SoldierRole.SPEARMAN, Race.DEMON, 3, 4);
+        SoldierEntity firecaster = recruit(h, owner, SoldierRole.ARCHER, Race.DEMON, 4, 4);
+        SoldierEntity fiend = recruit(h, owner, SoldierRole.SWORDSMAN, Race.DEMON, 5, 4);
+        SoldierEntity tiller = recruit(h, owner, SoldierRole.FARMER, Race.DEMON, 6, 4);
+        h.assertTrue(imp.getBody() == com.warfront.army.UnitBody.IMP, "demon spearmen should be imps");
+        h.assertTrue("Imp Impaler".equals(imp.getUnitName()), "unit name should be Imp Impaler, was " + imp.getUnitName());
+        h.assertTrue(firecaster.getBody() == com.warfront.army.UnitBody.IMP, "demon archers should be imps");
         h.assertTrue(imp.getScale() < 0.8F, "imps should be small, scale was " + imp.getScale());
-        h.assertTrue(archfiend.getBody() == com.warfront.army.UnitBody.HUMANOID, "archfiends are not imps");
+        h.assertTrue(fiend.getBody() == com.warfront.army.UnitBody.HUMANOID, "fiends are not imps");
+        h.assertTrue(tiller.getBody() == com.warfront.army.UnitBody.HUMANOID, "demon workers are not imps");
         h.assertTrue(!imp.hurt(h.getLevel().damageSources().fall(), 10.0F), "winged imps take no fall damage");
         h.succeed();
     }

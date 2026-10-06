@@ -96,7 +96,7 @@ RACES = [
     ("elf", "Elf", "Swift and keen-eyed", "−2 hp · +10% speed · scale 1.05", "Elven archers are far more accurate (spread 2 vs 6) and deal +1 arrow damage.", "1.0×"),
     ("dwarf", "Dwarf", "Stout and stubborn", "+4 hp · −8% speed · +2 armor · scale 0.85", "Dwarven soldiers never rout.", "1.0×"),
     ("orc", "Orc", "Brutal and towering", "+2 hp · +1.5 dmg · scale 1.10", "Hits hardest of the base races, but morale regenerates slowly (0.6×).", "1.0×"),
-    ("demon", "Demon", "Born of hellfire", "+2 hp · +1 dmg · +1 armor · scale 1.00", "Immune to fire and lava. Demon soldiers set targets on fire for 3s on every hit. Low ranks fight as imps.", "1.15×"),
+    ("demon", "Demon", "Born of hellfire", "+2 hp · +1 dmg · +1 armor · scale 1.00", "Immune to fire and lava. Demon soldiers set targets on fire for 3s on every hit. Imps, a small winged demon species, fight as Impalers and Firecasters.", "1.15×"),
     ("angel", "Angel", "Radiant and unbreakable", "0 hp · +5% speed · scale 1.08", "No fall damage. Regenerates (players 1 HP/3s, soldiers 0.5 HP/s). +50% damage vs undead and demons. Never routs.", "1.2×"),
     ("hive", "Hive", "One mind, many bodies", "−4 hp · +12% speed · +1 armor · scale 0.90", "Never routs. +0.5 damage per nearby hive ally (max +3).", "0.6×"),
 ]
@@ -229,7 +229,7 @@ def viewer_data():
                     f = T / "entity" / "soldier" / pal / f"{mid}{suffix}.png"
                     if f.exists():
                         tex[f"{pal}/{mid}{suffix}"] = uri(Image.open(f).convert("RGBA"))
-    for race in ("human", "elf", "dwarf", "orc", "angel", "hive"):
+    for race in ("human", "elf", "dwarf", "orc", "angel", "hive", "demon"):
         tex[f"skin/{race}"] = uri(Image.open(T / "entity" / "soldier" / f"{race}.png").convert("RGBA"))
         for role in ("farmer", "builder", "guard"):
             for suffix in ("", "_glow"):
@@ -240,7 +240,7 @@ def viewer_data():
         tex[f"player/{n}"] = uri(Image.open(T / "entity" / "player" / f"{n}.png").convert("RGBA"))
     # Only ship the models the viewer shows.
     keep = {k: v for k, v in models.items() if k.startswith(("imp", "demon_player", "player_base"))
-            or k.startswith("gear_") and k.rsplit("_", 1)[1] in ("human", "elf", "dwarf", "orc", "angel", "hive")}
+            or k.startswith("gear_") and k.rsplit("_", 1)[1] in ("human", "elf", "dwarf", "orc", "angel", "hive", "demon")}
     return {"models": keep, "tex": tex, "workerNames": worker_names()}
 
 

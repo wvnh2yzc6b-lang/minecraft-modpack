@@ -35,7 +35,7 @@ public class RoleGearLayer extends RenderLayer<SoldierEntity, SoldierModel> {
         }
     }
 
-    /** The gear model for a unit: by role and the body-shape race (demons never get here: theirs are imps). */
+    /** The gear model for a unit: by role and the body-shape race. */
     static String modelId(SoldierRole role, Race race) {
         return "gear_" + role.id() + "_" + race.id();
     }

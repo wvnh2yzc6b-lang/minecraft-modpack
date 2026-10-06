@@ -175,37 +175,6 @@ def belt_and_loincloth(m, cloth="rag"):
            part("loin_back", pivot=(0, 10.5, 1.9), rot=(0.12, 0, 0), boxes=[box((-2, 0, 0), (4, 5, 0), cloth)]))
 
 
-def imp():
-    """Imp (swordsman): scrappy and light. Stitched belt, ragged loincloth, wrist wraps."""
-    m = imp_base("imp")
-    belt_and_loincloth(m)
-    attach(m, "belt", part("trinket_1", pivot=(1.6, 10.6, -1.9), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "bone")]),
-           part("trinket_2", pivot=(-1.4, 10.6, -1.9), rot=(0, 0, 0.3), boxes=[box((-0.5, 0, -0.5), (1, 1, 1), "bone")]))
-    for side in ("r", "l"):
-        attach(m, f"forearm_{side}", overlay(f"wrap_{side}", (-1, 3, -1), (2, 4, 2), "wrap", 0.3))
-    return m
-
-
-def imp_bulwark():
-    """Imp Bulwark (shieldbearer): scavenged scrap armor. Dented riveted breastplate, skullcap, one spiked pauldron."""
-    m = imp_base("imp_bulwark")
-    belt_and_loincloth(m, cloth="rag_dark")
-    attach(m, "body", overlay("breastplate", (-3, 0, -1.5), (6, 8, 3), "iron_scrap", 0.55),
-           overlay("strap_back", (-3, 1, -1.5), (6, 2, 3), "leather", 0.7))
-    attach(m, "head", overlay("skullcap", (-3.5, -7, -3.5), (7, 3, 7), "iron_cap", 0.45),
-           part("cap_nasal", pivot=(0, -4.2, -4.1), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "iron_scrap")]))
-    attach(m, "left_arm",
-           part("pauldron_l", pivot=(0.5, -1.2, 0), rot=(0, 0, -0.25), boxes=[box((-1.5, -1, -2), (4, 2, 4), "iron_scrap")],
-                children=[part("pauldron_spike_1", pivot=(1.2, -1, -0.6), rot=(0, 0, -0.5),
-                               boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "iron_spike")]),
-                          part("pauldron_spike_2", pivot=(1.2, -1, 1.0), rot=(0.2, 0, -0.7),
-                               boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "iron_spike")])]))
-    attach(m, "right_arm", overlay("shoulder_strap_r", (-1, -1, -1), (2, 2, 2), "leather", 0.4))
-    for side in ("r", "l"):
-        attach(m, f"forearm_{side}", overlay(f"vambrace_{side}", (-1, 2, -1), (2, 5, 2), "iron_scrap", 0.35))
-    return m
-
-
 def bone_spike(name, pivot, rot, length=3):
     return part(name, pivot=pivot, rot=rot, boxes=[box((-0.5, -length, -0.5), (1, length, 1), "bone_spike")])
 
@@ -846,13 +815,6 @@ def gear_material(mat, side, x, y, w, h, pal, rng):
         return c
     if mat == "leather":
         return leather_px(pal, rng, x, y, w, h, side, stitch_row=h - 1)
-    if mat == "wrap":
-        c = cloth_px(pal, rng, x, y, w, h, side, base="bone_dark")
-        if c is None:
-            return None
-        if (y + x // 2) % 2 == 0:
-            c = shade(c, 0.78)                                # wound bands
-        return c
     if mat in ("rag", "rag_dark", "rag_torn", "rag_rune"):
         base = "cloth_dark" if mat == "rag_dark" else "cloth"
         c = cloth_px(pal, rng, x, y, w, h, side, base=base, fray=2 if mat != "rag_torn" else 3,
@@ -876,10 +838,8 @@ def gear_material(mat, side, x, y, w, h, pal, rng):
         else:
             c = mix(hexc(pal["iron"]), hexc("d8dce2"), t * 0.6)
         return shade(c, rng.uniform(0.92, 1.06))
-    if mat in ("iron_scrap", "iron_cap"):
-        if mat == "iron_cap" and side in ("front", "back", "left", "right") and y >= h - 1 and x % 2 == 0:
-            return hexc("c4c8ce")                             # rim rivets
-        return iron_px(pal, rng, x, y, w, h, side, rivets=(mat == "iron_scrap"))
+    if mat == "iron_scrap":
+        return iron_px(pal, rng, x, y, w, h, side, rivets=True)
     if mat == "harness":
         # Two straps crossing the chest and back, studded; everything else is see-through.
         on = abs((x - y * w / h)) < 1.0 or abs((w - 1 - x) - y * w / h) < 1.0 or y in (h - 3, h - 2)
@@ -1169,8 +1129,7 @@ for _key, _extra in worker_gear.IMP_WORKER_KEYS.items():
     IMP_PALETTES[_key].update(_extra)
 
 GEAR_MODELS = worker_gear.all_gear()
-MODELS = [imp(), imp_bulwark(), imp_impaler(), imp_firecaster(), *worker_gear.imp_workers(imp_base, belt_and_loincloth),
-          demon_player(), *GEAR_MODELS]
+MODELS = [imp_impaler(), imp_firecaster(), demon_player(), *GEAR_MODELS]
 
 
 if __name__ == "__main__":

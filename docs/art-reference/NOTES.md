@@ -26,9 +26,16 @@ These drive the soldier models (3D parts), skins and unit sizes.
   from the red skin.
 
 ## Imp role variants (owner direction)
+- Imps are one species within the demon faction, not the whole faction. They only fill two roles:
+  the Impaler (spearman) and the Firecaster (archer). Other demon ranks and workers are full-sized.
 - Each role of a unit should look a little different, and this applies to every race.
 - Impaler: rugged and sharper, with some armor. Firecaster: a magical look. Imps are low tier, so
   keep it modest.
+
+## Workers (owner direction)
+- Builders, farmers and guards should not be extravagant. They look like plain humanoid working
+  folk: simple hats, smocks, aprons and helms in the race's colors, with no horns, antennae, wings
+  or crests.
 - Armor and clothes need real texture (grain, stitching, rivets, wear), not flat pixels.
 
 ## Demon player character (owner reference painting, not stored as a file)

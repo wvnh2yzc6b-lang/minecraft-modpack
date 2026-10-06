@@ -6,11 +6,9 @@
   const fallback = document.getElementById('fallback');
   const about = document.getElementById('about');
   const MODELS = [
-    { id: 'imp', label: 'Imp', about: '<b>Imp</b> · swordsman. The basic demon foot soldier.' },
-    { id: 'imp_bulwark', label: 'Imp Bulwark', about: '<b>Imp Bulwark</b> · shieldbearer. Scavenged scrap armor.' },
     { id: 'imp_impaler', label: 'Imp Impaler', about: '<b>Imp Impaler</b> · spearman. Studded harness and bone spikes.' },
     { id: 'imp_firecaster', label: 'Imp Firecaster', about: '<b>Imp Firecaster</b> · archer. Rune mantle and a floating ember orb.' },
-    { id: 'workers', label: 'Workers', about: '<b>Workers and guards</b> · posted roles, dressed by race. Demon workers are imps.' },
+    { id: 'workers', label: 'Workers', about: '<b>Workers and guards</b> · posted roles, dressed by race. Plain work clothes in each race\'s colors.' },
     { id: 'demon_player', label: 'Demon player', about: '<b>Demon player</b> · what a player of the demon race looks like to everyone on the server.' },
   ];
   const PALETTES = [{ id: 'demon', label: 'Player demons' }, { id: 'burning_horde', label: 'Burning Horde' }];
@@ -19,7 +17,7 @@
   const NAMES = CODEX.workerNames || {};
   const POSES = [{ id: 'ground', label: 'Folded' }, { id: 'jump', label: 'Jumping' }, { id: 'fly', label: 'Flying' }];
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let pick = { model: 'imp', palette: 'demon', pose: 'fly', role: 'farmer', race: 'human' };
+  let pick = { model: 'imp_impaler', palette: 'demon', pose: 'fly', role: 'farmer', race: 'human' };
   try { const saved = JSON.parse(localStorage.getItem('codex-viewer') || 'null'); if (saved) pick = Object.assign(pick, saved); } catch (e) { }
 
   function seg(el, items, key, onPick) {
@@ -66,18 +64,11 @@
     if (m.id === 'workers') {
       const name = (NAMES[pick.race] || {})[pick.role];
       about.innerHTML = '<b>' + (name || 'Worker') + '</b> · ' + pick.race + ' ' + pick.role + '.';
-      if (pick.race === 'demon') {
-        const id = 'imp_' + pick.role;
-        const g = MCModel.buildModel(CODEX.models[id], tex('demon/' + id), tex('demon/' + id + '_glow'));
-        g.scale.setScalar(1.25); holder.add(g);
-        current = { kind: 'imp', P: g.userData.parts };
-      } else {
-        const id = 'gear_' + pick.role + '_' + pick.race;
-        holder.add(MCModel.buildModel(CODEX.models.player_base, tex('skin/' + pick.race), null));
-        const g = MCModel.buildModel(CODEX.models[id], tex(pick.race + '/' + id), tex(pick.race + '/' + id + '_glow'));
-        holder.add(g);
-        current = { kind: 'worker', P: g.userData.parts };
-      }
+      const id = 'gear_' + pick.role + '_' + pick.race;
+      holder.add(MCModel.buildModel(CODEX.models.player_base, tex('skin/' + pick.race), null));
+      const g = MCModel.buildModel(CODEX.models[id], tex(pick.race + '/' + id), tex(pick.race + '/' + id + '_glow'));
+      holder.add(g);
+      current = { kind: 'worker', P: g.userData.parts };
     } else if (m.id === 'demon_player') {
       const base = MCModel.buildModel(CODEX.models.player_base, tex('player/demon_skin'), tex('player/demon_skin_glow'));
       const extras = MCModel.buildModel(CODEX.models.demon_player, tex('player/demon_extras'), tex('player/demon_extras_glow'));
