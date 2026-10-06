@@ -3,9 +3,9 @@
   "pack_mods": 68,
   "log": [
     {
-      "status": "progress",
+      "status": "done",
       "title": "Builders, farmers and guards for every race",
-      "detail": "Three new posted roles. Builders survey the base around their post and rebuild anything enemies or explosions destroy, using blocks from a nearby chest. Farmers harvest ripe crops, replant, till near water and store the harvest in a chest. Guards hold a post, patrol it and ring an alarm that calls nearby troops. Every race has its own names and work gear; demon workers are imps. Code and models are pushed; the in-game tests are running in CI.",
+      "detail": "Three new posted roles. Builders survey the base around their post and rebuild anything enemies or explosions destroy, using blocks from a nearby chest. Farmers harvest ripe crops, replant, till near water and store the harvest in a chest. Guards hold a post, patrol it and ring an alarm that calls nearby troops. Every race has its own names and work gear; demon workers are imps. All four new in-game tests pass in CI.",
       "image": "workers-all-races.png"
     },
     {
