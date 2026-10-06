@@ -32,6 +32,7 @@ public final class WarbandSpawner {
         add(roles, SoldierRole.ARCHER, (int) Math.round((1 + wave / 2) * m));
         add(roles, SoldierRole.HEALER, wave >= 3 ? 1 + wave / 5 : 0);
         add(roles, SoldierRole.CAPTAIN, wave >= 2 || wave % 5 == 0 ? 1 + wave / 6 : 0);
+        add(roles, SoldierRole.CHAMPION, wave >= 4 ? 1 + wave / 8 : 0);
         return roles.size() > MAX_WAVE_SIZE ? new ArrayList<>(roles.subList(0, MAX_WAVE_SIZE)) : roles;
     }
 
@@ -42,6 +43,7 @@ public final class WarbandSpawner {
         add(roles, SoldierRole.SHIELDBEARER, 1 + random.nextInt(2));
         add(roles, SoldierRole.ARCHER, 1 + random.nextInt(2));
         if (random.nextBoolean()) roles.add(SoldierRole.CAPTAIN);
+        if (random.nextFloat() < 0.15F) roles.add(SoldierRole.CHAMPION);
         SoldierRole[] fill = {SoldierRole.SWORDSMAN, SoldierRole.SPEARMAN, SoldierRole.SWORDSMAN, SoldierRole.HEALER};
         while (roles.size() < size) roles.add(fill[random.nextInt(fill.length)]);
         return roles;

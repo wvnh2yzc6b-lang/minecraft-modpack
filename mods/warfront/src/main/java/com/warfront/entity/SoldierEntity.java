@@ -185,55 +185,93 @@ public class SoldierEntity extends PathfinderMob {
 
     private void applyStats() {
         SoldierRole role = getRole();
+        boolean champion = role == SoldierRole.CHAMPION;
+        double damage = role.damage;
+        double armor = role.armor + role.gearArmor + (tier - 1) * 1.5;
+        // Hive warriors fight with their own claws instead of weapons.
+        if (race == Race.HIVE && role.melee) damage += 4.0;
+        if (champion && race == Race.DWARF) armor += 6.0;
         Objects.requireNonNull(getAttribute(Attributes.MAX_HEALTH)).setBaseValue(role.health + tier * 2);
-        Objects.requireNonNull(getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(role.damage);
-        Objects.requireNonNull(getAttribute(Attributes.ARMOR)).setBaseValue(role.armor);
+        Objects.requireNonNull(getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(damage);
+        Objects.requireNonNull(getAttribute(Attributes.ARMOR)).setBaseValue(Math.min(30.0, armor));
+        Objects.requireNonNull(getAttribute(Attributes.ARMOR_TOUGHNESS)).setBaseValue(champion ? 4.0 : tier >= 3 ? 2.0 : 0.0);
         Objects.requireNonNull(getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(role.speed);
         race.apply(this);
+        if (champion) {
+            double scale = race == Race.HIVE ? 0.35 : race == Race.ORC || race == Race.DWARF ? 0.15 : 0.1;
+            setModifier(Attributes.SCALE, "champion_scale", scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+            setModifier(Attributes.KNOCKBACK_RESISTANCE, "champion_knockback", race == Race.DWARF ? 1.0 : 0.4,
+                    AttributeModifier.Operation.ADD_VALUE);
+            if (race == Race.ELF) {
+                setModifier(Attributes.MOVEMENT_SPEED, "champion_speed", 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+            }
+        }
         setHealth(getMaxHealth());
     }
 
+    private void setModifier(net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute,
+                             String id, double amount, AttributeModifier.Operation op) {
+        var inst = getAttribute(attribute);
+        if (inst == null) return;
+        var rl = com.warfront.Warfront.id(id);
+        inst.removeModifier(rl);
+        inst.addPermanentModifier(new AttributeModifier(rl, amount, op));
+    }
+
+    /**
+     * Hands out weapons. Armor is drawn into each unit's skin and granted as an attribute, so the
+     * unit designs stay visible; armor a player hands over is still worn and rendered.
+     */
     private void equipLoadout() {
         boolean elite = tier >= 3;
         boolean iron = tier >= 2;
         clearLoadout();
+        boolean claws = race == Race.HIVE;
+        boolean axes = race == Race.DWARF || race == Race.ORC;
+        Item blade = elite ? Items.DIAMOND_SWORD : Items.IRON_SWORD;
+        Item axe = elite ? Items.DIAMOND_AXE : Items.IRON_AXE;
         switch (getRole()) {
             case SHIELDBEARER -> {
-                gear(EquipmentSlot.MAINHAND, iron ? Items.IRON_SWORD : Items.STONE_SWORD);
-                gear(EquipmentSlot.OFFHAND, Items.SHIELD);
-                gear(EquipmentSlot.HEAD, iron ? Items.IRON_HELMET : Items.CHAINMAIL_HELMET);
-                gear(EquipmentSlot.CHEST, iron ? Items.IRON_CHESTPLATE : Items.CHAINMAIL_CHESTPLATE);
-                gear(EquipmentSlot.LEGS, Items.CHAINMAIL_LEGGINGS);
+                if (!claws) {
+                    gear(EquipmentSlot.MAINHAND, axes ? (iron ? Items.IRON_AXE : Items.STONE_AXE)
+                            : iron ? Items.IRON_SWORD : Items.STONE_SWORD);
+                    gear(EquipmentSlot.OFFHAND, Items.SHIELD);
+                }
             }
             case SPEARMAN -> {
-                gear(EquipmentSlot.MAINHAND, Items.TRIDENT);
-                gear(EquipmentSlot.HEAD, Items.CHAINMAIL_HELMET);
-                gear(EquipmentSlot.CHEST, iron ? Items.IRON_CHESTPLATE : Items.CHAINMAIL_CHESTPLATE);
+                if (!claws) gear(EquipmentSlot.MAINHAND, Items.TRIDENT);
             }
             case SWORDSMAN -> {
-                gear(EquipmentSlot.MAINHAND, elite ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
-                gear(EquipmentSlot.HEAD, Items.IRON_HELMET);
-                gear(EquipmentSlot.CHEST, Items.CHAINMAIL_CHESTPLATE);
-                if (iron) gear(EquipmentSlot.LEGS, Items.IRON_LEGGINGS);
+                if (!claws) gear(EquipmentSlot.MAINHAND, axes ? axe : blade);
             }
             case CAPTAIN -> {
-                gear(EquipmentSlot.MAINHAND, elite ? Items.DIAMOND_SWORD : Items.IRON_SWORD);
+                if (!claws) gear(EquipmentSlot.MAINHAND, axes ? axe : blade);
                 gear(EquipmentSlot.OFFHAND, bannerFor(Factions.colorOf(level().getServer(), getFactionKey())));
-                gear(EquipmentSlot.HEAD, elite ? Items.DIAMOND_HELMET : Items.IRON_HELMET);
-                gear(EquipmentSlot.CHEST, Items.IRON_CHESTPLATE);
-                gear(EquipmentSlot.LEGS, Items.IRON_LEGGINGS);
-                gear(EquipmentSlot.FEET, Items.IRON_BOOTS);
+            }
+            case CHAMPION -> {
+                switch (race) {
+                    case HUMAN -> {
+                        gear(EquipmentSlot.MAINHAND, blade);
+                        gear(EquipmentSlot.OFFHAND, Items.SHIELD);
+                    }
+                    case ELF -> {
+                        gear(EquipmentSlot.MAINHAND, blade);
+                        gear(EquipmentSlot.OFFHAND, Items.IRON_SWORD);
+                    }
+                    case DWARF -> gear(EquipmentSlot.MAINHAND, Items.MACE);
+                    case ORC -> {
+                        gear(EquipmentSlot.MAINHAND, axe);
+                        gear(EquipmentSlot.OFFHAND, Items.IRON_AXE);
+                    }
+                    case DEMON -> gear(EquipmentSlot.MAINHAND, Items.NETHERITE_SWORD);
+                    case ANGEL -> gear(EquipmentSlot.MAINHAND, Items.GOLDEN_SWORD);
+                    case HIVE -> { }
+                }
             }
             case ARCHER -> {
-                gear(EquipmentSlot.MAINHAND, Items.BOW);
-                gear(EquipmentSlot.HEAD, Items.LEATHER_HELMET);
-                gear(EquipmentSlot.CHEST, iron ? Items.CHAINMAIL_CHESTPLATE : Items.LEATHER_CHESTPLATE);
+                if (!claws) gear(EquipmentSlot.MAINHAND, Items.BOW);
             }
-            case HEALER -> {
-                gear(EquipmentSlot.MAINHAND, WFRegistry.HEALING_STAFF.get());
-                gear(EquipmentSlot.HEAD, Items.GOLDEN_HELMET);
-                if (iron) gear(EquipmentSlot.CHEST, Items.LEATHER_CHESTPLATE);
-            }
+            case HEALER -> gear(EquipmentSlot.MAINHAND, WFRegistry.HEALING_STAFF.get());
         }
     }
 
@@ -332,6 +370,11 @@ public class SoldierEntity extends PathfinderMob {
 
     public boolean isMarchLeader() {
         return marchLeader;
+    }
+
+    /** This unit's race-specific name, e.g. "Axe Thane" for a dwarven swordsman. */
+    public String getUnitName() {
+        return com.warfront.army.UnitNames.of(race, getRole());
     }
 
     public boolean isWarlord() {
@@ -543,6 +586,9 @@ public class SoldierEntity extends PathfinderMob {
         if (getRole() == SoldierRole.CAPTAIN && (tickCount / 20) % 2 == 0) {
             rally();
         }
+        if (getRole() == SoldierRole.CHAMPION) {
+            championPulse();
+        }
         if (getRole() == SoldierRole.HEALER && getHealth() < getMaxHealth()) {
             heal(1f);
         }
@@ -582,6 +628,43 @@ public class SoldierEntity extends PathfinderMob {
         }
     }
 
+    /** Once-a-second abilities of each race's Champion. */
+    private void championPulse() {
+        if (!(level() instanceof ServerLevel server)) return;
+        switch (race) {
+            case HUMAN -> {
+                for (LivingEntity ally : nearbyAllies(6, LivingEntity.class)) {
+                    ally.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 40, 0, true, false));
+                }
+            }
+            case DEMON -> {
+                for (LivingEntity foe : level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(3),
+                        this::isEnemy)) {
+                    foe.igniteForSeconds(3.0F);
+                }
+                server.sendParticles(net.minecraft.core.particles.ParticleTypes.FLAME, getX(), getY() + 1, getZ(),
+                        6, 0.6, 0.6, 0.6, 0.01);
+            }
+            case ANGEL -> {
+                if ((tickCount / 20) % 6 != 0) return;
+                LivingEntity foe = level().getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(12),
+                                this::isEnemy).stream()
+                        .min(Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+                if (foe == null) return;
+                boolean holy = foe.getType().is(net.minecraft.tags.EntityTypeTags.UNDEAD) || Race.of(foe) == Race.DEMON;
+                foe.hurt(damageSources().indirectMagic(this, this), holy ? 12.0F : 6.0F);
+                Vec3 from = getEyePosition();
+                Vec3 to = foe.getEyePosition();
+                for (int i = 0; i <= 12; i++) {
+                    Vec3 p = from.lerp(to, i / 12.0);
+                    server.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD, p.x, p.y, p.z, 1, 0, 0, 0, 0);
+                }
+                playSound(SoundEvents.BEACON_POWER_SELECT, 1.0F, 1.6F);
+            }
+            default -> { }
+        }
+    }
+
     /** Captain's rallying cry: strength and morale for allies close by. */
     private void rally() {
         for (LivingEntity ally : nearbyAllies(10, LivingEntity.class)) {
@@ -610,7 +693,7 @@ public class SoldierEntity extends PathfinderMob {
         Component name = Component.literal("[" + Factions.displayName(server, key) + "] ")
                 .withStyle(Factions.colorOf(server, key))
                 .append(Component.literal(warlord ? race.displayName() + " Warlord"
-                        : race.displayName() + " " + getRole().displayName())
+                        : getUnitName())
                         .withStyle(warlord ? ChatFormatting.DARK_RED : ChatFormatting.WHITE));
         setCustomName(name);
         setCustomNameVisible(false);
@@ -628,11 +711,26 @@ public class SoldierEntity extends PathfinderMob {
     public boolean doHurtTarget(Entity target) {
         boolean hit = super.doHurtTarget(target);
         if (hit && race == Race.DEMON) target.igniteForSeconds(3.0F);
+        if (hit && race == Race.HIVE && getRole() == SoldierRole.CHAMPION && target instanceof LivingEntity living) {
+            living.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1), this);
+            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
+        }
         return hit;
+    }
+
+    /** True while this soldier is an orc Berserker below half health. */
+    public boolean isBerserk() {
+        return race == Race.ORC && getRole() == SoldierRole.CHAMPION && getHealth() < getMaxHealth() * 0.5F;
     }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (!level().isClientSide && race == Race.ELF && getRole() == SoldierRole.CHAMPION
+                && source.getEntity() != null && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)
+                && random.nextFloat() < 0.3F) {
+            playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.8F, 1.6F);
+            return false;
+        }
         boolean hurt = super.hurt(source, amount);
         if (hurt && !level().isClientSide) {
             morale = Math.max(0f, morale - amount * 2.5f);
@@ -652,8 +750,7 @@ public class SoldierEntity extends PathfinderMob {
 
         Player owner = getOwner();
         if (owner != null) {
-            owner.displayClientMessage(Component.literal("Your " + race.displayName() + " "
-                    + getRole().displayName() + " has fallen.").withStyle(ChatFormatting.RED), true);
+            owner.displayClientMessage(Component.literal("Your " + getUnitName() + " has fallen.").withStyle(ChatFormatting.RED), true);
         } else if (source.getEntity() != null) {
             int marks = 1 + random.nextInt(2) + tier / 2 + (getRole() == SoldierRole.CAPTAIN ? 3 : 0)
                     + (warlord ? 12 : 0);

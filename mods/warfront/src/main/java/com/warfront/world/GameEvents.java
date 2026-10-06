@@ -150,6 +150,8 @@ public final class GameEvents {
             Race attackerRace = Race.of(living);
             if (attackerRace == Race.ANGEL && (victim.getType().is(EntityTypeTags.UNDEAD) || victimRace == Race.DEMON)) {
                 event.setAmount(event.getAmount() * 1.5F);
+            } else if (living instanceof SoldierEntity berserker && berserker.isBerserk()) {
+                event.setAmount(event.getAmount() * 1.5F);
             } else if (attackerRace == Race.HIVE && living instanceof SoldierEntity hive) {
                 long pack = hive.nearbyAllies(6, SoldierEntity.class).stream()
                         .filter(s -> s.getRace() == Race.HIVE).count();

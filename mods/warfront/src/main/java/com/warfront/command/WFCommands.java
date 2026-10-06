@@ -139,7 +139,7 @@ public final class WFCommands {
         SoldierEntity any = army.get(0);
         ok(ctx, Component.literal("Your army: " + army.size() + " soldiers. " + any.getOrder().title + ", "
                 + any.getFormation().title).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
-        ok(ctx, Component.literal(counts.entrySet().stream().map(e -> e.getValue() + "x " + e.getKey().displayName())
+        ok(ctx, Component.literal(counts.entrySet().stream().map(e -> e.getValue() + "x " + com.warfront.army.UnitNames.of(any.getRace(), e.getKey()))
                 .collect(Collectors.joining(", "))).withStyle(ChatFormatting.YELLOW));
         ok(ctx, Component.literal(String.format("Average health %.0f%%, morale %.0f", 100 * health / army.size(),
                 morale / army.size())).withStyle(ChatFormatting.GRAY));

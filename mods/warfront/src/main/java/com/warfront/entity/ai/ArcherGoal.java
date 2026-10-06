@@ -30,7 +30,7 @@ public class ArcherGoal extends Goal {
     public boolean canUse() {
         LivingEntity t = soldier.getTarget();
         return soldier.getRole() == SoldierRole.ARCHER && !soldier.isRouting() && t != null && t.isAlive()
-                && soldier.getMainHandItem().getItem() instanceof BowItem;
+                && (soldier.getMainHandItem().getItem() instanceof BowItem || spitter());
     }
 
     @Override
@@ -67,12 +67,21 @@ public class ArcherGoal extends Goal {
         }
 
         long phase = soldier.level().getGameTime() % VOLLEY_PERIOD;
+        if (spitter()) {
+            if (phase == 0) shoot(target);
+            return;
+        }
         if (!soldier.isUsingItem()) {
             if (phase >= VOLLEY_PERIOD - 22) soldier.startUsingItem(InteractionHand.MAIN_HAND);
         } else if (phase < 3 && soldier.getTicksUsingItem() >= 15) {
             soldier.stopUsingItem();
             shoot(target);
         }
+    }
+
+    /** Hive archers have no bow: they spit poison darts. */
+    private boolean spitter() {
+        return soldier.getRace() == Race.HIVE && soldier.getMainHandItem().isEmpty();
     }
 
     private void shoot(LivingEntity target) {
@@ -86,7 +95,12 @@ public class ArcherGoal extends Goal {
         arrow.shoot(dx, dy + h * 0.2, dz, 1.7F, elf ? 2.0F : 6.0F);
         arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
         if (elf) arrow.setBaseDamage(arrow.getBaseDamage() + 1.0);
+        if (spitter()) {
+            arrow.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                    net.minecraft.world.effect.MobEffects.POISON, 60, 0));
+            arrow.setBaseDamage(1.5);
+        }
         soldier.level().addFreshEntity(arrow);
-        soldier.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (soldier.getRandom().nextFloat() * 0.4F + 0.8F));
+        soldier.playSound(spitter() ? SoundEvents.LLAMA_SPIT : SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (soldier.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 }
