@@ -380,21 +380,16 @@ def demon_player():
         sx = -1 if side == "r" else 1
         name = "right_arm" if side == "r" else "left_arm"
         x0 = -3 if side == "r" else -1
-        # Three short claws at the fingertips, curled slightly forward; simple enough to look right
-        # wrapped around a weapon grip (and hidden in-game while the hand holds something).
-        talons = [part(f"talon_{side}{i}", pivot=(x0 + 1 + i * 1.0, 11.5, -1.6), rot=(-0.55, 0, 0),
-                       boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw")]) for i in range(3)]
         thorns = [part(f"thorn_{side}{i}", pivot=(x0 + (0 if side == "r" else 4), y, z), rot=(rx, 0, sx * 0.9),
                        boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "horn_black")])
                   for i, (y, z, rx) in enumerate([(0, 0, -0.3), (4, 1, 0.3), (7.5, -0.5, -0.2)])]
         return part(name, pivot=(sx * 5, 2, 0), children=[
-            part(f"brambles_{side}", boxes=[box((x0, 3, -2), (4, 7, 4), "brambles", grow=0.3)]), *thorns, *talons])
+            part(f"brambles_{side}", boxes=[box((x0, 3, -2), (4, 7, 4), "brambles", grow=0.3)]), *thorns])
 
     def leg(side):
         sx = -1 if side == "r" else 1
-        toes = [part(f"toe_{side}{i}", pivot=(-1.3 + i * 1.3, 12, -1.6), rot=(0.2, sx * (i - 1) * 0.15, 0),
-                     boxes=[box((-0.5, -1, -3), (1, 1, 3), "claw")]) for i in range(3)]
-        return part("right_leg" if side == "r" else "left_leg", pivot=(sx * 1.9, 12, 0), children=toes)
+        # Bare legs: kept as an empty part so the layer can still copy the leg pose.
+        return part("right_leg" if side == "r" else "left_leg", pivot=(sx * 1.9, 12, 0))
 
     return {"id": "demon_player", "tex": [128, 128], "parts": [head, part("hat"), body, arm("r"), arm("l"), leg("r"), leg("l")]}
 
