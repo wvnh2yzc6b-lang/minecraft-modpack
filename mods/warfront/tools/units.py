@@ -253,7 +253,287 @@ def imp_firecaster():
     return m
 
 
-MODELS = [imp(), imp_bulwark(), imp_impaler(), imp_firecaster()]
+
+
+# ----------------------------------------------------------------------------- demon player
+
+def player_base():
+    """Vanilla player geometry with standard skin UVs (preview only; the game uses PlayerModel)."""
+    def b(uv, origin, size, grow=0.0):
+        d = box(origin, size, "skin_tex", uv=list(uv))
+        if grow:
+            d["grow"] = grow
+        return d
+    return {"id": "player_base", "tex": [64, 64], "fixed_uv": True, "parts": [
+        part("head", boxes=[b((0, 0), (-4, -8, -4), (8, 8, 8)), b((32, 0), (-4, -8, -4), (8, 8, 8), 0.5)]),
+        part("body", boxes=[b((16, 16), (-4, 0, -2), (8, 12, 4)), b((16, 32), (-4, 0, -2), (8, 12, 4), 0.25)]),
+        part("right_arm", pivot=(-5, 2, 0), boxes=[b((40, 16), (-3, -2, -2), (4, 12, 4)), b((40, 32), (-3, -2, -2), (4, 12, 4), 0.25)]),
+        part("left_arm", pivot=(5, 2, 0), boxes=[b((32, 48), (-1, -2, -2), (4, 12, 4)), b((48, 48), (-1, -2, -2), (4, 12, 4), 0.25)]),
+        part("right_leg", pivot=(-1.9, 12, 0), boxes=[b((0, 16), (-2, 0, -2), (4, 12, 4)), b((0, 32), (-2, 0, -2), (4, 12, 4), 0.25)]),
+        part("left_leg", pivot=(1.9, 12, 0), boxes=[b((16, 48), (-2, 0, -2), (4, 12, 4)), b((0, 48), (-2, 0, -2), (4, 12, 4), 0.25)]),
+    ]}
+
+
+def demon_player():
+    """Extra parts worn by players of the demon race, attached to the vanilla player model's parts."""
+    def horn(side):
+        sx = -1 if side == "r" else 1
+        tip = part(f"horn_{side}4", pivot=(0, -4, 0), rot=(0.1, 0, sx * -0.75),
+                   boxes=[box((-0.5, -3, -0.5), (1, 3, 1), "horn_black")])
+        s3 = part(f"horn_{side}3", pivot=(0, -4, 0), rot=(0.05, 0, sx * -0.45),
+                  boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "horn_black")], children=[tip])
+        s2 = part(f"horn_{side}2", pivot=(0, -4, 0), rot=(-0.1, 0, sx * -0.15),
+                  boxes=[box((-1, -4, -1), (2, 4, 2), "horn_black", grow=-0.2)], children=[s3])
+        return part(f"horn_{side}", pivot=(sx * 2.6, -7.5, -0.5), rot=(-0.2, 0, sx * 0.55),
+                    boxes=[box((-1, -4, -1), (2, 4, 2), "horn_black")], children=[s2])
+
+    crown = []
+    for i, (x, z, rx, rz, ln) in enumerate([(-1.2, -2.5, -0.35, -0.2, 3), (1.2, -2.5, -0.35, 0.2, 3), (0, -1.5, -0.5, 0, 4),
+                                            (-3.2, 1.5, -0.6, -0.6, 3), (3.2, 1.5, -0.6, 0.6, 3), (0, 2.5, -0.9, 0, 3),
+                                            (-2, 3.5, -1.0, -0.3, 2), (2, 3.5, -1.0, 0.3, 2)]):
+        crown.append(part(f"spike_{i}", pivot=(x, -8, z), rot=(rx, 0, rz),
+                          boxes=[box((-0.5, -ln, -0.5), (1, ln, 1), "horn_black")]))
+    head = part("head", children=[horn("r"), horn("l"), *crown,
+        part("beak", pivot=(0, -3.5, -4), rot=(0.15, 0, 0), boxes=[box((-1.5, -1.5, -1.5), (3, 3, 2), "horn_black")],
+             children=[part("beak_tip", pivot=(0, 1, -1.5), rot=(0.4, 0, 0), boxes=[box((-0.5, 0, -1), (1, 2, 1), "horn_black")])]),
+        part("brow_r", pivot=(-2.5, -5.5, -4.2), rot=(0, 0, 0.25), boxes=[box((-2, -0.5, -0.5), (3, 1, 1), "horn_black")]),
+        part("brow_l", pivot=(2.5, -5.5, -4.2), rot=(0, 0, -0.25), boxes=[box((-1, -0.5, -0.5), (3, 1, 1), "horn_black")]),
+    ])
+
+    wing_r = part("wing_r", pivot=(-2, 2, 2.2), rot=(0.3, 0.55, 0.75), boxes=[
+        box((-19, -0.75, -0.75), (19, 1.5, 1.5), "wing_bone_dark"),
+        box((-19, 0.5, 0), (19, 22, 0), "membrane_ember"),
+    ], children=[
+        part("wing_r_claw", pivot=(-19, 0, 0), rot=(0, 0, -1.0), boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "claw")]),
+        part("wing_r_hook", pivot=(-9, -0.5, 0), rot=(0, 0, 0.4), boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "claw")]),
+        part("wing_r_finger1", pivot=(-7, 0.5, 0), rot=(0, 0, -0.2), boxes=[box((-0.5, 0, -0.5), (1, 21, 1), "wing_bone_dark")]),
+        part("wing_r_finger2", pivot=(-13, 0.5, 0), rot=(0, 0, -0.05), boxes=[box((-0.5, 0, -0.5), (1, 19, 1), "wing_bone_dark")]),
+        part("wing_r_finger3", pivot=(-17.5, 0.5, 0), rot=(0, 0, 0.12), boxes=[box((-0.5, 0, -0.5), (1, 15, 1), "wing_bone_dark")]),
+    ])
+    body = part("body", children=[
+        wing_r, mirror(wing_r),
+        part("thorn_belt", boxes=[box((-4, 10, -2), (8, 2, 4), "thorn_belt", grow=0.35)]),
+        part("robe_front", pivot=(0, 11, -2.45), rot=(-0.03, 0, 0), boxes=[box((-4.5, 0, 0), (9, 13, 0), "robe")]),
+        part("robe_back", pivot=(0, 11, 2.45), rot=(0.05, 0, 0), boxes=[box((-4.5, 0, 0), (9, 13, 0), "robe")]),
+        part("robe_side_r", pivot=(-4.45, 11, 0), rot=(0, 0, 0.04), boxes=[box((0, 0, -2.5), (0, 12, 5), "robe")]),
+        part("robe_side_l", pivot=(4.45, 11, 0), rot=(0, 0, -0.04), boxes=[box((0, 0, -2.5), (0, 12, 5), "robe")]),
+        part("cloak", pivot=(0, 0.2, 2.6), rot=(0.1, 0, 0), boxes=[box((-5, 0, 0), (10, 24, 0), "cloak")]),
+    ])
+
+    def arm(side):
+        sx = -1 if side == "r" else 1
+        name = "right_arm" if side == "r" else "left_arm"
+        x0 = -3 if side == "r" else -1
+        talons = [part(f"talon_{side}{i}", pivot=(x0 + 0.5 + i * 1.0, 10, -1.3 + (i % 2) * 0.6), rot=(-0.35, 0, sx * -0.1 * (i - 1.5)),
+                       boxes=[box((-0.5, 0, -0.5), (1, 3, 1), "claw")],
+                       children=[part(f"talon_{side}{i}_tip", pivot=(0, 3, 0), rot=(-0.5, 0, 0),
+                                      boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "claw", grow=-0.15)])]) for i in range(4)]
+        thorns = [part(f"thorn_{side}{i}", pivot=(x0 + (0 if side == "r" else 4), y, z), rot=(rx, 0, sx * 0.9),
+                       boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "horn_black")])
+                  for i, (y, z, rx) in enumerate([(-1, 0, -0.3), (3, -1, 0.2), (6, 1, -0.4), (8, -0.5, 0.3)])]
+        return part(name, pivot=(sx * 5, 2, 0), children=[
+            part(f"brambles_{side}", boxes=[box((x0, 3, -2), (4, 7, 4), "brambles", grow=0.3)]), *thorns, *talons])
+
+    def leg(side):
+        sx = -1 if side == "r" else 1
+        toes = [part(f"toe_{side}{i}", pivot=(-1.3 + i * 1.3, 12, -1.6), rot=(0.2, sx * (i - 1) * 0.15, 0),
+                     boxes=[box((-0.5, -1, -3), (1, 1, 3), "claw")]) for i in range(3)]
+        return part("right_leg" if side == "r" else "left_leg", pivot=(sx * 1.9, 12, 0), children=toes)
+
+    return {"id": "demon_player", "tex": [128, 128], "parts": [head, part("hat"), body, arm("r"), arm("l"), leg("r"), leg("l")]}
+
+
+DEMON_PLAYER_PAL = dict(skin="9a9a98", dark="3a3a3c", hi="cfcfcb", deep="101012", claw="0c0b0c", horn="1a1a1d",
+                        horn_tip="4a4a50", membrane="2a0c0c", vein="140606", tail="2a2a2a", tail_dark="141414",
+                        eye="ff2a1a", eye_hi="ff9a7a", tuft="0c0c0c", leather="1e1c1c", leather_dark="0a0909",
+                        iron="3a3a3e", iron_dark="1a1a1e", rust="5a1a10", cloth="161414", cloth_dark="080707",
+                        bone="cfc6b0", bone_dark="6a6050", rune="ff3a1a", rune_hi="ff9a6a", mantle="141212",
+                        mantle_trim="8a1a10", orb="ff3a10", orb_core="ffc0a0", ember="ff2a10", ember_hi="ff8a40")
+
+
+def demon_material(mat, side, x, y, w, h, pal, rng):
+    if mat == "horn_black":
+        c = shade(hexc(pal["horn"]), rng.uniform(0.8, 1.25))
+        if side == "top" or (side in ("left", "front") and x == 0):
+            c = shade(c, 1.6)                                   # glossy edge
+        if rng.random() < 0.08:
+            c = shade(c, 0.6)                                   # ridges
+        return c
+    if mat == "wing_bone_dark":
+        return shade(mix(hexc("1a1416"), hexc("3a2a2a"), rng.uniform(0, 0.6)), 1.15 if side == "top" else 1)
+    if mat == "membrane_ember":
+        if side not in ("front", "back"):
+            return None
+        ragged = h - 1 - int(3 * (1 + math.sin(x * 1.3) * math.cos(x * 0.7))) - (3 if x < 4 else 0)
+        if y > ragged:
+            return None
+        if rng.random() < 0.02 and y > h // 2:
+            return None
+        edge_dist = min(x, w - 1 - x, y, ragged - y)
+        dark = mix(hexc("0c0808"), hexc("221212"), rng.uniform(0, 1))
+        if edge_dist <= 1 or (x + y // 2) % 6 == 0:
+            return dark                                         # black ragged rim and sinews
+        # Glowing ember-red panes between the sinews, brightest near the middle.
+        t = min(1.0, edge_dist / 5)
+        c = mix(hexc("3a0806"), hexc(pal["ember"]), t * rng.uniform(0.6, 1.0))
+        if side == "back":
+            c = shade(c, 0.7)
+        if t > 0.55 and rng.random() < 0.6:
+            return glow(mix(c, hexc(pal["ember_hi"]), rng.uniform(0, 0.3)))
+        return c
+    if mat in ("robe", "cloak"):
+        # Tattered black cloth, torn into strips at the bottom.
+        strip = (x * 3 + (x // 3) * 5) % 7
+        tear_from = h - 2 - strip - (3 if mat == "cloak" else 1)
+        if y > tear_from and (x % 3 == 0 or y > tear_from + 2):
+            return None
+        if mat == "robe" and side not in ("front", "back", "left", "right"):
+            return None
+        c = mix(hexc("141213"), hexc("2a2628"), rng.uniform(0, 0.5))
+        if x % 2 == 0:
+            c = shade(c, 0.8)                                   # folds
+        if rng.random() < 0.05:
+            c = shade(c, 1.6)                                   # sheen
+        return c
+    if mat == "thorn_belt":
+        c = shade(hexc("16120f"), rng.uniform(0.8, 1.3))
+        if side in ("front", "back", "left", "right") and (x + y * 2) % 3 == 0:
+            c = shade(hexc("3a2a20"), rng.uniform(0.8, 1.2))      # twisted bramble strands
+        return c
+    if mat == "brambles":
+        if side in ("top", "bottom"):
+            return None
+        # Thorny vines spiralling around the forearm.
+        on = (x + y) % 4 == 0 or (x - y) % 5 == 0
+        if not on:
+            return None
+        return shade(hexc("16110f"), rng.uniform(0.7, 1.4))
+    return NotImplemented
+
+
+def paint_demon_skin(pal):
+    """64x64 player skin: black horned helm-face, pale grey muscled body, black forearms and legs."""
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    gl = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    rng = random.Random("demon_skin")
+
+    def cube_faces(u, v, w, h, d):
+        return {"top": (u + d, v, w, d), "bottom": (u + d + w, v, w, d), "right": (u, v + d, d, h),
+                "front": (u + d, v + d, w, h), "left": (u + d + w, v + d, d, h), "back": (u + 2 * d + w, v + d, w, h)}
+
+    def fill(u, v, w, h, d, fn):
+        for side, (x0, y0, fw, fh) in cube_faces(u, v, w, h, d).items():
+            for yy in range(fh):
+                for xx in range(fw):
+                    c = fn(side, xx, yy, fw, fh)
+                    if c is None:
+                        continue
+                    if isinstance(c, tuple) and c[0] == "glow":
+                        gl.putpixel((x0 + xx, y0 + yy), shade(c[1], 0.6))
+                        c = c[1]
+                    img.putpixel((x0 + xx, y0 + yy), c)
+
+    def grey(side, x, y, w, h, light=1.0):
+        c = shade(hexc(pal["skin"]), rng.uniform(0.9, 1.06) * light)
+        if side in ("left", "right"):
+            c = shade(c, 0.85)
+        if side == "top":
+            c = shade(c, 1.1)
+        return c
+
+    def helm(side, x, y, w, h):
+        c = shade(hexc("17171a"), rng.uniform(0.8, 1.3))
+        if side == "front":
+            if y == 3 and x in (1, 2, 5, 6):
+                return glow(hexc(pal["eye"]) if x in (1, 6) else hexc(pal["eye_hi"]))   # burning eye slits
+            if y == 2 and x in (1, 2, 5, 6):
+                c = shade(hexc("2e2e34"), 1.2)                   # brow ridge
+            if x in (3, 4) and y >= 4:
+                c = shade(hexc("26262c"), 1.2)                   # beak ridge
+            if y == 7 and x in (2, 5):
+                c = hexc("0a0a0b")
+        if side in ("left", "right") and y in (2, 5):
+            c = shade(c, 1.5)                                    # plate seams
+        if side == "top" and (x + y) % 3 == 0:
+            c = shade(c, 1.4)
+        return c
+
+    def torso(side, x, y, w, h):
+        c = grey(side, x, y, w, h)
+        if side == "front":
+            if y in (0, 1) and x in (0, w - 1):
+                c = shade(c, 0.8)                                # shoulders shading into the chest
+            if y == 3 and 0 < x < w - 1:
+                c = shade(c, 0.72)                               # under the pecs
+            if y in (2,) and x in (2, 5):
+                c = shade(c, 1.12)
+            if x in (3, 4) and 1 <= y <= 9:
+                c = shade(c, 0.86 if x == 3 else 0.92)           # sternum / linea alba
+            if y in (5, 7) and 1 <= x <= 6 and x not in (3, 4):
+                c = shade(c, 0.78)                               # abs
+            if y in (4, 6, 8) and x in (2, 5):
+                c = shade(c, 1.12)
+            if x in (0, 7) and 4 <= y <= 9:
+                c = shade(c, 0.82)                               # obliques
+        if side == "back" and x in (3, 4):
+            c = shade(c, 0.8)                                    # spine
+        if y >= 10:
+            c = shade(hexc("121011"), rng.uniform(0.8, 1.2))     # robe top
+        return c
+
+    def arm_fn(side, x, y, w, h):
+        if y <= 3:
+            c = grey(side, x, y, w, h)
+            if y == 0 and side in ("front", "back", "left", "right"):
+                c = shade(c, 0.85)
+            return c
+        t = min(1, (y - 3) / 4)
+        c = mix(hexc(pal["skin"]), hexc("1a1718"), t)
+        c = shade(c, rng.uniform(0.85, 1.15))
+        if y >= 10:
+            c = shade(hexc("0e0d0e"), rng.uniform(0.8, 1.2))     # black clawed hands
+        return c
+
+    def leg_fn(side, x, y, w, h):
+        c = mix(hexc("121011"), hexc("221e20"), rng.uniform(0, 0.6))
+        if y >= 10:
+            c = shade(hexc("0c0b0c"), rng.uniform(0.8, 1.3))     # black feet
+        return c
+
+    def overlay_none(side, x, y, w, h):
+        return None
+
+    def hat(side, x, y, w, h):
+        # Helm ridges standing proud of the face.
+        if side == "front" and y in (0, 1) and x in (0, 7):
+            return shade(hexc("1e1e22"), 1.2)
+        if side == "top" and x in (3, 4):
+            return shade(hexc("26262c"), rng.uniform(1.0, 1.4))
+        return None
+
+    def jacket(side, x, y, w, h):
+        if y >= 9:
+            c = shade(hexc("100e0f"), rng.uniform(0.8, 1.3))
+            if y == 9 and (x % 3 == 0):
+                return shade(hexc("3a2a20"), 1.0)
+            return c
+        return None
+
+    fill(0, 0, 8, 8, 8, helm)
+    fill(32, 0, 8, 8, 8, hat)
+    fill(16, 16, 8, 12, 4, torso)
+    fill(16, 32, 8, 12, 4, jacket)
+    fill(40, 16, 4, 12, 4, arm_fn)
+    fill(32, 48, 4, 12, 4, arm_fn)
+    fill(0, 16, 4, 12, 4, leg_fn)
+    fill(16, 48, 4, 12, 4, leg_fn)
+    out = RES.parent / "player"
+    out.mkdir(parents=True, exist_ok=True)
+    img.save(out / "demon_skin.png")
+    gl.save(out / "demon_skin_glow.png")
+
+
+MODELS = [imp(), imp_bulwark(), imp_impaler(), imp_firecaster(), demon_player()]
 
 
 # ----------------------------------------------------------------------------- UV packing
@@ -555,6 +835,9 @@ def material(mat, side, x, y, w, h, pal, rng):
     g = gear_material(mat, side, x, y, w, h, pal, rng)
     if g is not NotImplemented:
         return g
+    g = demon_material(mat, side, x, y, w, h, pal, rng)
+    if g is not NotImplemented:
+        return g
     if mat in ("skin", "torso"):
         c = mottled(pal, rng, x, y, w, h, side)
         if mat == "torso" and side == "front":
@@ -735,11 +1018,22 @@ public final class UnitGeometry {{
 if __name__ == "__main__":
     for m in MODELS:
         pack(m)
+    out_dir = RES.parent / "player"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    dp = [m for m in MODELS if m["id"] == "demon_player"][0]
+    img = Image.new("RGBA", tuple(dp["tex"]), (0, 0, 0, 0))
+    gimg = Image.new("RGBA", tuple(dp["tex"]), (0, 0, 0, 0))
+    rng = random.Random("demon_player")
+    for _, bx in all_boxes(dp["parts"]):
+        paint_box(img, gimg, bx, DEMON_PLAYER_PAL, rng)
+    img.save(out_dir / "demon_extras.png")
+    gimg.save(out_dir / "demon_extras_glow.png")
+    paint_demon_skin(DEMON_PLAYER_PAL)
     for m in MODELS:
         if m["id"].startswith("imp"):
             for key, pal in IMP_PALETTES.items():
                 print("painted", paint(m, key, pal))
     write_java(MODELS)
     JSON_OUT.parent.mkdir(parents=True, exist_ok=True)
-    JSON_OUT.write_text(json.dumps(MODELS))
+    JSON_OUT.write_text(json.dumps(MODELS + [player_base()]))
     print("wrote", JAVA, "and", JSON_OUT)
