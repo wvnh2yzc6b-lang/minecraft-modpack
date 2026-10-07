@@ -88,12 +88,6 @@
       "why": "I'm building a first version now. Reference images would let me match your style."
     },
     {
-      "topic": "Pack",
-      "priority": "low",
-      "question": "Twilight Forest is CurseForge-only. Skip it, or pick a replacement?",
-      "why": "The pack is built from Modrinth, so it can't include Twilight Forest."
-    },
-    {
       "topic": "Creatures",
       "priority": "low",
       "question": "Which creatures do you want, and which races do they belong to?",
@@ -104,9 +98,19 @@
       "priority": "low",
       "question": "Raid chest looks: one per enemy faction. Any references or ideas for each?",
       "why": "Decided: each of the seven enemy factions gets its own raid chest. If no references come, I'll design them from each race's palette (Marauder war crate, Black Legion strongbox, Burning Horde bone chest, Swarm chitin pod, Silverwood root-bound coffer, Ironbeard vault, Fallen Host reliquary)."
+    },
+    {
+      "topic": "Pack",
+      "priority": "low",
+      "question": "Otherside crossover: what does the Hive get from it, a war beast, player gear, or both?",
+      "why": "Angels get wings and an armored Moa from the Aether. The Hive already has the Deepmaw, so the Otherside could give a second beast (a tamed sculk stalker), Hive player armor from echo materials, or both."
     }
   ],
   "settled": [
+    {
+      "topic": "Pack",
+      "answer": "Twilight Forest is out (CurseForge-only). In its place the pack runs The Aether and Deeper and Darker, both crossed over with Warfront as optional integrations: the Aether is the angels' homeland and the Otherside (Deeper and Darker's dimension) the Hive's; Fallen Host raids come down from the Aether and Swarm raids rise from the Otherside; their ores and sculk materials fuel mana and build altars; angel wings and the angels' war beast (an armored Moa) come from the Aether, Hive gear or a beast from the Otherside; faction outposts and raid chests also appear in both dimensions as late-game raids."
+    },
     {
       "topic": "Towers",
       "answer": "Towers get real 3D models before any new tower types: the Arrow Tower, Arcane Spire and Healing Shrine each get a proper model, styled by the race of the player who placed it. New tower types come later."

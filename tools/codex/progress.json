@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: the Aether and the Otherside join the war",
+      "detail": "Twilight Forest is out. The Aether and Deeper and Darker come in and tie into Warfront: the Aether is the angels' homeland and the Otherside the Hive's, Fallen Host and Swarm raids come from there, their ores fuel your mana, angel wings and an armored Moa come from the Aether, and enemy outposts with raid chests wait in both dimensions. Warfront still runs without either mod. Queued for build sessions."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: heroes stand taller",
       "detail": "Captains will be 15% bigger and Champions 30% bigger than the soldiers of their race, so heroes stand out on the field, both yours and the enemy's. Queued for the next build session."
     },
