@@ -38,8 +38,13 @@ public final class WarbandSpawner {
 
     /** Army composition for a siege wave; grows with every wave survived. */
     public static List<SoldierRole> siegeComposition(int wave, NpcFaction faction) {
+        return siegeComposition(wave, faction, 1.0);
+    }
+
+    /** Siege army scaled by {@code scale} (difficulty preset and base level). */
+    public static List<SoldierRole> siegeComposition(int wave, NpcFaction faction, double scale) {
         List<SoldierRole> roles = new ArrayList<>();
-        double m = faction.sizeMultiplier;
+        double m = faction.sizeMultiplier * scale;
         add(roles, SoldierRole.SHIELDBEARER, (int) Math.round((2 + wave / 2) * m));
         add(roles, SoldierRole.SPEARMAN, (int) Math.round((1 + wave / 3) * m));
         add(roles, SoldierRole.SWORDSMAN, (int) Math.round((1 + wave / 2) * m));
@@ -52,8 +57,18 @@ public final class WarbandSpawner {
 
     /** A small raiding party. */
     public static List<SoldierRole> raidComposition(RandomSource random, NpcFaction faction) {
+        return raidComposition(random, faction, 1, com.warfront.war.WarState.Preset.NORMAL);
+    }
+
+    /**
+     * A raiding party sized by the base level it attacks (or 1 in the field) and the difficulty preset: 4 to 6 at
+     * level 1, two more per level. Never by the size of the player's army.
+     */
+    public static List<SoldierRole> raidComposition(RandomSource random, NpcFaction faction, int baseLevel,
+                                                    com.warfront.war.WarState.Preset preset) {
         List<SoldierRole> roles = new ArrayList<>();
-        int size = (int) Math.round((4 + random.nextInt(4)) * faction.sizeMultiplier);
+        int base = 4 + 2 * (Math.max(1, baseLevel) - 1) + random.nextInt(3);
+        int size = Math.max(2, (int) Math.round(base * faction.sizeMultiplier * preset.raidSize()));
         add(roles, SoldierRole.SHIELDBEARER, 1 + random.nextInt(2));
         add(roles, SoldierRole.ARCHER, 1 + random.nextInt(2));
         if (random.nextBoolean()) roles.add(SoldierRole.CAPTAIN);
@@ -98,6 +113,7 @@ public final class WarbandSpawner {
             BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
             soldier.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, yaw, 0F);
             soldier.setupAsRaider(faction, role, warband, objective, siegeTarget, tier);
+            if (level.getServer() != null) soldier.applyStrength(com.warfront.war.WarState.get(level.getServer()).preset().strength());
             level.addFreshEntity(soldier);
             if (tunnel) emerge(level, ground);
             out.add(soldier);

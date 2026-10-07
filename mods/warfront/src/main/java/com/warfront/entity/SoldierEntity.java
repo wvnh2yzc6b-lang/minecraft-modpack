@@ -228,6 +228,13 @@ public class SoldierEntity extends PathfinderMob {
         setHealth(getMaxHealth());
     }
 
+    /** Scales health and damage (difficulty presets for enemies). 1 removes the scaling. */
+    public void applyStrength(double multiplier) {
+        setModifier(Attributes.MAX_HEALTH, "difficulty_health", multiplier - 1.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        setModifier(Attributes.ATTACK_DAMAGE, "difficulty_damage", multiplier - 1.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        setHealth(getMaxHealth());
+    }
+
     private void setModifier(net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute,
                              String id, double amount, AttributeModifier.Operation op) {
         var inst = getAttribute(attribute);

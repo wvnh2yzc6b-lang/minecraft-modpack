@@ -24,6 +24,7 @@ public final class AdvisorEvents {
         } else if (state.is(WFRegistry.SUMMONING_ALTAR.get())) {
             Advisor.complete(player, Advisor.Step.ALTAR);
         } else if (state.is(WFRegistry.WAR_STANDARD.get())) {
+            com.warfront.war.RaidScheduler.setHome(player, event.getPos());
             Advisor.complete(player, Advisor.Step.STANDARD);
         }
     }

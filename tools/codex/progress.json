@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Difficulty and the rhythm of war",
+      "detail": "Each world picks Easy, Normal, Hard or Warlord on first join (click in chat, or /warfront difficulty; Normal if you don't). Presets scale raid size, enemy health and damage, and how often raids come (all in the config). Raids grow with the base level they hit, never with your army. Nothing attacks in the first three days, or before you've planted a War Standard. Then each player has a raid clock: about one raid a day, a siege on your War Standard every three to four nights, and a quiet day after every two raids. The clock runs at half speed while you're in another dimension. Every attack is announced two minutes ahead with a toast, a horn and a countdown bar, wherever you are. Press H (or /warfront home) to recall: 5 seconds standing still, broken by damage, then you and the units following you land at your War Standard. Once per attack. Your base stays loaded during the attack, so towers and guards fight even when you're away. Test Panel (Siege tab): set the preset, skip the grace period, force a raid or siege warning, recall now. Still to come: war meters adding to raid size, and Warlord's permadeath for heroes once mortal units exist."
+    },
+    {
+      "status": "done",
       "title": "The advisor: your first hour",
       "detail": "Every new player gets an advisor, a robed elder in their race's colors (Court Wizard, Seer, Runekeeper, Shaman, Whisperer, Oracle, Synapse-Elder; stand-in looks until you design them). He walks you through seven steps, one at a time, each with a toast and a small reward: pick a race, place a Mana Well (he moves to your base), harvest a Manabloom, build the Summoning Altar, summon 3 troops, plant a War Standard, survive your first raid. Click [I know the way] to skip, or turn the quest off in the config. Afterwards, right-click him for counsel: what your base needs for its next level, and which faction is gathering. He can't be hurt, pushed or led. Test Panel: an Advisor tab to jump steps, respawn him and switch his guise. Still to come with the campaign: the betrayal."
     },
@@ -21,11 +26,6 @@
       "status": "planned",
       "title": "Roadmap: the daily loop",
       "detail": "Quiet days now build toward the next fight. Your troops eat from a Mess Hall (fed troops hold the line better, hungry ones never die), farmers stock it and tend Manabloom, and builders repair raid damage. The advisor posts a few small bounties each day, enemy camps appear that you can hit first to weaken the coming raid, and a traveling merchant drops by every few days to trade rare goods for crystals and raid loot."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: difficulty and pacing",
-      "detail": "Pick Easy, Normal, Hard or Warlord per world (on Warlord, fallen heroes stay dead). Raids grow with your base level and with how long you've been at war with that faction, never with your army. The first three days are quiet while the advisor teaches you, then about one raid a day and a siege every few nights. Raids hit even when you're away, but a two-minute warning lets you teleport home with your army to defend."
     },
     {
       "status": "planned",
@@ -233,6 +233,9 @@
     "testModeSetsBaseLevelAndMana": "A TEST base level overrides the real one and clears with 0; fill tops up wells; infinite wells never drain",
     "testModeStartsAndEndsWaves": "Jump to wave 6 starts wave 6, end siege stops it, start wave spawns a chosen faction",
     "advisorQuestAdvancesAndSkips": "Quest steps only count in order; the well step rewards shards; three summons finish the summon step; skipping ends it",
-    "advisorCannotBeHurtOrPushed": "The advisor takes no damage, can't be pushed, and wears his race's guise"
+    "advisorCannotBeHurtOrPushed": "The advisor takes no damage, can't be pushed, and wears his race's guise",
+    "difficultyPresetScalesRaiders": "Hard raiders get 1.25x health; raid size grows with the preset and the base level",
+    "noRaidsInTheGracePeriod": "No raids before day 3, or before the War Standard is planted",
+    "recallBringsFollowersHomeOncePerRaid": "Recall moves the player and following units to the War Standard, leaves holding units, and works once per attack"
   }
 }

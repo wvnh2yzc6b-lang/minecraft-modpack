@@ -51,6 +51,20 @@ public final class WFCommands {
                             if (!ok) ctx.getSource().sendFailure(Component.literal("Could not find a spot for a warband."));
                             return ok ? 1 : 0;
                         }))
+                .then(Commands.literal("home").executes(ctx -> {
+                    com.warfront.war.Recall.start(ctx.getSource().getPlayerOrException());
+                    return 1;
+                }))
+                .then(Commands.literal("difficulty")
+                        .executes(ctx -> {
+                            var war = com.warfront.war.WarState.get(ctx.getSource().getServer());
+                            ok(ctx, Component.literal("Difficulty: " + war.preset().title()).withStyle(ChatFormatting.GOLD));
+                            return 1;
+                        })
+                        .then(Commands.argument("preset", StringArgumentType.word())
+                                .suggests((c, b) -> SharedSuggestionProvider.suggest(Arrays.stream(
+                                        com.warfront.war.WarState.Preset.values()).map(com.warfront.war.WarState.Preset::id), b))
+                                .executes(WFCommands::difficulty)))
                 .then(Commands.literal("advisor")
                         .then(Commands.literal("skip").executes(ctx -> {
                             com.warfront.advisor.Advisor.skip(ctx.getSource().getPlayerOrException());
@@ -121,6 +135,19 @@ public final class WFCommands {
         return 1;
     }
 
+    private static int difficulty(CommandContext<CommandSourceStack> ctx) {
+        var war = com.warfront.war.WarState.get(ctx.getSource().getServer());
+        var preset = com.warfront.war.WarState.Preset.byId(StringArgumentType.getString(ctx, "preset"));
+        if (preset == null) return fail(ctx, "Choose easy, normal, hard or warlord.");
+        if (war.presetChosen() && !ctx.getSource().hasPermission(2)) {
+            return fail(ctx, "This world's difficulty is already " + war.preset().title() + ". (An operator can change it.)");
+        }
+        war.setPreset(preset);
+        broadcast(ctx.getSource().getServer(), Component.literal("Difficulty set to " + preset.title() + ".")
+                .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+        return 1;
+    }
+
     private static int help(CommandContext<CommandSourceStack> ctx) {
         String[] lines = {
                 "== Warfront ==",
@@ -130,6 +157,8 @@ public final class WFCommands {
                 "Commander's Baton: right-click Follow/Hold/Charge, sneak to change formation",
                 "Right-click your soldier with armor or a weapon to equip it",
                 "Place a War Standard to found a stronghold; defend it from sieges with towers",
+                "/warfront home  recall to your War Standard when an attack is coming (once per attack)",
+                "/warfront difficulty <easy|normal|hard|warlord>",
                 "War Horn: call the next siege wave early. Kill raiders for War Marks."
         };
         for (String l : lines) ok(ctx, Component.literal(l).withStyle(ChatFormatting.GOLD));

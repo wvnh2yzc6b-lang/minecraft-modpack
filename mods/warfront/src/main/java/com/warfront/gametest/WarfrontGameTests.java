@@ -745,4 +745,64 @@ public final class WarfrontGameTests {
         a.discard();
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ difficulty and pacing
+
+    @GameTest(template = ARENA)
+    public static void difficultyPresetScalesRaiders(GameTestHelper h) {
+        var war = com.warfront.war.WarState.get(h.getLevel().getServer());
+        var old = war.preset();
+        BlockPos at = h.absolutePos(new BlockPos(4, 2, 4));
+        war.setPreset(com.warfront.war.WarState.Preset.NORMAL);
+        SoldierEntity normal = com.warfront.world.WarbandSpawner.spawnInto(h.getLevel(), UUID.randomUUID(), NpcFaction.MARAUDERS,
+                List.of(SoldierRole.SWORDSMAN), at, null, null, 1).get(0);
+        war.setPreset(com.warfront.war.WarState.Preset.HARD);
+        SoldierEntity hard = com.warfront.world.WarbandSpawner.spawnInto(h.getLevel(), UUID.randomUUID(), NpcFaction.MARAUDERS,
+                List.of(SoldierRole.SWORDSMAN), at, null, null, 1).get(0);
+        war.setPreset(old);
+        float ratio = hard.getMaxHealth() / normal.getMaxHealth();
+        normal.discard();
+        hard.discard();
+        h.assertTrue(Math.abs(ratio - 1.25F) < 0.05F, "Hard raiders should have 1.25x health, ratio " + ratio);
+        int easy = com.warfront.world.WarbandSpawner.raidComposition(net.minecraft.util.RandomSource.create(7), NpcFaction.MARAUDERS, 3,
+                com.warfront.war.WarState.Preset.EASY).size();
+        int warlord = com.warfront.world.WarbandSpawner.raidComposition(net.minecraft.util.RandomSource.create(7), NpcFaction.MARAUDERS, 3,
+                com.warfront.war.WarState.Preset.WARLORD).size();
+        int level1 = com.warfront.world.WarbandSpawner.raidComposition(net.minecraft.util.RandomSource.create(7), NpcFaction.MARAUDERS, 1,
+                com.warfront.war.WarState.Preset.WARLORD).size();
+        h.assertTrue(warlord > easy && warlord > level1, "raids grow with preset and base level: easy " + easy
+                + ", warlord " + warlord + ", warlord at level 1 " + level1);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void noRaidsInTheGracePeriod(GameTestHelper h) {
+        int raid = com.warfront.advisor.Advisor.Step.RAID.ordinal();
+        int standard = com.warfront.advisor.Advisor.Step.STANDARD.ordinal();
+        h.assertTrue(!com.warfront.war.RaidScheduler.graceOver(1, 3, raid), "no raids before day 3");
+        h.assertTrue(!com.warfront.war.RaidScheduler.graceOver(5, 3, standard), "no raids before the War Standard is planted");
+        h.assertTrue(com.warfront.war.RaidScheduler.graceOver(3, 3, raid), "raids may come from day 3 with a standard planted");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void recallBringsFollowersHomeOncePerRaid(GameTestHelper h) {
+        Player p = tester(h);
+        SoldierEntity follower = recruit(h, p, SoldierRole.SWORDSMAN, Race.HUMAN, 7, 7);
+        follower.command(Order.FOLLOW, Formation.LINE, null, 0F);
+        SoldierEntity holder = recruit(h, p, SoldierRole.ARCHER, Race.HUMAN, 7, 1);
+        BlockPos home = h.absolutePos(new BlockPos(1, 2, 1));
+        var clock = new com.warfront.war.WarState.Clock();
+        clock.home = home;
+        clock.pending = com.warfront.war.WarState.Pending.RAID;
+        long now = h.getLevel().getGameTime();
+        h.assertTrue(com.warfront.war.Recall.refusal(clock, now) == null, "recall should be allowed during a warning");
+        Vec3 holderAt = holder.position();
+        int n = com.warfront.war.Recall.perform(p, h.getLevel(), home, clock);
+        h.assertTrue(p.distanceToSqr(Vec3.atCenterOf(home)) < 9, "the player should land by the standard");
+        h.assertTrue(n == 1 && follower.distanceToSqr(Vec3.atCenterOf(home)) < 25, "the following unit should come along, moved " + n);
+        h.assertTrue(holder.position().distanceToSqr(holderAt) < 1, "units holding a position stay");
+        h.assertTrue(com.warfront.war.Recall.refusal(clock, now) != null, "only one recall per attack");
+        h.succeed();
+    }
 }

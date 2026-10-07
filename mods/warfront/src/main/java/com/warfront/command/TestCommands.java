@@ -85,6 +85,15 @@ public final class TestCommands {
                         .then(simple("clear", "player", "clear"))
                         .then(simple("god", "player", "god"))
                         .then(simple("kit", "player", "kit")))
+                .then(Commands.literal("difficulty").then(Commands.argument("preset", StringArgumentType.word())
+                        .suggests((c, b) -> SharedSuggestionProvider.suggest(Arrays.stream(com.warfront.war.WarState.Preset.values())
+                                .map(com.warfront.war.WarState.Preset::id), b))
+                        .executes(ctx -> run(ctx, "difficulty", str(ctx, "preset")))))
+                .then(Commands.literal("raid")
+                        .then(simple("warn", "raid", "warn"))
+                        .then(simple("siege", "raid", "siege"))
+                        .then(simple("grace", "raid", "grace"))
+                        .then(simple("recall", "raid", "recall")))
                 .then(Commands.literal("advisor")
                         .then(Commands.literal("step").then(Commands.argument("step", IntegerArgumentType.integer(0, 7))
                                 .executes(ctx -> run(ctx, "advisor", "step", num(ctx, "step")))))
@@ -132,6 +141,8 @@ public final class TestCommands {
                 "/wftest base level <0-5>|fill|infinite on|off|starter",
                 "/wftest siege start [faction]|wave <n>|pause|resume|end",
                 "/wftest player race <race>|fill|day|night|clear|god|kit",
+                "/wftest difficulty <easy|normal|hard|warlord>",
+                "/wftest raid warn|siege|grace|recall",
                 "/wftest advisor step <0-7>|respawn|disguise <race>"
         };
         for (String l : lines) ctx.getSource().sendSuccess(() -> Component.literal(l).withStyle(ChatFormatting.AQUA), false);

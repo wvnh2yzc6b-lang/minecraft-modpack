@@ -116,6 +116,14 @@ public final class TestActions {
                     case "kit" -> kit(player);
                     default -> Result.fail("player race|fill|day|night|clear|god|kit");
                 };
+                case "difficulty" -> setPreset(player, com.warfront.war.WarState.Preset.byId(b));
+                case "raid" -> switch (b) {
+                    case "warn" -> forceWarning(player, com.warfront.war.WarState.Pending.RAID);
+                    case "siege" -> forceWarning(player, com.warfront.war.WarState.Pending.SIEGE);
+                    case "grace" -> skipGrace(player);
+                    case "recall" -> testRecall(player);
+                    default -> Result.fail("raid warn|siege|grace|recall");
+                };
                 case "advisor" -> switch (b) {
                     case "step" -> advisorStep(player, parseInt(arg(args, 2), 0));
                     case "respawn" -> advisorRespawn(player);
@@ -422,6 +430,41 @@ public final class TestActions {
             if (!player.getInventory().add(stack)) player.drop(stack, false);
         }
         return Result.ok("Kit given.");
+    }
+
+    // ------------------------------------------------------------------ pacing
+
+    public static Result setPreset(ServerPlayer player, @Nullable com.warfront.war.WarState.Preset preset) {
+        if (preset == null) return Result.fail("easy|normal|hard|warlord");
+        com.warfront.war.WarState.get(player.server).setPreset(preset);
+        return Result.ok("Difficulty: " + preset.title() + ".");
+    }
+
+    public static Result skipGrace(ServerPlayer player) {
+        com.warfront.war.WarState.get(player.server).skipGrace();
+        return Result.ok("Grace period over: raids can come now.");
+    }
+
+    /** Announces an attack now (it hits after the usual warning). A siege needs a planted War Standard. */
+    public static Result forceWarning(ServerPlayer player, com.warfront.war.WarState.Pending type) {
+        var clock = com.warfront.war.WarState.get(player.server).clock(player.getUUID());
+        if (type == com.warfront.war.WarState.Pending.SIEGE && clock.home == null) {
+            WarStandardBlockEntity s = nearestStandard(player);
+            if (s == null) return Result.fail("Plant a War Standard first: sieges hit your base.");
+            clock.home = s.getBlockPos();
+            clock.homeDim = player.level().dimension();
+        }
+        com.warfront.war.RaidScheduler.warn(player, clock, type, null, player.server.overworld().getGameTime());
+        return Result.ok("Warning sent.");
+    }
+
+    /** Recalls home at once (no channel), even without an attack; still marks this attack's recall used. */
+    public static Result testRecall(ServerPlayer player) {
+        var clock = com.warfront.war.WarState.get(player.server).clock(player.getUUID());
+        var level = com.warfront.war.RaidScheduler.homeLevel(player, clock);
+        if (level == null || clock.home == null) return Result.fail("You have no War Standard to recall to.");
+        int n = com.warfront.war.Recall.perform(player, level, clock.home, clock);
+        return Result.ok("Recalled home with " + n + " units.");
     }
 
     // ------------------------------------------------------------------ advisor

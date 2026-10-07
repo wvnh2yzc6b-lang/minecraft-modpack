@@ -40,6 +40,7 @@ public class TestPanelScreen extends Screen {
     private static int siegeFaction = -1;
     private static boolean infinite;
     private static int questStep;
+    private static int preset = 1;
 
     private int left, top;
 
@@ -155,8 +156,16 @@ public class TestPanelScreen extends Screen {
         send(0, 2, "Pause", "siege", "pause");
         send(1, 2, "Resume", "siege", "resume");
         send(2, 2, "End siege", "siege", "end");
-        coming(0, 4, "Raise outpost", "Siege outposts are not built yet.");
-        coming(1, 4, "Destroy outpost", "Siege outposts are not built yet.");
+        String[] presets = {"easy", "normal", "hard", "warlord"};
+        cycle(0, 3, "Preset: " + presets[preset], () -> preset = (preset + 1) % presets.length);
+        send(1, 3, "Set difficulty", "difficulty", presets[preset]);
+        send(2, 3, "Skip grace", "raid", "grace");
+        send(0, 4, "Raid warning now", "raid", "warn");
+        send(1, 4, "Siege warning now", "raid", "siege");
+        send(2, 4, "Recall now", "raid", "recall")
+                .setTooltip(Tooltip.create(Component.literal("Teleports you and your followers to your War Standard at once.")));
+        coming(0, 5, "Raise outpost", "Siege outposts are not built yet.");
+        coming(1, 5, "Destroy outpost", "Siege outposts are not built yet.");
     }
 
     private void playerTab() {

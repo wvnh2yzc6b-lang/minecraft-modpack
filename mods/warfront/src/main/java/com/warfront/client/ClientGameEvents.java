@@ -38,6 +38,9 @@ public final class ClientGameEvents {
         }
         jumpWasDown = jumpDown;
 
+        while (ClientSetup.RECALL.consumeClick()) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(com.warfront.network.RecallPayload.INSTANCE);
+        }
         while (ClientSetup.TEST_PANEL.consumeClick()) {
             if (com.warfront.network.TestModePayload.clientOn) mc.setScreen(new TestPanelScreen());
             else player.displayClientMessage(net.minecraft.network.chat.Component.literal(

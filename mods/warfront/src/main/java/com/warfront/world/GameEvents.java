@@ -90,7 +90,26 @@ public final class GameEvents {
                     + "Grow Manabloom and mine Mana Ore to keep your wells full; they also power your towers.")
                     .withStyle(ChatFormatting.GOLD));
         }
-        if (player instanceof ServerPlayer sp) com.warfront.advisor.Advisor.onLogin(sp);
+        if (player instanceof ServerPlayer sp) {
+            com.warfront.advisor.Advisor.onLogin(sp);
+            com.warfront.war.WarState war = com.warfront.war.WarState.get(sp.server);
+            if (!war.presetChosen()) {
+                MutableComponent line = Component.literal("Choose this world's difficulty: ").withStyle(ChatFormatting.YELLOW);
+                for (com.warfront.war.WarState.Preset p : com.warfront.war.WarState.Preset.values()) {
+                    line.append(Component.literal("[" + p.title() + "] ").withStyle(style -> style
+                            .withColor(p == com.warfront.war.WarState.Preset.WARLORD ? ChatFormatting.DARK_RED : ChatFormatting.GOLD)
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warfront difficulty " + p.id()))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(presetHover(p))))));
+                }
+                sp.sendSystemMessage(line);
+            }
+        }
+    }
+
+    private static String presetHover(com.warfront.war.WarState.Preset p) {
+        return String.format("Raids x%.1f size, enemies x%.2f health and damage, about %.1f raids a day.%s",
+                p.raidSize(), p.strength(), p.raidsPerDay(), p.heroesStayDead() ? " Fallen heroes stay dead." : "")
+                + " Normal if you don't choose.";
     }
 
     @SubscribeEvent
@@ -257,14 +276,17 @@ public final class GameEvents {
                 if (Race.of(player) == Race.HIVE) HiveAdaptation.apply(player, 80);
             }
         }
-        if (server.getTickCount() % 200 != 0 || !WFConfig.WARBANDS_ENABLED.get()) return;
-        double chance = WFConfig.WARBAND_CHANCE.get() * 200.0 / WFConfig.WARBAND_INTERVAL.get();
-        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            if (player.isCreative() || player.isSpectator()) continue;
-            if (player.level().dimension() != Level.OVERWORLD && player.level().dimension() != Level.NETHER) continue;
-            if (player.getRandom().nextDouble() >= chance) continue;
-            trySpawnWarband(player);
+        com.warfront.war.Recall.tick(server);
+        if (server.getTickCount() % 20 == 0) {
+            // Raids and sieges now follow each player's raid clock, with a warning first.
+            com.warfront.war.RaidScheduler.tick(server);
+            com.warfront.war.RaidScheduler.releaseHomes(server.overworld().getGameTime());
         }
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        com.warfront.war.RaidScheduler.onLogout(event.getEntity().getUUID());
     }
 
     /** Finds a standable spot in the Nether near the player's height (the heightmap would hit the roof). */
@@ -288,6 +310,7 @@ public final class GameEvents {
         double dist = 40 + player.getRandom().nextInt(8);
         int x = Mth.floor(player.getX() + Mth.cos(angle) * dist);
         int z = Mth.floor(player.getZ() + Mth.sin(angle) * dist);
+        if (level.dimension() != Level.OVERWORLD && level.dimension() != Level.NETHER) return false;
         if (!level.hasChunkAt(new BlockPos(x, 0, z))) return false;
         BlockPos ground = level.dimension() == Level.NETHER
                 ? findNetherGround(level, x, player.getBlockY(), z)
@@ -296,7 +319,8 @@ public final class GameEvents {
 
         NpcFaction faction = NpcFaction.pick(level.getBiome(ground), level, player.getRandom());
         int tier = 1 + (int) (level.getCurrentDifficultyAt(player.blockPosition()).getEffectiveDifficulty() / 2);
-        WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction), ground,
+        WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction, 1,
+                        com.warfront.war.WarState.get(level.getServer()).preset()), ground,
                 player.position(), null, tier);
         player.sendSystemMessage(Component.literal(faction == NpcFaction.THE_SWARM
                 ? "The ground trembles beneath you... a Swarm brood is tunneling toward you."

@@ -156,11 +156,7 @@ public class WarStandardBlockEntity extends BlockEntity {
                 be.health++;
                 be.setChanged();
             }
-            if (WFConfig.NATURAL_SIEGES.get() && server.isNight() && be.ownerNearby(server)
-                    && time - be.lastSiege > WFConfig.SIEGE_COOLDOWN.get()
-                    && server.random.nextDouble() < WFConfig.SIEGE_CHANCE.get()) {
-                be.startSiege(server);
-            }
+            // Natural sieges now come from the owner's raid clock (RaidScheduler), with a warning first.
         }
     }
 
@@ -211,7 +207,9 @@ public class WarStandardBlockEntity extends BlockEntity {
         wave++;
         BlockPos biomePos = worldPosition;
         NpcFaction faction = chosen != null ? chosen : NpcFaction.pick(level.getBiome(biomePos), level, level.random);
-        List<SoldierRole> roles = WarbandSpawner.siegeComposition(wave, faction);
+        int baseLevel = com.warfront.world.BaseLevel.of(level, worldPosition, factionKey(level.getServer())).level();
+        double scale = com.warfront.war.WarState.get(level.getServer()).preset().raidSize() * (1.0 + 0.15 * (baseLevel - 1));
+        List<SoldierRole> roles = WarbandSpawner.siegeComposition(wave, faction, scale);
         int tier = Math.min(4, 1 + wave / 3);
         int groups = wave >= 8 ? 3 : wave >= 4 ? 2 : 1;
 

@@ -668,6 +668,8 @@ def lang():
         "itemGroup.warfront": "Warfront",
         "key.categories.warfront": "Warfront",
         "key.warfront.test_panel": "Test Panel (test mode)",
+        "key.warfront.recall": "Recall home (during an attack)",
+        "entity.warfront.advisor": "Advisor",
         "block.warfront.arrow_tower": "Arrow Tower",
         "block.warfront.arcane_spire": "Arcane Spire",
         "block.warfront.healing_shrine": "Healing Shrine",

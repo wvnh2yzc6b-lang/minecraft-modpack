@@ -34,6 +34,16 @@ public final class WFConfig {
 
     public static final ModConfigSpec.BooleanValue ADVISOR_QUEST;
 
+    /** Per difficulty preset (Easy, Normal, Hard, Warlord): raid size, enemy health and damage, raids per day. */
+    public static final ModConfigSpec.DoubleValue[] PRESET_RAID_SIZE = new ModConfigSpec.DoubleValue[4];
+    public static final ModConfigSpec.DoubleValue[] PRESET_STRENGTH = new ModConfigSpec.DoubleValue[4];
+    public static final ModConfigSpec.DoubleValue[] PRESET_RAIDS_PER_DAY = new ModConfigSpec.DoubleValue[4];
+    public static final ModConfigSpec.IntValue GRACE_DAYS;
+    public static final ModConfigSpec.DoubleValue AWAY_RAID_RATE;
+    public static final ModConfigSpec.IntValue RAID_WARNING;
+    public static final ModConfigSpec.IntValue SIEGE_MIN_DAYS;
+    public static final ModConfigSpec.IntValue SIEGE_MAX_DAYS;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
@@ -88,6 +98,28 @@ public final class WFConfig {
                 .defineInRange("linkRange", 16, 2, 64);
         WELL_CAPACITY = b.comment("How much mana one Mana Well can store.")
                 .defineInRange("wellCapacity", 2000, 10, 1_000_000);
+        b.pop();
+
+        b.push("pacing");
+        GRACE_DAYS = b.comment("No raids or sieges in a world's first days, and not before the advisor's quest reaches",
+                        "'plant a War Standard' (whichever is later).")
+                .defineInRange("graceDays", 3, 0, 100);
+        AWAY_RAID_RATE = b.comment("How fast a player's raid clock runs while they're in another dimension than their base.")
+                .defineInRange("awayDimensionRaidRate", 0.5, 0.0, 1.0);
+        RAID_WARNING = b.comment("Ticks of warning before a raid or siege hits (2400 = 2 minutes).")
+                .defineInRange("raidWarningTicks", 2400, 200, 24000);
+        SIEGE_MIN_DAYS = b.comment("A siege comes every this many to siegeMaxDays nights (on Normal).")
+                .defineInRange("siegeMinDays", 3, 1, 100);
+        SIEGE_MAX_DAYS = b.defineInRange("siegeMaxDays", 4, 1, 100);
+        String[] presets = {"easy", "normal", "hard", "warlord"};
+        double[][] defaults = {{0.7, 0.8, 0.67}, {1.0, 1.0, 1.0}, {1.4, 1.25, 1.3}, {1.8, 1.5, 1.5}};
+        for (int i = 0; i < 4; i++) {
+            b.push(presets[i]);
+            PRESET_RAID_SIZE[i] = b.comment("Raid and siege size multiplier.").defineInRange("raidSize", defaults[i][0], 0.1, 10.0);
+            PRESET_STRENGTH[i] = b.comment("Enemy health and damage multiplier.").defineInRange("enemyStrength", defaults[i][1], 0.1, 10.0);
+            PRESET_RAIDS_PER_DAY[i] = b.comment("Raids per in-game day, on average.").defineInRange("raidsPerDay", defaults[i][2], 0.0, 10.0);
+            b.pop();
+        }
         b.pop();
 
         b.push("advisor");

@@ -19,9 +19,15 @@ public final class ClientSetup {
             "key.warfront.test_panel", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
             org.lwjgl.glfw.GLFW.GLFW_KEY_F8, "key.categories.warfront");
 
+    /** H: recall home during a raid warning or attack. */
+    public static final net.minecraft.client.KeyMapping RECALL = new net.minecraft.client.KeyMapping(
+            "key.warfront.recall", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+            org.lwjgl.glfw.GLFW.GLFW_KEY_H, "key.categories.warfront");
+
     @SubscribeEvent
     public static void onKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
         event.register(TEST_PANEL);
+        event.register(RECALL);
     }
 
     @SubscribeEvent
