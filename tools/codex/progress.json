@@ -3,6 +3,11 @@
   "pack_mods": 68,
   "log": [
     {
+      "status": "planned",
+      "title": "Roadmap: siege outposts and the raid chest",
+      "detail": "Some siege waves will build a temporary enemy outpost nearby. The siege can't be won while it stands: you have to take the outpost and destroy it. At its heart sits a large raid chest with custom art. Loot it, then break it, and the whole outpost despawns. Not built yet; details are open questions on the Design Needs page."
+    },
+    {
       "status": "done",
       "title": "Human flight: the Mana Glider",
       "detail": "Humans get the Mana Glider, crafted from a Mana Crystal, two leather and three sticks. Wear it in the chest slot and jump while falling to launch, like an elytra; only humans can fly it. It's a glider, not a rocket: speed bleeds off above a cruising pace and the sink rate stays gentle unless you point steeply down. Use a Mana Shard mid-flight to burn it for a burst of speed. It wears down with use and is repaired with Mana Crystals. No 3D model on the back yet."

@@ -76,6 +76,12 @@
       "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
     },
     {
+      "topic": "Sieges",
+      "priority": "medium",
+      "question": "Siege outposts: how often, how big, and how should the raid chest look?",
+      "why": "Planned: some sieges raise a temporary enemy outpost you must destroy to win, with a big raid chest that despawns the outpost once looted and broken. Open: which waves get one (every 5th, boss waves, random), its size (watchtower camp or small fort), whether it keeps spawning raiders until taken, and reference art for the raid chest."
+    },
+    {
       "topic": "Players",
       "priority": "medium",
       "question": "Reference art for the other player races (orc, angel, elf, dwarf, human).",
@@ -125,6 +131,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Sieges",
+      "answer": "Roadmap: some sieges raise a temporary enemy outpost nearby that must be destroyed to win. Its big custom-art raid chest is looted, then broken, and the whole outpost despawns."
+    },
     {
       "topic": "Army",
       "answer": "No separate guard unit: any battle unit can be put on guard duty (holds a spot, short beat) or patrol duty (ranges about 16 blocks) and raises the alarm. Sneak + right-click it to cycle guard, patrol and back to the army."
