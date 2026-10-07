@@ -32,6 +32,8 @@ public final class WFConfig {
     public static final ModConfigSpec.DoubleValue MAX_BREAK_HARDNESS;
     public static final ModConfigSpec.IntValue WAVE_INTERMISSION;
 
+    public static final ModConfigSpec.BooleanValue ADVISOR_QUEST;
+
     static {
         ModConfigSpec.Builder b = new ModConfigSpec.Builder();
 
@@ -86,6 +88,12 @@ public final class WFConfig {
                 .defineInRange("linkRange", 16, 2, 64);
         WELL_CAPACITY = b.comment("How much mana one Mana Well can store.")
                 .defineInRange("wellCapacity", 2000, 10, 1_000_000);
+        b.pop();
+
+        b.push("advisor");
+        ADVISOR_QUEST = b.comment("Each player gets an advisor who walks them through their first hour, step by step.",
+                        "Turn off to skip the quest line (he still gives counsel).")
+                .define("quest", true);
         b.pop();
 
         b.push("workers");

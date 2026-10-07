@@ -705,4 +705,44 @@ public final class WarfrontGameTests {
         com.warfront.test.TestActions.endSiege(p);
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ advisor
+
+    @GameTest(template = ARENA)
+    public static void advisorQuestAdvancesAndSkips(GameTestHelper h) {
+        Player p = tester(h);
+        com.warfront.advisor.Advisor.setStep(p, com.warfront.advisor.Advisor.Step.WELL);
+        com.warfront.advisor.Advisor.complete(p, com.warfront.advisor.Advisor.Step.ALTAR);
+        h.assertTrue(com.warfront.advisor.Advisor.step(p) == com.warfront.advisor.Advisor.Step.WELL, "doing a later step early shouldn't count");
+        com.warfront.advisor.Advisor.complete(p, com.warfront.advisor.Advisor.Step.WELL);
+        h.assertTrue(com.warfront.advisor.Advisor.step(p) == com.warfront.advisor.Advisor.Step.BLOOM, "placing a well should advance to Manabloom");
+        h.assertTrue(p.getInventory().countItem(WFRegistry.MANA_SHARD.get()) >= 8, "the well step rewards 8 shards");
+        com.warfront.advisor.Advisor.setStep(p, com.warfront.advisor.Advisor.Step.SUMMON);
+        for (int i = 0; i < com.warfront.advisor.Advisor.SUMMONS_NEEDED - 1; i++) {
+            com.warfront.advisor.Advisor.complete(p, com.warfront.advisor.Advisor.Step.SUMMON);
+        }
+        h.assertTrue(com.warfront.advisor.Advisor.step(p) == com.warfront.advisor.Advisor.Step.SUMMON, "two summons aren't three");
+        com.warfront.advisor.Advisor.complete(p, com.warfront.advisor.Advisor.Step.SUMMON);
+        h.assertTrue(com.warfront.advisor.Advisor.step(p) == com.warfront.advisor.Advisor.Step.STANDARD, "three summons finish the step");
+        com.warfront.advisor.Advisor.skip(p);
+        h.assertTrue(com.warfront.advisor.Advisor.step(p) == com.warfront.advisor.Advisor.Step.DONE, "skipping ends the quest line");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void advisorCannotBeHurtOrPushed(GameTestHelper h) {
+        com.warfront.advisor.AdvisorEntity a = WFRegistry.ADVISOR_ENTITY.get().create(h.getLevel());
+        if (a == null) throw new IllegalStateException("advisor failed to create");
+        BlockPos abs = h.absolutePos(new BlockPos(4, 2, 4));
+        a.moveTo(abs.getX() + 0.5, abs.getY(), abs.getZ() + 0.5, 0F, 0F);
+        a.setDisguise(Race.DWARF);
+        h.getLevel().addFreshEntity(a);
+        Player p = tester(h);
+        boolean hurt = a.hurt(h.getLevel().damageSources().playerAttack(p), 100F);
+        h.assertTrue(!hurt && a.isAlive() && a.getHealth() == a.getMaxHealth(), "the advisor can't be hurt");
+        h.assertTrue(!a.isPushable(), "the advisor can't be pushed");
+        h.assertTrue("Runekeeper".equals(com.warfront.advisor.Advisor.title(a.getDisguise())), "a dwarf advisor is a Runekeeper");
+        a.discard();
+        h.succeed();
+    }
 }

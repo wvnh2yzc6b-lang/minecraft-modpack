@@ -90,6 +90,7 @@ public final class GameEvents {
                     + "Grow Manabloom and mine Mana Ore to keep your wells full; they also power your towers.")
                     .withStyle(ChatFormatting.GOLD));
         }
+        if (player instanceof ServerPlayer sp) com.warfront.advisor.Advisor.onLogin(sp);
     }
 
     @SubscribeEvent

@@ -84,7 +84,13 @@ public final class TestCommands {
                         .then(simple("night", "player", "night"))
                         .then(simple("clear", "player", "clear"))
                         .then(simple("god", "player", "god"))
-                        .then(simple("kit", "player", "kit"))));
+                        .then(simple("kit", "player", "kit")))
+                .then(Commands.literal("advisor")
+                        .then(Commands.literal("step").then(Commands.argument("step", IntegerArgumentType.integer(0, 7))
+                                .executes(ctx -> run(ctx, "advisor", "step", num(ctx, "step")))))
+                        .then(simple("respawn", "advisor", "respawn"))
+                        .then(Commands.literal("disguise").then(Commands.argument("race", StringArgumentType.word()).suggests(RACES)
+                                .executes(ctx -> run(ctx, "advisor", "disguise", str(ctx, "race")))))));
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> simple(String literal, String... args) {
@@ -125,7 +131,8 @@ public final class TestCommands {
                 "/wftest army heal|kill|dismiss",
                 "/wftest base level <0-5>|fill|infinite on|off|starter",
                 "/wftest siege start [faction]|wave <n>|pause|resume|end",
-                "/wftest player race <race>|fill|day|night|clear|god|kit"
+                "/wftest player race <race>|fill|day|night|clear|god|kit",
+                "/wftest advisor step <0-7>|respawn|disguise <race>"
         };
         for (String l : lines) ctx.getSource().sendSuccess(() -> Component.literal(l).withStyle(ChatFormatting.AQUA), false);
         return 1;

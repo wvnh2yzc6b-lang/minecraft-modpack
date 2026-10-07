@@ -3,21 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "advisor-guide",
-      "status": "ready",
-      "title": "The advisor: first-hour guide and quest line",
-      "decided": "Owner, 2026-10-07: one villain in seven disguises is each race's advisor, runs the tutorial, is revealed after the hidden warlord falls (who was trying to stop him), and is fought in the End with only your heroes and beasts against a mixed army.",
-      "spec": [
-        "An advisor NPC per player (non-hostile, invulnerable, can't be pushed or led), appearing at the player's first base after they pick a race (or at spawn until they have one). Seven disguises: a robed elder in each race's colors (human court wizard, elf seer, dwarf runekeeper, orc shaman, demon whisperer, angel oracle, Hive synapse-elder). Placeholder looks until the owner designs them.",
-        "Never hint at the twist in-game; a few lines can be read differently once you know (write them that way).",
-        "First-hour quest line, one step at a time with a short line from the advisor and a toast: pick a race; place a Mana Well; plant Manabloom and harvest a shard; build the Summoning Altar; summon 3 troops; plant a War Standard; survive your first raid. Each step gives a small reward (shards, a crystal, a starter tower). Progress saved on the player; skippable with a config option or by talking to him and choosing 'I know the way'.",
-        "Afterwards: right-click him for hints about the next thing to unlock (base level, towers, warlords), war news (which faction's war meter is highest), and the nudge to march when a War Map drops.",
-        "Uses toasts and the ui-foundation theme for his lines when that exists; plain chat-style lines until then.",
-        "Test Panel: jump to any quest step; respawn the advisor; switch his disguise.",
-        "Game tests: completing a step advances the quest; skipping works; the advisor can't be hurt."
-      ]
-    },
-    {
       "id": "difficulty-pacing",
       "status": "ready",
       "title": "Difficulty presets, raid scaling, pacing and the recall home",

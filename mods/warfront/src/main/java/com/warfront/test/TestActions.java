@@ -116,6 +116,12 @@ public final class TestActions {
                     case "kit" -> kit(player);
                     default -> Result.fail("player race|fill|day|night|clear|god|kit");
                 };
+                case "advisor" -> switch (b) {
+                    case "step" -> advisorStep(player, parseInt(arg(args, 2), 0));
+                    case "respawn" -> advisorRespawn(player);
+                    case "disguise" -> advisorDisguise(player, Race.byId(arg(args, 2)));
+                    default -> Result.fail("advisor step <n>|respawn|disguise <race>");
+                };
                 default -> Result.fail("Unknown test action: " + a);
             };
         } catch (NumberFormatException e) {
@@ -371,6 +377,7 @@ public final class TestActions {
         race.apply(player);
         com.warfront.network.RaceSync.broadcast(player);
         player.setHealth(player.getMaxHealth());
+        com.warfront.advisor.Advisor.onRaceChosen(player);
         return Result.ok("You are now " + race.displayName() + ".");
     }
 
@@ -415,6 +422,27 @@ public final class TestActions {
             if (!player.getInventory().add(stack)) player.drop(stack, false);
         }
         return Result.ok("Kit given.");
+    }
+
+    // ------------------------------------------------------------------ advisor
+
+    public static Result advisorStep(Player player, int step) {
+        com.warfront.advisor.Advisor.Step s = com.warfront.advisor.Advisor.Step.byOrdinal(step);
+        com.warfront.advisor.Advisor.setStep(player, s);
+        return Result.ok("Quest step: " + s.goal + ".");
+    }
+
+    public static Result advisorRespawn(ServerPlayer player) {
+        com.warfront.advisor.Advisor.spawn(player, player.blockPosition());
+        return Result.ok("Advisor respawned beside you.");
+    }
+
+    public static Result advisorDisguise(ServerPlayer player, @Nullable Race race) {
+        if (race == null) return Result.fail("Unknown race.");
+        var a = com.warfront.advisor.Advisor.find(player);
+        if (a == null) return Result.fail("Your advisor isn't loaded nearby. Respawn him first.");
+        a.setDisguise(race);
+        return Result.ok("Advisor now appears as the " + race.displayName() + " " + com.warfront.advisor.Advisor.title(race) + ".");
     }
 
     /** Server-side check for the god-mode flag after a respawn or a game-mode change. */

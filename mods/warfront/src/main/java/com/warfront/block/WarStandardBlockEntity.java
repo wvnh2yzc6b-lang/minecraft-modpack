@@ -303,6 +303,9 @@ public class WarStandardBlockEntity extends BlockEntity {
         health = maxHealth();
         wavesWon++;
 
+        if (owner != null && level.getServer().getPlayerList().getPlayer(owner) instanceof ServerPlayer p) {
+            com.warfront.advisor.Advisor.complete(p, com.warfront.advisor.Advisor.Step.RAID);
+        }
         int marks = 4 + wave * 2;
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.WAR_MARK.get(), marks));
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.MANA_SHARD.get(), 2 + wave));

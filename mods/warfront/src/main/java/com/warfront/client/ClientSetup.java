@@ -27,6 +27,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(WFRegistry.SOLDIER.get(), SoldierRenderer::new);
+        event.registerEntityRenderer(WFRegistry.ADVISOR_ENTITY.get(), AdvisorRenderer::new);
     }
 
     @SubscribeEvent

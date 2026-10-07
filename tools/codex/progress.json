@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "The advisor: your first hour",
+      "detail": "Every new player gets an advisor, a robed elder in their race's colors (Court Wizard, Seer, Runekeeper, Shaman, Whisperer, Oracle, Synapse-Elder; stand-in looks until you design them). He walks you through seven steps, one at a time, each with a toast and a small reward: pick a race, place a Mana Well (he moves to your base), harvest a Manabloom, build the Summoning Altar, summon 3 troops, plant a War Standard, survive your first raid. Click [I know the way] to skip, or turn the quest off in the config. Afterwards, right-click him for counsel: what your base needs for its next level, and which faction is gathering. He can't be hurt, pushed or led. Test Panel: an Advisor tab to jump steps, respawn him and switch his guise. Still to come with the campaign: the betrayal."
+    },
+    {
+      "status": "done",
       "title": "Test mode: the Test Panel",
       "detail": "Type /wftest on (cheats on) and press F8. Four tabs: Spawn (any race and role, 1 to 10, yours or any enemy faction's, war beasts with no limit; heal, kill or dismiss your army), Base (set a TEST base level, fill or make mana infinite, drop a ready-made starter base), Siege (start a wave from any faction, jump to wave N, pause, resume, end) and Player (switch race, fill souls/rage/glider, day/night/clear, god mode, a kit of every Warfront item). Every button is also a /wftest command. The Codex has a new Play page with install steps."
     },
@@ -21,11 +26,6 @@
       "status": "planned",
       "title": "Roadmap: difficulty and pacing",
       "detail": "Pick Easy, Normal, Hard or Warlord per world (on Warlord, fallen heroes stay dead). Raids grow with your base level and with how long you've been at war with that faction, never with your army. The first three days are quiet while the advisor teaches you, then about one raid a day and a siege every few nights. Raids hit even when you're away, but a two-minute warning lets you teleport home with your army to defend."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: the advisor and the betrayal",
-      "detail": "Every race gets an advisor who greets new players, walks them through their first hour (Mana Well to first raid) and keeps them pointed at the next warlord. It's one villain in seven disguises: the hidden warlord is his brother (same face, scarred and armored), who started the wars to stop you. You find him on the frozen battlefield of their first war, reached by joining the seven War Maps. Beat him and, dying, he tells you the truth and hands you his blade and the key to the End. The advisor then pulls you into the End with only your heroes and war beasts, to face his mixed army of all seven races and a bound dragon."
     },
     {
       "status": "planned",
@@ -231,6 +231,8 @@
     "manaGliderIsHumanOnlyAndGlides": "Only a human can fly the Mana Glider, and it bleeds off excess speed and softens the sink",
     "testModeIsGatedAndSpawnsUnits": "Test tools need test mode and operator rights; spawn makes friendly and enemy units; dismiss clears the army",
     "testModeSetsBaseLevelAndMana": "A TEST base level overrides the real one and clears with 0; fill tops up wells; infinite wells never drain",
-    "testModeStartsAndEndsWaves": "Jump to wave 6 starts wave 6, end siege stops it, start wave spawns a chosen faction"
+    "testModeStartsAndEndsWaves": "Jump to wave 6 starts wave 6, end siege stops it, start wave spawns a chosen faction",
+    "advisorQuestAdvancesAndSkips": "Quest steps only count in order; the well step rewards shards; three summons finish the summon step; skipping ends it",
+    "advisorCannotBeHurtOrPushed": "The advisor takes no damage, can't be pushed, and wears his race's guise"
   }
 }

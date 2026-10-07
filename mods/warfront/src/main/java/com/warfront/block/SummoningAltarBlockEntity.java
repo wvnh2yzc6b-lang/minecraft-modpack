@@ -165,6 +165,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
             level.addFreshEntity(soldier);
         }
 
+        com.warfront.advisor.Advisor.complete(player, com.warfront.advisor.Advisor.Step.SUMMON);
         server.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2,
                 worldPosition.getZ() + 0.5, 40, 0.4, 0.8, 0.4, 0.04);
         level.playSound(null, worldPosition, SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.BLOCKS, 0.9F, 1.1F);

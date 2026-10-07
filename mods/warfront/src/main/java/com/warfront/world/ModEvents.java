@@ -15,6 +15,7 @@ public final class ModEvents {
     @SubscribeEvent
     public static void onAttributes(EntityAttributeCreationEvent event) {
         event.put(WFRegistry.SOLDIER.get(), SoldierEntity.createAttributes().build());
+        event.put(WFRegistry.ADVISOR_ENTITY.get(), com.warfront.advisor.AdvisorEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -32,6 +33,8 @@ public final class ModEvents {
                 com.warfront.network.AltarSummonPayload::handle);
         registrar.playToClient(com.warfront.network.RacePayload.TYPE, com.warfront.network.RacePayload.STREAM_CODEC,
                 com.warfront.network.RacePayload::handle);
+        registrar.playToClient(com.warfront.network.AdvisorLinePayload.TYPE, com.warfront.network.AdvisorLinePayload.STREAM_CODEC,
+                com.warfront.network.AdvisorLinePayload::handle);
         registrar.playToClient(com.warfront.network.TestModePayload.TYPE, com.warfront.network.TestModePayload.STREAM_CODEC,
                 com.warfront.network.TestModePayload::handle);
         registrar.playToServer(com.warfront.network.TestActionPayload.TYPE, com.warfront.network.TestActionPayload.STREAM_CODEC,

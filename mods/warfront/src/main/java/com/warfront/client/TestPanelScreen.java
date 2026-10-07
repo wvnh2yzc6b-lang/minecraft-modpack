@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class TestPanelScreen extends Screen {
     private static final int W = 360, H = 214, BW = 110, BH = 20, GAP = 6;
-    private static final String[] TABS = {"Spawn", "Base", "Siege", "Player"};
+    private static final String[] TABS = {"Spawn", "Base", "Siege", "Player", "Advisor"};
     private static final List<SoldierRole> ROLES = Arrays.stream(SoldierRole.values())
             .filter(r -> !r.retired() && r != SoldierRole.BEAST).toList();
 
@@ -39,6 +39,7 @@ public class TestPanelScreen extends Screen {
     /** -1 = any faction (picked by the biome). */
     private static int siegeFaction = -1;
     private static boolean infinite;
+    private static int questStep;
 
     private int left, top;
 
@@ -64,7 +65,8 @@ public class TestPanelScreen extends Screen {
             case 0 -> spawnTab();
             case 1 -> baseTab();
             case 2 -> siegeTab();
-            default -> playerTab();
+            case 3 -> playerTab();
+            default -> advisorTab();
         }
     }
 
@@ -172,6 +174,17 @@ public class TestPanelScreen extends Screen {
         coming(1, 5, "Spell mana", "Comes with the Iron's Spells link.");
     }
 
+    private void advisorTab() {
+        var step = com.warfront.advisor.Advisor.Step.byOrdinal(questStep);
+        cycle(0, 0, "Step " + questStep + ": " + (step.goal.length() > 11 ? step.goal.substring(0, 10) + "." : step.goal), () -> questStep = (questStep + 1) % com.warfront.advisor.Advisor.Step.values().length);
+        send(1, 0, "Jump to step", "advisor", "step", Integer.toString(questStep))
+                .setTooltip(Tooltip.create(Component.literal(step.goal)));
+        send(0, 1, "Respawn advisor", "advisor", "respawn");
+        Race r = Race.values()[race];
+        cycle(0, 2, "Guise: " + r.displayName(), () -> race = (race + 1) % Race.values().length);
+        send(1, 2, "Set guise", "advisor", "disguise", r.id());
+    }
+
     // ------------------------------------------------------------------ drawing
 
     @Override
@@ -190,6 +203,7 @@ public class TestPanelScreen extends Screen {
             case 0 -> "Army tools act on all your units within 128 blocks.";
             case 1 -> "Acts on the mana networks within 32 blocks.";
             case 2 -> "Acts on the nearest War Standard within 128 blocks.";
+            case 4 -> "Your advisor's quest line and his look.";
             default -> "Same as /wftest player ...";
         };
         g.drawString(font, Component.literal(hint), left + 8, top + H - 14, 0x8090A0);

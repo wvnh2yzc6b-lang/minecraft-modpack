@@ -71,7 +71,19 @@ public final class WFRegistry {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> GOD_MODE = ATTACHMENTS.register(
             "god_mode", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
+    /** The advisor's quest step (Advisor.Step ordinal), a counter for the current step, and his entity id. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> QUEST_STEP = ATTACHMENTS.register(
+            "quest_step", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> QUEST_COUNT = ATTACHMENTS.register(
+            "quest_count", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<String>> ADVISOR = ATTACHMENTS.register(
+            "advisor", () -> AttachmentType.builder(() -> "").serialize(Codec.STRING).copyOnDeath().build());
+
     // ---- entities ----
+    public static final DeferredHolder<EntityType<?>, EntityType<com.warfront.advisor.AdvisorEntity>> ADVISOR_ENTITY =
+            ENTITIES.register("advisor", () -> EntityType.Builder.<com.warfront.advisor.AdvisorEntity>of(
+                            com.warfront.advisor.AdvisorEntity::new, MobCategory.MISC)
+                    .sized(0.6F, 1.95F).eyeHeight(1.62F).clientTrackingRange(10).build("advisor"));
     public static final DeferredHolder<EntityType<?>, EntityType<SoldierEntity>> SOLDIER = ENTITIES.register("soldier",
             () -> EntityType.Builder.<SoldierEntity>of(SoldierEntity::new, MobCategory.MISC)
                     .sized(0.6F, 1.95F)

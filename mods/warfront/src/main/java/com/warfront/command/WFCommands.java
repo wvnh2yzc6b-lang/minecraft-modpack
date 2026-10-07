@@ -51,6 +51,11 @@ public final class WFCommands {
                             if (!ok) ctx.getSource().sendFailure(Component.literal("Could not find a spot for a warband."));
                             return ok ? 1 : 0;
                         }))
+                .then(Commands.literal("advisor")
+                        .then(Commands.literal("skip").executes(ctx -> {
+                            com.warfront.advisor.Advisor.skip(ctx.getSource().getPlayerOrException());
+                            return 1;
+                        })))
                 .then(Commands.literal("help").executes(WFCommands::help)));
 
         d.register(Commands.literal("army").executes(WFCommands::army));
@@ -104,6 +109,7 @@ public final class WFCommands {
         race.apply(p);
         com.warfront.network.RaceSync.broadcast(p);
         p.setHealth(p.getMaxHealth());
+        com.warfront.advisor.Advisor.onRaceChosen(p);
         ok(ctx, Component.literal("You are now of the " + race.displayName() + " race. " + race.description + " " + race.magicLine())
                 .withStyle(race.color, ChatFormatting.BOLD));
         if (current == null && race == Race.HIVE) {
