@@ -37,10 +37,10 @@ public final class ModEvents {
                 com.warfront.network.AltarReturnPayload::handle);
         registrar.playToClient(com.warfront.network.RacePayload.TYPE, com.warfront.network.RacePayload.STREAM_CODEC,
                 com.warfront.network.RacePayload::handle);
-        registrar.playToClient(com.warfront.network.AdvisorLinePayload.TYPE, com.warfront.network.AdvisorLinePayload.STREAM_CODEC,
-                com.warfront.network.AdvisorLinePayload::handle);
         registrar.playToServer(com.warfront.network.RecallPayload.TYPE, com.warfront.network.RecallPayload.STREAM_CODEC,
                 com.warfront.network.RecallPayload::handle);
+        registrar.playToClient(com.warfront.network.AlertPayload.TYPE, com.warfront.network.AlertPayload.STREAM_CODEC,
+                com.warfront.network.AlertPayload::handle);
         registrar.playToClient(com.warfront.network.TestModePayload.TYPE, com.warfront.network.TestModePayload.STREAM_CODEC,
                 com.warfront.network.TestModePayload::handle);
         registrar.playToServer(com.warfront.network.TestActionPayload.TYPE, com.warfront.network.TestActionPayload.STREAM_CODEC,

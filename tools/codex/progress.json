@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "UI, part 1: themed toasts and the siege banner",
+      "detail": "Warfront now has its own look: dark see-through panels with a thin light border and a stripe in your race's color (Human steel blue, Elf leaf green, Dwarf bronze, Orc blood red, Demon ember orange, Angel gold, Hive cyan). Short news comes as toasts in the top right: promotions, a hero fallen, back on its feet, carried off or ready at the altar, a tower out of mana, the beast limit, bounties, the merchant, hungry troops, warbands. The big siege moments get a wide banner that slides in at the top: a wave starts, a wave is beaten, a raid is coming, the War Standard falls. Chat is left for commands and the advisor's words; the client option chatAlerts brings the old chat lines back. The Codex has a new Interface page with mockups of every planned screen (HUD, War Table, mana overlay, altar) for you to review. Still to come in the next UI items: the screens themselves."
+    },
+    {
+      "status": "done",
       "title": "Heroes stand taller",
       "detail": "Captains are now 15% taller than their soldiers and Champions 30% (Hive Champions 35%), for every race and for raiders too, so enemy heroes are easy to spot. The recall key moved from H to J, so H stays free for the War Table."
     },
@@ -61,11 +66,6 @@
       "status": "planned",
       "title": "Roadmap: race towers",
       "detail": "Every race gets three towers of its own, unlocking at base levels 2, 3 and 5: Human: Ballista (level 2), Watchtower Bell (level 3), Trebuchet (level 5); Elf: Thornwood Sentinel (level 2), Moonwell Grove (level 3), Elder Treant Spire (level 5); Dwarf: Rune Cannon (level 2), Stone Warden (level 3), Thunder Forge (level 5); Orc: War Drum Totem (level 2), Goblin Bomb Catapult (level 3), Waaagh Banner (level 5); Demon: Soul Pyre (level 2), Brimstone Chains (level 3), Hellgate (level 5); Angel: Sun Lance (level 2), Choir Bell (level 3), Seraphic Obelisk (level 5); Hive: Lurker Pit (level 2), Brood Nest (level 3), Synapse Spire (level 5). Only that race can build them, and how many you can place grows with base level (2, 4, 6, then 10), with one capstone of each kind. Queued in three waves after the tower models."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: a clean UI for everything",
-      "detail": "Warfront gets its own look: flat dark panels with each race's accent color. Coming: a combat HUD (souls, rage, fuel, flight, army and siege status), a War Table screen on a hotkey (army roster with ranks, fallen and returning heroes, base level), a mana overlay that shows what's powered when you look at your buildings, and a rebuilt Summoning Altar with unit cards. Toasts and a siege banner replace the chat messages. Each screen gets a mockup in the Codex first."
     },
     {
       "status": "planned",
@@ -257,6 +257,7 @@
     "deliveryBountyPaysAndBountiesExpire": "Handing over a delivery pays shards and a crystal; expired bounties drop",
     "merchantComesOnScheduleButNotDuringARaid": "The caravan needs a base, comes when due, never during a raid warning or attack, and visits 3 to 5 days apart",
     "merchantTradesForCrystals": "A trade takes Mana Crystals and gives the goods; diamonds scale with base level; he buys War Marks",
-    "captainsAndChampionsStandTaller": "Captains stand 1.15x and Champions 1.30x as tall as a soldier of their race"
+    "captainsAndChampionsStandTaller": "Captains stand 1.15x and Champions 1.30x as tall as a soldier of their race",
+    "alertsGoOutForRankUpsFallenHeroesAndWaves": "A rank-up and a fallen hero send their owner a toast; a wave start sends the siege banner"
   }
 }

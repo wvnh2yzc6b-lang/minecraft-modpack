@@ -139,6 +139,8 @@ public class SummoningAltarBlockEntity extends BlockEntity {
             if (beasts >= cap) {
                 String next = baseLevel < BaseLevel.MAX_LEVEL && cap < WFConfig.BEAST_LIMIT.get()
                         ? " To raise it, " + base.missingFor(baseLevel + 1) + "." : "";
+                com.warfront.alert.Alerts.toast(player, "beast_limit", "Beast limit reached", beasts + " of " + cap
+                        + " war beasts from a level " + baseLevel + " base.");
                 return new Result(false, "You already command " + beasts + " war beasts, the most you can field (" + cap
                         + ") from a level " + baseLevel + " base." + next);
             }

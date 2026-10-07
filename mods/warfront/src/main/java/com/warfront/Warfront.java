@@ -18,6 +18,7 @@ public class Warfront {
     public Warfront(IEventBus modBus, ModContainer container) {
         WFRegistry.register(modBus);
         container.registerConfig(ModConfig.Type.COMMON, WFConfig.SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, com.warfront.config.WFClientConfig.SPEC);
         LOGGER.info("Warfront: raising the banners");
     }
 

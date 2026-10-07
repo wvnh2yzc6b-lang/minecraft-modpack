@@ -6,7 +6,6 @@ import com.warfront.config.WFConfig;
 import com.warfront.faction.Factions;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
-import com.warfront.network.AdvisorLinePayload;
 import com.warfront.registry.WFRegistry;
 import com.warfront.world.BaseLevel;
 import com.warfront.world.GameEvents;
@@ -71,6 +70,12 @@ public final class RaidScheduler {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             if (p.isSpectator() || Race.byId(p.getData(WFRegistry.RACE)) == null) continue;
             WarState.Clock c = war.clock(p.getUUID());
+            for (WarState.Returning r : war.returning(p.getUUID())) {
+                if (r.readyAt() <= now && r.readyAt() > now - 20) {
+                    com.warfront.alert.Alerts.toast(p, "hero_ready", "Hero ready", "Your " + com.warfront.army.UnitNames.of(r.race(), r.role())
+                            + " can be summoned again at an altar.");
+                }
+            }
             if (c.pending != WarState.Pending.NONE) {
                 updateBar(p, c, now);
                 if (now >= c.hitsAt) strike(p, c, now);
@@ -143,8 +148,7 @@ public final class RaidScheduler {
         int secs = WFConfig.RAID_WARNING.get() / 20;
         String line = "The " + f.displayName + " march on " + target + ". " + secs / 60 + ":" + String.format("%02d", secs % 60)
                 + (c.home != null ? ". Press J (or /warfront home) to recall." : ".");
-        p.sendSystemMessage(Component.literal(what + " is coming! " + line).withStyle(f.color, ChatFormatting.BOLD));
-        PacketDistributor.sendToPlayer(p, new AdvisorLinePayload(what + " is coming!", line));
+        com.warfront.alert.Alerts.banner(p, "raid_warning", what + " is coming!", line, f.color.getColor() == null ? 0xFFFFFF : f.color.getColor());
         p.playNotifySound(SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 1.0F, 1.0F);
         updateBar(p, c, now);
     }
@@ -251,7 +255,8 @@ public final class RaidScheduler {
         int baseLevel = BaseLevel.of(level, home, key).level();
         WarbandSpawner.spawn(level, f, raidRoles(c, f, level.random, baseLevel, WarState.get(level.getServer()).preset()),
                 ground, Vec3.atBottomCenterOf(home), null, Math.min(4, baseLevel));
-        p.sendSystemMessage(Component.literal("The " + f.displayName + " have reached your base!").withStyle(f.color, ChatFormatting.BOLD));
+        com.warfront.alert.Alerts.banner(p, "raid_arrived", "They're here!", "The " + f.displayName + " have reached your base.",
+                f.color.getColor() == null ? 0xFFFFFF : f.color.getColor());
     }
 
     public static void onLogout(UUID player) {

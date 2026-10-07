@@ -1022,4 +1022,33 @@ public final class WarfrontGameTests {
         }
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ alerts
+
+    @GameTest(template = ARENA)
+    public static void alertsGoOutForRankUpsFallenHeroesAndWaves(GameTestHelper h) {
+        List<com.warfront.alert.Alerts.Sent> sent = new ArrayList<>();
+        com.warfront.alert.Alerts.capture = sent;
+        try {
+            Player owner = tester(h);
+            SoldierEntity s = recruit(h, owner, SoldierRole.SWORDSMAN, Race.ELF, 2, 2);
+            s.addXp(com.warfront.army.Veterancy.threshold(1));
+            SoldierEntity hero = recruit(h, owner, SoldierRole.CAPTAIN, Race.ELF, 6, 2);
+            hero.hurt(h.getLevel().damageSources().generic(), 1000F);
+            BlockPos pos = new BlockPos(4, 2, 6);
+            h.setBlock(pos, WFRegistry.WAR_STANDARD.get());
+            WarStandardBlockEntity standard = (WarStandardBlockEntity) h.getBlockEntity(pos);
+            standard.setOwner(owner.getUUID());
+            standard.startSiege(h.getLevel());
+            UUID warband = standard.getWarbandId();
+            standard.endSiege(h.getLevel());
+            h.assertTrue(sent.stream().anyMatch(a -> a.key().equals("rank_up") && a.player().equals(owner.getUUID())), "a rank-up toast for the owner");
+            h.assertTrue(sent.stream().anyMatch(a -> a.key().equals("hero_fallen") && a.player().equals(owner.getUUID())), "a hero-fallen toast for the owner");
+            h.assertTrue(sent.stream().anyMatch(a -> a.key().equals("wave_start") && a.kind() == com.warfront.alert.Alerts.Kind.BANNER),
+                    "a wave-start banner (sent " + sent.stream().map(com.warfront.alert.Alerts.Sent::key).toList() + ", warband " + warband + ")");
+        } finally {
+            com.warfront.alert.Alerts.capture = null;
+        }
+        h.succeed();
+    }
 }

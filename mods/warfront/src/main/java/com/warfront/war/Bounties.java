@@ -4,7 +4,6 @@ import com.warfront.army.SoldierRole;
 import com.warfront.entity.SoldierEntity;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
-import com.warfront.network.AdvisorLinePayload;
 import com.warfront.registry.WFRegistry;
 import com.warfront.world.WarbandSpawner;
 import net.minecraft.ChatFormatting;
@@ -290,8 +289,8 @@ public final class Bounties {
         }
         ServerPlayer owner = level.getServer().getPlayerList().getPlayer(camp.owner);
         if (owner != null) {
-            owner.sendSystemMessage(Component.literal("The " + camp.faction.displayName + " camp is taken. Their next raid "
-                    + "will come a third smaller, and they left supplies behind.").withStyle(ChatFormatting.GOLD));
+            com.warfront.alert.Alerts.toast(owner, "camp_taken", "Camp taken", "The " + camp.faction.displayName
+                    + "' next raid comes a third smaller. They left supplies behind.");
             if (!camp.rescue) completeLinked(owner, camp.id, Type.CAMP);
         }
     }
@@ -317,9 +316,8 @@ public final class Bounties {
                 s -> s.isAlive() && s.isOwnedBy(player))) {
             s.addXp(BOUNTY_XP);
         }
-        player.sendSystemMessage(Component.literal("Bounty done: " + b.describe() + ". (+" + b.shards() + " shards"
-                + (b.crystals() > 0 ? ", +" + b.crystals() + " crystals" : "") + ")").withStyle(ChatFormatting.GOLD));
-        if (player instanceof ServerPlayer sp) PacketDistributor.sendToPlayer(sp, new AdvisorLinePayload("Bounty done", b.describe()));
+        com.warfront.alert.Alerts.toast(player, "bounty_done", "Bounty done", b.describe() + ". +" + b.shards() + " shards"
+                + (b.crystals() > 0 ? ", +" + b.crystals() + " crystals" : "") + ".");
     }
 
     private static void give(Player player, ItemStack stack) {
@@ -380,7 +378,7 @@ public final class Bounties {
             if (Race.byId(p.getData(WFRegistry.RACE)) == null || p.getData(WFRegistry.QUEST_STEP)
                     < com.warfront.advisor.Advisor.Step.STANDARD.ordinal()) continue;
             if (morning && offer(p) > 0) {
-                PacketDistributor.sendToPlayer(p, new AdvisorLinePayload("New bounties", "Your advisor has work for you."));
+                com.warfront.alert.Alerts.toast(p, "bounties", "New bounties", "Your advisor has work for you.");
             }
             expire(war, p.getUUID(), now);
             for (Bounty b : new ArrayList<>(war.bounties(p.getUUID()))) {

@@ -31,6 +31,11 @@ public final class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void onGuiLayers(net.neoforged.neoforge.client.event.RegisterGuiLayersEvent event) {
+        event.registerAboveAll(Warfront.id("siege_banner"), com.warfront.client.ui.SiegeBanner::render);
+    }
+
+    @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(WFRegistry.SOLDIER.get(), SoldierRenderer::new);
         event.registerEntityRenderer(WFRegistry.ADVISOR_ENTITY.get(), AdvisorRenderer::new);

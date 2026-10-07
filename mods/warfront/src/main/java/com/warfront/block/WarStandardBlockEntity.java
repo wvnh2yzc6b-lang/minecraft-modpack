@@ -245,9 +245,8 @@ public class WarStandardBlockEntity extends BlockEntity {
         setChanged();
 
         level.playSound(null, worldPosition, SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 64.0F, 1.0F);
-        announce(level, Component.literal("Wave " + wave + (bossWave ? " (WARLORD)" : "") + ": the "
-                + faction.displayName + " attack with " + spawned.size() + " soldiers from the "
-                + String.join(" and ", fronts) + "!").withStyle(faction.color, ChatFormatting.BOLD));
+        banner(level, "wave_start", "Wave " + wave + (bossWave ? ": WARLORD" : ""), "The " + faction.displayName + " attack with "
+                + spawned.size() + " from the " + String.join(" and ", fronts) + "!", colorOf(faction.color));
         updateBar(level, spawned.size());
         return true;
     }
@@ -327,8 +326,7 @@ public class WarStandardBlockEntity extends BlockEntity {
             clearBar();
         }
         setChanged();
-        announce(level, Component.literal("Wave " + wave + " repelled! (+" + marks + " War Marks)" + next)
-                .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+        banner(level, "wave_won", "Wave " + wave + " repelled!", "+" + marks + " War Marks." + next, 0xE2B55A);
     }
 
     /** Called when an attacker reaches the standard and strikes it. */
@@ -340,12 +338,11 @@ public class WarStandardBlockEntity extends BlockEntity {
                 worldPosition.getZ() + 0.5, 8, 0.3, 0.5, 0.3, 0.2);
         server.playSound(null, worldPosition, SoundEvents.SHIELD_BREAK, SoundSource.BLOCKS, 0.7F, 0.8F);
         if (health % 5 == 0 && health > 0) {
-            announce(server, Component.literal("Your War Standard is under attack! (" + health + "/" + maxHealth()
+            actionBar(server, Component.literal("Your War Standard is under attack! (" + health + "/" + maxHealth()
                     + ")").withStyle(ChatFormatting.RED));
         }
         if (health <= 0) {
-            announce(server, Component.literal("The War Standard has fallen on wave " + wave + ".")
-                    .withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
+            banner(server, "standard_lost", "The War Standard has fallen", "Lost on wave " + wave + ".", 0x8B1A1A);
             warband = null;
             campaign = false;
             clearBar();
@@ -402,13 +399,37 @@ public class WarStandardBlockEntity extends BlockEntity {
                 .withStyle(warband != null ? ChatFormatting.RED : ChatFormatting.GOLD), true);
     }
 
-    private void announce(ServerLevel level, Component message) {
+    /** Who hears about this standard: players within 128 blocks, and its owner anywhere in the level. */
+    private List<ServerPlayer> audience(ServerLevel level) {
         Vec3 c = Vec3.atCenterOf(worldPosition);
+        List<ServerPlayer> out = new ArrayList<>();
         for (ServerPlayer p : level.players()) {
-            if (p.distanceToSqr(c) < 128 * 128 || Objects.equals(p.getUUID(), owner)) {
-                p.sendSystemMessage(message);
-            }
+            if (p.distanceToSqr(c) < 128 * 128 || Objects.equals(p.getUUID(), owner)) out.add(p);
         }
+        return out;
+    }
+
+    /** A notice as a toast (campaign start and end). */
+    private void announce(ServerLevel level, Component message) {
+        for (ServerPlayer p : audience(level)) com.warfront.alert.Alerts.toast(p, "standard", "War Standard", message.getString());
+    }
+
+    private void actionBar(ServerLevel level, Component message) {
+        for (ServerPlayer p : audience(level)) p.displayClientMessage(message, true);
+    }
+
+    /** The siege banner, for the big moments. */
+    private void banner(ServerLevel level, String key, String title, String text, int color) {
+        for (ServerPlayer p : audience(level)) com.warfront.alert.Alerts.banner(p, key, title, text, color);
+        if (com.warfront.alert.Alerts.capture != null && audience(level).isEmpty()) {
+            // Game tests have no real players: record the banner under the owner.
+            com.warfront.alert.Alerts.capture.add(new com.warfront.alert.Alerts.Sent(owner == null ? new UUID(0, 0) : owner,
+                    com.warfront.alert.Alerts.Kind.BANNER, key, title, text));
+        }
+    }
+
+    private static int colorOf(ChatFormatting f) {
+        return f.getColor() == null ? 0xFFFFFF : f.getColor();
     }
 
     @Override

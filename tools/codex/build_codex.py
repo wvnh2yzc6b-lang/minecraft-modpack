@@ -252,6 +252,7 @@ def worker_names():
 PAGES = [
     ("home", "Home", ["progress", "gaps"]),
     ("play", "Play", ["play"]),
+    ("ui", "Interface", ["ui"]),
     ("designs", "Designs", ["designs"]),
     ("models", "Models", ["models", "demon", "imps", "hive", "workers"]),
     ("skins", "Skins", ["skins", "foes", "textures"]),

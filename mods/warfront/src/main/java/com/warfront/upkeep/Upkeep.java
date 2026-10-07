@@ -2,7 +2,6 @@ package com.warfront.upkeep;
 
 import com.warfront.config.WFConfig;
 import com.warfront.entity.SoldierEntity;
-import com.warfront.network.AdvisorLinePayload;
 import com.warfront.registry.WFRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -75,8 +74,7 @@ public final class Upkeep {
         if (!morning) return;
         for (UUID id : hungry) {
             ServerPlayer p = server.getPlayerList().getPlayer(id);
-            if (p != null) PacketDistributor.sendToPlayer(p, new AdvisorLinePayload("Your troops went hungry",
-                    "The Mess Hall ran out. Fed troops hold their nerve better."));
+            com.warfront.alert.Alerts.toast(p, "hungry", "Your troops went hungry", "The Mess Hall ran out. Fed troops hold their nerve better.");
         }
     }
 

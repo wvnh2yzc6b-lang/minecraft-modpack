@@ -7,13 +7,15 @@ import net.minecraft.client.Minecraft;
 public final class ClientHooks {
     private ClientHooks() {}
 
-    /** One of the advisor's lines, as a toast. */
-    public static void advisorToast(String title, String line) {
+    /** A themed toast or the siege banner; also a chat line if the player asked for chat alerts. */
+    public static void alert(com.warfront.network.AlertPayload p) {
         Minecraft mc = Minecraft.getInstance();
-        String shortLine = line.length() > 60 ? line.substring(0, 57) + "..." : line;
-        net.minecraft.client.gui.components.toasts.SystemToast.addOrUpdate(mc.getToasts(),
-                net.minecraft.client.gui.components.toasts.SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
-                net.minecraft.network.chat.Component.literal(title), net.minecraft.network.chat.Component.literal(shortLine));
+        if (p.kind() == 1) com.warfront.client.ui.SiegeBanner.show(p.title(), p.text(), p.accent());
+        else mc.getToasts().addToast(new com.warfront.client.ui.WFToast(p.title(), p.text(), p.accent()));
+        if (com.warfront.config.WFClientConfig.CHAT_ALERTS.get() && mc.player != null) {
+            mc.player.displayClientMessage(net.minecraft.network.chat.Component.literal(p.title()
+                    + (p.text().isEmpty() ? "" : ": " + p.text())).withColor(p.accent()), false);
+        }
     }
 
     public static void openAltar(AltarOpenPayload payload) {

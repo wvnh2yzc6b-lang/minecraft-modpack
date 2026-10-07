@@ -4,7 +4,6 @@ import com.warfront.config.WFConfig;
 import com.warfront.faction.Factions;
 import com.warfront.faction.NpcFaction;
 import com.warfront.faction.Race;
-import com.warfront.network.AdvisorLinePayload;
 import com.warfront.registry.WFRegistry;
 import com.warfront.world.BaseLevel;
 import net.minecraft.ChatFormatting;
@@ -139,7 +138,7 @@ public final class Advisor {
         String who = race == null ? "Advisor" : title(race);
         player.sendSystemMessage(Component.literal(who + ": ").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)
                 .append(Component.literal(line).withStyle(ChatFormatting.YELLOW).withStyle(s -> s.withBold(false))));
-        if (player instanceof ServerPlayer sp) PacketDistributor.sendToPlayer(sp, new AdvisorLinePayload(title, line));
+        com.warfront.alert.Alerts.toast(player, "advisor", title, line);
     }
 
     // ------------------------------------------------------------------ the advisor himself

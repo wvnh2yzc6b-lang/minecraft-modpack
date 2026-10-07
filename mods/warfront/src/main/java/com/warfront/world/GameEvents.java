@@ -336,10 +336,10 @@ public final class GameEvents {
         WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction, 1,
                         com.warfront.war.WarState.get(level.getServer()).preset()), ground,
                 player.position(), null, tier);
-        player.sendSystemMessage(Component.literal(faction == NpcFaction.THE_SWARM
-                ? "The ground trembles beneath you... a Swarm brood is tunneling toward you."
-                : "War drums echo in the distance... a " + faction.displayName + " warband is marching on you.")
-                .withStyle(faction.color, ChatFormatting.ITALIC));
+        com.warfront.alert.Alerts.toast(player, "warband", faction == NpcFaction.THE_SWARM ? "The ground trembles" : "War drums",
+                faction == NpcFaction.THE_SWARM ? "A Swarm brood is tunneling toward you."
+                        : "A " + faction.displayName + " warband is marching on you.",
+                faction.color.getColor() == null ? 0xFFFFFF : faction.color.getColor());
         return true;
     }
 

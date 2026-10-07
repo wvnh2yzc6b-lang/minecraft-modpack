@@ -4,7 +4,6 @@ import com.warfront.army.SoldierRole;
 import com.warfront.entity.SoldierEntity;
 import com.warfront.faction.Factions;
 import com.warfront.faction.Race;
-import com.warfront.network.AdvisorLinePayload;
 import com.warfront.registry.WFRegistry;
 import com.warfront.war.RaidScheduler;
 import com.warfront.war.WarState;
@@ -95,16 +94,14 @@ public final class Caravan {
             g.getPersistentData().putUUID(GUARD_TAG, m.getUUID());
             level.addFreshEntity(g);
         }
-        host.sendSystemMessage(Component.literal("A merchant's caravan has arrived at your War Standard. It stays one day and trades in Mana Crystals.")
-                .withStyle(ChatFormatting.GOLD));
-        PacketDistributor.sendToPlayer(host, new AdvisorLinePayload("A merchant arrives", "He stays one day. Bring Mana Crystals."));
+        com.warfront.alert.Alerts.toast(host, "merchant", "A merchant arrives", "At your War Standard for one day. He trades in Mana Crystals.");
         return m;
     }
 
     /** Struck by a player: the caravan leaves now and skips its next visit. */
     static void insulted(ServerLevel level, MerchantEntity m, ServerPlayer p) {
         WarState.get(level.getServer()).clock(p.getUUID()).merchantSkip = true;
-        p.sendSystemMessage(Component.literal("The merchant packs up in a hurry. He won't come next time.").withStyle(ChatFormatting.RED));
+        p.displayClientMessage(Component.literal("The merchant packs up in a hurry. He won't come next time.").withStyle(ChatFormatting.RED), true);
         for (SoldierEntity s : level.getEntitiesOfClass(SoldierEntity.class, new AABB(m.blockPosition()).inflate(32),
                 s -> m.getUUID().equals(s.getPersistentData().hasUUID(GUARD_TAG) ? s.getPersistentData().getUUID(GUARD_TAG) : null))) {
             s.discard();

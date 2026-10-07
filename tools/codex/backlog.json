@@ -3,20 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "ui-foundation",
-      "status": "ready",
-      "title": "UI foundation: race-tinted theme, toasts and the siege banner",
-      "decided": "Owner, 2026-10-07: clean dark race-tinted panels; first pass is the combat HUD, War Table, base mana overlay and Altar redesign; toasts and a siege banner replace chat.",
-      "spec": [
-        "A small theme library (client/ui/WFTheme + helpers): panel (semi-transparent near-black fill, 1px light border, optional accent top stripe), header text, bar (fill + track), icon slot, button; one accent color per race (Human steel blue, Elf leaf green, Dwarf bronze, Orc blood red, Demon ember orange, Angel gold, Hive cyan). All sizes respect the GUI scale; text uses the vanilla font with shadow off on panels.",
-        "Toasts (vanilla Toast API, styled with the theme): rank-up, hero fallen / revived / ready at the altar, mana network low or empty, beast limit reached. Duration about 4 seconds, stacked.",
-        "Siege banner: a wide centered banner near the top for wave start, wave won, outpost raised, outpost destroyed and War Standard lost; slides in, holds 3 seconds, fades. Race-tinted to the enemy faction.",
-        "Move the 26 current chat messages (Souls, Rage, GameEvents, AltarSummonPayload, ManaPylon/ManaWell blocks, WarStandard, SummoningAltar, CommanderBaton, WarHorn, SoldierEntity) to toasts, the banner, or the action bar for short feedback; keep chat for command output (WFCommands) only. A client config option 'chatAlerts' turns the old chat lines back on.",
-        "Game tests: the server sends the right alert payload for a rank-up, a fallen hero and a wave start (assert on a captured payload, not on rendering).",
-        "Client-only code under com.warfront.client; data the client needs comes through small synced payloads or attachments, never by reading server state directly. Before the Java, publish an HTML mockup of each screen in the Codex (same panels, colors and layout) so the owner can review the look without a game client; keep the mockup and the Java in step."
-      ]
-    },
-    {
       "id": "ui-hud",
       "status": "ready",
       "title": "Combat HUD",

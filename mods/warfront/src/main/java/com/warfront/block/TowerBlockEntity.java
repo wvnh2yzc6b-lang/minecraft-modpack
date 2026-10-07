@@ -104,7 +104,25 @@ public class TowerBlockEntity extends BlockEntity {
         if (!WFConfig.TOWERS_NEED_MANA.get() || ManaNetwork.draw(level, pos, key, type.manaCost)) return true;
         level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 6, 0.2, 0.1, 0.2, 0.01);
         level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 1.6F);
+        starving(level, pos, key);
         return false;
+    }
+
+    private static final java.util.Map<BlockPos, Long> LAST_WARNING = new java.util.HashMap<>();
+
+    /** Tells the tower's side (within 64 blocks) that the network ran dry; once every five minutes per tower. */
+    private static void starving(ServerLevel level, BlockPos pos, String key) {
+        long now = level.getGameTime();
+        Long last = LAST_WARNING.get(pos);
+        if (last != null && now - last < 6000) return;
+        LAST_WARNING.put(pos.immutable(), now);
+        for (net.minecraft.server.level.ServerPlayer p : level.players()) {
+            if (p.blockPosition().distSqr(pos) < 64 * 64 && com.warfront.faction.Factions.relation(level.getServer(), key,
+                    com.warfront.faction.Factions.keyOf(level.getServer(), p)) == com.warfront.faction.Relation.ALLY) {
+                com.warfront.alert.Alerts.toast(p, "mana_empty", "Mana running dry", "A tower at " + pos.toShortString()
+                        + " has no mana to fire. Fill a Mana Well.");
+            }
+        }
     }
 
     @Nullable

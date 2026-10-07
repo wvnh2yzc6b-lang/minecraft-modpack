@@ -170,6 +170,32 @@ nav.pages a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
 .design figcaption { font-size: 0.82rem; color: var(--muted); }
 .design ul { margin: 0; padding-left: 1.15em; display: grid; gap: 4px; }
 .status.review { color: var(--accent); }
+
+/* In-game interface mockups: the same panels, colors and layout as the Java (client/ui/WFTheme). */
+.mc { background: #3b4a2f url() ; background: linear-gradient(#6d8fbf, #9cc0e0 55%, #4f7a3a 55%, #3d6230); border-radius: 6px; padding: 16px; position: relative; overflow: hidden; font-family: "Minecraft", var(--mono); }
+.mc .wf-panel { background: rgba(16,19,24,0.85); border: 1px solid rgba(255,255,255,0.38); color: #e8e8e8; font-size: 13px; line-height: 1.35; }
+.mc .wf-panel .stripe { height: 2px; margin: 0 0 6px; }
+.wf-toast { width: 270px; padding: 6px 10px 8px; margin: 0 0 8px auto; }
+.wf-toast b { display: block; font-weight: 600; }
+.wf-banner { margin: 0 auto 10px; width: min(520px, 100%); text-align: center; padding: 8px 12px 10px; }
+.wf-banner .big { font-size: 24px; font-weight: 700; display: block; }
+.mc-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+.wf-hud { width: 230px; padding: 6px 8px; font-size: 12px; }
+.wf-hud .row { display: flex; gap: 6px; align-items: center; margin: 3px 0; }
+.wf-bar { flex: 1; height: 5px; background: rgba(48,56,64,0.6); position: relative; }
+.wf-bar i { position: absolute; inset: 0 auto 0 0; }
+.pip { width: 7px; height: 7px; border: 1px solid #3fd8d0; display: inline-block; }
+.pip.on { background: #3fd8d0; box-shadow: 0 0 4px #3fd8d0; }
+.wf-tabs span { display: inline-block; padding: 3px 10px; border: 1px solid rgba(255,255,255,0.3); margin-right: 4px; }
+.wf-tabs span.on { background: rgba(255,255,255,0.12); }
+.wf-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.wf-table td { padding: 3px 6px; border-top: 1px solid rgba(255,255,255,0.1); }
+.wf-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.wf-card { border: 1px solid rgba(255,255,255,0.3); padding: 6px; font-size: 12px; text-align: center; }
+.wf-card.locked { opacity: 0.45; }
+.wf-card.sel { outline: 2px solid #4a7fb5; }
+.wf-tip { position: absolute; left: 52%; top: 40%; width: 200px; padding: 6px 8px; font-size: 12px; }
+.cross { position: absolute; left: 50%; top: 50%; color: #fff; font-size: 18px; transform: translate(-50%, -50%); }
 </style>
 
 <div class="wrap">
@@ -599,6 +625,64 @@ nav.pages a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
     </tbody>
   </table></div>
   <p class="legend">Starter kit on first join: Commander's Baton, Summoning Altar, 4 Mana Braziers, Mana Well, 24 Mana Shards, 4 Manabloom Seeds.</p>
+</section>
+
+<section id="ui">
+  <header>
+    <span class="eyebrow">Mockups for review</span>
+    <h2>Interface</h2>
+    <p>How the in-game panels look: the same colors, borders and layout the mod draws. Each race has its own accent (Human steel blue, Elf leaf green, Dwarf bronze, Orc blood red, Demon ember orange, Angel gold, Hive cyan). Short feedback goes to toasts in the top right, the big siege moments to a banner at the top, and chat is left for commands (a client option brings the old chat lines back).</p>
+  </header>
+  <h3>Toasts (one per race accent)</h3>
+  <div class="mc"><div class="wf-panel wf-toast"><div class="stripe" style="background:#4a7fb5"></div><b style="color:#4a7fb5">Promoted: Veteran</b>Your Footman is now a Veteran.</div><div class="wf-panel wf-toast"><div class="stripe" style="background:#5fa83a"></div><b style="color:#5fa83a">Hero fallen</b>Your Bladedancer fell at 120, 64, -40. Right-click it within 60s to get it up.</div><div class="wf-panel wf-toast"><div class="stripe" style="background:#b0793a"></div><b style="color:#b0793a">Mana running dry</b>A tower at 18, 70, 4 has no mana to fire. Fill a Mana Well.</div><div class="wf-panel wf-toast"><div class="stripe" style="background:#9e1b1b"></div><b style="color:#9e1b1b">Beast limit reached</b>4 of 4 war beasts from a level 2 base.</div><div class="wf-panel wf-toast"><div class="stripe" style="background:#e0612a"></div><b style="color:#e0612a">Hero ready</b>Your Hellknight can be summoned again at an altar.</div><div class="wf-panel wf-toast"><div class="stripe" style="background:#e8c547"></div><b style="color:#e8c547">Bounty done</b>Bring me 64 Oak Log. +9 shards, +1 crystals.</div><div class="wf-panel wf-toast"><div class="stripe" style="background:#3fd8d0"></div><b style="color:#3fd8d0">Back on its feet</b>Your Ravager fights on at half health.</div></div>
+  <h3>Siege banner</h3>
+  <div class="mc">
+    <div class="wf-panel wf-banner"><div class="stripe" style="background:#ff5555"></div><span class="big" style="color:#ff9a9a">Wave 5: WARLORD</span>The Marauder Horde attack with 18 from the east and west!</div>
+    <div class="wf-panel wf-banner"><div class="stripe" style="background:#e2b55a"></div><span class="big" style="color:#ffe09a">Wave 5 repelled!</span>+14 War Marks. Next wave in 30s.</div>
+    <div class="wf-panel wf-banner"><div class="stripe" style="background:#55ffff"></div><span class="big" style="color:#9affff">A raid is coming!</span>The Ironbeard Clan march on your base. 2:00. Press J (or /warfront home) to recall.</div>
+  </div>
+  <h3>Combat HUD (bottom left, above the hotbar)</h3>
+  <div class="mc-grid">
+  <div class="mc" style="min-height:190px">
+    <div class="wf-panel wf-hud" style="position:absolute;left:12px;bottom:12px"><div class="stripe" style="background:#e0612a"></div>
+      <div class="row"><span style="color:#e0612a">Souls</span> <span class="pip on" style="border-color:#e0612a;background:#e0612a"></span><span class="pip on" style="border-color:#e0612a;background:#e0612a"></span><span class="pip on" style="border-color:#e0612a;background:#e0612a"></span><span class="pip on" style="border-color:#e0612a;background:#e0612a"></span><span class="pip" style="border-color:#e0612a"></span><span class="pip" style="border-color:#e0612a"></span><span class="pip" style="border-color:#e0612a"></span><span class="pip" style="border-color:#e0612a"></span><span class="pip" style="border-color:#e0612a"></span><span class="pip" style="border-color:#e0612a"></span></div>
+      <div class="row">Army 14/18 &middot; Wedge &middot; Follow</div>
+      <div class="row" style="color:#9aa3ae">2 on guard &middot; 1 patrol &middot; beasts 1/4</div>
+      <div class="row" style="color:#ff9a9a">Wave 6 &middot; 11 enemies left</div>
+    </div>
+  </div>
+  <div class="mc" style="min-height:190px">
+    <div class="wf-panel wf-hud" style="position:absolute;left:12px;bottom:12px"><div class="stripe" style="background:#9e1b1b"></div>
+      <div class="row"><span style="color:#ff6a3d">Rage</span><div class="wf-bar"><i style="width:72%;background:#b8231a"></i></div></div>
+      <div class="row"><span style="color:#ff6a3d">FRENZY 6s</span></div>
+      <div class="row">Army 9/9 &middot; Line &middot; Hold</div>
+      <div class="row" style="color:#9aa3ae">beasts 0/2</div>
+    </div>
+  </div>
+  </div>
+  <h3>War Table (H, or right-click the War Standard)</h3>
+  <div class="mc">
+    <div class="wf-panel" style="padding:8px 10px;max-width:560px;margin:auto"><div class="stripe" style="background:#4a7fb5"></div>
+      <div class="wf-tabs"><span class="on">Army</span><span>Heroes</span><span>Base</span></div>
+      <table class="wf-table"><tr><td>Veteran Footman <span style="color:#4a7fb5">&#8743;&#8743;</span></td><td>Swordsman</td><td><div class="wf-bar" style="width:70px"><i style="width:80%;background:#5fa83a"></i></div></td><td>following</td><td>6m</td></tr>
+      <tr><td>Regular Archer <span style="color:#4a7fb5">&#8743;</span></td><td>Archer</td><td><div class="wf-bar" style="width:70px"><i style="width:45%;background:#e8c547"></i></div></td><td>guard</td><td>22m</td></tr>
+      <tr><td>Elite Paladin <span style="color:#4a7fb5">&#8743;&#8743;&#8743;</span></td><td>Champion</td><td><div class="wf-bar" style="width:70px"><i style="width:100%;background:#5fa83a"></i></div></td><td>following</td><td>3m</td></tr></table>
+      <p style="margin:6px 0 0;color:#9aa3ae;font-size:12px">Click a row: the unit glows for a few seconds. Heroes tab: fallen heroes with their revive countdown and place; returning heroes with their ready time. Base tab: level, buildings and waves toward the next level, mana stored, beasts allowed, the next unlocks.</p>
+    </div>
+  </div>
+  <h3>Mana overlay (look at a mana block)</h3>
+  <div class="mc" style="min-height:160px"><span class="cross">+</span>
+    <div class="wf-panel wf-tip"><div class="stripe" style="background:#7fd8ff"></div><b style="color:#7fd8ff">Mana Well</b><br>1,240 / 2,000 mana<div class="wf-bar" style="margin:4px 0"><i style="width:62%;background:#7fd8ff"></i></div><span style="color:#9aa3ae">Network: 3 wells, 2 pylons &middot; powered</span></div>
+  </div>
+  <h3>Summoning Altar</h3>
+  <div class="mc">
+    <div class="wf-panel" style="padding:8px 10px;max-width:620px;margin:auto"><div class="stripe" style="background:#4a7fb5"></div>
+      <b>Summoning Altar</b> <span style="color:#7fd8ff;float:right">Mana in reach: 240 &middot; beasts 1/4</span>
+      <div class="wf-cards" style="margin-top:6px"><div class="wf-card sel">Shieldbearer<br>15</div><div class="wf-card">Spearman<br>15</div><div class="wf-card">Footman<br>20</div><div class="wf-card">Archer<br>20</div><div class="wf-card">Healer<br>30</div><div class="wf-card">Captain<br>50</div><div class="wf-card locked">Paladin<br>needs base 4</div><div class="wf-card">Griffin<br>150</div></div>
+      <div style="margin-top:8px;border-top:1px solid rgba(255,255,255,.15);padding-top:6px;font-size:12px"><b>Shieldbearer</b>: holds the line, raises a shield against charges and arrows. 30 health. Cost 15 of 240. <span style="border:1px solid #4a7fb5;padding:1px 8px;float:right">Summon</span></div>
+      <div style="margin-top:8px;font-size:12px;color:#e2b55a">Returning heroes: Elite Captain &middot; 25 &middot; ready in 2:40</div>
+    </div>
+  </div>
 </section>
 
 <section id="play">
