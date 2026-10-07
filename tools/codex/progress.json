@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "UI, part 4: the mana overlay",
+      "detail": "Look at a Mana Well, Pylon, tower, Summoning Altar or War Standard within 8 blocks and a small panel appears by the crosshair: mana stored out of capacity (or mana in reach, and a tower's cost per shot), how many wells and pylons are on its network, and whether it's powered or starving. Hold a Mana Crystal or the Commander's Baton to see the network: glowing lines between linked wells and pylons, each pylon's 16-block reach as a ring on the ground, and wells running dry pulsing red. The game only asks the server when you look or hold, nothing is broadcast."
+    },
+    {
+      "status": "done",
       "title": "UI, part 3: the War Table",
       "detail": "Press H, or right-click your War Standard (sneak-click just reads its status). Army tab: every unit you own with its rank chevrons, role, health bar, duty (following, on guard, patrolling, working, holding) and distance; sort by distance, role, rank or health, filter by duty, scroll, and click a unit to make it glow for five seconds so you can find it. Heroes tab: your Captains, Champions and beasts; fallen ones with their revive countdown and where they lie; returning ones with their ready time. Base tab: base level with bars for buildings and waves won toward the next level, mana stored across the network, beasts allowed, and what the next level unlocks."
     },

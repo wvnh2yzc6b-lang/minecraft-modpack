@@ -43,6 +43,10 @@ public final class ModEvents {
                 com.warfront.network.WarTablePayload::handle);
         registrar.playToServer(com.warfront.network.WarTableActionPayload.TYPE, com.warfront.network.WarTableActionPayload.STREAM_CODEC,
                 com.warfront.network.WarTableActionPayload::handle);
+        registrar.playToServer(com.warfront.network.ManaQueryPayload.TYPE, com.warfront.network.ManaQueryPayload.STREAM_CODEC,
+                com.warfront.network.ManaQueryPayload::handle);
+        registrar.playToClient(com.warfront.network.ManaInfoPayload.TYPE, com.warfront.network.ManaInfoPayload.STREAM_CODEC,
+                com.warfront.network.ManaInfoPayload::handle);
         registrar.playToClient(com.warfront.network.HudPayload.TYPE, com.warfront.network.HudPayload.STREAM_CODEC,
                 com.warfront.network.HudPayload::handle);
         registrar.playToClient(com.warfront.network.AlertPayload.TYPE, com.warfront.network.AlertPayload.STREAM_CODEC,

@@ -3,18 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "ui-mana-overlay",
-      "status": "ready",
-      "title": "Base mana overlay",
-      "decided": "Owner, 2026-10-07: clean dark race-tinted panels; first pass is the combat HUD, War Table, base mana overlay and Altar redesign; toasts and a siege banner replace chat.",
-      "spec": [
-        "Looking at a Mana Well, Pylon, tower, altar, flame vent or War Standard within 8 blocks shows a small themed tooltip panel next to the crosshair: mana stored / capacity (or draw per shot), network it belongs to, linked count, powered or starving.",
-        "Holding a Mana Crystal or the Commander Baton turns on the network view: thin glowing lines between linked blocks, pylon reach shown as a faint 16-block ring on the ground, starving blocks pulse red.",
-        "Data synced on demand when the player looks at a block (no constant broadcast).",
-        "Client-only code under com.warfront.client; data the client needs comes through small synced payloads or attachments, never by reading server state directly. Before the Java, publish an HTML mockup of each screen in the Codex (same panels, colors and layout) so the owner can review the look without a game client; keep the mockup and the Java in step."
-      ]
-    },
-    {
       "id": "ui-altar",
       "status": "ready",
       "title": "Summoning Altar redesign",

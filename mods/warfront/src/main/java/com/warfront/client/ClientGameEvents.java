@@ -38,6 +38,7 @@ public final class ClientGameEvents {
         }
         jumpWasDown = jumpDown;
 
+        com.warfront.client.ui.ManaOverlay.tick();
         while (ClientSetup.WAR_TABLE.consumeClick()) {
             net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.warfront.network.WarTableActionPayload(-1));
         }
@@ -49,6 +50,11 @@ public final class ClientGameEvents {
             else player.displayClientMessage(net.minecraft.network.chat.Component.literal(
                     "Test mode is off. An operator turns it on with /wftest on."), true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onRenderLevel(net.neoforged.neoforge.client.event.RenderLevelStageEvent event) {
+        com.warfront.client.ui.ManaOverlay.renderWorld(event);
     }
 
     /** Demon players see their own clawed demon arm in first person. */
