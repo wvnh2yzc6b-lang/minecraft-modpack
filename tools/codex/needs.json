@@ -43,6 +43,12 @@
       "why": "Every unit marked Needs input uses the plain race skin. Pictures or descriptions let me give each one its own model, gear and size."
     },
     {
+      "topic": "Hive",
+      "priority": "medium",
+      "question": "Should the Hive beast keep its red-orange colors, or match the sculk and Warden look?",
+      "why": "The reference is rust-red with gold markings. The rest of the Hive is going dark teal and black like sculk. Either works; tell me which."
+    },
+    {
       "topic": "Players",
       "priority": "high",
       "question": "Reference art for the Hive player character.",
@@ -113,9 +119,23 @@
       "priority": "low",
       "question": "Twilight Forest is CurseForge-only. Skip it, or pick a replacement?",
       "why": "The pack is built from Modrinth, so it can't include Twilight Forest."
+    },
+    {
+      "topic": "Creatures",
+      "priority": "low",
+      "question": "Which creatures do you want, and which races do they belong to?",
+      "why": "Reference images or names (griffins, wyverns, trolls, giant spiders...) are enough to start a list."
     }
   ],
   "settled": [
+    {
+      "topic": "Hive",
+      "answer": "The Hive gets a large burrowing beast unit based on your reference (hive-beast.png). It's a unit, not the player character."
+    },
+    {
+      "topic": "Creatures",
+      "answer": "Fantastical creatures come later: a few assigned to each race, most of them neutral."
+    },
     {
       "topic": "Players",
       "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: undecided. Demons already fly on their wings. Not started; waiting on your references."

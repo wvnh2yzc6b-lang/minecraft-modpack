@@ -32,6 +32,21 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - Impaler: rugged and sharper, with some armor. Firecaster: a magical look. Imps are low tier, so
   keep it modest.
 
+## Hive: beast unit - `hive-beast.png`
+- A Hive war beast, not the player character. Look at the picture only; ignore the book text.
+- **Size:** large, well above player height. It stands upright on its rear legs, hunched forward.
+- **Head:** a crown of flared, spiked chitin plates sweeping up and out like a frill, with small dark eyes set low.
+- **Mouth:** two long, curved, bone-colored mandibles hang down past the chest, with shorter fangs between them.
+- **Arms:** one heavy raptorial forelimb lined with hooked spikes, ending in a long curved claw. Long, thin,
+  segmented legs.
+- **Body:** ridged, segmented chitin. Rust-red to orange, with gold swirl markings on the limbs.
+- **Feel:** it bursts up out of the ground, scattering dirt. This suits the Hive's cave theme: a burrowing ambusher.
+- **Open:** whether to keep the red-orange colors or shift it to the Hive's sculk and Warden look (dark teal, black).
+
+## Creatures (owner direction, later)
+- Add a range of fantastical creatures over time. Each race gets a few assigned to it; most creatures are neutral.
+- Not started.
+
 ## Player characters and flight (owner direction)
 - Most races get their own player model, from references the owner will supply. Hive comes first.
 - Most races should have some form of flight:
