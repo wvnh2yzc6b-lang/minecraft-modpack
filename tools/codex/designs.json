@@ -24,7 +24,7 @@
      "notes": ["Lean four-armed ant warrior about player height, on bent-back legs.",
                "Upper arms hold a long polearm with a blade at each end; a lower hand holds a three-pointed throwing blade.",
                "Narrow ant head, big glowing compound eyes, small mandibles, long banded antennae. Ragged shoulder wrap and grass skirt."]},
-    {"id": "hive-beast", "race": "Hive", "title": "Deepmaw (Hive war beast)", "status": "review",
+    {"id": "hive-beast", "race": "Hive", "title": "Deepmaw (Hive war beast)", "status": "approved",
      "reference": "hive-beast.png", "render": "hive-beast-lobster.png",
      "notes": ["A lobster centaur, about player height and two and a half blocks long.",
                "Lower body: a long carapace on eight crawling legs, with a finned glowing crest, a segmented tail and a tail fan.",
