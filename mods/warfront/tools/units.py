@@ -924,6 +924,9 @@ def gear_material(mat, side, x, y, w, h, pal, rng):
 
 
 def material(mat, side, x, y, w, h, pal, rng):
+    g = glider.gl_material(mat, side, x, y, w, h, pal, rng)
+    if g is not NotImplemented:
+        return g
     g = faction_trim.tr_material(mat, side, x, y, w, h, pal, rng)
     if g is not NotImplemented:
         return g
@@ -1134,6 +1137,8 @@ import worker_gear
 import hive_units
 import hellknights
 import faction_trim
+import glider
+glider.bind(dict(part=part, box=box, mirror=mirror, hexc=hexc, mix=mix, shade=shade, glow=glow))
 faction_trim.bind(dict(part=part, box=box, mirror=mirror, overlay=overlay, attach=attach, find=find, hexc=hexc, mix=mix,
                        shade=shade, glow=glow, edge=edge))
 hellknights.bind(dict(part=part, box=box, mirror=mirror, overlay=overlay, attach=attach, hexc=hexc, mix=mix, shade=shade,
@@ -1149,7 +1154,8 @@ for _key, _extra in worker_gear.IMP_WORKER_KEYS.items():
 GEAR_MODELS = worker_gear.all_gear()
 HELLKNIGHT_MODELS = hellknights.models()
 TRIM_MODELS = faction_trim.models()
-MODELS = [imp_impaler(), imp_firecaster(), *hive_units.models(), demon_player(), *GEAR_MODELS, *HELLKNIGHT_MODELS, *TRIM_MODELS]
+GLIDER_MODEL = glider.model()
+MODELS = [imp_impaler(), imp_firecaster(), *hive_units.models(), demon_player(), *GEAR_MODELS, *HELLKNIGHT_MODELS, *TRIM_MODELS, GLIDER_MODEL]
 
 
 if __name__ == "__main__":
@@ -1186,6 +1192,7 @@ if __name__ == "__main__":
     for m in TRIM_MODELS:
         paint(m, m["id"][len("trim_"):], {})
     print("painted", len(TRIM_MODELS), "faction trims")
+    paint(GLIDER_MODEL, "glider", {})
     write_java(MODELS)
     JSON_OUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUT.write_text(json.dumps(MODELS + [player_base()]))

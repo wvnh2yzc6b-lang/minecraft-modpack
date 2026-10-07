@@ -135,7 +135,8 @@
     {
       "status": "done",
       "title": "Human flight: the Mana Glider",
-      "detail": "Humans get the Mana Glider, crafted from a Mana Crystal, two leather and three sticks. Wear it in the chest slot and jump while falling to launch, like an elytra; only humans can fly it. It's a glider, not a rocket: speed bleeds off above a cruising pace and the sink rate stays gentle unless you point steeply down. Use a Mana Shard mid-flight to burn it for a burst of speed. It wears down with use and is repaired with Mana Crystals. No 3D model on the back yet."
+      "detail": "Humans get the Mana Glider, crafted from a Mana Crystal, two leather and three sticks. Wear it in the chest slot and jump while falling to launch, like an elytra; only humans can fly it. It's a glider, not a rocket: speed bleeds off above a cruising pace and the sink rate stays gentle unless you point steeply down. Use a Mana Shard mid-flight to burn it for a burst of speed. It wears down with use and is repaired with Mana Crystals. No 3D model on the back yet. The glider now shows on your back: folded into an A-frame on the ground, spread into the icon's swept chevron while gliding, easing between the two.",
+      "render": "mana-glider-render.png"
     },
     {
       "status": "done",

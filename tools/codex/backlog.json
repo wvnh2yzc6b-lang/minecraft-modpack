@@ -3,17 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "glider-model",
-      "status": "ready",
-      "title": "Mana Glider: visible wing on the player's back",
-      "decided": "Owner approved the glider; the item works but nothing shows on the back yet.",
-      "spec": [
-        "A generated model (tools/units.py): a swept blue sailcloth wing on a wooden frame with a mana crystal at the nose, matching the item icon.",
-        "Render layer on players wearing the Mana Glider: folded flat on the back on the ground, spread wide while gliding, with a blend between the two.",
-        "Render previews (folded, gliding, from behind and the side), compare against the item icon, add the render to the Codex progress entry."
-      ]
-    },
-    {
       "id": "codex-workers",
       "status": "ready",
       "title": "Codex worker viewer: drop guards, add goblins",

@@ -2450,6 +2450,32 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(1.9F, 12F, 0F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 64, 64);
     }
+    /** The mana_glider body. */
+    public static LayerDefinition mana_glider() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("spine", CubeListBuilder.create().texOffs(0, 0).addBox(-0.6F, 0F, -0.2F, 1.2F, 10F, 1.2F),
+                PartPose.offsetAndRotation(0F, 0F, 3F, 0F, 0F, 0F));
+        PartDefinition p2 = p1.addOrReplaceChild("crystal", CubeListBuilder.create().texOffs(34, 12).addBox(-1F, -2.4F, -1F, 2F, 2.4F, 2F),
+                PartPose.offsetAndRotation(0F, -0.2F, 0.4F, 0F, 0.785F, 0F));
+        PartDefinition p3 = p1.addOrReplaceChild("strap", CubeListBuilder.create().texOffs(0, 20).addBox(-4.2F, 0F, -3.4F, 8.4F, 1F, 3.6F),
+                PartPose.offsetAndRotation(0F, 2F, -2F, 0F, 0F, 0F));
+        PartDefinition p4 = p0.addOrReplaceChild("wing_r", CubeListBuilder.create().texOffs(8, 0).addBox(-14F, 0F, 0F, 14F, 7F, 0.4F),
+                PartPose.offsetAndRotation(-0.6F, 1.5F, 3.4F, 0F, 0F, 0F));
+        PartDefinition p5 = p4.addOrReplaceChild("spar_r", CubeListBuilder.create().texOffs(26, 20).addBox(-14F, -0.6F, -0.4F, 14F, 1F, 1F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p6 = p4.addOrReplaceChild("rib_r", CubeListBuilder.create().texOffs(38, 0).addBox(-0.4F, 0F, -0.3F, 0.8F, 7F, 0.8F),
+                PartPose.offsetAndRotation(-7F, 0F, 0F, 0F, 0F, 0.45F));
+        PartDefinition p7 = p0.addOrReplaceChild("wing_l", CubeListBuilder.create().texOffs(0, 12).mirror().addBox(0F, 0F, 0F, 14F, 7F, 0.4F).mirror(false),
+                PartPose.offsetAndRotation(0.6F, 1.5F, 3.4F, 0F, 0F, 0F));
+        PartDefinition p8 = p7.addOrReplaceChild("spar_l", CubeListBuilder.create().texOffs(0, 25).mirror().addBox(0F, -0.6F, -0.4F, 14F, 1F, 1F).mirror(false),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p9 = p7.addOrReplaceChild("rib_l", CubeListBuilder.create().texOffs(30, 12).mirror().addBox(-0.4F, 0F, -0.3F, 0.8F, 7F, 0.8F).mirror(false),
+                PartPose.offsetAndRotation(7F, 0F, 0F, 0F, 0F, -0.45F));
+        return LayerDefinition.create(mesh, 64, 32);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2493,6 +2519,7 @@ public final class UnitGeometry {
         all.put("trim_silverwood_reavers", UnitGeometry::trim_silverwood_reavers);
         all.put("trim_ironbeard_clan", UnitGeometry::trim_ironbeard_clan);
         all.put("trim_fallen_host", UnitGeometry::trim_fallen_host);
+        all.put("mana_glider", UnitGeometry::mana_glider);
         return all;
     }
 }
