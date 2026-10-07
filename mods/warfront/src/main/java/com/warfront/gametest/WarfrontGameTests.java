@@ -220,6 +220,8 @@ public final class WarfrontGameTests {
         ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 7), owner, 0F);
         Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 4));
         husk.setPersistenceRequired();
+        // Archers in neighbouring test arenas may shoot this husk too: keep it alive so the tower always has a target.
+        husk.setInvulnerable(true);
         // Count the tower's own shots: archers in neighbouring test arenas may also shoot at this husk.
         h.startSequence()
                 .thenExecuteAfter(80, () -> h.assertTrue(tower.actions() == 0,
