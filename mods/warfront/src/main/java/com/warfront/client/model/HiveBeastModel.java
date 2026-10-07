@@ -7,8 +7,8 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.util.Mth;
 
 /**
- * The Deepmaw, the Hive's war beast: a low lobster-like crawler on eight legs, with two big pincers held out
- * in front. Geometry comes from {@link UnitGeometry#hive_beast()}; this class only animates it.
+ * The Deepmaw, the Hive's war beast: a lobster centaur, with an upright torso on a crawling eight-legged body
+ * and claw arms held out to the sides. Geometry comes from {@link UnitGeometry#hive_beast()}; this class only animates it.
  */
 public class HiveBeastModel extends HumanoidModel<SoldierEntity> {
     private final ModelPart mandibleR;

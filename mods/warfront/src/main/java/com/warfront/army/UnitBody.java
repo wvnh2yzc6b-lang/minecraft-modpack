@@ -10,8 +10,8 @@ public enum UnitBody {
     IMP(-0.33, 0.75, 1.12, true),
     /** Hive spearmen: lean, four-armed ant warriors with a double-bladed polearm. */
     LANCER(0.05, 1.0, 1.05, false),
-    /** The Hive's war beast: a low lobster-like crawler on eight legs, about a block high and three long. */
-    HIVE_BEAST(0.4, 1.0, 0.9, false);
+    /** The Hive's war beast: a lobster centaur on eight legs, about player height and two and a half blocks long. */
+    HIVE_BEAST(0.25, 1.0, 0.9, false);
 
     /** Added to the SCALE attribute (multiplied by base), on top of the race's size. */
     public final double scale;

@@ -4,8 +4,8 @@
   "log": [
     {
       "status": "done",
-      "title": "Deepmaw rebuilt as an eight-legged lobster",
-      "detail": "On the owner's direction the Deepmaw is now a low, slim lobster-like crawler instead of a tall upright beast: eight legs that crawl in an alternating gait, two big pincers held out in front that snap in a fight, long antennae, eye stalks, a finned glowing crest and a segmented tail with a fan. About a block high and three long, with a flat hitbox to match. Keeps the Hive's sculk look.",
+      "title": "Deepmaw rebuilt as a lobster centaur",
+      "detail": "On the owner's direction the Deepmaw is now a lobster centaur instead of a tall upright beast: a long carapace on eight legs that crawl in an alternating gait, a segmented tail with a fan, and an upright plated torso rising from the front with claw arms held out to the sides that snap in a fight. Head with eye stalks, long antennae and tusk-mandibles. About player height and two and a half blocks long. Keeps the Hive's sculk look.",
       "image": "hive-beast-lobster.png"
     },
     {
@@ -91,7 +91,7 @@
     "altarSummonsWithWellMana": "An altar summons only with mana in a linked well, and spends exactly the unit's cost; hive is cheaper",
     "incompleteAltarRefusesToSummon": "An altar missing a brazier refuses to summon and spends nothing",
     "towersFireOnlyWithMana": "An arrow tower holds fire with an empty well and draws mana once it is filled",
-    "hiveSpearmenAreLancersAndBeastsCrawl": "Hive spearmen are Lancer-Drones and the Deepmaw beast crawls low with a wide, flat hitbox",
+    "hiveSpearmenAreLancersAndBeastsAreCentaurs": "Hive spearmen are Lancer-Drones and the Deepmaw beast has a broad lobster-centaur hitbox",
     "beastsAreLimitedAndRaceBound": "A commander at the beast limit is refused, and races without a beast cannot summon one",
     "hiveIsStrongerUnderground": "Hive soldiers gain Strength underground and are not weakened there"
   }

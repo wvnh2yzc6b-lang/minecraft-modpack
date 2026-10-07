@@ -240,15 +240,15 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
-    public static void hiveSpearmenAreLancersAndBeastsCrawl(GameTestHelper h) {
+    public static void hiveSpearmenAreLancersAndBeastsAreCentaurs(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity lancer = recruit(h, owner, SoldierRole.SPEARMAN, Race.HIVE, 2, 2);
         SoldierEntity beast = recruit(h, owner, SoldierRole.BEAST, Race.HIVE, 6, 6);
         h.assertTrue(lancer.getBody() == com.warfront.army.UnitBody.LANCER, "hive spearmen should be lancers");
         h.assertTrue("Lancer-Drone".equals(lancer.getUnitName()), "unit name should be Lancer-Drone, was " + lancer.getUnitName());
         h.assertTrue(beast.getBody() == com.warfront.army.UnitBody.HIVE_BEAST, "the hive beast should use the beast body");
-        h.assertTrue(beast.getBbWidth() > beast.getBbHeight() && beast.getBbHeight() < 1.5F,
-                "the beast should crawl low with a wide hitbox, was " + beast.getBbWidth() + " wide and " + beast.getBbHeight() + " tall");
+        h.assertTrue(beast.getBbWidth() > 1F && beast.getBbHeight() > beast.getBbWidth(),
+                "the beast should have a broad centaur hitbox, was " + beast.getBbWidth() + " wide and " + beast.getBbHeight() + " tall");
         h.assertTrue("Deepmaw".equals(beast.getUnitName()), "unit name should be Deepmaw, was " + beast.getUnitName());
         h.succeed();
     }

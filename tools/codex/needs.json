@@ -27,7 +27,7 @@
     },
     "hive/beast": {
       "status": "done",
-      "note": "Deepmaw rebuilt as an eight-legged lobster crawler in sculk colors. Awaiting your review."
+      "note": "Deepmaw rebuilt as a lobster centaur in sculk colors. Awaiting your review."
     },
     "demon/beast": {
       "status": "partial",
@@ -52,8 +52,8 @@
     {
       "topic": "Hive",
       "priority": "high",
-      "question": "How do the Lancer-Drone and the lobster Deepmaw look to you?",
-      "why": "The Deepmaw is now a low, eight-legged lobster crawler with two big pincers, per your direction. See it on the Codex's Designs page; the Lancer-Drone still needs your verdict too."
+      "question": "How do the Lancer-Drone and the lobster-centaur Deepmaw look to you?",
+      "why": "The Deepmaw is now a lobster centaur: crawling eight-legged lobster body, upright torso, claws out to the sides. See it on the Codex's Designs page; the Lancer-Drone still needs your verdict too."
     },
     {
       "topic": "Bases",
@@ -153,7 +153,7 @@
     },
     {
       "topic": "Hive",
-      "answer": "The Deepmaw is a lobster: low and slim, crawling on eight legs with two big pincers, in the Hive's sculk look. Not tall or bulky."
+      "answer": "The Deepmaw is a lobster centaur: the lobster carapace, eight legs and tail, with an upright human-like torso and claws held out to the sides, in the Hive's sculk look. Not fat or oversized."
     },
     {
       "topic": "Beasts",

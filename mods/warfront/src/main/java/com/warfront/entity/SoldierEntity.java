@@ -345,11 +345,11 @@ public class SoldierEntity extends PathfinderMob {
         return skin < races.length ? races[skin] : NpcFaction.values()[skin - races.length].race;
     }
 
-    /** The Deepmaw crawls low and long, so it gets a wide, flat hitbox instead of a humanoid one. */
+    /** The Deepmaw is a lobster centaur, long and broad, so it gets a wider hitbox than a humanoid. */
     @Override
     public EntityDimensions getDefaultDimensions(Pose pose) {
         if (entityData != null && getBody() == com.warfront.army.UnitBody.HIVE_BEAST) {
-            return EntityDimensions.scalable(1.1F, 0.7F).withEyeHeight(0.5F);
+            return EntityDimensions.scalable(1.1F, 1.7F).withEyeHeight(1.45F);
         }
         return super.getDefaultDimensions(pose);
     }
