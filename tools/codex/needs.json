@@ -114,6 +114,10 @@
   ],
   "settled": [
     {
+      "topic": "Human",
+      "answer": "Human identity: humans are the banner race, the best commanders rather than the best fighters. Race power, Rally the Banner: Valor fills from your own kills and your army's. At full, raise your banner: allies nearby heal, hit harder and stop routing for about 10 seconds. It's the only race power that boosts the army instead of the player. Start, village charter: a new human player begins beside the nearest vanilla village with a charter; claiming it lets its villagers be hired as workers. Economy, traders: the traveling merchant visits humans more often and charges them less, and villager trades are cheaper."
+    },
+    {
       "topic": "Dwarf",
       "answer": "Dwarf identity. Race power, Hold the Line: standing your ground in a fight builds Resolve (0-100), which adds armor and knockback resistance; sprinting away bleeds it, and it drains out of combat. At full Resolve, crouch to swear an Oath of Stone: a few seconds of near-immovability and much less damage taken, ending in a stone shockwave that knocks enemies back. Dwarf soldiers build it too and swear the Oath on their own. It is the opposite of the orc Frenzy: defense instead of offense. Start: a new dwarf player begins at a small carved hold gate in the nearest mountainside, with a short starter tunnel, the way Hive players start in a cave. Economy, deep miners: dwarves get extra crystals from Mana Ore and mine stone faster, but Manabloom gives them fewer shards."
     },

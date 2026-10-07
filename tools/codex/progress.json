@@ -44,6 +44,11 @@
     },
     {
       "status": "planned",
+      "title": "Roadmap: humans raise the banner",
+      "detail": "Humans become the banner race: the best commanders, not the best fighters. Kills by you and your army fill a Valor meter; at full you raise your banner and every ally nearby heals, hits harder and stops running for about 10 seconds. New human players start beside a village with a charter: claim it and its villagers can be hired as workers. Humans are traders too: the traveling merchant visits them more often and charges less, and villager trades are cheaper. Queued for a build session."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: dwarves dig in",
       "detail": "Dwarves get tunnels instead of flight: a Rune Drill that cuts 3x3 tunnels fast, Rune Stone walls that raiders and Hive tunnelers can't break through, and three tunnel traps: a hidden spike floor, a rune mine that only blows up enemies, and a flame vent that runs on base mana. Queued for a build session. Dwarves also get their race power, Hold the Line: standing your ground builds Resolve (more armor, harder to knock back), and at full you swear an Oath of Stone that makes you nearly immovable and ends in a shockwave. New dwarf players start at a hold gate carved into a mountain, and dwarves are deep miners: more Mana Crystals, faster stone mining, fewer Manabloom shards."
     },

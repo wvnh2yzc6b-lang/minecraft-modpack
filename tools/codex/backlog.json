@@ -419,6 +419,21 @@
       ]
     },
     {
+      "id": "human-identity",
+      "status": "ready",
+      "title": "Human identity: Rally the Banner, village charter start, traders",
+      "decided": "Owner, 2026-10-07: humans are the banner race. Race power Rally the Banner (Valor meter, army-wide rally), start at a vanilla village with a charter, and traders as the economy perk.",
+      "spec": [
+        "Rally the Banner, Valor 0-100 (a player attachment, synced; same pattern as demon souls and orc rage). Gain +10 per kill by the player, +4 per kill by one of the player's units within 32 blocks, +2 per siege wave survived. No drain in combat; drains 2 per second after 30 s out of combat.",
+        "At 100, use the power key (or sneak + use with a sword or banner in hand; match whatever the other race powers use) to Rally: spends all Valor, plants a banner effect on the player for 10 s. Allied units and allied players within 16 blocks: instant heal of 30% max health, +20% attack damage (attribute modifier), Resistance I, and rout is cleared and blocked for the duration. Gold particle ring and a horn sound.",
+        "Human soldiers don't trigger it themselves, but a human Captain or Champion in the army with the player at full Valor adds +25% to the radius.",
+        "Village charter start: when a player first picks human, locate the nearest village (vanilla structure tag #minecraft:village, bounded search) and move them beside it with a Village Charter item and their respawn set. Using the Charter in the village (bell area) claims it: the village is bound to the player. Claimed villagers can be hired as workers (right-click with a Mana Shard: they become the human Farmhand or Mason, keeping their name). Without a village nearby: fall back to normal spawn and give the Charter anyway (works on any village later). Reuse the Hive and dwarf start code path.",
+        "Traders: the traveling merchant (merchant backlog item) visits human players about 50% more often and prices are 20% lower for them; vanilla villager trades are cheaper for humans (apply a permanent small reputation bonus via the vanilla gossip system, so other mods' villagers behave the same).",
+        "HUD: Valor meter in the race-power slot (gold, a banner icon that unfurls when full). Test Panel and /wftest: fill or empty Valor, trigger a Rally, give a Charter, find and claim the nearest village.",
+        "Game tests: Valor rises from player and unit kills; a Rally heals and buffs nearby allies and clears rout; a hired villager becomes a worker; merchant prices are lower for a human player."
+      ]
+    },
+    {
       "id": "art-driven-models",
       "status": "blocked",
       "blocked_on": "Owner's reference images (see the high-priority questions in needs.json).",
