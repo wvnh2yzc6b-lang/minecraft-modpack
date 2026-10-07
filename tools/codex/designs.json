@@ -114,6 +114,23 @@
         "Blood Witch (healer): blood-red robes over light black-iron pauldrons, horned hood.",
         "Not built yet."
       ]
+    },
+    {
+      "id": "faction-trim",
+      "race": "Enemies",
+      "title": "Enemy faction trim",
+      "status": "planned",
+      "notes": [
+        "Owner direction: enemy factions keep their race body and colors, plus one signature piece each.",
+        "Marauder Horde (orc): war paint stripes and bone trophies on the belt and shoulders.",
+        "Black Legion (human): a black tabard with a white skull and a spiked pauldron.",
+        "Burning Horde (demon): smoldering chains and a soot-blackened brand on the chest.",
+        "The Swarm (Hive): glowing acid sacs on the back and jagged black chitin spurs.",
+        "Silverwood Reavers (elf): thorn-vine wraps and a pale antler-bone mask.",
+        "Ironbeard Clan (dwarf): a rune-etched iron face guard and braided beard rings.",
+        "Fallen Host (angel): torn, ash-gray wings and a cracked, dimmed halo.",
+        "Not built yet."
+      ]
     }
   ]
 }

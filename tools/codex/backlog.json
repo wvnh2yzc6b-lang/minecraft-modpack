@@ -45,6 +45,24 @@
       "decided": "Owner, 2026-10-07: armored hellknights with horns, hooves and ember seams; Blood Witch robed over light plate."
     },
     {
+      "id": "faction-trim",
+      "status": "ready",
+      "title": "Enemy faction trim",
+      "decided": "Owner, 2026-10-07: same bodies, one signature trim piece per enemy faction (the pieces below are Claude's proposal under that decision; the owner can swap any at review).",
+      "spec": [
+        "Add an overlay layer for raider soldiers keyed by NpcFaction (generated in mods/warfront/tools like worker gear), drawn on top of the race model and armor.",
+        "Marauder Horde (orc): war paint stripes and bone trophies on the belt and shoulders.",
+        "Black Legion (human): a black tabard with a white skull and a spiked pauldron.",
+        "Burning Horde (demon): smoldering chains and a soot-blackened brand on the chest.",
+        "The Swarm (Hive): glowing acid sacs on the back and jagged black chitin spurs.",
+        "Silverwood Reavers (elf): thorn-vine wraps and a pale antler-bone mask.",
+        "Ironbeard Clan (dwarf): a rune-etched iron face guard and braided beard rings.",
+        "Fallen Host (angel): torn, ash-gray wings and a cracked, dimmed halo.",
+        "Player-owned units never wear it. Keep it cosmetic: no stat changes.",
+        "Render all seven factions side by side for the Codex and set the design to review."
+      ]
+    },
+    {
       "id": "glider-model",
       "status": "ready",
       "title": "Mana Glider: visible wing on the player's back",

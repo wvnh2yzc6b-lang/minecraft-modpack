@@ -176,3 +176,10 @@ plate with fire glowing through the visor slit and the joint gaps. Imps remain t
 break through the helm, the legs end in hooves, and ember-orange fire glows through the plate seams, so
 they never read as Black Legion humans. The Blood Witch wears blood-red robes over light black-iron plate
 with a horned hood.
+
+## Enemy faction trim (owner direction, no reference image)
+
+Enemy factions keep their race's body and colors and add one signature piece each: Marauder war paint and
+bone trophies; Black Legion skull tabard and spiked pauldron; Burning Horde smoldering chains and brand;
+Swarm acid sacs and black chitin spurs; Silverwood thorn-vine wraps and antler-bone mask; Ironbeard
+rune-etched face guard and beard rings; Fallen Host torn ash-gray wings and a cracked halo.

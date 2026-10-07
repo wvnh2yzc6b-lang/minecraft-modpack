@@ -82,12 +82,6 @@
       "why": "Each player model is built from your references, the same way the demon player was."
     },
     {
-      "topic": "Enemies",
-      "priority": "low",
-      "question": "Should the enemy factions look different from the player races beyond color?",
-      "why": "The Black Legion, Marauders and the others reuse their race's models with their own colors."
-    },
-    {
       "topic": "Mana",
       "priority": "medium",
       "question": "Any look in mind for the Mana Well, Pylon, Summoning Altar and Braziers?",
@@ -119,6 +113,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Enemies",
+      "answer": "Enemy factions keep their race's body and colors, plus one signature trim piece each so you can read them at a glance: Marauder Horde (orc): war paint stripes and bone trophies on the belt and shoulders; Black Legion (human): a black tabard with a white skull and a spiked pauldron; Burning Horde (demon): smoldering chains and a soot-blackened brand on the chest; The Swarm (Hive): glowing acid sacs on the back and jagged black chitin spurs; Silverwood Reavers (elf): thorn-vine wraps and a pale antler-bone mask; Ironbeard Clan (dwarf): a rune-etched iron face guard and braided beard rings; Fallen Host (angel): torn, ash-gray wings and a cracked, dimmed halo."
+    },
     {
       "topic": "Demon",
       "answer": "The full-size demons (Hellguard, Fiend, Archfiend, Hellknight) are armored hellknights: faceless black-iron plate, horns breaking through the helm, hooves, and ember-orange fire glowing through the visor and plate seams, so they never read as Black Legion humans. The Blood Witch wears blood-red robes over light black-iron plate with a horned hood. Imps stay the small winged caste."
