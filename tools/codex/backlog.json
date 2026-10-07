@@ -3,19 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "ui-altar",
-      "status": "ready",
-      "title": "Summoning Altar redesign",
-      "decided": "Owner, 2026-10-07: clean dark race-tinted panels; first pass is the combat HUD, War Table, base mana overlay and Altar redesign; toasts and a siege banner replace chat.",
-      "spec": [
-        "Replace AltarScreen with a themed panel: a grid of unit cards for the player's race (role icon or small entity render, name, mana cost, rank/base-level requirement; locked cards greyed with the reason).",
-        "A detail pane for the selected card: stats, ability text, cost against the network's available mana, a Summon button.",
-        "A Returning Heroes strip with countdowns and the re-summon cost (from fallen-heroes), and a beasts used / allowed counter.",
-        "Keeps the existing AltarSummonPayload path; the server still validates everything.",
-        "Client-only code under com.warfront.client; data the client needs comes through small synced payloads or attachments, never by reading server state directly. Before the Java, publish an HTML mockup of each screen in the Codex (same panels, colors and layout) so the owner can review the look without a game client; keep the mockup and the Java in step."
-      ]
-    },
-    {
       "id": "demon-hellknights",
       "status": "ready",
       "title": "Demon hellknights: Hellguard, Fiend, Archfiend, Hellknight, Blood Witch",

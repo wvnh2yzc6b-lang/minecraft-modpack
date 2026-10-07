@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "UI, part 5: the Summoning Altar, redesigned",
+      "detail": "The altar menu is now a themed panel: a grid of unit cards for your race with their mana cost, locked cards greyed with the reason (Captains need a level 2 base, Champions level 4), a detail pane for the selected card (health, melee or ranged, armor, what it does) with a Summon button, mana in reach, war beasts used out of allowed, and a Returning Heroes strip with countdowns and half-cost buttons."
+    },
+    {
+      "status": "done",
       "title": "UI, part 4: the mana overlay",
       "detail": "Look at a Mana Well, Pylon, tower, Summoning Altar or War Standard within 8 blocks and a small panel appears by the crosshair: mana stored out of capacity (or mana in reach, and a tower's cost per shot), how many wells and pylons are on its network, and whether it's powered or starving. Hold a Mana Crystal or the Commander's Baton to see the network: glowing lines between linked wells and pylons, each pylon's 16-block reach as a ring on the ground, and wells running dry pulsing red. The game only asks the server when you look or hold, nothing is broadcast."
     },
