@@ -32,6 +32,19 @@
       ]
     },
     {
+      "id": "demon-hellknights",
+      "status": "ready",
+      "title": "Demon hellknights: Hellguard, Fiend, Archfiend, Hellknight, Blood Witch",
+      "spec": [
+        "Generated in mods/warfront/tools/units.py like the imps, on the demon rig (no wings).",
+        "Shared look: faceless black-iron plate; horns breaking through the helm; digitigrade legs ending in hooves; emissive ember-orange in the visor slit and plate seams.",
+        "Hellguard: heaviest plate + tower shield. Fiend: plate + blade. Archfiend (Captain): crest or banner, cape. Hellknight (Champion): most ornate, bigger horns. Sizes from the rank ladder.",
+        "Blood Witch (healer): blood-red robes over light pauldrons, horned hood, no full plate.",
+        "Render the five beside a Black Legion soldier to prove they read as demons; set designs.json status to review."
+      ],
+      "decided": "Owner, 2026-10-07: armored hellknights with horns, hooves and ember seams; Blood Witch robed over light plate."
+    },
+    {
       "id": "glider-model",
       "status": "ready",
       "title": "Mana Glider: visible wing on the player's back",
@@ -85,18 +98,6 @@
       "title": "Models from references: Hive player, soldiers, Champions, sizes",
       "spec": [
         "Hive player first, then each race's soldiers, the seven Champions, and per-unit size and silhouette."
-      ]
-    },
-    {
-      "id": "demon-hellknights",
-      "status": "blocked",
-      "blocked_on": "Owner's answer to the hellknight question in needs.json (what sets them apart from the Black Legion; the Blood Witch's look). A reference image would also do.",
-      "title": "Demon hellknights: Hellguard, Fiend, Archfiend, Hellknight",
-      "spec": [
-        "Generated in tools/units.py like the imps: faceless black-iron plate on the demon rig, emissive fire in the visor slit and joint gaps.",
-        "Per role: Hellguard heavy plate + tower shield; Fiend plate + blade; Archfiend Captain with crest/banner; Hellknight Champion, most ornate. Sizes come from the rank ladder.",
-        "Blood Witch per the owner's answer.",
-        "Render them beside a Black Legion soldier to prove they read differently, then set designs.json status to review."
       ]
     }
   ]

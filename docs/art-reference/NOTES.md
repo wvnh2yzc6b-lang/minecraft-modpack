@@ -172,6 +172,7 @@ the face and build be matched more closely.
 ## Demon hellknights (owner direction, no reference image yet)
 
 The full-size demons (Hellguard, Fiend, Archfiend, Hellknight) are armored hellknights: faceless black-iron
-plate with fire glowing through the visor slit and the joint gaps. Imps remain the small winged caste. They
-must not read as Black Legion humans; the distinguishing details (horns, hooves, ember seams) and the
-Blood Witch's look are still open.
+plate with fire glowing through the visor slit and the joint gaps. Imps remain the small winged caste. Horns
+break through the helm, the legs end in hooves, and ember-orange fire glows through the plate seams, so
+they never read as Black Legion humans. The Blood Witch wears blood-red robes over light black-iron plate
+with a horned hood.
