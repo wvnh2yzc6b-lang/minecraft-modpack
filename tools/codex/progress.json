@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: the warlord campaign",
+      "detail": "The endgame. Raids hit you from mixed factions at random, and every faction you beat back fills a war meter. Fill it and you get a War Map to that faction's warlord fortress in its homeland, from a plains keep to a citadel in the Nether, the Aether and the Otherside, and you march your army there. Your own race's renegades come last. Each warlord gives a trophy banner for your base and unique gear; beat all seven to earn the Warlord title and uncover the hidden warlord behind it all."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: test mode for playtesting",
       "detail": "Next up, ahead of everything else: type /wftest on and press F8 for a Test Panel that spawns any unit (friend or foe), sets base level, fills mana, drops a starter base, starts siege waves, switches race and turns on god mode. A new Play page in the Codex will walk through installing the pack privately with the Modrinth App."
     },

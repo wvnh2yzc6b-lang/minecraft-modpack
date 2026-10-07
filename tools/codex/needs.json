@@ -76,6 +76,12 @@
       "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
     },
     {
+      "topic": "Endgame",
+      "priority": "medium",
+      "question": "The seven warlords: names, looks and how each one fights.",
+      "why": "The campaign is decided; each faction's warlord needs a design. Pictures, names or a few words each. Without them I'll build them from each race's Champion with the faction trim, bigger, with a signature attack."
+    },
+    {
       "topic": "Players",
       "priority": "medium",
       "question": "Reference art for the other player races (orc, angel, elf, dwarf, human).",
@@ -98,9 +104,19 @@
       "priority": "low",
       "question": "Raid chest looks: one per enemy faction. Any references or ideas for each?",
       "why": "Decided: each of the seven enemy factions gets its own raid chest. If no references come, I'll design them from each race's palette (Marauder war crate, Black Legion strongbox, Burning Horde bone chest, Swarm chitin pod, Silverwood root-bound coffer, Ironbeard vault, Fallen Host reliquary)."
+    },
+    {
+      "topic": "Endgame",
+      "priority": "low",
+      "question": "The hidden warlord behind the wars: who is he, what does he look like, and where is his last fortress?",
+      "why": "He is the final boss after all seven warlords. A name, a look and a place are enough to start."
     }
   ],
   "settled": [
+    {
+      "topic": "Endgame",
+      "answer": "The endgame is a campaign against all seven enemy factions. Raids come at you at random and mixed (a few orc raids, then the Hive, and so on), and each faction you fight builds a war meter. Beat about five of its raids (base level 3 or higher) and its last raider drops a War Map to that faction's warlord fortress in its homeland: Black Legion keep on the plains, Silverwood Reaver grove in a forest, Ironbeard hold in the mountains, Marauder war camp in the badlands, Burning Horde citadel in the Nether, Fallen Host in the Aether, the Swarm in the Otherside (overworld fallbacks without those mods). You march your army there and beat the warlord. Your own race's renegades come last, as a betrayal finale. Each warlord gives a trophy banner for your base with a small aura bonus and a unique piece of warlord gear. Beat all seven and you earn the Warlord title, and the War Maps reveal the hidden ancient warlord who set every faction against you: the final boss, in a fortress of his own, using every race's tricks."
+    },
     {
       "topic": "Playtest",
       "answer": "Warfront gets a test mode for playtesting: /wftest on, then F8 opens a Test Panel to spawn any unit or beast (any race, role, rank, friend or foe), set base level, fill mana, drop a starter base, start or skip siege waves, switch race, fill souls/rage/fuel, flip day and night and turn on god mode. Every button has a matching /wftest command. Each new feature adds its own Test Panel controls. The owner plays the private build through the Modrinth App by importing the .mrpack CI already makes, with a step-by-step Play page in the Codex."
