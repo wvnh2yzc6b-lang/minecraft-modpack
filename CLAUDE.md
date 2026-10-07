@@ -4,9 +4,21 @@ A NeoForge 1.21.1 modpack built around **Warfront**, a custom mod (in `mods/warf
 factions, armies in formation, mana as base power, and tower defense. The owner directs the design; Claude builds
 it. The owner reads crypto/stock-style briefings: keep replies broad, short, decisive and in plain words.
 
+## Branches: the default branch holds the latest work
+
+`claude/vibrant-tesla-g5jis8` is the repo's default branch and always holds the latest pushed work; new sessions
+start from it. The owner has given standing permission to push there.
+- At the start of a session, if you were assigned a different branch, bring it up to date first:
+  `git fetch origin claude/vibrant-tesla-g5jis8 && git merge --ff-only origin/claude/vibrant-tesla-g5jis8`
+  (or a normal merge if your branch has its own commits). Never rewrite or force-push the default branch.
+- After every push of finished work, and on "save progress", also push to the default branch:
+  `git push origin HEAD:claude/vibrant-tesla-g5jis8` (a fast-forward; if it is rejected, merge the default branch
+  in and push again).
+
 ## Start of every session: lead with a decision
 
-The owner wants to open a session and be handed a decision right away. Before anything else:
+The owner starts sessions with something like **"pick up where we left off"**, or just "continue". That (or any
+opening without its own request) means: run this routine. Before anything else:
 
 1. Read `tools/codex/needs.json` (open questions, most important first: `high`, then `medium`, then `low`) and
    skim the top of `tools/codex/progress.json` (what was done last).
@@ -84,4 +96,4 @@ When the owner decides something: move it from `questions` to `settled` in `need
   next CI run says what went wrong.
 - **Git:** `git rm` stages immediately, so a deletion can ride along in an unrelated commit and break CI; stage
   with explicit paths. Commit messages describe the change in plain words.
-- Work on the session's designated branch and push there; don't open PRs unless asked.
+- Work on the session's designated branch, push there, and keep the default branch up to date (see Branches). Don't open PRs unless asked.
