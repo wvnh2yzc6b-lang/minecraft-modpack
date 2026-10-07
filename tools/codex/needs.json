@@ -102,6 +102,10 @@
   ],
   "settled": [
     {
+      "topic": "UI",
+      "answer": "Warfront gets a clean, modern UI: flat semi-transparent dark panels with thin borders and one accent color per race (Hive cyan, demon ember, angel gold and so on). First pass: a combat HUD (race power and army status), a War Table screen on a hotkey (army roster with ranks and duties, returning heroes, base level, beasts), a base mana overlay (look at a well, pylon or tower to see its mana, range and links) and a redesigned Summoning Altar with unit cards. Toasts handle rank-ups, fallen heroes and mana warnings, a big banner announces siege events, and chat stays clean."
+    },
+    {
       "topic": "Army",
       "answer": "Veterancy: battle units climb 5 ranks (Recruit, Regular, Veteran, Elite, Legend) slowly, from kills and from surviving siege waves. Each rank adds about +10% health and damage through vanilla attributes, and Elite and Legend units don't rout. Rank shows on the unit: its armor upgrades a tier per rank and it wears rank insignia (one chevron per rank). Troops lose their rank when they die; fallen heroes keep it when revived."
     },

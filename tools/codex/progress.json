@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: a clean UI for everything",
+      "detail": "Warfront gets its own look: flat dark panels with each race's accent color. Coming: a combat HUD (souls, rage, fuel, flight, army and siege status), a War Table screen on a hotkey (army roster with ranks, fallen and returning heroes, base level), a mana overlay that shows what's powered when you look at your buildings, and a rebuilt Summoning Altar with unit cards. Toasts and a siege banner replace the chat messages. Each screen gets a mockup in the Codex first."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: veterancy",
       "detail": "Battle units climb five ranks, Recruit to Legend, from kills and surviving siege waves. Each rank adds about 10% health and damage, Elites and Legends never break and run, and you can see it: armor upgrades a tier per rank and chevrons on the shoulder count the rank. Troops lose it when they die; fallen heroes keep theirs. Queued for a build session."
     },
