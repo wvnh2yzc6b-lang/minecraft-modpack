@@ -182,15 +182,17 @@ public class TestPanelScreen extends Screen {
         Race r = Race.values()[race];
         cycle(0, 0, "Race: " + r.displayName(), () -> race = (race + 1) % Race.values().length);
         send(1, 0, "Become " + r.displayName(), "player", "race", r.id());
-        send(0, 1, "Fill souls/rage/glider", "player", "fill");
+        send(0, 1, "Fill souls/rage/flight", "player", "fill")
+                .setTooltip(Tooltip.create(Component.literal("Souls, rage, glider and wing durability, rocket fuel.")));
+        send(1, 1, "Flight gear", "player", "flight")
+                .setTooltip(Tooltip.create(Component.literal("Your race's flight gear, equipped: glider, rocket pack, wings or Wind Charm.")));
         send(0, 2, "Day", "player", "day");
         send(1, 2, "Night", "player", "night");
         send(2, 2, "Clear weather", "player", "clear");
         send(0, 3, "God mode", "player", "god")
                 .setTooltip(Tooltip.create(Component.literal("Toggles: invulnerable, with creative-style flight.")));
         send(1, 3, "Give kit", "player", "kit");
-        coming(0, 5, "Rocket fuel", "Comes with the orc rocket pack.");
-        coming(1, 5, "Spell mana", "Comes with the Iron's Spells link.");
+        coming(0, 5, "Spell mana", "Comes with the Iron's Spells link.");
     }
 
     private static int warFaction;

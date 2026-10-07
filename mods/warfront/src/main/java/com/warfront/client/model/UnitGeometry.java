@@ -2476,6 +2476,32 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(7F, 0F, 0F, 0F, 0F, -0.45F));
         return LayerDefinition.create(mesh, 64, 32);
     }
+    /** The rocket_pack body. */
+    public static LayerDefinition rocket_pack() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("pack", CubeListBuilder.create().texOffs(32, 0).addBox(-4F, 1F, 2F, 8F, 9F, 1F).texOffs(0, 0).addBox(-4F, 0F, 3F, 3.5F, 9F, 3.5F).texOffs(16, 0).addBox(0.5F, 0F, 3F, 3.5F, 9F, 3.5F).texOffs(50, 0).addBox(-1.5F, 2.5F, 3.6F, 3F, 6.5F, 2.6F).texOffs(28, 13).addBox(-3.4F, 9F, 3.6F, 2.4F, 2F, 2.4F).texOffs(40, 13).addBox(1F, 9F, 3.6F, 2.4F, 2F, 2.4F).texOffs(8, 19).addBox(-0.5F, -2F, 4.2F, 1F, 2.5F, 1F).texOffs(0, 13).addBox(-3.5F, -0.3F, -2.3F, 1.5F, 1F, 4.6F).texOffs(14, 13).addBox(2F, -0.3F, -2.3F, 1.5F, 1F, 4.6F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p2 = p1.addOrReplaceChild("flame_r", CubeListBuilder.create().texOffs(52, 13).addBox(-0.8F, 0F, -0.8F, 1.6F, 3F, 1.6F),
+                PartPose.offsetAndRotation(-2.2F, 11F, 4.8F, 0F, 0F, 0F));
+        PartDefinition p3 = p1.addOrReplaceChild("flame_l", CubeListBuilder.create().texOffs(0, 19).mirror().addBox(-0.8F, 0F, -0.8F, 1.6F, 3F, 1.6F).mirror(false),
+                PartPose.offsetAndRotation(2.2F, 11F, 4.8F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 64, 32);
+    }
+    /** The angel_wings body. */
+    public static LayerDefinition angel_wings() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("wing_r", CubeListBuilder.create().texOffs(0, 26).addBox(-17F, 0F, 0F, 17F, 1.5F, 1.5F).texOffs(0, 30).addBox(-16F, 1.5F, 0.3F, 16F, 3F, 0.8F).texOffs(0, 0).addBox(-23F, 2F, 0.5F, 14F, 14F, 0.4F).texOffs(0, 15).addBox(-10F, 3F, 0.6F, 10F, 10F, 0.4F),
+                PartPose.offsetAndRotation(-1.5F, 1F, 2.6F, 0F, 0F, 0F));
+        PartDefinition p2 = p0.addOrReplaceChild("wing_l", CubeListBuilder.create().texOffs(0, 34).mirror().addBox(0F, 0F, 0F, 17F, 1.5F, 1.5F).mirror(false).texOffs(0, 38).mirror().addBox(0F, 1.5F, 0.3F, 16F, 3F, 0.8F).mirror(false).texOffs(30, 0).mirror().addBox(9F, 2F, 0.5F, 14F, 14F, 0.4F).mirror(false).texOffs(22, 15).mirror().addBox(0F, 3F, 0.6F, 10F, 10F, 0.4F).mirror(false),
+                PartPose.offsetAndRotation(1.5F, 1F, 2.6F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 64, 64);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2520,6 +2546,8 @@ public final class UnitGeometry {
         all.put("trim_ironbeard_clan", UnitGeometry::trim_ironbeard_clan);
         all.put("trim_fallen_host", UnitGeometry::trim_fallen_host);
         all.put("mana_glider", UnitGeometry::mana_glider);
+        all.put("rocket_pack", UnitGeometry::rocket_pack);
+        all.put("angel_wings", UnitGeometry::angel_wings);
         return all;
     }
 }

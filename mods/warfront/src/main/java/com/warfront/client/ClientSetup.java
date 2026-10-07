@@ -67,6 +67,7 @@ public final class ClientSetup {
             if (event.getSkin(skin) instanceof PlayerRenderer renderer) {
                 renderer.addLayer(new DemonPlayerLayer(renderer, event.getEntityModels()));
                 renderer.addLayer(new GliderLayer(renderer, event.getEntityModels()));
+                renderer.addLayer(new FlightGearLayer(renderer, event.getEntityModels()));
             }
         }
     }

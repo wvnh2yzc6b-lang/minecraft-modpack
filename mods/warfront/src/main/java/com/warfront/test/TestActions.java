@@ -123,7 +123,8 @@ public final class TestActions {
                     case "clear" -> clearWeather(player);
                     case "god" -> setGod(player, !player.getData(WFRegistry.GOD_MODE));
                     case "kit" -> kit(player);
-                    default -> Result.fail("player race|fill|day|night|clear|god|kit");
+                    case "flight" -> flightGear(player);
+                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight");
                 };
                 case "difficulty" -> setPreset(player, com.warfront.war.WarState.Preset.byId(b));
                 case "raid" -> switch (b) {
@@ -501,7 +502,42 @@ public final class TestActions {
         Rage.fill(player);
         for (ItemStack stack : player.getInventory().items) if (stack.is(WFRegistry.MANA_GLIDER.get())) stack.setDamageValue(0);
         for (ItemStack stack : player.getInventory().armor) if (stack.is(WFRegistry.MANA_GLIDER.get())) stack.setDamageValue(0);
-        return Result.ok("Souls, rage and glider filled.");
+        for (List<ItemStack> list : List.of(player.getInventory().items, player.getInventory().armor)) {
+            for (ItemStack stack : list) {
+                if (stack.is(WFRegistry.ANGEL_WINGS.get())) stack.setDamageValue(0);
+                if (stack.is(WFRegistry.ROCKET_PACK.get())) com.warfront.flight.RocketPackItem.setFuel(stack,
+                        com.warfront.flight.RocketPackItem.MAX_FUEL_SECONDS * 20);
+            }
+        }
+        return Result.ok("Souls, rage, glider, wings and rocket fuel filled.");
+    }
+
+    /** Your race's flight gear, equipped and ready: glider, rocket pack (fuelled), wings, or the Wind Charm with shards. */
+    public static Result flightGear(ServerPlayer player) {
+        Race race = Race.byId(player.getData(WFRegistry.RACE));
+        if (race == null) return Result.fail("Pick a race first.");
+        ItemStack chest = switch (race) {
+            case HUMAN -> new ItemStack(WFRegistry.MANA_GLIDER.get());
+            case ORC -> {
+                ItemStack pack = new ItemStack(WFRegistry.ROCKET_PACK.get());
+                com.warfront.flight.RocketPackItem.setFuel(pack, com.warfront.flight.RocketPackItem.MAX_FUEL_SECONDS * 20);
+                yield pack;
+            }
+            case ANGEL -> new ItemStack(WFRegistry.ANGEL_WINGS.get());
+            default -> ItemStack.EMPTY;
+        };
+        if (!chest.isEmpty()) {
+            ItemStack old = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+            if (!old.isEmpty() && !player.getInventory().add(old.copy())) player.drop(old.copy(), false);
+            player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, chest);
+            return Result.ok("Equipped: " + chest.getHoverName().getString() + ".");
+        }
+        if (race == Race.ELF) {
+            player.getInventory().add(new ItemStack(WFRegistry.WIND_CHARM.get()));
+            player.getInventory().add(new ItemStack(WFRegistry.MANA_SHARD.get(), 32));
+            return Result.ok("Wind Charm and 32 Mana Shards given.");
+        }
+        return Result.ok(race.displayName() + " flight needs no gear" + (race == Race.DEMON ? ": press jump while falling." : "."));
     }
 
     private static Result time(ServerPlayer player, long time) {
@@ -532,6 +568,9 @@ public final class TestActions {
         WFRegistry.ITEMS.getEntries().forEach(h -> items.add(h.get()));
         for (Item item : items) {
             if (item == WFRegistry.MANA_GLIDER.get() && race != Race.HUMAN) continue;
+            if (item == WFRegistry.ROCKET_PACK.get() && race != Race.ORC) continue;
+            if (item == WFRegistry.ANGEL_WINGS.get() && race != Race.ANGEL) continue;
+            if (item == WFRegistry.WIND_CHARM.get() && race != Race.ELF) continue;
             ItemStack stack = new ItemStack(item, Math.min(16, item.getDefaultMaxStackSize()));
             if (!player.getInventory().add(stack)) player.drop(stack, false);
         }

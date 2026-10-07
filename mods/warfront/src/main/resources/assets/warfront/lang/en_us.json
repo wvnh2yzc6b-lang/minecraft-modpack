@@ -48,5 +48,8 @@
   "block.warfront.mana_brazier": "Mana Brazier",
   "block.warfront.summoning_altar": "Summoning Altar",
   "effect.warfront.frenzy": "Frenzy",
-  "item.warfront.mana_glider": "Mana Glider"
+  "item.warfront.mana_glider": "Mana Glider",
+  "item.warfront.rocket_pack": "Orc Rocket Pack",
+  "item.warfront.angel_wings": "Angel Wings",
+  "item.warfront.wind_charm": "Wind Charm"
 }

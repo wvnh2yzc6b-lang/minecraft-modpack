@@ -263,6 +263,12 @@ public final class WFRegistry {
             () -> new com.warfront.war.WarMapItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final DeferredItem<com.warfront.flight.ManaGliderItem> MANA_GLIDER = ITEMS.register("mana_glider",
             () -> new com.warfront.flight.ManaGliderItem(new Item.Properties().durability(320).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<com.warfront.flight.RocketPackItem> ROCKET_PACK = ITEMS.register("rocket_pack",
+            () -> new com.warfront.flight.RocketPackItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<com.warfront.flight.AngelWingsItem> ANGEL_WINGS = ITEMS.register("angel_wings",
+            () -> new com.warfront.flight.AngelWingsItem(new Item.Properties().durability(432).rarity(Rarity.RARE)));
+    public static final DeferredItem<com.warfront.flight.WindCharmItem> WIND_CHARM = ITEMS.register("wind_charm",
+            () -> new com.warfront.flight.WindCharmItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     /** Carried by builders; a display tool with no use of its own. */
     public static final DeferredItem<Item> MASON_HAMMER = ITEMS.register("mason_hammer",
             () -> new Item(new Item.Properties().stacksTo(1)));

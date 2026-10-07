@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "FGF",
+    "FCF",
+    "F F"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "C": {
+      "item": "warfront:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "warfront:angel_wings",
+    "count": 1
+  }
+}

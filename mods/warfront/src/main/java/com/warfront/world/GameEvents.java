@@ -60,6 +60,7 @@ public final class GameEvents {
         com.warfront.upkeep.MessHallBlockEntity.clearAll();
         com.warfront.upkeep.RaidDamage.clearAll();
         com.warfront.outpost.Outposts.clearAll();
+        com.warfront.flight.Rocketry.clearAll();
         com.warfront.war.Campaign.clearAll();
         com.warfront.fortress.Warlords.clearAll();
         com.warfront.fortress.TrophyBannerBlockEntity.clearAll();
@@ -258,6 +259,7 @@ public final class GameEvents {
     @SubscribeEvent
     public static void onPlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
+        if (!player.level().isClientSide && player.tickCount % 10 == 0) com.warfront.flight.AngelWingsItem.update(player);
         if (player.isLocalPlayer() && com.warfront.flight.ManaGliderItem.gliding(player)) {
             com.warfront.flight.ManaGliderItem.glide(player);
         }
@@ -268,6 +270,34 @@ public final class GameEvents {
         } else if (!player.level().isClientSide && !player.getAbilities().instabuild
                 && player.getFoodData().getFoodLevel() > 6) {
             player.causeFoodExhaustion(com.warfront.flight.WingFlight.EXHAUSTION);
+        }
+    }
+
+    /** A rocket dive lands without fall damage, in a shockwave. */
+    @SubscribeEvent
+    public static void onFall(net.neoforged.neoforge.event.entity.living.LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player && !player.level().isClientSide
+                && com.warfront.flight.Rocketry.landed(player)) {
+            event.setDamageMultiplier(0F);
+        }
+    }
+
+    /** Sneak-use coal, charcoal or a Mana Crystal while wearing a rocket pack to refuel it. */
+    @SubscribeEvent
+    public static void onRefuel(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickItem event) {
+        Player player = event.getEntity();
+        ItemStack held = event.getItemStack();
+        if (!player.isShiftKeyDown() || !com.warfront.flight.RocketPackItem.wearing(player)
+                || com.warfront.flight.RocketPackItem.fuelValue(held) <= 0) return;
+        event.setCanceled(true);
+        event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+        if (!player.level().isClientSide) {
+            ItemStack pack = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+            if (com.warfront.flight.RocketPackItem.load(pack, held) > 0) {
+                player.playNotifySound(net.minecraft.sounds.SoundEvents.FLINTANDSTEEL_USE, net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 1.2F);
+            }
+            player.displayClientMessage(net.minecraft.network.chat.Component.literal("Rocket fuel: "
+                    + com.warfront.flight.RocketPackItem.fuel(pack) / 20 + "s"), true);
         }
     }
 
@@ -295,6 +325,7 @@ public final class GameEvents {
         }
         com.warfront.war.Recall.tick(server);
         com.warfront.outpost.Outposts.tick();
+        com.warfront.flight.Rocketry.tick(server);
         if (server.getTickCount() % 20 == 0) {
             // Raids and sieges now follow each player's raid clock, with a warning first.
             com.warfront.war.RaidScheduler.tick(server);

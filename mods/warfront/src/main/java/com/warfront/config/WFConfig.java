@@ -47,6 +47,8 @@ public final class WFConfig {
     public static final ModConfigSpec.DoubleValue[] PRESET_RAIDS_PER_DAY = new ModConfigSpec.DoubleValue[4];
     public static final ModConfigSpec.IntValue GRACE_DAYS;
     public static final ModConfigSpec.IntValue WAR_MAP_RAIDS;
+    public static final ModConfigSpec.IntValue ROCKET_COAL_SECONDS;
+    public static final ModConfigSpec.IntValue ROCKET_CRYSTAL_SECONDS;
     public static final ModConfigSpec.DoubleValue AWAY_RAID_RATE;
     public static final ModConfigSpec.IntValue RAID_WARNING;
     public static final ModConfigSpec.IntValue SIEGE_MIN_DAYS;
@@ -122,6 +124,13 @@ public final class WFConfig {
                 .defineInRange("linkRange", 16, 2, 64);
         WELL_CAPACITY = b.comment("How much mana one Mana Well can store.")
                 .defineInRange("wellCapacity", 2000, 10, 1_000_000);
+        b.pop();
+
+        b.push("flight");
+        ROCKET_COAL_SECONDS = b.comment("Seconds of orc rocket pack thrust one coal or charcoal gives.")
+                .defineInRange("rocketCoalSeconds", 3, 1, 120);
+        ROCKET_CRYSTAL_SECONDS = b.comment("Seconds of rocket pack thrust one Mana Crystal gives.")
+                .defineInRange("rocketCrystalSeconds", 8, 1, 120);
         b.pop();
 
         b.push("pacing");

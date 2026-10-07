@@ -188,6 +188,71 @@ def glider_texture():
                        "b": hexc("4f86d0"), "T": hexc("d4a017")}), "item/mana_glider.png")
 
 
+def flight_textures():
+    """Rocket pack (two green tanks, brass bands, flaming nozzles), angel wings (white, gold edged), Wind Charm (a
+    leaf-and-feather charm on a cord around a pale mana stone)."""
+    pack = [
+        "................",
+        "......SS........",
+        "......SS........",
+        "...TTTTTTTTT....",
+        "..TGgBTTBGgBT...",
+        "..TGgGTTGGgGT...",
+        "..TBBBTETBBBT...",
+        "..TGgGTETGgGT...",
+        "..TGgGTETGgGT...",
+        "..TBBBTTTBBBT...",
+        "..TGgGTTTGgGT...",
+        "...NNN...NNN....",
+        "...NNN...NNN....",
+        "...FfF...FfF....",
+        "....F.....F.....",
+        "................",
+    ]
+    save(sprite(pack, {"S": hexc("2a2a2a"), "T": hexc("5a5f63"), "G": hexc("4f6b2a"), "g": hexc("6a8a3a"),
+                       "B": hexc("b08a3a"), "E": hexc("ffb040"), "N": hexc("2a2a2a"), "F": hexc("ffb040"),
+                       "f": hexc("fff0a0")}), "item/rocket_pack.png")
+    wings = [
+        "................",
+        ".GG..........GG.",
+        "GWWG........GWWG",
+        "GWwWG......GWwWG",
+        ".WwWWG....GWWwW.",
+        ".WWwWWG..GWWwWW.",
+        ".WwWWwWGGWwWWwW.",
+        "..WWwWWWWWWwWW..",
+        "..WwWWwWWwWWwW..",
+        "..WWWwWWWWwWWW..",
+        "...WwWW..WWwW...",
+        "...WWw....wWW...",
+        "....Ww....wW....",
+        "....W......W....",
+        "................",
+        "................",
+    ]
+    save(sprite(wings, {"G": hexc("d4a017"), "W": hexc("f4f1e8"), "w": hexc("d6d0c0")}), "item/angel_wings.png")
+    charm = [
+        "................",
+        ".......CC.......",
+        "......C..C......",
+        ".....C....C.....",
+        ".....C....C.....",
+        "......C..C......",
+        ".....LLMMFF.....",
+        "....LlLMMmFf....",
+        "...LlL.MmM.Ff...",
+        "...Ll..MMM..F...",
+        "...L....M....F..",
+        "........M.......",
+        "................",
+        "................",
+        "................",
+        "................",
+    ]
+    save(sprite(charm, {"C": hexc("8a5a30"), "L": hexc("3f8a3a"), "l": hexc("6ac25a"), "M": hexc("6ee8ff"),
+                        "m": hexc("d8fbff"), "F": hexc("f4f1e8"), "f": hexc("c8c0b0")}), "item/wind_charm.png")
+
+
 def hammer_texture():
     """Mason's Hammer, carried by builders: a squared iron head on a wrapped wooden haft."""
     rows = [
@@ -647,7 +712,8 @@ def models_and_states():
     write_json(ASSETS / "models" / "item" / "war_standard.json", {"parent": f"{MODID}:block/war_standard"})
 
     for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"), ("mason_hammer", "handheld"),
-                         ("war_mark", "generated"), ("war_map", "generated"), ("war_horn", "generated"), ("mana_glider", "generated")]:
+                         ("war_mark", "generated"), ("war_map", "generated"), ("war_horn", "generated"), ("mana_glider", "generated"),
+                         ("rocket_pack", "generated"), ("angel_wings", "generated"), ("wind_charm", "generated")]:
         write_json(ASSETS / "models" / "item" / f"{item}.json",
                    {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
     write_json(ASSETS / "models" / "item" / "soldier_spawn_egg.json", {"parent": "minecraft:item/template_spawn_egg"})
@@ -756,6 +822,9 @@ def lang():
         "block.warfront.summoning_altar": "Summoning Altar",
         "effect.warfront.frenzy": "Frenzy",
         "item.warfront.mana_glider": "Mana Glider",
+        "item.warfront.rocket_pack": "Orc Rocket Pack",
+        "item.warfront.angel_wings": "Angel Wings",
+        "item.warfront.wind_charm": "Wind Charm",
     }
     write_json(ASSETS / "lang" / "en_us.json", names)
 
@@ -784,6 +853,13 @@ def recipes():
     W = "warfront:war_mark"
     shaped("mana_glider", [" C ", "LSL", "S S"], {"C": "warfront:mana_crystal", "L": "minecraft:leather",
                                                     "S": "minecraft:stick"}, "warfront:mana_glider")
+    shaped("rocket_pack", ["ICI", "IFI", "B B"], {"I": "minecraft:iron_ingot", "C": "warfront:mana_crystal",
+                                                  "F": "minecraft:blast_furnace", "B": "minecraft:copper_ingot"},
+           "warfront:rocket_pack")
+    shaped("angel_wings", ["FGF", "FCF", "F F"], {"F": "minecraft:feather", "G": "minecraft:gold_ingot",
+                                                  "C": "warfront:mana_crystal"}, "warfront:angel_wings")
+    shaped("wind_charm", [" S ", "LCL", " F "], {"S": "minecraft:string", "L": "#minecraft:leaves",
+                                                 "C": "warfront:mana_crystal", "F": "minecraft:feather"}, "warfront:wind_charm")
     shaped("commander_baton", ["  G", " S ", "S  "], {"G": "minecraft:gold_ingot", "S": "minecraft:stick"},
            "warfront:commander_baton")
     shaped("healing_staff", ["  M", " S ", "S  "], {"M": "minecraft:glistering_melon_slice", "S": "minecraft:stick"},
@@ -1262,6 +1338,7 @@ if __name__ == "__main__":
     item_textures()
     hammer_texture()
     glider_texture()
+    flight_textures()
     block_textures()
     soldier_skins()
     models_and_states()

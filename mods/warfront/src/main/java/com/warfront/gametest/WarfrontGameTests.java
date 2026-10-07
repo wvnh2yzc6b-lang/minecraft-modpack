@@ -607,6 +607,68 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void rocketPackIsOrcOnlyAndBurnsFuel(GameTestHelper h) {
+        Player pilot = h.makeMockPlayer(GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack pack = new net.minecraft.world.item.ItemStack(WFRegistry.ROCKET_PACK.get());
+        net.minecraft.world.item.ItemStack coal = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COAL, 2);
+        int loaded = com.warfront.flight.RocketPackItem.load(pack, coal);
+        int perCoal = com.warfront.config.WFConfig.ROCKET_COAL_SECONDS.get() * 20;
+        h.assertTrue(loaded == 2 && coal.isEmpty() && com.warfront.flight.RocketPackItem.fuel(pack) == 2 * perCoal,
+                "two coal should load " + 2 * perCoal + " ticks, got " + com.warfront.flight.RocketPackItem.fuel(pack));
+        h.assertTrue(com.warfront.flight.RocketPackItem.fuelValue(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIRT)) == 0,
+                "dirt is not rocket fuel");
+        pilot.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, pack);
+        pilot.setOnGround(false);
+        pilot.setData(WFRegistry.RACE, Race.HUMAN.id());
+        h.assertTrue(!com.warfront.flight.RocketPackItem.canThrust(pilot), "only orcs fly the rocket pack");
+        pilot.setData(WFRegistry.RACE, Race.ORC.id());
+        h.assertTrue(com.warfront.flight.RocketPackItem.canThrust(pilot), "a fuelled orc in the air should be able to thrust");
+        double before = pilot.getDeltaMovement().y;
+        com.warfront.flight.RocketPackItem.thrust(pilot);
+        h.assertTrue(pilot.getDeltaMovement().y > before, "thrust should push the orc up");
+        h.assertTrue(com.warfront.flight.Rocketry.burn(pilot), "burning a tick of fuel should work");
+        net.minecraft.world.item.ItemStack worn = pilot.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST);
+        h.assertTrue(com.warfront.flight.RocketPackItem.fuel(worn) == 2 * perCoal - 1, "a tick of thrust should burn a tick of fuel");
+        com.warfront.flight.RocketPackItem.setFuel(worn, 0);
+        h.assertTrue(!com.warfront.flight.RocketPackItem.canThrust(pilot) && !com.warfront.flight.Rocketry.burn(pilot),
+                "an empty pack should not thrust");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void angelWingsFlyOnlyByDayUnderOpenSky(GameTestHelper h) {
+        Player angel = h.makeMockPlayer(GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack wings = new net.minecraft.world.item.ItemStack(WFRegistry.ANGEL_WINGS.get());
+        angel.setData(WFRegistry.RACE, Race.ANGEL.id());
+        h.assertTrue(wings.canElytraFly(angel), "an angel's wings should at least glide");
+        angel.setData(WFRegistry.RACE, Race.DWARF.id());
+        h.assertTrue(!wings.canElytraFly(angel), "only angels use angel wings");
+        h.assertTrue(com.warfront.flight.AngelWingsItem.flightAllowed(true, true, false), "day and open sky: free flight");
+        h.assertTrue(!com.warfront.flight.AngelWingsItem.flightAllowed(false, true, false), "at night the wings only glide");
+        h.assertTrue(!com.warfront.flight.AngelWingsItem.flightAllowed(true, false, false), "under a roof the wings only glide");
+        h.assertTrue(!com.warfront.flight.AngelWingsItem.flightAllowed(true, true, true), "no free flight in a thunderstorm");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void windCharmLeapIsElfOnlyAndCostsAShard(GameTestHelper h) {
+        Player elf = h.makeMockPlayer(GameType.SURVIVAL);
+        elf.setData(WFRegistry.RACE, Race.HUMAN.id());
+        elf.getInventory().add(new net.minecraft.world.item.ItemStack(WFRegistry.MANA_SHARD.get(), 2));
+        h.assertTrue(!com.warfront.flight.WindCharmItem.leap(elf), "the charm only answers elves");
+        elf.setData(WFRegistry.RACE, Race.ELF.id());
+        elf.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+        h.assertTrue(com.warfront.flight.WindCharmItem.leap(elf), "an elf with shards should leap");
+        int shards = elf.getInventory().countItem(WFRegistry.MANA_SHARD.get());
+        h.assertTrue(shards == 1, "a Wind Leap costs one Mana Shard, left " + shards);
+        h.assertTrue(elf.getDeltaMovement().y >= 0.6 && elf.hasEffect(net.minecraft.world.effect.MobEffects.SLOW_FALLING),
+                "the leap should launch upward and slow the fall, motion " + elf.getDeltaMovement());
+        h.assertTrue(com.warfront.flight.WindCharmItem.leap(elf) && !com.warfront.flight.WindCharmItem.leap(elf),
+                "no shards, no leap");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

@@ -31,47 +31,6 @@
       ]
     },
     {
-      "id": "orc-rocket-pack",
-      "status": "ready",
-      "title": "Orc flight: the rocket pack",
-      "decided": "Owner, 2026-10-07: fuel-burst rocket, not long-haul flight.",
-      "spec": [
-        "Chest-slot item, orc only. Hold jump in the air to thrust: upward when looking level or up, forward-and-up when looking down the sprint direction. Strong acceleration, capped speed.",
-        "Burns fuel fast: about 3 seconds of thrust per coal/charcoal, about 8 per Mana Crystal (config). Fuel sits in the pack (right-click with fuel to load, tooltip shows seconds left). Empty pack = falls like normal.",
-        "Loud and visible: smoke and flame particles plus a rocket sound while thrusting, so enemies hear orcs coming.",
-        "Landing from a dive within a second of thrusting does a small knockback shockwave and cancels the orc's fall damage; no damage to blocks.",
-        "Placeholder look: a plain iron-and-copper pack on the back with two exhausts (generated, like the glider model); the real design waits on orc player references.",
-        "Same pattern as the Mana Glider (flight/ManaGliderItem.java): race-locked, chest-slot or ability as noted, vanilla attributes/effects where possible, a game test for the race lock and the cost."
-      ]
-    },
-    {
-      "id": "angel-wings",
-      "status": "ready",
-      "title": "Angel flight: wings that fly by day and glide by night",
-      "decided": "Owner, 2026-10-07: free flight by day, elytra glide at night or underground.",
-      "spec": [
-        "Angel players get wings (chest-slot item until the angel player model has built-in wings). Daytime with open sky above (world can see sky at the player's position, not raining hard): creative-style free flight (mayfly), with a slower top speed than creative.",
-        "Night, underground, or no sky: flight shuts off and the wings act as an elytra glide only. Switching mid-air drops the player into the glide, never a straight fall.",
-        "Crafting: the fallback vanilla recipe now (feathers, Mana Crystals, gold); the Aether recipe from the crossover item replaces it when the Aether is loaded.",
-        "Placeholder look: plain white feathered wings from a generated model; the real look waits on the angel player references.",
-        "Game test: an angel with wings can fly in daylight with sky and can't (glide only) under a roof.",
-        "Same pattern as the Mana Glider (flight/ManaGliderItem.java): race-locked, chest-slot or ability as noted, vanilla attributes/effects where possible, a game test for the race lock and the cost."
-      ]
-    },
-    {
-      "id": "elf-flight-spell",
-      "status": "ready",
-      "title": "Elf flight: levitate and wind leap spells",
-      "decided": "Owner, 2026-10-07: spell flight paid with Iron's Spells mana.",
-      "spec": [
-        "Two elf-only spells. Levitate: hover and drift slowly while held, a steady mana drain. Wind Leap: a burst launch in the look direction plus slow fall until landing, one cost per cast.",
-        "With Iron's Spells loaded: register them as Iron's Spells spells (elf school or nature), paid from Iron's mana, on spell scrolls/ink like the mod's own.",
-        "Without Iron's Spells: a Wind Charm item (elf only) casts them, paid with Mana Shards from the inventory. Warfront must load and pass tests without Iron's Spells.",
-        "Leaf and wind particles; no wings, no gear on the back.",
-        "Same pattern as the Mana Glider (flight/ManaGliderItem.java): race-locked, chest-slot or ability as noted, vanilla attributes/effects where possible, a game test for the race lock and the cost."
-      ]
-    },
-    {
       "id": "dwarf-tunnels",
       "status": "ready",
       "title": "Dwarf tunnels: rune drill, rune stone and tunnel traps",

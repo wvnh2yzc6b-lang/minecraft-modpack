@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ICI",
+    "IFI",
+    "B B"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    },
+    "B": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "id": "warfront:rocket_pack",
+    "count": 1
+  }
+}

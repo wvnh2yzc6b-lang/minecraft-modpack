@@ -20,6 +20,7 @@ public final class ClientGameEvents {
     private ClientGameEvents() {}
 
     private static boolean jumpWasDown;
+    private static boolean rocketOn;
 
     /**
      * Wing takeoff. Vanilla only offers takeoff to players wearing an elytra, so winged players get the
@@ -37,6 +38,13 @@ public final class ClientGameEvents {
                     ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
         }
         jumpWasDown = jumpDown;
+        // Orc rocket pack: hold jump in the air to thrust; the server burns the fuel.
+        boolean thrusting = jumpDown && com.warfront.flight.RocketPackItem.canThrust(player);
+        if (thrusting) com.warfront.flight.RocketPackItem.thrust(player);
+        if (thrusting != rocketOn) {
+            rocketOn = thrusting;
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.warfront.network.RocketPayload(thrusting));
+        }
 
         com.warfront.client.ui.ManaOverlay.tick();
         while (ClientSetup.WAR_TABLE.consumeClick()) {

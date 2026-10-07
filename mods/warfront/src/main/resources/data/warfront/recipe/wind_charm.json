@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "LCL",
+    " F "
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:string"
+    },
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "id": "warfront:wind_charm",
+    "count": 1
+  }
+}

@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "Flight for orcs, angels and elves",
+      "detail": "Every race but dwarves and the Hive can now take to the air. Orcs get the Rocket Pack (chest slot): hold jump in the air to thrust straight up, or sprint and look down to dive forward. It burns fuel fast, about 3 seconds per coal or charcoal and 8 per Mana Crystal (both in the config); drop fuel onto it in your inventory or sneak-use fuel while wearing it, and the tooltip shows seconds left. It's loud, with flame, smoke and a roar, and landing within a second of thrusting cancels the fall damage and knocks nearby enemies back. Angels get Angel Wings: by day under open sky they fly freely (a bit slower than creative); at night, under a roof or in a thunderstorm they only glide like an elytra, and losing the sky mid-air drops you into the glide, never a fall. Elves get the Wind Charm: hold use to Levitate (hover and drift, a Mana Shard every 3 seconds), sneak-use to Wind Leap (a burst where you look, then a slow fall, one shard). The Iron's Spells version of these spells waits until that mod is linked. Placeholder back models for the pack and the wings (wings fold down the back on the ground, spread and beat in the air). Test Panel (Player tab): Flight gear equips your race's gear ready to fly; Fill tops up fuel and durability; /wftest player flight.",
+      "image": "flight-gear-render.png"
+    },
+    {
+      "status": "done",
       "title": "Campaign, parts 2 and 3: fortresses and the seven warlords",
       "detail": "Each faction now has a warlord fortress in its homeland, rare and far apart (about one per 1,500 blocks): the Black Legion on the plains, Silverwood in forests, Ironbeard in the mountains, the Marauders in badlands and savanna, the Burning Horde in the Nether, the Fallen Host on high peaks (and in the Aether when it's installed), the Swarm in the deep dark (and the Otherside). Placeholder looks in each faction's materials: a walled courtyard, four towers, a keep, and the Warlord's Seat at its heart. A War Map charts the way there. Come within 40 blocks and the garrison takes its posts and the warlord rises: a huge named Champion with a boss bar and three phases, calling defenders at two thirds and one third health and using a signature attack from its race (Soul Burst, Frenzy, arrow volleys, rune lightning, holy smite, a burrowing ambush, a shield wall). Fallen defenders are slowly replaced until the warlord dies. Then the garrison breaks and it drops its trophy banner and a unique piece of gear: Skullsplitter, Legion Warplate, Emberbrand, Broodfang, Thornbow, Runehammer, Fallen Halo. Plant a trophy banner within 8 blocks of your War Standard and your units get its lasting bonus (damage, health, armor, speed, knockback resistance, toughness, or extra mana for the Fallen Host's). Beat all seven to wear the Warlord title and receive the Seal of the Seven, the clue to the hidden warlord. Test Panel (Campaign tab): go to or place any fortress, reset it. Warlord names and looks are stand-ins until you design them."
     },
@@ -138,8 +144,8 @@
     },
     {
       "status": "planned",
-      "title": "Roadmap: flight for orcs, angels and elves, and Hive echo armor",
-      "detail": "Decided: orcs get a loud fuel-burst rocket pack for short, strong jumps and dives; angels fly freely by day under open sky and only glide at night or underground; elves cast levitate and wind leap with Iron's Spells mana (Mana Shards without that mod). Queued for a build session with placeholder looks until the references come. From the Otherside, the Hive gets echo armor: stronger in the dark and underground, with quiet footsteps."
+      "title": "Roadmap: Hive echo armor",
+      "detail": "From the Otherside, the Hive gets echo armor: stronger in the dark and underground, with quiet footsteps. Comes with the Deeper and Darker tie-in."
     },
     {
       "status": "planned",
