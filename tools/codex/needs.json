@@ -110,12 +110,6 @@
       "why": "I'm building a first version now. Reference images would let me match your style."
     },
     {
-      "topic": "Mana",
-      "priority": "medium",
-      "question": "Should Captains and Champions need a bigger altar, or be limited to one each?",
-      "why": "Right now any complete altar can summon every role if the mana is there."
-    },
-    {
       "topic": "Towers",
       "priority": "low",
       "question": "Do you want more tower types, or a new look for the existing three?",
@@ -135,6 +129,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Bases",
+      "answer": "Captains need a level 2 base and Champions a level 4 base before an altar will summon them. Everyone else needs only a complete altar and the mana."
+    },
     {
       "topic": "Bases",
       "answer": "Base level comes from buildings. A base is everything on one mana network: its wells and pylons plus the towers and altars in their reach. 4, 8, 14 and 20 buildings reach levels 2 to 5. Each level allows 2 war beasts, so 10 at level 5."

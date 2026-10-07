@@ -1,5 +1,6 @@
 package com.warfront.world;
 
+import com.warfront.army.SoldierRole;
 import com.warfront.block.SummoningAltarBlockEntity;
 import com.warfront.block.TowerBlockEntity;
 import com.warfront.config.WFConfig;
@@ -21,7 +22,7 @@ import java.util.Set;
 /**
  * A base is everything on one mana network: the wells and pylons linked to a spot, plus the towers and summoning
  * altars within their reach. Its level comes from how many of those buildings it has, and the level sets how many
- * war beasts its commander may field.
+ * war beasts its commander may field and whether Captains and Champions can be summoned.
  */
 public final class BaseLevel {
     /** Buildings needed for levels 2, 3, 4 and 5. */
@@ -68,6 +69,12 @@ public final class BaseLevel {
         return count;
     }
 
+    /** Buildings still needed to reach {@code target} level, or 0 if already there. */
+    public static int toLevel(int buildings, int target) {
+        if (target <= 1) return 0;
+        return Math.max(0, THRESHOLDS[Math.min(target, MAX_LEVEL) - 2] - buildings);
+    }
+
     /** The level a base with this many buildings has, 1 to {@link #MAX_LEVEL}. */
     public static int forBuildings(int buildings) {
         int lvl = 1;
@@ -79,6 +86,15 @@ public final class BaseLevel {
     public static int toNextLevel(int buildings) {
         for (int t : THRESHOLDS) if (buildings < t) return t - buildings;
         return 0;
+    }
+
+    /** The base level a role needs before an altar will summon it: Captains 2, Champions 4, everyone else 1. */
+    public static int requiredLevel(SoldierRole role) {
+        return switch (role) {
+            case CAPTAIN -> 2;
+            case CHAMPION -> 4;
+            default -> 1;
+        };
     }
 
     /** How many war beasts a base of this level supports, never above the {@code beastLimit} setting. */

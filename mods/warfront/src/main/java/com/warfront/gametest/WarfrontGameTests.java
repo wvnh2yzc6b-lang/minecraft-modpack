@@ -301,6 +301,32 @@ public final class WarfrontGameTests {
         });
     }
 
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void captainsAndChampionsNeedABiggerBase(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        owner.setData(WFRegistry.RACE, Race.HUMAN.id());
+        owner.moveTo(h.absoluteVec(new Vec3(4.5, 2, 7.5)));
+        SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), owner, true);
+        well(h, new BlockPos(8, 1, 8), owner, 2000F);
+        h.runAfterDelay(2, () -> {
+            SummoningAltarBlockEntity.Result early = altar.summon(owner, SoldierRole.CAPTAIN);
+            h.assertTrue(!early.ok() && early.message().contains("level 2"), "a level 1 base should refuse a captain: " + early.message());
+            for (int i = 0; i < 2; i++) {
+                BlockPos p = new BlockPos(1 + i, 1, 8);
+                h.setBlock(p, WFRegistry.MANA_PYLON.get());
+                ((com.warfront.mana.ManaNodeBlockEntity) h.getBlockEntity(p)).setOwner(owner.getUUID());
+            }
+            h.runAfterDelay(2, () -> {
+                SummoningAltarBlockEntity.Result captain = altar.summon(owner, SoldierRole.CAPTAIN);
+                h.assertTrue(captain.ok(), "a level 2 base should summon a captain: " + captain.message());
+                SummoningAltarBlockEntity.Result champion = altar.summon(owner, SoldierRole.CHAMPION);
+                h.assertTrue(!champion.ok() && champion.message().contains("level 4"),
+                        "a level 2 base should refuse a champion: " + champion.message());
+                h.succeed();
+            });
+        });
+    }
+
     @GameTest(template = ARENA)
     public static void hiveIsStrongerUnderground(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);

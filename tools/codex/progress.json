@@ -4,8 +4,8 @@
   "log": [
     {
       "status": "done",
-      "title": "Bases have levels: buildings raise them",
-      "detail": "A base is everything on one mana network: the wells and pylons linked together, plus the towers and summoning altars in their reach. Its level is set by how many of those buildings it has: 4, 8, 14 and 20 buildings reach levels 2, 3, 4 and 5. Each level allows 2 war beasts, so a new base fields 2 and a level 5 base fields 10 (the beastLimit setting is still the hard cap). When you hit the cap, the altar tells you your base level and how many more buildings you need."
+      "title": "Bases have levels: buildings raise them, and they unlock elite units",
+      "detail": "A base is everything on one mana network: the wells and pylons linked together, plus the towers and summoning altars in their reach. Its level is set by how many of those buildings it has: 4, 8, 14 and 20 buildings reach levels 2, 3, 4 and 5. Each level allows 2 war beasts, so a new base fields 2 and a level 5 base fields 10 (the beastLimit setting is still the hard cap). When you hit the cap, the altar tells you your base level and how many more buildings you need. Base level also gates elite units: Captains need a level 2 base and Champions a level 4 base, and the altar says how many more buildings are needed."
     },
     {
       "status": "done",
@@ -105,6 +105,7 @@
     "hiveSpearmenAreLancersAndBeastsAreCentaurs": "Hive spearmen are Lancer-Drones and the Deepmaw beast has a broad lobster-centaur hitbox",
     "beastsAreLimitedAndRaceBound": "A commander at the beast limit is refused, and races without a beast cannot summon one",
     "hiveIsStrongerUnderground": "Hive soldiers gain Strength underground and are not weakened there",
-    "baseLevelGrowsWithBuildings": "An altar and one well make a level 1 base; adding six pylons makes 8 buildings and level 3, which allows 6 war beasts."
+    "baseLevelGrowsWithBuildings": "An altar and one well make a level 1 base; adding six pylons makes 8 buildings and level 3, which allows 6 war beasts.",
+    "captainsAndChampionsNeedABiggerBase": "A level 1 base refuses a Captain; two more pylons make it level 2, which summons a Captain but still refuses a Champion."
   }
 }

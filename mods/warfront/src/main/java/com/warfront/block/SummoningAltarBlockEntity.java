@@ -119,12 +119,18 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         if (count >= max) return new Result(false, "Your army is at full strength (" + max + ").");
 
         Race race = raceOf(player);
+        int needed = BaseLevel.requiredLevel(role);
+        if (role == SoldierRole.BEAST && !UnitNames.hasBeast(race)) return new Result(false, "Your race has no war beast yet.");
+        int buildings = needed > 1 || role == SoldierRole.BEAST
+                ? BaseLevel.buildings(level, worldPosition, factionKey(server.getServer())) : 0;
+        int baseLevel = BaseLevel.forBuildings(buildings);
+        if (baseLevel < needed) {
+            return new Result(false, "A " + UnitNames.of(race, role) + " needs a level " + needed + " base; this one is level "
+                    + baseLevel + ". Build " + BaseLevel.toLevel(buildings, needed) + " more wells, pylons, towers or altars on this network.");
+        }
         if (role == SoldierRole.BEAST) {
-            if (!UnitNames.hasBeast(race)) return new Result(false, "Your race has no war beast yet.");
             int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
                     s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size();
-            int buildings = BaseLevel.buildings(level, worldPosition, factionKey(server.getServer()));
-            int baseLevel = BaseLevel.forBuildings(buildings);
             int cap = BaseLevel.beastCap(baseLevel);
             if (beasts >= cap) {
                 int more = BaseLevel.toNextLevel(buildings);
