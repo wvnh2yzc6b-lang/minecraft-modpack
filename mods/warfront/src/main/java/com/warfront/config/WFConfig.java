@@ -38,7 +38,7 @@ public final class WFConfig {
         b.push("army");
         MAX_ARMY_SIZE = b.comment("Maximum number of soldiers a single commander may lead.")
                 .defineInRange("maxArmySize", 40, 1, 500);
-        BEAST_LIMIT = b.comment("How many war beasts one commander may field at once. Planned to grow with base level.")
+        BEAST_LIMIT = b.comment("The most war beasts one commander may field. A base allows 2 per base level (levels 1 to 5), up to this.")
                 .defineInRange("beastLimit", 10, 0, 500);
         FRIENDLY_FIRE = b.comment("Whether allied soldiers, players and towers can hurt each other.")
                 .define("friendlyFire", false);

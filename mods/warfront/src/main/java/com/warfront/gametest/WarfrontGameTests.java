@@ -274,6 +274,33 @@ public final class WarfrontGameTests {
         });
     }
 
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void baseLevelGrowsWithBuildings(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), owner, true);
+        well(h, new BlockPos(8, 1, 8), owner, 100F);
+        String key = altar.factionKey(h.getLevel().getServer());
+        BlockPos core = h.absolutePos(new BlockPos(4, 2, 4));
+        h.runAfterDelay(2, () -> {
+            int before = com.warfront.world.BaseLevel.buildings(h.getLevel(), core, key);
+            h.assertTrue(before == 2, "an altar and one well should count as 2 buildings, counted " + before);
+            h.assertTrue(com.warfront.world.BaseLevel.forBuildings(before) == 1, "2 buildings should be base level 1");
+            for (int i = 0; i < 6; i++) {
+                BlockPos p = new BlockPos(1 + i, 1, 8);
+                h.setBlock(p, WFRegistry.MANA_PYLON.get());
+                ((com.warfront.mana.ManaNodeBlockEntity) h.getBlockEntity(p)).setOwner(owner.getUUID());
+            }
+            h.runAfterDelay(2, () -> {
+                int after = com.warfront.world.BaseLevel.buildings(h.getLevel(), core, key);
+                int lvl = com.warfront.world.BaseLevel.forBuildings(after);
+                h.assertTrue(after == 8 && lvl == 3, "8 buildings should be base level 3, counted " + after + " at level " + lvl);
+                h.assertTrue(com.warfront.world.BaseLevel.beastCap(lvl) == 6, "a level 3 base should allow 6 beasts, was "
+                        + com.warfront.world.BaseLevel.beastCap(lvl));
+                h.succeed();
+            });
+        });
+    }
+
     @GameTest(template = ARENA)
     public static void hiveIsStrongerUnderground(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);

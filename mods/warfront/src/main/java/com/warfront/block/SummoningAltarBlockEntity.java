@@ -12,6 +12,7 @@ import com.warfront.faction.Race;
 import com.warfront.faction.Relation;
 import com.warfront.mana.ManaNetwork;
 import com.warfront.registry.WFRegistry;
+import com.warfront.world.BaseLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -122,8 +123,15 @@ public class SummoningAltarBlockEntity extends BlockEntity {
             if (!UnitNames.hasBeast(race)) return new Result(false, "Your race has no war beast yet.");
             int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
                     s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size();
-            int cap = WFConfig.BEAST_LIMIT.get();
-            if (beasts >= cap) return new Result(false, "You already command " + beasts + " war beasts, the most you can field (" + cap + ").");
+            int buildings = BaseLevel.buildings(level, worldPosition, factionKey(server.getServer()));
+            int baseLevel = BaseLevel.forBuildings(buildings);
+            int cap = BaseLevel.beastCap(baseLevel);
+            if (beasts >= cap) {
+                int more = BaseLevel.toNextLevel(buildings);
+                return new Result(false, "You already command " + beasts + " war beasts, the most you can field (" + cap
+                        + ") from a level " + baseLevel + " base." + (more > 0 && cap < WFConfig.BEAST_LIMIT.get()
+                        ? " Build " + more + " more wells, pylons, towers or altars on this network to raise it." : ""));
+            }
         }
         int cost = role.manaCost(race);
         String key = factionKey(server.getServer());

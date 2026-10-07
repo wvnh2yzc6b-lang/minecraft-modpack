@@ -50,12 +50,6 @@
   },
   "questions": [
     {
-      "topic": "Bases",
-      "priority": "medium",
-      "question": "What should raise a base's level?",
-      "why": "The beast limit (10 now) is meant to grow with base level, but bases don't have levels yet. Options: waves survived at the War Standard, buildings placed (wells, towers, altars), or an upgrade you craft into the War Standard."
-    },
-    {
       "topic": "Magic",
       "priority": "medium",
       "question": "Which magic should each race lean toward?",
@@ -142,6 +136,10 @@
   ],
   "settled": [
     {
+      "topic": "Bases",
+      "answer": "Base level comes from buildings. A base is everything on one mana network: its wells and pylons plus the towers and altars in their reach. 4, 8, 14 and 20 buildings reach levels 2 to 5. Each level allows 2 war beasts, so 10 at level 5."
+    },
+    {
       "topic": "Hive",
       "answer": "The Lancer-Drone is approved: a sturdy, armored four-armed ant warrior gripping a plain spear in both upper hands, rear of the haft clear of the legs, short-fingered lower hands, no throwing blade."
     },
@@ -155,7 +153,7 @@
     },
     {
       "topic": "Beasts",
-      "answer": "Beasts are rare altar units: up to 10 per commander, a limit meant to grow with base level."
+      "answer": "Beasts are rare altar units: 2 per base level, up to 10 per commander at base level 5."
     },
     {
       "topic": "Mods",

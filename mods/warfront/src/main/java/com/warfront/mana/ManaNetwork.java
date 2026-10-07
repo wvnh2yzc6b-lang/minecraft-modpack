@@ -45,9 +45,19 @@ public final class ManaNetwork {
 
     /** Every well a consumer at {@code from} can draw on for {@code factionKey}, nearest first. */
     public static List<ManaWellBlockEntity> wells(Level level, BlockPos from, String factionKey) {
-        Set<BlockPos> all = NODES.get(level.dimension());
         List<ManaWellBlockEntity> wells = new ArrayList<>();
-        if (all == null || all.isEmpty()) return wells;
+        for (ManaNodeBlockEntity node : nodes(level, from, factionKey)) {
+            if (node instanceof ManaWellBlockEntity well) wells.add(well);
+        }
+        wells.sort(Comparator.comparingDouble(w -> w.getBlockPos().distSqr(from)));
+        return wells;
+    }
+
+    /** Every allied well and pylon reachable from {@code from}, directly or through a chain of nodes. */
+    public static List<ManaNodeBlockEntity> nodes(Level level, BlockPos from, String factionKey) {
+        Set<BlockPos> all = NODES.get(level.dimension());
+        List<ManaNodeBlockEntity> found = new ArrayList<>();
+        if (all == null || all.isEmpty()) return found;
         List<BlockPos> nodes = new ArrayList<>(all);
         double reach = WFConfig.MANA_LINK_RANGE.get();
         double reachSq = reach * reach;
@@ -62,12 +72,11 @@ public final class ManaNetwork {
                 String key = node.factionKey(level.getServer());
                 if (Factions.relation(level.getServer(), factionKey, key) != Relation.ALLY) continue;
                 seen.add(n);
-                if (node instanceof ManaWellBlockEntity well) wells.add(well);
+                found.add(node);
                 queue.add(n);
             }
         }
-        wells.sort(Comparator.comparingDouble(w -> w.getBlockPos().distSqr(from)));
-        return wells;
+        return found;
     }
 
     /** Total mana a consumer at {@code from} can draw. */
