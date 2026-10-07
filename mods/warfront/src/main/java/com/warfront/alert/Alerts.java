@@ -52,6 +52,14 @@ public final class Alerts {
         if (player != null) send(player, Kind.TOAST, key, title, text, accent);
     }
 
+    /**
+     * A toast for a unit's owner. Owners who are offline get nothing (game tests capture it by id instead).
+     */
+    public static void toastOwner(@Nullable Player online, @Nullable UUID ownerId, String key, String title, String text) {
+        if (online != null) toast(online, key, title, text);
+        else if (capture != null && ownerId != null) capture.add(new Sent(ownerId, Kind.TOAST, key, title, text));
+    }
+
     public static void banner(@Nullable Player player, String key, String title, String text, int accent) {
         if (player != null) send(player, Kind.BANNER, key, title, text, accent);
     }

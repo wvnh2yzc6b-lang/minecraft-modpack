@@ -289,11 +289,8 @@ public class SoldierEntity extends PathfinderMob {
         getNavigation().stop();
         setNoAi(true);
         playSound(SoundEvents.PLAYER_HURT, 1.0F, 0.6F);
-        Player owner = getOwner();
-        if (owner != null) {
-            com.warfront.alert.Alerts.toast(owner, "hero_fallen", "Hero fallen", "Your " + getUnitName() + " fell at " + blockPosition().toShortString()
-                    + ". Right-click it within " + com.warfront.config.WFConfig.FALL_WINDOW.get() + "s to get it up.");
-        }
+        com.warfront.alert.Alerts.toastOwner(getOwner(), getOwnerUUID(), "hero_fallen", "Hero fallen", "Your " + getUnitName() + " fell at "
+                + blockPosition().toShortString() + ". Right-click it within " + com.warfront.config.WFConfig.FALL_WINDOW.get() + "s to get it up.");
         return true;
     }
 
@@ -304,7 +301,7 @@ public class SoldierEntity extends PathfinderMob {
         setNoAi(false);
         setHealth(getMaxHealth() * 0.5F);
         playSound(SoundEvents.TOTEM_USE, 0.6F, 1.4F);
-        com.warfront.alert.Alerts.toast(getOwner(), "hero_revived", "Back on its feet", "Your " + getUnitName() + " fights on at half health.");
+        com.warfront.alert.Alerts.toastOwner(getOwner(), getOwnerUUID(), "hero_revived", "Back on its feet", "Your " + getUnitName() + " fights on at half health.");
         if (level() instanceof ServerLevel server) {
             server.sendParticles(net.minecraft.core.particles.ParticleTypes.HAPPY_VILLAGER, getX(), getY(0.5), getZ(), 15, 0.4, 0.4, 0.4, 0.1);
         }
@@ -319,7 +316,7 @@ public class SoldierEntity extends PathfinderMob {
             com.warfront.war.WarState.get(server).addReturning(owner,
                     new com.warfront.war.WarState.Returning(getRole(), race, xp, ready));
             Player p = getOwner();
-            com.warfront.alert.Alerts.toast(p, "hero_returning", "Hero carried off", "Your " + getUnitName() + " can be summoned again at an altar "
+            com.warfront.alert.Alerts.toastOwner(p, owner, "hero_returning", "Hero carried off", "Your " + getUnitName() + " can be summoned again at an altar "
                     + "for half its cost in " + com.warfront.config.WFConfig.HERO_RETURN.get() / 60 + " min.");
         }
         discard();
@@ -364,11 +361,8 @@ public class SoldierEntity extends PathfinderMob {
             server.sendParticles(net.minecraft.core.particles.ParticleTypes.TOTEM_OF_UNDYING, getX(), getY(1.0), getZ(), 20, 0.3, 0.5, 0.3, 0.2);
         }
         playSound(SoundEvents.PLAYER_LEVELUP, 0.8F, 1.3F);
-        Player owner = getOwner();
-        if (owner != null) {
-            com.warfront.alert.Alerts.toast(owner, "rank_up", "Promoted: " + com.warfront.army.Veterancy.TITLES[rank],
-                    "Your " + getUnitName() + " is now a " + com.warfront.army.Veterancy.TITLES[rank] + ".");
-        }
+        com.warfront.alert.Alerts.toastOwner(getOwner(), getOwnerUUID(), "rank_up", "Promoted: " + com.warfront.army.Veterancy.TITLES[rank],
+                "Your " + getUnitName() + " is now a " + com.warfront.army.Veterancy.TITLES[rank] + ".");
     }
 
     private void applyRank() {
