@@ -120,6 +120,10 @@
   ],
   "settled": [
     {
+      "topic": "Difficulty",
+      "answer": "Four difficulty presets, picked per world and changeable in the Test Panel: Easy, Normal, Hard and Warlord (on Warlord, fallen heroes stay down for good). Raids scale with your base level and with the war meter of the faction attacking, never with your army size. Rhythm: no raids for the first 3 in-game days while the advisor's tutorial runs, then about one raid a day and a siege every few nights, with quiet days between. Raids come whether or not you're home: a warning with a countdown goes out first, and you can teleport straight back to your base (with the units following you) to defend it. If you don't, your towers and guards fight alone."
+    },
+    {
       "topic": "Focus",
       "answer": "Solo play comes first: every system is designed and balanced for one player against the AI factions. Rules for war between players (sieging each other's bases, offline protection, spoils) wait until later."
     },

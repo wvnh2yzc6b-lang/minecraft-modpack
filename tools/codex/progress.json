@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: difficulty and pacing",
+      "detail": "Pick Easy, Normal, Hard or Warlord per world (on Warlord, fallen heroes stay dead). Raids grow with your base level and with how long you've been at war with that faction, never with your army. The first three days are quiet while the advisor teaches you, then about one raid a day and a siege every few nights. Raids hit even when you're away, but a two-minute warning lets you teleport home with your army to defend."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: the advisor and the betrayal",
       "detail": "Every race gets an advisor who greets new players, walks them through their first hour (Mana Well to first raid) and keeps them pointed at the next warlord. It's one villain in seven disguises: beat the hidden warlord and you learn he was trying to stop the advisor. The advisor then pulls you into the End with only your heroes and war beasts, to face his mixed army of all seven races and a bound dragon."
     },
