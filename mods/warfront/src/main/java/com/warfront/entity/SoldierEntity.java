@@ -241,9 +241,13 @@ public class SoldierEntity extends PathfinderMob {
         Objects.requireNonNull(getAttribute(Attributes.MOVEMENT_SPEED)).setBaseValue(role.speed * unitBody.speedMultiplier);
         race.apply(this);
         setModifier(Attributes.SCALE, "unit_scale", unitBody.scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        // The rank ladder reads at a glance: Captains stand 15% taller than their soldiers, Champions 30% (Hive 35%).
+        if (role == SoldierRole.CAPTAIN) {
+            setModifier(Attributes.SCALE, "captain_scale", 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        }
         if (champion) {
-            double scale = race == Race.HIVE ? 0.35 : race == Race.ORC || race == Race.DWARF ? 0.15 : 0.1;
-            setModifier(Attributes.SCALE, "champion_scale", scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+            double scale = race == Race.HIVE ? 0.35 : 0.30;
+            setModifier(Attributes.SCALE, "champion_scale", scale, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             setModifier(Attributes.KNOCKBACK_RESISTANCE, "champion_knockback", race == Race.DWARF ? 1.0 : 0.4,
                     AttributeModifier.Operation.ADD_VALUE);
             if (race == Race.ELF) {

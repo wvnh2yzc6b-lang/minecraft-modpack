@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/** Client to server: the recall key (H) was pressed. */
+/** Client to server: the recall key (J) was pressed. */
 public record RecallPayload() implements CustomPacketPayload {
     public static final RecallPayload INSTANCE = new RecallPayload();
     public static final Type<RecallPayload> TYPE = new Type<>(Warfront.id("recall"));

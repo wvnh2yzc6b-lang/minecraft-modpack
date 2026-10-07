@@ -142,7 +142,7 @@ public final class RaidScheduler {
         String target = c.home != null ? "your base" : "you";
         int secs = WFConfig.RAID_WARNING.get() / 20;
         String line = "The " + f.displayName + " march on " + target + ". " + secs / 60 + ":" + String.format("%02d", secs % 60)
-                + (c.home != null ? ". Press H (or /warfront home) to recall." : ".");
+                + (c.home != null ? ". Press J (or /warfront home) to recall." : ".");
         p.sendSystemMessage(Component.literal(what + " is coming! " + line).withStyle(f.color, ChatFormatting.BOLD));
         PacketDistributor.sendToPlayer(p, new AdvisorLinePayload(what + " is coming!", line));
         p.playNotifySound(SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 1.0F, 1.0F);
@@ -156,7 +156,7 @@ public final class RaidScheduler {
         NpcFaction f = faction(c);
         bar.setName(Component.literal((c.pending == WarState.Pending.SIEGE ? "Siege" : "Raid") + " in "
                 + left / 60 + ":" + String.format("%02d", left % 60) + "  |  " + (f == null ? "" : f.displayName)
-                + (c.home != null && !c.recallUsed ? "  |  H: recall home" : "")));
+                + (c.home != null && !c.recallUsed ? "  |  J: recall home" : "")));
         bar.setProgress(Mth.clamp(left * 20F / WFConfig.RAID_WARNING.get(), 0F, 1F));
         if (!bar.getPlayers().contains(p)) bar.addPlayer(p);
     }

@@ -69,20 +69,6 @@
       ]
     },
     {
-      "id": "rank-sizes",
-      "status": "ready",
-      "title": "Rank ladder: bigger Captains and Champions",
-      "decided": "Owner, 2026-10-07: sizes follow rank, not role.",
-      "spec": [
-        "In SoldierEntity's attribute setup, add a 'captain_scale' SCALE modifier of +0.15 (ADD_MULTIPLIED_BASE) for the CAPTAIN role, on top of unit_scale and race size.",
-        "Set champion_scale to +0.30 for every race except the Hive (keeps +0.35). Today it is 0.10 (0.15 orc/dwarf), so most Champions grow.",
-        "Other roles: no change. Warlord scale (0.45) unchanged.",
-        "Applies to raider heroes too, so enemy Captains and Champions are easy to spot.",
-        "Game test: a Captain's SCALE attribute is 1.15× a same-race soldier's, a Champion's 1.30×.",
-        "Render a race lineup (soldier, Captain, Champion) for the Codex."
-      ]
-    },
-    {
       "id": "demon-hellknights",
       "status": "ready",
       "title": "Demon hellknights: Hellguard, Fiend, Archfiend, Hellknight, Blood Witch",

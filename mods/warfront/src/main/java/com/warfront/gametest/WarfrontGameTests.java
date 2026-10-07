@@ -1005,4 +1005,21 @@ public final class WarfrontGameTests {
         h.assertTrue(offers.stream().anyMatch(o -> o.getCostA().is(WFRegistry.WAR_MARK.get())), "he buys War Marks");
         h.succeed();
     }
+
+    @GameTest(template = ARENA)
+    public static void captainsAndChampionsStandTaller(GameTestHelper h) {
+        Player owner = tester(h);
+        for (Race race : new Race[]{Race.HUMAN, Race.ORC, Race.DWARF}) {
+            SoldierEntity soldier = recruit(h, owner, SoldierRole.SWORDSMAN, race, 2, 2);
+            SoldierEntity captain = recruit(h, owner, SoldierRole.CAPTAIN, race, 4, 2);
+            SoldierEntity champion = recruit(h, owner, SoldierRole.CHAMPION, race, 6, 2);
+            float c = captain.getScale() / soldier.getScale(), ch = champion.getScale() / soldier.getScale();
+            h.assertTrue(Math.abs(c - 1.15F) < 0.01F, race.id() + " Captain should be 1.15x a soldier, was " + c);
+            h.assertTrue(Math.abs(ch - 1.30F) < 0.01F, race.id() + " Champion should be 1.30x a soldier, was " + ch);
+            soldier.discard();
+            captain.discard();
+            champion.discard();
+        }
+        h.succeed();
+    }
 }
