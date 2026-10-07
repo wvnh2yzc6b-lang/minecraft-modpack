@@ -108,23 +108,23 @@ def hive_lancer():
 def _pincer():
     """One claw arm: plated shoulder, upper arm held out to the side, forearm bent forward, and a big pincer
     whose lower jaw (claw_r) opens."""
-    return part("right_arm", pivot=(-5, 2.5, -8), rot=(0, 0, 1.05),
-                boxes=[box((-1.5, -1, -1.5), (3, 6, 3), "hb_plate"),
-                       box((-2, -2, -2), (4, 2.5, 4), "hb_shell")], children=[
+    return part("right_arm", pivot=(-5.5, 2.5, -8), rot=(0, 0, 1.05),
+                boxes=[box((-2.25, -1, -2.25), (4.5, 6, 4.5), "hb_plate"),
+                       box((-3, -2.5, -3), (6, 3, 6), "hb_shell")], children=[
                     part("forearm_r", pivot=(0, 5.5, 0), rot=(-1.25, 0, 0.3),
-                         boxes=[box((-1.25, 0, -1.25), (2.5, 6, 2.5), "hb_plate")], children=[
-                             part("forearm_r_spike", pivot=(-1.1, 2.5, 0), rot=(0, 0, 0.9),
-                                  boxes=[box((-0.4, -2, -0.4), (0.8, 2, 0.8), "spike")]),
-                             part("pincer_r", pivot=(0, 6, 0), rot=(0, 0, 0.2),
-                                  boxes=[box((-2.25, 0, -1.75), (4.5, 6, 3.5), "hb_claw")], children=[
-                                      part("pincer_r_fixed", pivot=(0, 6, -0.75), rot=(0.1, 0, 0),
-                                           boxes=[box((-1.5, 0, -1), (3, 6, 2), "hb_claw")], children=[
-                                               part("pincer_r_tip", pivot=(0, 6, 0), rot=(0.5, 0, 0),
-                                                    boxes=[box((-1, 0, -0.75), (2, 2.5, 1.5), "hook")])]),
-                                      part("claw_r", pivot=(0, 5.5, 1.25), rot=(0.45, 0, 0),
-                                           boxes=[box((-1.25, 0, -1), (2.5, 6, 2), "hb_claw")], children=[
-                                               part("claw_r_tip", pivot=(0, 6, 0), rot=(-0.6, 0, 0),
-                                                    boxes=[box((-0.9, 0, -0.75), (1.8, 2.5, 1.5), "hook")])])])])])
+                         boxes=[box((-2, 0, -2), (4, 6.5, 4), "hb_plate")], children=[
+                             *[part(f"forearm_r_spike{i}", pivot=(-1.9, 1.5 + i * 2.5, 0), rot=(0, 0, 0.9),
+                                    boxes=[box((-0.5, -2.5, -0.5), (1, 2.5, 1), "spike")]) for i in range(2)],
+                             part("pincer_r", pivot=(0, 6.5, 0), rot=(0, 0, 0.2),
+                                  boxes=[box((-3, 0, -2.5), (6, 6.5, 5), "hb_claw")], children=[
+                                      part("pincer_r_fixed", pivot=(0, 6.5, -1.25), rot=(0.1, 0, 0),
+                                           boxes=[box((-2, 0, -1.25), (4, 7, 2.5), "hb_claw")], children=[
+                                               part("pincer_r_tip", pivot=(0, 7, 0), rot=(0.5, 0, 0),
+                                                    boxes=[box((-1.25, 0, -1), (2.5, 3, 2), "hook")])]),
+                                      part("claw_r", pivot=(0, 6, 1.5), rot=(0.45, 0, 0),
+                                           boxes=[box((-1.75, 0, -1.25), (3.5, 7, 2.5), "hb_claw")], children=[
+                                               part("claw_r_tip", pivot=(0, 7, 0), rot=(-0.6, 0, 0),
+                                                    boxes=[box((-1.1, 0, -0.9), (2.2, 3, 1.8), "hook")])])])])])
 
 
 # Walking legs: four per side under the carapace, splayed from front to back. Each leg rises to a high knee
@@ -146,24 +146,34 @@ def hive_beast():
     """Hive beast: a lobster centaur. The lower body is a low carapace on eight crawling legs with a segmented
     tail; an upright plated torso rises from its front, with claw arms held out to the sides and a head with
     eye stalks, antennae and tusk-mandibles. Sculk-dark shell with glowing veins and a finned crest."""
+    # Head after the reference: a tall spiked crown with two horns sweeping out, a narrow snout with a cluster of
+    # small eyes under a heavy brow, broad bone mandible-blades curving down past the chest, and thin fangs between.
     head = part("head", pivot=(0, -0.5, -8.5), boxes=[
-        box((-3, -6, -3.5), (6, 6, 6), "hb_head"),
-        box((-2.5, -1.5, -4.5), (5, 2, 2), "hb_belly"),
+        box((-2.5, -4.5, -2.5), (5, 4.5, 5), "hb_head"),                  # skull
+        box((-2.75, -5, -4.5), (5.5, 1.5, 2.5), "hb_shell"),              # heavy brow, overhanging the eyes
+        box((-2, -3.5, -3.6), (4, 1.4, 1.1), "hb_leg"),                   # dark recess under the brow
+        *[box((x, -3.2, -3.85), (0.6, 0.6, 0.3), "eye") for x in (-1.7, -0.75, 0.15, 1.1)],
+        box((-1.75, -2.1, -6), (3.5, 2.6, 3.5), "hb_head"),               # snout, jutting forward
+        box((-1.25, -2.5, -5.75), (2.5, 0.5, 3), "hb_shell"),             # snout ridge
+        box((-1.5, 0.5, -5.5), (3, 1, 3), "hb_leg"),                      # dark mouth under the snout
     ], children=[
-        part("eye_r", pivot=(-1.8, -5.5, -2.5), rot=(0.3, 0, -0.35),
-             boxes=[box((-0.4, -2.5, -0.4), (0.8, 2.5, 0.8), "hb_leg"),
-                    box((-0.75, -3.8, -0.75), (1.5, 1.5, 1.5), "eye")]),
-        part("antenna_r", pivot=(-1.4, -5, -3.2), rot=(-0.6, 0, -0.35),
-             boxes=[box((-0.3, -9, -0.3), (0.6, 9, 0.6), "antenna")],
-             children=[part("antenna_r_tip", pivot=(0, -9, 0), rot=(-0.9, 0, -0.2),
-                            boxes=[box((-0.25, -10, -0.25), (0.5, 10, 0.5), "antenna")])]),
-        part("mandible_r", pivot=(-1.6, 0, -4), rot=(0.25, 0, 0.2),
-             boxes=[box((-0.6, 0, -0.6), (1.2, 4, 1.2), "mandible")],
-             children=[part("mandible_r_tip", pivot=(0, 4, 0), rot=(-0.8, 0, -0.4),
-                            boxes=[box((-0.45, 0, -0.45), (0.9, 3, 0.9), "mandible")])]),
-        part("feeler_r", pivot=(-0.7, 0.5, -4.3), rot=(0.2, 0, 0.1), boxes=[box((-0.25, 0, -0.25), (0.5, 3, 0.5), "hb_leg")]),
+        part("crown_c", pivot=(0, -4.5, -1.5), rot=(-0.45, 0, 0), boxes=[box((-1.75, -9, -0.5), (3.5, 9, 1), "frill")], children=[
+            *[part(f"crown_spike_{i}", pivot=(0, -2.5 - i * 3, 0.5), rot=(0.9, 0, 0),
+                   boxes=[box((-0.4, -2, -0.4), (0.8, 2, 0.8), "spike")]) for i in range(2)]]),
+        part("horn_r", pivot=(-2.25, -4, -1), rot=(-0.2, 0, -0.8), boxes=[box((-1, -6, -0.6), (2, 6, 1.2), "frill")], children=[
+            part("horn_r_tip", pivot=(0, -6, 0), rot=(0, 0, 0.25), boxes=[box((-0.5, -4, -0.5), (1, 4, 1), "spike")])]),
+        part("cheek_r", pivot=(-2.6, -2.2, -3.6), rot=(0, 0.5, 0.15), boxes=[box((-1, -2, -1), (1, 3.5, 3.5), "hb_shell")]),
+        part("mandible_r", pivot=(-1.9, 0.5, -5), rot=(0.25, 0, 0.5),
+             boxes=[box((-1.1, 0, -0.5), (2.2, 6.5, 1), "mandible")],
+             children=[part("mandible_r_tip", pivot=(0, 6.5, 0), rot=(-0.3, 0, -0.75),
+                            boxes=[box((-0.85, 0, -0.5), (1.7, 6, 1), "mandible")], children=[
+                                part("mandible_r_point", pivot=(0, 6, 0), rot=(0, 0, -0.4),
+                                     boxes=[box((-0.5, 0, -0.5), (1, 2.5, 1), "hook")])])]),
+        part("fang_r", pivot=(-0.9, 1.3, -5.4), rot=(0.1, 0, 0.12), boxes=[box((-0.25, 0, -0.25), (0.5, 4.5, 0.5), "mandible")]),
     ])
-    head["children"] += [mirror(c) for c in list(head["children"])]
+    head["children"] += [mirror(c) for c in list(head["children"]) if c["name"].endswith("_r")]
+    head["children"].append(part("fang_c", pivot=(0, 1.4, -5.6), rot=(0.12, 0, 0),
+                                 boxes=[box((-0.25, 0, -0.25), (0.5, 5.5, 0.5), "mandible")]))
 
     tail_fan = part("tail_fan", pivot=(0, 0, 3), rot=(-0.15, 0, 0), boxes=[box((-1.5, -0.5, 0), (3, 1, 4), "hb_shell")], children=[
         part("tail_fan_r", pivot=(-1.5, 0, 0), rot=(0, 0.45, 0), boxes=[box((-2.5, -0.5, 0), (2.5, 1, 3.5), "hb_shell")]),

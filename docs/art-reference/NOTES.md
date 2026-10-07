@@ -63,7 +63,8 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - **Feel:** it bursts up out of the ground, scattering dirt. This suits the Hive's cave theme: a burrowing ambusher.
 - **Owner direction:** sculk colors (settled). The first build was too fat and tall. Make it a lobster centaur:
   the lobster back, tail and eight crawling legs, with an upright, human-like torso at the front and the claws
-  held out to the sides. Keep the mandibles, a crest and the glowing veins. Render: `hive-beast-lobster.png`.
+  held out to the sides. Arms thick, not skinny. The face needs depth, after the reference: crown and horns,
+  a heavy brow over the eyes, a jutting snout, broad tusk-blades and fangs. Render: `hive-beast-lobster.png`.
 
 ## Demon: beast unit - `demon-beast.png`
 - A Demon war beast. Picture only; ignore the book text.

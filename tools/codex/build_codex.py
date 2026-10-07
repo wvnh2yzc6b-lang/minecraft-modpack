@@ -334,7 +334,7 @@ def main():
         ]),
         "%%HIVE_SHOTS%%": shots([
             ("hive-units-render.png", "Lancer-Drone, then the Deepmaw, each in the Hive's colors and the Swarm's: front, side and back.", True),
-            ("hive-beast-lobster.png", "The Deepmaw as a lobster centaur: front, side and top, in the Hive's and the Swarm's colors.", True),
+            ("hive-beast-lobster.png", "The Deepmaw as a lobster centaur: front, side and top in the Hive's and the Swarm's colors, then the face next to the reference.", True),
             ("hive-spearman.png", "Spearman reference.", False),
             ("hive-beast.png", "Beast reference.", False),
         ]),
