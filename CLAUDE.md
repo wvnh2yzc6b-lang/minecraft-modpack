@@ -17,6 +17,12 @@ The owner wants to open a session and be handed a decision right away. Before an
 
 If the owner opens with their own request, do that instead.
 
+**Unfinished work.** Only what is pushed to GitHub survives a session; the container is thrown away. Push after
+every step. When the owner says "save progress" (or is about to switch sessions), push what you have even if it is
+half-done, and add an entry with `"status": "progress"` at the top of the `log` in `tools/codex/progress.json`
+saying what was in flight, what's done, and the next step. A new session that finds such an entry finishes that
+work first, before asking a new question.
+
 ## The two pages the owner uses
 
 Both are generated from the repo and published as claude.ai artifacts. Republish to the **same URLs** after any
