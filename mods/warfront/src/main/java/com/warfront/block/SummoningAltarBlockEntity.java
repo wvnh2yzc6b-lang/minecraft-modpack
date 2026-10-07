@@ -121,6 +121,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         Race race = raceOf(player);
         int needed = BaseLevel.requiredLevel(role);
         if (role == SoldierRole.BEAST && !UnitNames.hasBeast(race)) return new Result(false, "Your race has no war beast yet.");
+        if (role.retired()) return new Result(false, "Guards are no longer summoned: sneak + right-click any battle unit to put it on guard or patrol duty.");
         BaseLevel.Status base = needed > 1 || role == SoldierRole.BEAST
                 ? BaseLevel.of(level, worldPosition, factionKey(server.getServer())) : new BaseLevel.Status(0, 0);
         int baseLevel = base.level();

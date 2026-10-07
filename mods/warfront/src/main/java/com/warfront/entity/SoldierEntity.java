@@ -92,6 +92,8 @@ public class SoldierEntity extends PathfinderMob {
     private final SimpleContainer workItems = new SimpleContainer(18);
     @Nullable private Blueprint blueprint;
     private long alarmQuietUntil;
+    /** Guard or patrol duty for a battle unit (NONE while it marches with the army). */
+    private com.warfront.army.Duty duty = com.warfront.army.Duty.NONE;
 
     public SoldierEntity(EntityType<? extends SoldierEntity> type, Level level) {
         super(type, level);
@@ -432,10 +434,35 @@ public class SoldierEntity extends PathfinderMob {
         return blueprint;
     }
 
-    /** Where a posted unit (worker or guard) works or stands watch. */
+    /** Where a posted unit (worker, or a battle unit on duty) works or stands watch. */
     @Nullable
     public BlockPos getPost() {
-        return getRole().posted() && anchor != null ? BlockPos.containing(anchor) : null;
+        return isPosted() && anchor != null ? BlockPos.containing(anchor) : null;
+    }
+
+    /** Workers, plus battle units on guard or patrol duty: they keep a post and ignore the baton. */
+    public boolean isPosted() {
+        return getRole().posted() || duty != com.warfront.army.Duty.NONE;
+    }
+
+    /** Units that stand watch and raise the alarm: battle units on duty (and guards from older saves). */
+    public boolean onWatch() {
+        return duty != com.warfront.army.Duty.NONE || getRole() == SoldierRole.GUARD;
+    }
+
+    public com.warfront.army.Duty getDuty() {
+        return getRole() == SoldierRole.GUARD && duty == com.warfront.army.Duty.NONE ? com.warfront.army.Duty.GUARD : duty;
+    }
+
+    /** Puts a battle unit on guard or patrol duty at a post, or (NONE) sends it back to its commander. */
+    public void setDuty(com.warfront.army.Duty duty, Vec3 post, float yaw) {
+        if (getRole().worker()) return;
+        this.duty = duty;
+        if (duty == com.warfront.army.Duty.NONE) {
+            command(Order.FOLLOW, formation, null, yaw);
+        } else {
+            command(Order.HOLD, formation, post, yaw);
+        }
     }
 
     /** Replaces a builder's blueprint (used by tests to survey a small area). */
@@ -553,7 +580,10 @@ public class SoldierEntity extends PathfinderMob {
         if (target == null) return false;
         Order order = getOrder();
         if (order == Order.CHARGE || slot == null) return true;
-        if (getRole() == SoldierRole.GUARD && order == Order.HOLD) return target.position().distanceToSqr(slot) < 14 * 14;
+        if (onWatch() && order == Order.HOLD) {
+            double reach = getDuty().beat + 8;
+            return target.position().distanceToSqr(slot) < reach * reach;
+        }
         double leash = switch (order) {
             case HOLD -> formation == Formation.SHIELD_WALL ? 3.5 : 6.0;
             case FOLLOW -> 10.0;
@@ -568,7 +598,7 @@ public class SoldierEntity extends PathfinderMob {
     public void recomputeSlot() {
         Order order = getOrder();
         marchLeader = false;
-        if (getRole().posted()) {
+        if (isPosted()) {
             // Posted units keep their own post (HOLD) or trail their commander while being moved (FOLLOW).
             Player owner = getOwner();
             if (order == Order.FOLLOW && owner != null) {
@@ -701,7 +731,7 @@ public class SoldierEntity extends PathfinderMob {
         if (getRole() == SoldierRole.HEALER && getHealth() < getMaxHealth()) {
             heal(1f);
         }
-        if (getRole() == SoldierRole.GUARD) {
+        if (onWatch()) {
             soundAlarm();
         }
 
@@ -898,6 +928,19 @@ public class SoldierEntity extends PathfinderMob {
         if (level().isClientSide) return InteractionResult.SUCCESS;
 
         ItemStack held = player.getItemInHand(hand);
+        if (!getRole().posted() && player.isShiftKeyDown() && held.isEmpty()) {
+            // Sneak + empty hand on a battle unit: guard here, then patrol here, then back to the army.
+            com.warfront.army.Duty next = com.warfront.army.Duty.byOrdinal(getDuty().ordinal() + 1);
+            setDuty(next, position(), player.getYRot());
+            String what = switch (next) {
+                case GUARD -> " stands guard here. Sneak + right-click again to have it patrol instead.";
+                case PATROL -> " patrols around here. Sneak + right-click again to call it back to the army.";
+                case NONE -> " rejoins your army and follows you.";
+            };
+            player.displayClientMessage(Component.literal("Your " + getUnitName() + what).withStyle(ChatFormatting.GOLD), true);
+            playSound(SoundEvents.VILLAGER_YES, 0.8F, 1.0F);
+            return InteractionResult.CONSUME;
+        }
         if (getRole().posted() && player.isShiftKeyDown() && held.isEmpty()) {
             // Sneak + empty hand: pick a posted unit up to move it, or set it down at a new post.
             if (getOrder() == Order.HOLD) {
@@ -952,7 +995,7 @@ public class SoldierEntity extends PathfinderMob {
     }
 
     private String workStatus() {
-        if (!getRole().posted()) return "";
+        if (!getRole().posted()) return duty == com.warfront.army.Duty.NONE ? "" : "  " + duty.title;
         int carried = 0;
         for (int i = 0; i < workItems.getContainerSize(); i++) carried += workItems.getItem(i).getCount();
         String s = getOrder() == Order.HOLD ? "  on post" : "  following";
@@ -986,6 +1029,7 @@ public class SoldierEntity extends PathfinderMob {
             tag.putDouble("AnchorZ", anchor.z);
         }
         tag.putFloat("AnchorYaw", anchorYaw);
+        if (duty != com.warfront.army.Duty.NONE) tag.putInt("Duty", duty.ordinal());
         if (siegeTarget != null) tag.putLong("SiegeTarget", siegeTarget.asLong());
         if (!workItems.isEmpty()) tag.put("WorkItems", workItems.createTag(registryAccess()));
         if (blueprint != null) tag.put("Blueprint", blueprint.save());
@@ -997,6 +1041,7 @@ public class SoldierEntity extends PathfinderMob {
         entityData.set(DATA_ROLE, tag.getInt("Role"));
         entityData.set(DATA_SKIN, tag.getInt("Skin"));
         entityData.set(DATA_ORDER, tag.getInt("Order"));
+        duty = com.warfront.army.Duty.byOrdinal(tag.getInt("Duty"));
         if (tag.contains("Faction")) entityData.set(DATA_FACTION, tag.getString("Faction"));
         entityData.set(DATA_OWNER, tag.hasUUID("Owner") ? Optional.of(tag.getUUID("Owner")) : Optional.empty());
         warbandId = tag.hasUUID("Warband") ? tag.getUUID("Warband") : null;

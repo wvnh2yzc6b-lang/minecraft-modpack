@@ -574,16 +574,18 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA, timeoutTicks = 200)
-    public static void guardAlarmRallysHiddenAllies(GameTestHelper h) {
+    public static void guardDutyAlarmRallysHiddenAllies(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         // An ally sealed in a stone cell cannot see the raider, so only the guard's alarm can send it.
         for (int x = 0; x <= 2; x++) for (int y = 2; y <= 4; y++) for (int z = 6; z <= 8; z++) {
             if (!(x == 1 && z == 7 && y < 4)) h.setBlock(new BlockPos(x, y, z), Blocks.STONE);
         }
         SoldierEntity ally = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 1, 7);
-        SoldierEntity guard = posted(h, owner, SoldierRole.GUARD, Race.HUMAN, 4, 2);
+        SoldierEntity guard = recruit(h, owner, SoldierRole.SHIELDBEARER, Race.HUMAN, 4, 2);
+        guard.setDuty(com.warfront.army.Duty.GUARD, guard.position(), 0F);
         SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 7, 2);
-        h.assertTrue(guard.getOffhandItem().is(Items.SHIELD), "human guards carry a shield");
+        h.assertTrue(guard.isPosted() && guard.onWatch(), "a shieldbearer on guard duty should keep watch at its post");
+        h.assertTrue(!com.warfront.item.CommanderBatonItem.armyOf(owner).contains(guard), "units on duty leave the baton's army");
         h.succeedWhen(() -> h.assertTrue(ally.getTarget() == enemy, "the guard's alarm never reached the hidden ally"));
     }
 

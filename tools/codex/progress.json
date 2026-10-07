@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Guard and patrol duty for battle units",
+      "detail": "There is no separate guard unit any more. Sneak + right-click any battle unit with an empty hand to cycle it: on guard (holds the spot, walks a short beat), on patrol (ranges about 16 blocks around the spot), then back to the army. Units on duty ignore the Commander's Baton and ring the alarm that calls nearby troops when enemies come. Guards already in a world keep working; the altar no longer offers them."
+    },
+    {
+      "status": "done",
       "title": "Orc Rage, elven archery and demon Soul Harvest",
       "detail": "Orcs fill a Rage bar by landing and taking hits; when it's full they Frenzy for 8 seconds (+30% damage, +20% attack speed, +15% speed, 15% more damage taken) and frenzied orc soldiers won't rout. Players see the bar above the hotbar. Frenzy is a regular status effect other mods can see. Elves are now master archers: arrows fly 20% faster and hit 25% harder, and long shots from 16+ blocks hit harder still and make the target glow. Both apply to players and soldiers. Demons harvest a soul from every kill (up to 10): each heals 2 health and adds 2% attack damage, and a full harvest makes the next hit a Soul Burst that also hits enemies within 3 blocks. Players see their souls above the hotbar."
     },
@@ -106,7 +111,7 @@
     "demonsTakeWingWithoutAnElytra": "A demon player can start flying with no elytra equipped",
     "farmerHarvestsAndReplants": "A farmer harvests ripe wheat, keeps the grain and replants",
     "builderRebuildsFromChest": "A builder rebuilds a knocked-down pillar with bricks from a chest",
-    "guardAlarmRallysHiddenAllies": "A guard's alarm sends an ally that can't see the enemy into the fight",
+    "guardDutyAlarmRallysHiddenAllies": "A shieldbearer put on guard duty leaves the baton's army and its alarm sends a hidden ally after the raider",
     "workersFleeAndKeepTheirPosts": "Workers never take targets or fight, and the baton leaves them at their posts",
     "demonImpsAreImpalersAndFirecasters": "Only demon spearmen and archers are imps; Fiends and demon workers are full-sized",
     "altarSummonsWithWellMana": "An altar summons only with mana in a linked well, and spends exactly the unit's cost; hive is cheaper",

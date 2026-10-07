@@ -1,7 +1,7 @@
 package com.warfront.entity.ai;
 
 import com.warfront.army.Order;
-import com.warfront.army.SoldierRole;
+import com.warfront.army.Duty;
 import com.warfront.entity.SoldierEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -13,12 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 /**
- * Guards don't stand frozen at their post: every so often they walk a short beat around it,
- * stop to look about, then return to their post (FormationMoveGoal takes them back).
+ * Units on watch don't stand frozen at their post: every so often they walk a beat around it, stop to look
+ * about, then return to their post (FormationMoveGoal takes them back). Guards walk a short beat; patrols
+ * range wider and set out more often.
  */
 public class GuardPatrolGoal extends Goal {
-    private static final int BEAT = 6;
-
     private final SoldierEntity guard;
     private int wait;
     private int linger;
@@ -32,20 +31,22 @@ public class GuardPatrolGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (guard.getRole() != SoldierRole.GUARD || guard.getOrder() != Order.HOLD || guard.getTarget() != null) return false;
+        if (!guard.onWatch() || guard.getOrder() != Order.HOLD || guard.getTarget() != null) return false;
         if (--wait > 0) return false;
-        wait = 160 + guard.getRandom().nextInt(200);
+        boolean patrol = guard.getDuty() == Duty.PATROL;
+        int beat = guard.getDuty().beat;
+        wait = patrol ? 40 + guard.getRandom().nextInt(60) : 160 + guard.getRandom().nextInt(200);
         BlockPos post = guard.getPost();
         if (post == null) return false;
-        double a = guard.getRandom().nextDouble() * Math.PI * 2, r = 3 + guard.getRandom().nextDouble() * (BEAT - 3);
+        double a = guard.getRandom().nextDouble() * Math.PI * 2, r = (patrol ? beat / 2.0 : 3) + guard.getRandom().nextDouble() * (beat - (patrol ? beat / 2.0 : 3));
         BlockPos xz = post.offset(Mth.floor(Math.cos(a) * r), 0, Mth.floor(Math.sin(a) * r));
         BlockPos ground = guard.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, xz);
         if (Math.abs(ground.getY() - post.getY()) > 3) ground = xz;   // indoors or on a wall: stay on this level
         Path path = guard.getNavigation().createPath(ground, 1);
         if (path == null || !path.canReach()) return false;
         spot = ground;
-        guard.getNavigation().moveTo(path, 0.55);
-        linger = 40 + guard.getRandom().nextInt(40);
+        guard.getNavigation().moveTo(path, patrol ? 0.7 : 0.55);
+        linger = patrol ? 20 + guard.getRandom().nextInt(20) : 40 + guard.getRandom().nextInt(40);
         return true;
     }
 

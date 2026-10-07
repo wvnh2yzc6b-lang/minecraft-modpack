@@ -39,12 +39,15 @@ def thumb(race):
 
 
 RACE_LABEL = {"human": "Human", "elf": "Elf", "dwarf": "Dwarf", "orc": "Orc", "demon": "Demon", "angel": "Angel", "hive": "Hive"}
+RETIRED = {"guard"}   # battle units take guard and patrol duty instead
 GROUPS = [("need", "Needs a design", "need"), ("partial", "Partly done", "part"), ("done", "Designed", "ok")]
 
 
 def race_section(race, roles, names, thumb_uri):
     units = {"need": [], "partial": [], "done": []}
     for i, role in enumerate(roles):
+        if role in RETIRED:
+            continue
         status, note = cell(race, role)
         name = names.get(race, [])[i] if i < len(names.get(race, [])) else role.title()
         ask = NEEDS["role_asks"].get(role, "")
@@ -57,7 +60,7 @@ def race_section(race, roles, names, thumb_uri):
                           f'<span class="count">{len(units[key])}</span></h3><ul>{"".join(units[key])}</ul></div>')
     need = len(units["need"]) + len(units["partial"])
     return (f'<article class="race" id="{race}"><header><img src="{thumb_uri}" alt="" width="36" height="72">'
-            f'<div><h2>{RACE_LABEL[race]}</h2><p>{need} of {len(roles)} units still need design work</p></div></header>'
+            f'<div><h2>{RACE_LABEL[race]}</h2><p>{need} of {len(roles) - len(RETIRED)} units still need design work</p></div></header>'
             f'{"".join(blocks)}</article>'), units
 
 

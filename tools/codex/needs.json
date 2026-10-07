@@ -70,12 +70,6 @@
     {
       "topic": "Players",
       "priority": "medium",
-      "question": "How should human players fly, if at all?",
-      "why": "Orcs get a jetpack, angels wings, elves flight magic. Humans are still open: a glider, a mount, siege tech, or no flight."
-    },
-    {
-      "topic": "Players",
-      "priority": "medium",
       "question": "Reference art for the other player races (orc, angel, elf, dwarf, human).",
       "why": "Each player model is built from your references, the same way the demon player was."
     },
@@ -123,6 +117,18 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Army",
+      "answer": "No separate guard unit: any battle unit can be put on guard duty (holds a spot, short beat) or patrol duty (ranges about 16 blocks) and raises the alarm. Sneak + right-click it to cycle guard, patrol and back to the army."
+    },
+    {
+      "topic": "Orc",
+      "answer": "The orc non-combat roles (farmer and builder) are goblins."
+    },
+    {
+      "topic": "Players",
+      "answer": "Humans fly with a mana-powered glider."
+    },
     {
       "topic": "Demon",
       "answer": "Demon dark magic is Soul Harvest: every kill takes a soul (up to 10), healing 2 health and adding 2% attack damage per soul. With 10 souls the next hit unleashes a Soul Burst: +6 damage to the target and 4 to enemies within 3 blocks, spending every soul. Souls are lost on death. Works for demon players and soldiers."
