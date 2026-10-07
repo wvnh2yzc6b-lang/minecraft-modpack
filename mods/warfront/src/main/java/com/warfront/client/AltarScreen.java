@@ -40,15 +40,18 @@ public class AltarScreen extends Screen {
             return;
         }
         boolean creative = minecraft != null && minecraft.player != null && minecraft.player.isCreative();
-        int rows = (data.names().size() + 1) / 2;
+        int rows = (visible() + 1) / 2;
         int left = width / 2 - BUTTON_W - GAP / 2;
         int top = height / 2 - (rows * (BUTTON_H + GAP)) / 2 + 10;
+        int slot = 0;
         for (int i = 0; i < data.names().size(); i++) {
             int role = i;
             int cost = data.costs().get(i);
+            if (cost < 0) continue;
+            int n = slot++;
             Button b = Button.builder(Component.literal(data.names().get(i) + "  ·  " + cost),
                             btn -> PacketDistributor.sendToServer(new AltarSummonPayload(data.pos(), role)))
-                    .bounds(left + (i % 2) * (BUTTON_W + GAP), top + (i / 2) * (BUTTON_H + GAP), BUTTON_W, BUTTON_H)
+                    .bounds(left + (n % 2) * (BUTTON_W + GAP), top + (n / 2) * (BUTTON_H + GAP), BUTTON_W, BUTTON_H)
                     .tooltip(Tooltip.create(Component.literal(data.descriptions().get(i) + "\nCosts " + cost + " mana.")))
                     .build();
             b.active = creative || cost <= data.mana();
@@ -56,10 +59,16 @@ public class AltarScreen extends Screen {
         }
     }
 
+    private int visible() {
+        int n = 0;
+        for (int c : data.costs()) if (c >= 0) n++;
+        return n;
+    }
+
     @Override
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);
-        int rows = (data.names().size() + 1) / 2;
+        int rows = (visible() + 1) / 2;
         int top = data.missing().isEmpty() ? height / 2 - (rows * (BUTTON_H + GAP)) / 2 - 22 : height / 2 - 50;
         g.drawCenteredString(font, title, width / 2, top, 0xE2B55A);
         if (data.missing().isEmpty()) {

@@ -19,7 +19,9 @@ public enum SoldierRole {
     // Posted roles: they work or stand watch at a post instead of marching with the army.
     FARMER(6,           18, 0.0, 0,    2,   0.30,  false, 10,  Kind.WORKER, "Harvests and replants crops around its post, tills land by water and stores the harvest in a chest."),
     BUILDER(6,          20, 0.0, 1,    3,   0.29,  false, 15,  Kind.WORKER, "Remembers the buildings around its post and rebuilds whatever enemies or explosions destroy."),
-    GUARD(6,            28, 1.0, 4,    10,  0.29,  true,  20,  Kind.GUARD,  "Holds a post, patrols it, and raises the alarm to nearby troops when enemies come.");
+    GUARD(6,            28, 1.0, 4,    10,  0.29,  true,  20,  Kind.GUARD,  "Holds a post, patrols it, and raises the alarm to nearby troops when enemies come."),
+    // A rare war beast. Only races with a beast can summon one, and each commander may field a limited number.
+    BEAST(1,            90, 4.0, 8,    0,   0.27,  true,  150, Kind.ARMY,   "A huge war beast that tears through enemy lines. Each commander can field only a few.");
 
     /** What a role does with its time. */
     public enum Kind {

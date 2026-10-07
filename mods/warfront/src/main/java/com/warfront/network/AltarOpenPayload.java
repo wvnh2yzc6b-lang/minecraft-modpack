@@ -39,7 +39,8 @@ public record AltarOpenPayload(BlockPos pos, float mana, String missing, List<St
         List<String> descriptions = new ArrayList<>();
         for (SoldierRole role : SoldierRole.values()) {
             names.add(UnitNames.of(race, role));
-            costs.add(role.manaCost(race));
+            // A cost of -1 hides the role: this race has no war beast yet.
+            costs.add(role == SoldierRole.BEAST && !UnitNames.hasBeast(race) ? -1 : role.manaCost(race));
             descriptions.add(role.displayName() + ". " + role.description);
         }
         List<String> missing = SummoningAltarBlockEntity.missing(altar.getLevel(), altar.getBlockPos());

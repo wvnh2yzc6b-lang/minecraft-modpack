@@ -240,6 +240,51 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void hiveSpearmenAreLancersAndBeastsAreHuge(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity lancer = recruit(h, owner, SoldierRole.SPEARMAN, Race.HIVE, 2, 2);
+        SoldierEntity beast = recruit(h, owner, SoldierRole.BEAST, Race.HIVE, 6, 6);
+        h.assertTrue(lancer.getBody() == com.warfront.army.UnitBody.LANCER, "hive spearmen should be lancers");
+        h.assertTrue("Lancer-Drone".equals(lancer.getUnitName()), "unit name should be Lancer-Drone, was " + lancer.getUnitName());
+        h.assertTrue(beast.getBody() == com.warfront.army.UnitBody.HIVE_BEAST, "the hive beast should use the beast body");
+        h.assertTrue(beast.getScale() > 1.5F, "the beast should be huge, scale was " + beast.getScale());
+        h.assertTrue("Deepmaw".equals(beast.getUnitName()), "unit name should be Deepmaw, was " + beast.getUnitName());
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void beastsAreLimitedAndRaceBound(GameTestHelper h) {
+        Player hive = h.makeMockPlayer(GameType.SURVIVAL);
+        hive.setData(WFRegistry.RACE, Race.HIVE.id());
+        hive.moveTo(h.absoluteVec(new Vec3(4.5, 2, 7.5)));
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), hive, true);
+        well(h, new BlockPos(8, 1, 8), hive, 2000F);
+        int cap = com.warfront.config.WFConfig.BEAST_LIMIT.get();
+        for (int i = 0; i < cap; i++) recruit(h, hive, SoldierRole.BEAST, Race.HIVE, 1 + i % 3, 1 + i / 3);
+        h.runAfterDelay(2, () -> {
+            SummoningAltarBlockEntity.Result over = altar.summon(hive, SoldierRole.BEAST);
+            h.assertTrue(!over.ok() && over.message().contains("most you can field"),
+                    "a commander at the beast limit should be refused: " + over.message());
+            SummoningAltarBlockEntity.Result humanTry = altar.summon(human, SoldierRole.BEAST);
+            h.assertTrue(!humanTry.ok(), "a race without a beast should not summon one");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void hiveIsStrongerUnderground(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity drone = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HIVE, 4, 4);
+        // Test arenas sit far below Y=40, so this counts as underground.
+        com.warfront.world.HiveAdaptation.apply(drone, 60);
+        h.assertTrue(drone.hasEffect(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST), "hive soldiers should gain Strength underground");
+        h.assertTrue(!drone.hasEffect(net.minecraft.world.effect.MobEffects.WEAKNESS), "hive soldiers should not be weakened underground");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void ripeManabloomDropsShards(GameTestHelper h) {
         BlockPos crop = new BlockPos(4, 2, 4);
         h.setBlock(crop.below(), Blocks.FARMLAND.defaultBlockState());

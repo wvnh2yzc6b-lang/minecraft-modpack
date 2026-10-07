@@ -21,7 +21,7 @@ public final class FormationLayout {
     public static int line(SoldierRole role) {
         return switch (role) {
             case SHIELDBEARER -> 0;
-            case SPEARMAN, SWORDSMAN, CAPTAIN, CHAMPION -> 1;
+            case SPEARMAN, SWORDSMAN, CAPTAIN, CHAMPION, BEAST -> 1;
             case ARCHER -> 2;
             case HEALER, FARMER, BUILDER, GUARD -> 3;
         };

@@ -118,6 +118,13 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         if (count >= max) return new Result(false, "Your army is at full strength (" + max + ").");
 
         Race race = raceOf(player);
+        if (role == SoldierRole.BEAST) {
+            if (!UnitNames.hasBeast(race)) return new Result(false, "Your race has no war beast yet.");
+            int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
+                    s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size();
+            int cap = WFConfig.BEAST_LIMIT.get();
+            if (beasts >= cap) return new Result(false, "You already command " + beasts + " war beasts, the most you can field (" + cap + ").");
+        }
         int cost = role.manaCost(race);
         String key = factionKey(server.getServer());
         if (!player.getAbilities().instabuild && !ManaNetwork.draw(level, worldPosition, key, cost)) {

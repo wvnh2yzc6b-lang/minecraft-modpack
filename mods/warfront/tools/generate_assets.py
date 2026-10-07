@@ -471,8 +471,9 @@ def soldier_skins():
          hexc("0f0505"), hexc("ffd700"), extras=horns(hexc("2a2a2a")), seed=70)
     skin("angel", hexc("f7e7d4"), hexc("ffe680"), hexc("f2f2f2"), hexc("d4a017"), hexc("e6e6e6"),
          hexc("c9a227"), hexc("6fb7ff"), extras=halo, seed=80)
-    skin("hive", hexc("5b2a6e"), hexc("3a1748"), hexc("2e1240"), hexc("7fff4f"), hexc("2a1038"),
-         hexc("1a0a24"), hexc("7fff4f"), extras=mandibles, seed=90)
+    # Hive: sculk-dark teal chitin with glowing cyan veins, like the Warden and the deep dark.
+    skin("hive", hexc("143a44"), hexc("08191f"), hexc("0e2a32"), hexc("29dfeb"), hexc("0a1f26"),
+         hexc("050f14"), hexc("49ffc8"), extras=sculk(hexc("29dfeb")), seed=90)
 
     # NPC factions (file names match NpcFaction enum names in lower case).
     skin("marauders", hexc("5a7a32"), hexc("111111"), hexc("7a1f1f"), hexc("2b2b2b"), hexc("2b1a10"),
@@ -481,8 +482,9 @@ def soldier_skins():
          hexc("111114"), hexc("8b0000"), seed=60)
     skin("burning_horde", hexc("8b1a1a"), hexc("0a0a0a"), hexc("3b1a0a"), hexc("ff4500"), hexc("240a05"),
          hexc("120503"), hexc("ff6a00"), extras=horns(hexc("111111")), seed=100)
-    skin("the_swarm", hexc("3f5a1e"), hexc("26380f"), hexc("2a3a12"), hexc("c0392b"), hexc("1e2a0c"),
-         hexc("101806"), hexc("ff2a2a"), extras=mandibles, seed=110)
+    # The Swarm: the Hive's wild kin, black chitin veined with acid green.
+    skin("the_swarm", hexc("1c2622"), hexc("0b1210"), hexc("141d1a"), hexc("8aff3a"), hexc("101714"),
+         hexc("070b0a"), hexc("b8ff4a"), extras=sculk(hexc("8aff3a")), seed=110)
     skin("silverwood_reavers", hexc("e8d8c8"), hexc("dcdcdc"), hexc("23402c"), hexc("a8a8a8"), hexc("1e2e22"),
          hexc("3a2e1a"), hexc("9fe8ff"), extras=elf_ears(hexc("e8d8c8")), seed=120)
     skin("ironbeard_clan", hexc("c98a68"), hexc("4a4a4a"), hexc("3f4a5a"), hexc("c0c0c0"), hexc("2f3a44"),
@@ -525,6 +527,21 @@ def mandibles(img):
     for x in range(20, 28):
         for y in (21, 24):
             img.putpixel((x, y), shade(img.getpixel((x, y)), 0.6))
+
+
+def sculk(vein):
+    """Mandibles and chest plates, plus thin glowing veins branching over the chitin like sculk."""
+    def apply(img):
+        mandibles(img)
+        dim = shade(vein, 0.55)
+        # Veins: (x, y) runs on the body front, arms and legs.
+        for x, y in [(21, 22), (22, 23), (22, 24), (23, 25), (26, 21), (25, 22), (25, 23), (24, 24),
+                     (45, 22), (45, 23), (46, 24), (46, 25), (37, 54), (37, 55), (38, 56),
+                     (5, 22), (5, 23), (6, 24), (21, 54), (21, 55), (22, 56)]:
+            img.putpixel((x, y), vein)
+        for x, y in [(20, 21), (27, 22), (44, 21), (47, 26), (36, 53), (4, 21), (7, 25), (20, 53)]:
+            img.putpixel((x, y), dim)
+    return apply
 
 
 # --------------------------------------------------------------------------- json

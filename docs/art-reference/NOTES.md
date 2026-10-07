@@ -1,5 +1,13 @@
 # Unit art direction
 
+## Engineering direction (owner)
+- Keep Warfront easy to combine with other mods. Use vanilla systems other mods already understand: attributes,
+  mob effects, item and block tags, and NeoForge capabilities (the Mana Well takes items through the standard
+  item handler, so any mod's hoppers and pipes can feed it). Integrations with other mods (Iron's Spells,
+  Ars Nouveau and so on) are optional: Warfront must still load and work without them.
+- Player mana for spells should come from Iron's Spells rather than a third mana bar; Warfront's own mana stays
+  in wells as base power.
+
 Reference images supplied by the pack owner, with the design notes taken from each.
 These drive the soldier models (3D parts), skins and unit sizes.
 

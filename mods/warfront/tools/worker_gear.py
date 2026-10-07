@@ -43,9 +43,9 @@ GEAR_PALETTES = {
     "angel": _base(dict(leather="d8c8a8", leather_dark="9a8a6a", iron="e6dcb8", iron_dark="a89a6a", rust="c8a44a",
                         cloth="f0ece0", cloth_dark="b8b0a0", accent="d4a017", accent_dark="8a6a10", trim="fff0a8",
                         apron="e8e0cc", glow_c="fff4c0")),
-    "hive": _base(dict(leather="4a2a5a", leather_dark="24142e", iron="7a4a8a", iron_dark="3a2244", rust="b048d0",
-                       cloth="3a2a4a", cloth_dark="1a1224", accent="b048d0", accent_dark="5a206a", trim="e070ff",
-                       apron="5a3a6a", glow_c="e070ff")),
+    "hive": _base(dict(leather="1a3a40", leather_dark="0a1c20", iron="2e5a62", iron_dark="14303a", rust="29dfeb",
+                       cloth="143038", cloth_dark="081a1f", accent="29dfeb", accent_dark="0e6a74", trim="49ffc8",
+                       apron="1c3c44", straw="4a6a5a", straw_dark="22382e", glow_c="29dfeb")),
     "marauders": _base(dict(leather="5a3a1e", leather_dark="2a1a0c", iron="6a6460", iron_dark="363230", rust="9a4a1a",
                             cloth="7a4a2a", cloth_dark="3a2212", accent="9a5a1a", accent_dark="4a2a0a", trim="d8cdb0",
                             apron="7a5a3a", glow_c="ff8a3a")),
@@ -61,9 +61,9 @@ GEAR_PALETTES = {
     "fallen_host": _base(dict(leather="3a3448", leather_dark="1a1624", iron="4a4458", iron_dark="221e2c", rust="6a5a8a",
                               cloth="2a2632", cloth_dark="121018", accent="4a3a6a", accent_dark="221a34", trim="9a8ac8",
                               apron="3a3448", glow_c="b0a0ff")),
-    "the_swarm": _base(dict(leather="3a4a1a", leather_dark="1a240a", iron="4a5a2a", iron_dark="223010", rust="6aa020",
-                            cloth="2a3418", cloth_dark="12180a", accent="6aa020", accent_dark="2e4a0e", trim="b8ff4a",
-                            chitin="3a4a1a", chitin_dark="1a240a", apron="3a4a24", glow_c="b8ff4a")),
+    "the_swarm": _base(dict(leather="1c2622", leather_dark="0b1210", iron="34403a", iron_dark="18201c", rust="8aff3a",
+                            cloth="141d1a", cloth_dark="070b0a", accent="8aff3a", accent_dark="3e7a14", trim="b8ff4a",
+                            apron="1c2622", straw="4a5a3a", straw_dark="22301a", glow_c="b8ff4a")),
 }
 
 # Extra keys the imp palettes need for the gear materials they share with worker gear.

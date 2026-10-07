@@ -292,6 +292,7 @@ public class SoldierEntity extends PathfinderMob {
             case HEALER -> gear(EquipmentSlot.MAINHAND, WFRegistry.HEALING_STAFF.get());
             case FARMER -> gear(EquipmentSlot.MAINHAND, iron ? Items.IRON_HOE : Items.STONE_HOE);
             case BUILDER -> gear(EquipmentSlot.MAINHAND, WFRegistry.MASON_HAMMER.get());
+            case BEAST -> { }   // beasts fight with their own claws and jaws
             case GUARD -> {
                 if (race == Race.DEMON) {
                     gear(EquipmentSlot.MAINHAND, Items.TRIDENT);   // imp sentries carry a pike
@@ -638,6 +639,9 @@ public class SoldierEntity extends PathfinderMob {
 
     @Override
     public void aiStep() {
+        if (!level().isClientSide && race == Race.HIVE && tickCount % 40 == 0) {
+            com.warfront.world.HiveAdaptation.apply(this, 60);
+        }
         super.aiStep();
         if (level().isClientSide) return;
 

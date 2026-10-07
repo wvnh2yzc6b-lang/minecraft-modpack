@@ -924,6 +924,9 @@ def gear_material(mat, side, x, y, w, h, pal, rng):
 
 
 def material(mat, side, x, y, w, h, pal, rng):
+    g = hive_units.hive_material(mat, side, x, y, w, h, pal, rng)
+    if g is not NotImplemented:
+        return g
     g = worker_gear.worker_material(mat, side, x, y, w, h, pal, rng)
     if g is not NotImplemented:
         return g
@@ -1122,6 +1125,9 @@ public final class UnitGeometry {{
 
 
 import worker_gear
+import hive_units
+hive_units.bind(dict(part=part, box=box, mirror=mirror, attach=attach, hexc=hexc, mix=mix, shade=shade, glow=glow,
+                     edge=edge))
 worker_gear.bind(dict(part=part, box=box, mirror=mirror, overlay=overlay, attach=attach, find=find, hexc=hexc,
                       mix=mix, shade=shade, glow=glow, edge=edge, leather_px=leather_px, iron_px=iron_px,
                       cloth_px=cloth_px))
@@ -1129,7 +1135,7 @@ for _key, _extra in worker_gear.IMP_WORKER_KEYS.items():
     IMP_PALETTES[_key].update(_extra)
 
 GEAR_MODELS = worker_gear.all_gear()
-MODELS = [imp_impaler(), imp_firecaster(), demon_player(), *GEAR_MODELS]
+MODELS = [imp_impaler(), imp_firecaster(), *hive_units.models(), demon_player(), *GEAR_MODELS]
 
 
 if __name__ == "__main__":
@@ -1149,6 +1155,10 @@ if __name__ == "__main__":
     for m in MODELS:
         if m["id"].startswith("imp"):
             for key, pal in IMP_PALETTES.items():
+                print("painted", paint(m, key, pal))
+    for m in MODELS:
+        if m["id"].startswith("hive_"):
+            for key, pal in hive_units.PALETTES.items():
                 print("painted", paint(m, key, pal))
     for m in GEAR_MODELS:
         race = m["id"].rsplit("_", 1)[1]

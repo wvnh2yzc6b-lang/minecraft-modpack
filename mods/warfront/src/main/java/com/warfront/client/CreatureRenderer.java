@@ -1,22 +1,21 @@
 package com.warfront.client;
 
 import com.warfront.Warfront;
-import com.warfront.client.model.ImpModel;
 import com.warfront.entity.SoldierEntity;
-import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Renders one imp variant (imp_impaler, imp_firecaster). {@link SoldierRenderer}
- * picks the variant per entity.
+ * Renders one generated creature model (imp_impaler, hive_lancer, hive_beast...). {@link SoldierRenderer} picks
+ * the model per entity. Textures live at {@code textures/entity/soldier/<skin>/<variant>.png}, with a glow layer.
  */
-public class ImpRenderer extends HumanoidMobRenderer<SoldierEntity, ImpModel> {
+public class CreatureRenderer<M extends HumanoidModel<SoldierEntity>> extends HumanoidMobRenderer<SoldierEntity, M> {
     private final String variant;
 
-    public ImpRenderer(EntityRendererProvider.Context ctx, ModelLayerLocation layer, String variant) {
-        super(ctx, new ImpModel(ctx.bakeLayer(layer)), 0.35F);
+    public CreatureRenderer(EntityRendererProvider.Context ctx, M model, float shadow, String variant) {
+        super(ctx, model, shadow);
         this.variant = variant;
         this.addLayer(new GlowLayer<>(this, e -> texture(e, "_glow")));
     }

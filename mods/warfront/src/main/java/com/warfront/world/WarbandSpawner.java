@@ -20,7 +20,21 @@ import java.util.UUID;
 public final class WarbandSpawner {
     private static final int MAX_WAVE_SIZE = 40;
 
+    /** How far from its objective a tunneling Swarm brood breaks the surface. */
+    private static final double TUNNEL_DISTANCE = 14.0;
+
     private WarbandSpawner() {}
+
+    /** Dirt and stone burst up where a tunneling soldier breaks through. */
+    private static void emerge(ServerLevel level, BlockPos at) {
+        net.minecraft.world.level.block.state.BlockState ground = level.getBlockState(at.below());
+        if (ground.isAir()) ground = net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState();
+        level.sendParticles(new net.minecraft.core.particles.BlockParticleOption(
+                        net.minecraft.core.particles.ParticleTypes.BLOCK, ground),
+                at.getX() + 0.5, at.getY() + 0.2, at.getZ() + 0.5, 40, 0.5, 0.4, 0.5, 0.15);
+        level.playSound(null, at, net.minecraft.sounds.SoundEvents.GRAVEL_BREAK, net.minecraft.sounds.SoundSource.HOSTILE,
+                1.2F, 0.6F);
+    }
 
     /** Army composition for a siege wave; grows with every wave survived. */
     public static List<SoldierRole> siegeComposition(int wave, NpcFaction faction) {
@@ -66,6 +80,14 @@ public final class WarbandSpawner {
                                                 List<SoldierRole> roles, BlockPos center, @Nullable Vec3 objective,
                                                 @Nullable BlockPos siegeTarget, int tier) {
         List<SoldierEntity> out = new ArrayList<>();
+        boolean tunnel = faction == NpcFaction.THE_SWARM && objective != null;
+        if (tunnel) {
+            // The Swarm tunnels in: it breaks the surface close to its objective instead of marching from afar.
+            double dx = center.getX() - objective.x, dz = center.getZ() - objective.z;
+            double len = Math.max(1.0, Math.sqrt(dx * dx + dz * dz));
+            double near = Math.min(len, TUNNEL_DISTANCE);
+            center = BlockPos.containing(objective.x + dx / len * near, center.getY(), objective.z + dz / len * near);
+        }
         float yaw = objective == null ? 0F
                 : (float) (Mth.atan2(objective.z - center.getZ(), objective.x - center.getX()) * Mth.RAD_TO_DEG) - 90F;
         for (SoldierRole role : roles) {
@@ -77,6 +99,7 @@ public final class WarbandSpawner {
             soldier.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, yaw, 0F);
             soldier.setupAsRaider(faction, role, warband, objective, siegeTarget, tier);
             level.addFreshEntity(soldier);
+            if (tunnel) emerge(level, ground);
             out.add(soldier);
         }
         return out;

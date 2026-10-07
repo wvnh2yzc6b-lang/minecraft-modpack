@@ -195,6 +195,7 @@ public final class GameEvents {
         if (server.getTickCount() % 60 == 0) {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (Race.of(player) == Race.ANGEL && player.getHealth() < player.getMaxHealth()) player.heal(1F);
+                if (Race.of(player) == Race.HIVE) HiveAdaptation.apply(player, 80);
             }
         }
         if (server.getTickCount() % 200 != 0 || !WFConfig.WARBANDS_ENABLED.get()) return;
@@ -238,8 +239,10 @@ public final class GameEvents {
         int tier = 1 + (int) (level.getCurrentDifficultyAt(player.blockPosition()).getEffectiveDifficulty() / 2);
         WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction), ground,
                 player.position(), null, tier);
-        player.sendSystemMessage(Component.literal("War drums echo in the distance... a " + faction.displayName
-                + " warband is marching on you.").withStyle(faction.color, ChatFormatting.ITALIC));
+        player.sendSystemMessage(Component.literal(faction == NpcFaction.THE_SWARM
+                ? "The ground trembles beneath you... a Swarm brood is tunneling toward you."
+                : "War drums echo in the distance... a " + faction.displayName + " warband is marching on you.")
+                .withStyle(faction.color, ChatFormatting.ITALIC));
         return true;
     }
 

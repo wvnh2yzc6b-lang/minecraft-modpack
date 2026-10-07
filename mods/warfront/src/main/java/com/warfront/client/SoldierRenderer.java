@@ -3,6 +3,9 @@ package com.warfront.client;
 import com.warfront.Warfront;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.warfront.army.UnitBody;
+import com.warfront.client.model.HiveBeastModel;
+import com.warfront.client.model.ImpModel;
+import com.warfront.client.model.LancerModel;
 import com.warfront.entity.SoldierEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import com.warfront.faction.NpcFaction;
@@ -31,12 +34,16 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
         return out;
     }
 
-    private final java.util.Map<String, ImpRenderer> imps = new java.util.HashMap<>();
+    /** Generated creature models (imps, Hive units), by variant name. */
+    private final java.util.Map<String, CreatureRenderer<?>> creatures = new java.util.HashMap<>();
 
     public SoldierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SoldierModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5F);
         for (String id : com.warfront.client.model.UnitGeometry.all().keySet()) {
-            if (id.startsWith("imp")) imps.put(id, new ImpRenderer(ctx, WFModelLayers.of(id), id));
+            var part = id.startsWith("imp") || id.startsWith("hive_") ? ctx.bakeLayer(WFModelLayers.of(id)) : null;
+            if (id.startsWith("imp")) creatures.put(id, new CreatureRenderer<>(ctx, new ImpModel(part), 0.35F, id));
+            else if (id.equals("hive_lancer")) creatures.put(id, new CreatureRenderer<>(ctx, new LancerModel(part), 0.5F, id));
+            else if (id.equals("hive_beast")) creatures.put(id, new CreatureRenderer<>(ctx, new HiveBeastModel(part), 1.0F, id));
         }
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
@@ -45,17 +52,17 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
         this.addLayer(new RoleGearLayer(this, ctx.getModelSet()));
     }
 
-    private ImpRenderer impFor(SoldierEntity entity) {
+    private CreatureRenderer<?> creatureFor(SoldierEntity entity) {
         UnitBody body = entity.getBody();
-        return body == UnitBody.IMP ? imps.get(body.variant(entity.getRole())) : null;
+        return body == UnitBody.HUMANOID ? null : creatures.get(body.variant(entity.getRole()));
     }
 
     @Override
     public void render(SoldierEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight) {
-        ImpRenderer imp = impFor(entity);
-        if (imp != null) {
-            imp.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        CreatureRenderer<?> creature = creatureFor(entity);
+        if (creature != null) {
+            creature.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
             return;
         }
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
@@ -63,8 +70,8 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
 
     @Override
     public ResourceLocation getTextureLocation(SoldierEntity entity) {
-        ImpRenderer imp = impFor(entity);
-        if (imp != null) return imp.getTextureLocation(entity);
+        CreatureRenderer<?> creature = creatureFor(entity);
+        if (creature != null) return creature.getTextureLocation(entity);
         return SKINS[entity.getSkin()];
     }
 }

@@ -106,6 +106,12 @@ public final class WFCommands {
         p.setHealth(p.getMaxHealth());
         ok(ctx, Component.literal("You are now of the " + race.displayName() + " race. " + race.description)
                 .withStyle(race.color, ChatFormatting.BOLD));
+        if (current == null && race == Race.HIVE) {
+            com.warfront.world.HiveAdaptation.sendToCave(p);
+            ok(ctx, Component.literal("The Hive keeps to the deep places. Your home is here, under the earth: you are "
+                    + "stronger below Y=" + com.warfront.world.HiveAdaptation.DEPTH + " and weaker in sunlight.")
+                    .withStyle(race.color, ChatFormatting.ITALIC));
+        }
         return 1;
     }
 
