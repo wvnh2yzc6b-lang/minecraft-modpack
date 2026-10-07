@@ -84,12 +84,6 @@
     {
       "topic": "Units",
       "priority": "medium",
-      "question": "Which units should be bigger or smaller than the rest?",
-      "why": "Sizes today come only from the race (dwarves 0.85×, orcs 1.10×) plus imps at 0.7×. Brutes, champions or captains could be larger."
-    },
-    {
-      "topic": "Units",
-      "priority": "medium",
       "question": "Should the other demons (Hellguard, Fiend, Archfiend, Blood Witch) be a species of their own?",
       "why": "Imps are now one species. The full-sized demons need a look: horned humanoids, armored knights, something else?"
     },
@@ -132,12 +126,16 @@
   ],
   "settled": [
     {
-      "topic": "Army",
-      "answer": "Units are mortal. Rank-and-file troops and workers die for good and are re-summoned with mana. Captains, Champions and war beasts fall instead of dying: revive them on the field within about 60 seconds, or they return to the altar after a cooldown for part of their mana cost."
+      "topic": "Units",
+      "answer": "Sizes follow rank: soldiers stay at their race's size, Captains are 15% bigger and Champions 30% bigger (the Hive Ravager keeps its 35%), so heroes stand out on the field. Role doesn't change size."
     },
     {
       "topic": "Sieges",
       "answer": "Siege outposts: every 5th wave raises a temporary enemy outpost near the War Standard, and the siege can't be won while it stands. It scales with the wave: a watchtower camp early, a small walled fort later. Until it is taken it keeps sending raiders, so you have to go on the attack. At its heart sits a big raid chest, a different one for each enemy faction (bone chest for demons, chitin pod for the Swarm and so on). Loot it, break it, and the whole outpost despawns."
+    },
+    {
+      "topic": "Army",
+      "answer": "Units are mortal. Rank-and-file troops and workers die for good and are re-summoned with mana. Captains, Champions and war beasts fall instead of dying: revive them on the field within about 60 seconds, or they return to the altar after a cooldown for part of their mana cost."
     },
     {
       "topic": "Army",
