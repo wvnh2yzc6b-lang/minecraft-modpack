@@ -161,3 +161,10 @@ The Warfront Codex page (https://claude.ai/artifact/8mbSQF2ZteBXw5VcU7Aef1) show
 far and is updated as work lands. To update it: add or change an entry in `tools/codex/progress.json`,
 run `python3 mods/warfront/tools/units.py` then `python3 tools/codex/build_codex.py`, and republish
 `build/codex/warfront-codex.html` to the same link.
+
+## Orc goblins (`orc-goblin-workers.png`, a render, no reference image)
+
+Owner direction: the orc non-combat roles are goblins. Built without a reference: a small humanoid on the
+player rig (0.8 scale against the orc's 1.1), sallow yellow-green skin, long ears swept out and back, a
+hooked nose, slit yellow eyes, a toothy grin, plain worker gear in orc colors. A reference image would let
+the face and build be matched more closely.

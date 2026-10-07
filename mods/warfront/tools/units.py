@@ -1162,9 +1162,8 @@ if __name__ == "__main__":
                 print("painted", paint(m, key, pal))
     for m in GEAR_MODELS:
         race = m["id"].rsplit("_", 1)[1]
-        for key, geometry in worker_gear.RACE_OF.items():
-            if geometry == race:
-                paint(m, key, worker_gear.GEAR_PALETTES[key])
+        for key in worker_gear.painted_keys(race):
+            paint(m, key, worker_gear.GEAR_PALETTES[key])
     print("painted worker gear for", len(worker_gear.RACE_OF), "skins")
     write_java(MODELS)
     JSON_OUT.parent.mkdir(parents=True, exist_ok=True)

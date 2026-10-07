@@ -1786,6 +1786,124 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 64, 64);
     }
+    /** The gear_farmer_goblin body. */
+    public static LayerDefinition gear_farmer_goblin() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("head", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("bandana", CubeListBuilder.create().texOffs(24, 0).addBox(-4F, -8F, -4F, 8F, 3F, 8F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p2 = p0.addOrReplaceChild("goblin_ear_r", CubeListBuilder.create().texOffs(32, 33).addBox(-4F, -1.5F, -0.5F, 4F, 3F, 1F),
+                PartPose.offsetAndRotation(-3.8F, -4.5F, 0.5F, 0.1F, 0.45F, -0.3F));
+        PartDefinition p3 = p2.addOrReplaceChild("goblin_ear_r_tip", CubeListBuilder.create().texOffs(0, 38).addBox(-3F, -1F, -0.5F, 3F, 1.5F, 1F),
+                PartPose.offsetAndRotation(-4F, 0F, 0F, 0F, 0F, -0.2F));
+        PartDefinition p4 = p0.addOrReplaceChild("goblin_ear_l", CubeListBuilder.create().texOffs(42, 33).mirror().addBox(0F, -1.5F, -0.5F, 4F, 3F, 1F).mirror(false),
+                PartPose.offsetAndRotation(3.8F, -4.5F, 0.5F, 0.1F, -0.45F, 0.3F));
+        PartDefinition p5 = p4.addOrReplaceChild("goblin_ear_l_tip", CubeListBuilder.create().texOffs(8, 38).mirror().addBox(0F, -1F, -0.5F, 3F, 1.5F, 1F).mirror(false),
+                PartPose.offsetAndRotation(4F, 0F, 0F, 0F, 0F, 0.2F));
+        PartDefinition p6 = p0.addOrReplaceChild("goblin_nose", CubeListBuilder.create().texOffs(32, 26).addBox(-1F, -1F, -2.5F, 2F, 2F, 2.5F),
+                PartPose.offsetAndRotation(0F, -3.2F, -4F, 0.35F, 0F, 0F));
+        PartDefinition p7 = p6.addOrReplaceChild("goblin_nose_tip", CubeListBuilder.create().texOffs(52, 33).addBox(-0.5F, 0F, -1.2F, 1F, 1.4F, 1.2F),
+                PartPose.offsetAndRotation(0F, 0.6F, -2.5F, 0.6F, 0F, 0F));
+        PartDefinition p8 = root.addOrReplaceChild("hat", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p9 = root.addOrReplaceChild("body", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p10 = p9.addOrReplaceChild("smock", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, 0F, -2F, 8F, 12F, 4F, new CubeDeformation(0.3F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p11 = p9.addOrReplaceChild("apron", CubeListBuilder.create().texOffs(20, 16).addBox(-3F, 0F, 0F, 6F, 8F, 0F),
+                PartPose.offsetAndRotation(0F, 4F, -2.55F, -0.04F, 0F, 0F));
+        PartDefinition p12 = p9.addOrReplaceChild("belt", CubeListBuilder.create().texOffs(0, 33).addBox(-4F, 9F, -2F, 8F, 1F, 4F, new CubeDeformation(0.5F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p13 = p9.addOrReplaceChild("seed_pouch", CubeListBuilder.create().texOffs(24, 33).addBox(-1F, 0F, -1F, 2F, 3F, 2F),
+                PartPose.offsetAndRotation(3.4F, 9.6F, -1F, 0F, 0F, -0.12F));
+        PartDefinition p14 = p9.addOrReplaceChild("basket", CubeListBuilder.create().texOffs(0, 16).addBox(-3F, 0F, 0F, 6F, 6F, 3.5F),
+                PartPose.offsetAndRotation(0F, 2F, 2.4F, 0.08F, 0F, 0F));
+        PartDefinition p15 = p9.addOrReplaceChild("basket_strap_r", CubeListBuilder.create().texOffs(16, 38).addBox(-0.5F, 0F, 0F, 1F, 3F, 0F),
+                PartPose.offsetAndRotation(-2.5F, 0F, -2.4F, 0F, 0F, 0F));
+        PartDefinition p16 = p9.addOrReplaceChild("basket_strap_l", CubeListBuilder.create().texOffs(18, 38).addBox(-0.5F, 0F, 0F, 1F, 3F, 0F),
+                PartPose.offsetAndRotation(2.5F, 0F, -2.4F, 0F, 0F, 0F));
+        PartDefinition p17 = root.addOrReplaceChild("right_arm", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(-5F, 2F, 0F, 0F, 0F, 0F));
+        PartDefinition p18 = p17.addOrReplaceChild("sleeve_r", CubeListBuilder.create().texOffs(32, 16).addBox(-3F, -2F, -2F, 4F, 4F, 4F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p19 = root.addOrReplaceChild("left_arm", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(5F, 2F, 0F, 0F, 0F, 0F));
+        PartDefinition p20 = p19.addOrReplaceChild("sleeve_l", CubeListBuilder.create().texOffs(48, 16).addBox(-1F, -2F, -2F, 4F, 4F, 4F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p21 = root.addOrReplaceChild("right_leg", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(-1.9F, 12F, 0F, 0F, 0F, 0F));
+        PartDefinition p22 = p21.addOrReplaceChild("boot_r", CubeListBuilder.create().texOffs(0, 26).addBox(-2F, 9F, -2F, 4F, 3F, 4F, new CubeDeformation(0.3F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p23 = root.addOrReplaceChild("left_leg", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(1.9F, 12F, 0F, 0F, 0F, 0F));
+        PartDefinition p24 = p23.addOrReplaceChild("boot_l", CubeListBuilder.create().texOffs(16, 26).addBox(-2F, 9F, -2F, 4F, 3F, 4F, new CubeDeformation(0.3F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 64, 64);
+    }
+    /** The gear_builder_goblin body. */
+    public static LayerDefinition gear_builder_goblin() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("head", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("cap", CubeListBuilder.create().texOffs(0, 16).addBox(-4F, -8.5F, -4F, 8F, 3F, 8F, new CubeDeformation(0.4F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p2 = p0.addOrReplaceChild("cap_visor", CubeListBuilder.create().texOffs(18, 41).addBox(-4F, 0F, -2.5F, 8F, 0.6F, 2.5F),
+                PartPose.offsetAndRotation(0F, -6.1F, -4.3F, 0.25F, 0F, 0F));
+        PartDefinition p3 = p0.addOrReplaceChild("goblin_ear_r", CubeListBuilder.create().texOffs(40, 41).addBox(-4F, -1.5F, -0.5F, 4F, 3F, 1F),
+                PartPose.offsetAndRotation(-3.8F, -4.5F, 0.5F, 0.1F, 0.45F, -0.3F));
+        PartDefinition p4 = p3.addOrReplaceChild("goblin_ear_r_tip", CubeListBuilder.create().texOffs(16, 46).addBox(-3F, -1F, -0.5F, 3F, 1.5F, 1F),
+                PartPose.offsetAndRotation(-4F, 0F, 0F, 0F, 0F, -0.2F));
+        PartDefinition p5 = p0.addOrReplaceChild("goblin_ear_l", CubeListBuilder.create().texOffs(50, 41).mirror().addBox(0F, -1.5F, -0.5F, 4F, 3F, 1F).mirror(false),
+                PartPose.offsetAndRotation(3.8F, -4.5F, 0.5F, 0.1F, -0.45F, 0.3F));
+        PartDefinition p6 = p5.addOrReplaceChild("goblin_ear_l_tip", CubeListBuilder.create().texOffs(24, 46).mirror().addBox(0F, -1F, -0.5F, 3F, 1.5F, 1F).mirror(false),
+                PartPose.offsetAndRotation(4F, 0F, 0F, 0F, 0F, 0.2F));
+        PartDefinition p7 = p0.addOrReplaceChild("goblin_nose", CubeListBuilder.create().texOffs(0, 41).addBox(-1F, -1F, -2.5F, 2F, 2F, 2.5F),
+                PartPose.offsetAndRotation(0F, -3.2F, -4F, 0.35F, 0F, 0F));
+        PartDefinition p8 = p7.addOrReplaceChild("goblin_nose_tip", CubeListBuilder.create().texOffs(0, 46).addBox(-0.5F, 0F, -1.2F, 1F, 1.4F, 1.2F),
+                PartPose.offsetAndRotation(0F, 0.6F, -2.5F, 0.6F, 0F, 0F));
+        PartDefinition p9 = root.addOrReplaceChild("hat", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p10 = root.addOrReplaceChild("body", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p11 = p10.addOrReplaceChild("work_shirt", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, 0F, -2F, 8F, 12F, 4F, new CubeDeformation(0.25F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p12 = p10.addOrReplaceChild("heavy_apron", CubeListBuilder.create().texOffs(38, 16).addBox(-3.5F, 0F, 0F, 7F, 10F, 0F),
+                PartPose.offsetAndRotation(0F, 1F, -2.5F, 0F, 0F, 0F));
+        PartDefinition p13 = p10.addOrReplaceChild("tool_belt", CubeListBuilder.create().texOffs(0, 35).addBox(-4F, 9F, -2F, 8F, 1.5F, 4F, new CubeDeformation(0.55F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p14 = p10.addOrReplaceChild("chisel", CubeListBuilder.create().texOffs(6, 46).addBox(-0.5F, 0F, -0.5F, 1F, 3F, 1F),
+                PartPose.offsetAndRotation(-3.6F, 10.3F, -1.2F, 0.1F, 0F, 0.15F));
+        PartDefinition p15 = p10.addOrReplaceChild("trowel", CubeListBuilder.create().texOffs(10, 46).addBox(-0.5F, 0F, -1F, 1F, 1.5F, 2F).texOffs(10, 41).addBox(-0.5F, 1.5F, -1.5F, 1F, 2F, 3F),
+                PartPose.offsetAndRotation(3.7F, 10.3F, 0.4F, 0F, 0F, -0.2F));
+        PartDefinition p16 = p10.addOrReplaceChild("plank_bundle", CubeListBuilder.create().texOffs(30, 0).addBox(-3.5F, -2F, 0F, 2F, 11F, 1F).texOffs(24, 0).addBox(-1F, -3F, 0F, 2F, 12F, 1F).texOffs(32, 16).addBox(1.5F, -1.5F, 0F, 2F, 10F, 1F),
+                PartPose.offsetAndRotation(0F, 0.5F, 2.3F, 0F, 0F, 0.22F));
+        PartDefinition p17 = p16.addOrReplaceChild("bundle_strap", CubeListBuilder.create().texOffs(32, 46).addBox(-4F, 0F, -0.1F, 8F, 1F, 1.2F),
+                PartPose.offsetAndRotation(0F, 4F, 0F, 0F, 0F, 0F));
+        PartDefinition p18 = root.addOrReplaceChild("right_arm", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(-5F, 2F, 0F, 0F, 0F, 0F));
+        PartDefinition p19 = p18.addOrReplaceChild("glove_r", CubeListBuilder.create().texOffs(0, 27).addBox(-3F, 6F, -2F, 4F, 4F, 4F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p20 = root.addOrReplaceChild("left_arm", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(5F, 2F, 0F, 0F, 0F, 0F));
+        PartDefinition p21 = p20.addOrReplaceChild("glove_l", CubeListBuilder.create().texOffs(16, 27).addBox(-1F, 6F, -2F, 4F, 4F, 4F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p22 = root.addOrReplaceChild("right_leg", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(-1.9F, 12F, 0F, 0F, 0F, 0F));
+        PartDefinition p23 = p22.addOrReplaceChild("knee_pad_r", CubeListBuilder.create().texOffs(24, 35).addBox(-2F, 4F, -2F, 4F, 2F, 4F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p24 = p22.addOrReplaceChild("boot_r", CubeListBuilder.create().texOffs(32, 27).addBox(-2F, 9F, -2F, 4F, 3F, 4F, new CubeDeformation(0.3F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p25 = root.addOrReplaceChild("left_leg", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(1.9F, 12F, 0F, 0F, 0F, 0F));
+        PartDefinition p26 = p25.addOrReplaceChild("knee_pad_l", CubeListBuilder.create().texOffs(40, 35).addBox(-2F, 4F, -2F, 4F, 2F, 4F, new CubeDeformation(0.35F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p27 = p25.addOrReplaceChild("boot_l", CubeListBuilder.create().texOffs(48, 27).addBox(-2F, 9F, -2F, 4F, 3F, 4F, new CubeDeformation(0.3F)),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 64, 64);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -1815,6 +1933,8 @@ public final class UnitGeometry {
         all.put("gear_guard_angel", UnitGeometry::gear_guard_angel);
         all.put("gear_guard_hive", UnitGeometry::gear_guard_hive);
         all.put("gear_guard_demon", UnitGeometry::gear_guard_demon);
+        all.put("gear_farmer_goblin", UnitGeometry::gear_farmer_goblin);
+        all.put("gear_builder_goblin", UnitGeometry::gear_builder_goblin);
         return all;
     }
 }

@@ -10,6 +10,8 @@ public enum UnitBody {
     IMP(-0.33, 0.75, 1.12, true),
     /** Hive spearmen: lean, four-armed ant warriors with a double-bladed polearm. */
     LANCER(0.05, 1.0, 1.05, false),
+    /** Goblins, the orcs' farmers and builders: small, long-eared humanoids on the player rig. */
+    GOBLIN(-0.3, 0.85, 1.1, false),
     /** The Hive's war beast: a lobster centaur on eight legs, about player height and two and a half blocks long. */
     HIVE_BEAST(0.25, 1.0, 0.9, false);
 
@@ -34,7 +36,13 @@ public enum UnitBody {
             case IMP -> role == SoldierRole.ARCHER ? "imp_firecaster" : "imp_impaler";
             case LANCER -> "hive_lancer";
             case HIVE_BEAST -> "hive_beast";
+            case GOBLIN -> "goblin";
         };
+    }
+
+    /** Bodies drawn with the vanilla player rig (plus gear), rather than a generated creature model. */
+    public boolean usesPlayerRig() {
+        return this == HUMANOID || this == GOBLIN;
     }
 
     public static UnitBody of(Race race, SoldierRole role) {
@@ -42,6 +50,7 @@ public enum UnitBody {
         if (race == Race.DEMON && (role == SoldierRole.SPEARMAN || role == SoldierRole.ARCHER)) return IMP;
         if (race == Race.HIVE && role == SoldierRole.SPEARMAN) return LANCER;
         if (race == Race.HIVE && role == SoldierRole.BEAST) return HIVE_BEAST;
+        if (race == Race.ORC && role.worker()) return GOBLIN;
         return HUMANOID;
     }
 }

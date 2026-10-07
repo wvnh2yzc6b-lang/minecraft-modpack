@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "Orc workers are goblins",
+      "detail": "The orc farmer and builder are now goblins: the Goblin Grubber and Goblin Tinker. They stand about three quarters of an orc's height, move a little faster and have a little less health, with sallow yellow-green skin, long swept-back ears, a hooked nose and slit yellow eyes, in plain worker gear in orc colors. Orc soldiers are unchanged. Render: two goblins beside an orc, front and three-quarter.",
+      "image": "orc-goblin-workers.png"
+    },
+    {
+      "status": "done",
       "title": "Guard and patrol duty for battle units",
       "detail": "There is no separate guard unit any more. Sneak + right-click any battle unit with an empty hand to cycle it: on guard (holds the spot, walks a short beat), on patrol (ranges about 16 blocks around the spot), then back to the army. Units on duty ignore the Commander's Baton and ring the alarm that calls nearby troops when enemies come. Guards already in a world keep working; the altar no longer offers them."
     },
@@ -125,6 +131,7 @@
     "eachRaceHasItsOwnSpellSchool": "No two races share a strong school, none is weak in its own, and race stats apply without Iron's Spells",
     "orcRageBuildsIntoFrenzy": "An orc soldier at 90 rage isn't frenzied; one more hit sends it into a Frenzy and empties the bar",
     "elfArrowsFlyFaster": "An arrow shot by an elf leaves 20% faster",
-    "demonKillsHarvestSoulsAndBurst": "A demon's souls cap at 10 and raise its attack damage; a full harvest bursts and empties"
+    "demonKillsHarvestSoulsAndBurst": "A demon's souls cap at 10 and raise its attack damage; a full harvest bursts and empties",
+    "orcWorkersAreGoblins": "An orc farmer is a goblin and well under orc size; an orc soldier is not"
   }
 }

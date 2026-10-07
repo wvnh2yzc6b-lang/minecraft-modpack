@@ -22,6 +22,7 @@ import java.util.Locale;
 public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierModel> {
     /** Race skins first, then one per NPC faction, matching {@link SoldierEntity#getSkin()}. */
     private static final ResourceLocation[] SKINS = buildSkins();
+    private static final ResourceLocation GOBLIN_SKIN = Warfront.id("textures/entity/soldier/goblin.png");
 
     private static ResourceLocation[] buildSkins() {
         Race[] races = Race.values();
@@ -54,7 +55,7 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
 
     private CreatureRenderer<?> creatureFor(SoldierEntity entity) {
         UnitBody body = entity.getBody();
-        return body == UnitBody.HUMANOID ? null : creatures.get(body.variant(entity.getRole()));
+        return body.usesPlayerRig() ? null : creatures.get(body.variant(entity.getRole()));
     }
 
     @Override
@@ -72,6 +73,6 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
     public ResourceLocation getTextureLocation(SoldierEntity entity) {
         CreatureRenderer<?> creature = creatureFor(entity);
         if (creature != null) return creature.getTextureLocation(entity);
-        return SKINS[entity.getSkin()];
+        return entity.getBody() == UnitBody.GOBLIN ? GOBLIN_SKIN : SKINS[entity.getSkin()];
     }
 }

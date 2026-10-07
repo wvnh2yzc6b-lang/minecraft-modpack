@@ -451,6 +451,18 @@ def tusks(img):
     img.putpixel((13, 15), (240, 240, 220, 255))
 
 
+def goblin_grin(img):
+    """Slit pupils in yellow eyes and a wide, toothy grin."""
+    for x in (10, 13):
+        img.putpixel((x, 12), hexc("2a1a00"))
+    for x in (9, 14):
+        img.putpixel((x, 12), hexc("ffd23a"))
+    for x in range(9, 15):
+        img.putpixel((x, 14), hexc("3a1a12"))
+    for x in (10, 12):
+        img.putpixel((x, 14), (236, 228, 200, 255))
+
+
 def warpaint(img):
     for y in (11, 12, 13):
         img.putpixel((8, y), hexc("8b0000"))
@@ -474,6 +486,10 @@ def soldier_skins():
     # Hive: sculk-dark teal chitin with glowing cyan veins, like the Warden and the deep dark.
     skin("hive", hexc("143a44"), hexc("08191f"), hexc("0e2a32"), hexc("29dfeb"), hexc("0a1f26"),
          hexc("050f14"), hexc("49ffc8"), extras=sculk(hexc("29dfeb")), seed=90)
+
+    # Goblins: the orcs' farmers and builders. Small, sallow green, in patched brown work clothes.
+    skin("goblin", hexc("9aae44"), hexc("2a2a1a"), hexc("6a5236"), hexc("8a6a3a"), hexc("4a3a22"),
+         hexc("2a1a0a"), hexc("ffd23a"), extras=goblin_grin, seed=45)
 
     # NPC factions (file names match NpcFaction enum names in lower case).
     skin("marauders", hexc("5a7a32"), hexc("111111"), hexc("7a1f1f"), hexc("2b2b2b"), hexc("2b1a10"),

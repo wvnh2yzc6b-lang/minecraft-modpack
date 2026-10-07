@@ -16,6 +16,9 @@ RACE_OF = {
 }
 HUMANOID_RACES = ["human", "elf", "dwarf", "orc", "angel", "hive", "demon"]
 ROLES = ["farmer", "builder", "guard"]
+# Orc farmers and builders are goblins: smaller, with long ears and a hooked nose, painted in orc colors.
+GOBLIN_ROLES = ["farmer", "builder"]
+GOBLIN_SKIN = "9aae44"
 
 
 def _base(lead):
@@ -117,16 +120,31 @@ def farmer_hat(race):
                 overlay("cap_fold", (-4, -6.6, -4), (8, 1.5, 8), "wool", 0.65)]
     if race in ("elf", "hive"):
         return [overlay("hood", (-4, -8, -4), (8, 6, 8), "smock", 0.5)]
-    if race == "orc":
+    if race in ("orc", "goblin"):
         return [overlay("bandana", (-4, -8, -4), (8, 3, 8), "accent_cloth", 0.35)]
     return [part("hat_brim", pivot=(0, -6.3, 0), rot=(0.06, 0, 0), boxes=[box((-6, 0, -6), (12, 0.8, 12), "straw")]),
             overlay("hat_crown", (-4, -10, -4), (8, 4, 8), "straw", 0.3),
             overlay("hat_band", (-4, -7.4, -4), (8, 1, 8), "accent_cloth", 0.5)]
 
 
+def goblin_face():
+    """Long ears swept out and back, and a hooked nose. Hung on the gear so the body stays the plain rig."""
+    ear_r = part("goblin_ear_r", pivot=(-3.8, -4.5, 0.5), rot=(0.1, 0.45, -0.3),
+                 boxes=[box((-4, -1.5, -0.5), (4, 3, 1), "goblin_skin")],
+                 children=[part("goblin_ear_r_tip", pivot=(-4, 0, 0), rot=(0, 0, -0.2),
+                                boxes=[box((-3, -1, -0.5), (3, 1.5, 1), "goblin_skin")])])
+    nose = part("goblin_nose", pivot=(0, -3.2, -4), rot=(0.35, 0, 0),
+                boxes=[box((-1, -1, -2.5), (2, 2, 2.5), "goblin_skin")],
+                children=[part("goblin_nose_tip", pivot=(0, 0.6, -2.5), rot=(0.6, 0, 0),
+                               boxes=[box((-0.5, 0, -1.2), (1, 1.4, 1.2), "goblin_skin")])])
+    return [ear_r, mirror(ear_r), nose]
+
+
 def gear_farmer(race):
     m = rig(f"gear_farmer_{race}")
     attach(m, "head", *farmer_hat(race))
+    if race == "goblin":
+        attach(m, "head", *goblin_face())
     attach(m, "body",
            overlay("smock", (-4, 0, -2), (8, 12, 4), "smock", 0.3),
            part("apron", pivot=(0, 4, -2.55), rot=(-0.04, 0, 0), boxes=[box((-3, 0, 0), (6, 8, 0), "apron")]),
@@ -154,6 +172,8 @@ def builder_hat(race):
 def gear_builder(race):
     m = rig(f"gear_builder_{race}")
     attach(m, "head", *builder_hat(race))
+    if race == "goblin":
+        attach(m, "head", *goblin_face())
     attach(m, "body",
            overlay("work_shirt", (-4, 0, -2), (8, 12, 4), "smock", 0.25),
            part("heavy_apron", pivot=(0, 1, -2.5), boxes=[box((-3.5, 0, 0), (7, 10, 0), "heavy_apron")]),
@@ -197,8 +217,14 @@ def gear_guard(race):
 
 
 def all_gear():
-    return [{"farmer": gear_farmer, "builder": gear_builder, "guard": gear_guard}[role](race)
-            for role in ROLES for race in HUMANOID_RACES]
+    makers = {"farmer": gear_farmer, "builder": gear_builder, "guard": gear_guard}
+    return ([makers[role](race) for role in ROLES for race in HUMANOID_RACES]
+            + [makers[role]("goblin") for role in GOBLIN_ROLES])
+
+
+def painted_keys(race):
+    """The skin keys whose texture folders get this gear geometry painted in their colors."""
+    return ["orc"] if race == "goblin" else [k for k, g in RACE_OF.items() if g == race]
 
 
 # ----------------------------------------------------------------------------- materials
@@ -293,6 +319,13 @@ def worker_material(mat, side, x, y, w, h, pal, rng):
         if side in ("front", "back") and x in (w // 2 - 1, w // 2) and 2 <= y <= 7:
             return mix(hexc(pal["trim"]), c, 0.3)                         # faction stripe
         return c
+    if mat == "goblin_skin":
+        c = shade(hexc(GOBLIN_SKIN), rng.uniform(0.9, 1.06))
+        if side in ("bottom", "back"):
+            c = shade(c, 0.8)
+        if edge(x, y, w, h) and side != "top":
+            c = shade(c, 0.88)
+        return shade(c, 1.1) if top else c
     if mat == "lantern":
         if edge(x, y, w, h) or side in ("top", "bottom"):
             return shade(hexc(pal["iron_dark"]), 0.9)

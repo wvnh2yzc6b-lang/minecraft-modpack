@@ -1,40 +1,106 @@
 {
   "designs": [
-    {"id": "demon-player", "race": "Demon", "title": "Demon player", "status": "approved",
-     "reference": "demon-head-oryx.png", "render": "demon-player-no-claws.png",
-     "notes": ["Oryx-style head: spiked cowl blades over the shoulders, a sharpened V jaw, a flat mouthless face and a band of violet eyes.",
-               "Robe, cloak, forearm brambles and thorns; bare hands and feet.",
-               "Wings fold at the elbow: tucked on the ground, half-open in a jump, spread in flight. Flies without an elytra."]},
-    {"id": "imps", "race": "Demon", "title": "Imp Impaler and Imp Firecaster", "status": "approved",
-     "reference": "demon-imp.png", "render": "imp-model-preview.png",
-     "notes": ["Imps are one demon species, not the whole faction. They fill only the spearman and archer roles.",
-               "Small (0.7x), winged, scorpion-tailed, digitigrade.",
-               "Impaler: studded harness and bone spikes. Firecaster: rune mantle, ember orb, fire bolts."]},
-    {"id": "workers", "race": "All races", "title": "Workers: farmers, builders, guards", "status": "approved",
-     "render": "workers-all-races.png",
-     "notes": ["Plain humanoid working folk in the race's colors: straw hats, knit caps or hoods, smocks, aprons, work caps and kettle helms.",
-               "No horns, antennae, wings, spikes or crests."]},
-    {"id": "hive-look", "race": "Hive", "title": "The Hive's look", "status": "approved",
-     "render": "hive-units-render.png",
-     "notes": ["Sculk-dark: deep teal chitin with glowing cyan veins and green-cyan eyes, like the Warden and the deep dark.",
-               "The Swarm (enemy Hive faction): black chitin with acid-green veins.",
-               "A cave race: stronger below Y=40 and weaker in sunlight; Swarm raids tunnel up near their target; new Hive players start underground."]},
-    {"id": "hive-lancer", "race": "Hive", "title": "Lancer-Drone (Hive spearman)", "status": "approved",
-     "reference": "hive-spearman.png", "render": "hive-lancer-bulk.png",
-     "notes": ["Sturdy four-armed ant warrior about player height, on bent-back legs: thick limbs, shoulder plates, a breastplate and a back shell.",
-               "Upper arms hold one spear in both hands at the ready: a long haft, a leaf-shaped head and a butt spike, with fists wrapped around the haft. The lower hands have short fingers.",
-               "Narrow ant head, big glowing compound eyes, small mandibles, long banded antennae. Ragged shoulder wrap and grass skirt."]},
-    {"id": "hive-beast", "race": "Hive", "title": "Deepmaw (Hive war beast)", "status": "approved",
-     "reference": "hive-beast.png", "render": "hive-beast-lobster.png",
-     "notes": ["A lobster centaur, about player height and two and a half blocks long.",
-               "Lower body: a long carapace on eight crawling legs, with a finned glowing crest, a segmented tail and a tail fan.",
-               "An upright plated torso rises from the front, with thick claw arms held out to the sides that snap in a fight.",
-               "Head after the reference: a tall spiked crown with two horns, a heavy brow over a row of glowing eyes, a jutting snout, broad bone tusk-blades and thin fangs.",
-               "Summoned at the altar; up to 10 per commander, a limit meant to grow with base level."]},
-    {"id": "demon-beast", "race": "Demon", "title": "Bone Stalker (Demon war beast)", "status": "planned",
-     "reference": "demon-beast.png",
-     "notes": ["Gaunt, bone-white and skeletal, prowling on all fours, with blood-red barbs, talons and spines.",
-               "Thin insect-like wings with torn pale membrane, and a long spined tail ending in a scorpion stinger.",
-               "Works like the Deepmaw: a rare altar unit. Not built yet."]}
+    {
+      "id": "orc-goblins",
+      "race": "Orc",
+      "title": "Goblin workers (Goblin Grubber, Goblin Tinker)",
+      "status": "review",
+      "render": "orc-goblin-workers.png",
+      "notes": [
+        "On the owner's direction, the orc farmer and builder are goblins instead of orcs.",
+        "About three quarters of an orc's height (0.8 scale against the orc's 1.1), a little faster and frailer.",
+        "Sallow yellow-green skin, long ears swept out and back, a hooked nose, slit yellow eyes and a toothy grin.",
+        "Plain worker gear in orc colors: a bandana and basket for the Grubber, a leather cap, apron and tool belt for the Tinker."
+      ]
+    },
+    {
+      "id": "demon-player",
+      "race": "Demon",
+      "title": "Demon player",
+      "status": "approved",
+      "reference": "demon-head-oryx.png",
+      "render": "demon-player-no-claws.png",
+      "notes": [
+        "Oryx-style head: spiked cowl blades over the shoulders, a sharpened V jaw, a flat mouthless face and a band of violet eyes.",
+        "Robe, cloak, forearm brambles and thorns; bare hands and feet.",
+        "Wings fold at the elbow: tucked on the ground, half-open in a jump, spread in flight. Flies without an elytra."
+      ]
+    },
+    {
+      "id": "imps",
+      "race": "Demon",
+      "title": "Imp Impaler and Imp Firecaster",
+      "status": "approved",
+      "reference": "demon-imp.png",
+      "render": "imp-model-preview.png",
+      "notes": [
+        "Imps are one demon species, not the whole faction. They fill only the spearman and archer roles.",
+        "Small (0.7x), winged, scorpion-tailed, digitigrade.",
+        "Impaler: studded harness and bone spikes. Firecaster: rune mantle, ember orb, fire bolts."
+      ]
+    },
+    {
+      "id": "workers",
+      "race": "All races",
+      "title": "Workers: farmers, builders, guards",
+      "status": "approved",
+      "render": "workers-all-races.png",
+      "notes": [
+        "Plain humanoid working folk in the race's colors: straw hats, knit caps or hoods, smocks, aprons, work caps and kettle helms.",
+        "No horns, antennae, wings, spikes or crests."
+      ]
+    },
+    {
+      "id": "hive-look",
+      "race": "Hive",
+      "title": "The Hive's look",
+      "status": "approved",
+      "render": "hive-units-render.png",
+      "notes": [
+        "Sculk-dark: deep teal chitin with glowing cyan veins and green-cyan eyes, like the Warden and the deep dark.",
+        "The Swarm (enemy Hive faction): black chitin with acid-green veins.",
+        "A cave race: stronger below Y=40 and weaker in sunlight; Swarm raids tunnel up near their target; new Hive players start underground."
+      ]
+    },
+    {
+      "id": "hive-lancer",
+      "race": "Hive",
+      "title": "Lancer-Drone (Hive spearman)",
+      "status": "approved",
+      "reference": "hive-spearman.png",
+      "render": "hive-lancer-bulk.png",
+      "notes": [
+        "Sturdy four-armed ant warrior about player height, on bent-back legs: thick limbs, shoulder plates, a breastplate and a back shell.",
+        "Upper arms hold one spear in both hands at the ready: a long haft, a leaf-shaped head and a butt spike, with fists wrapped around the haft. The lower hands have short fingers.",
+        "Narrow ant head, big glowing compound eyes, small mandibles, long banded antennae. Ragged shoulder wrap and grass skirt."
+      ]
+    },
+    {
+      "id": "hive-beast",
+      "race": "Hive",
+      "title": "Deepmaw (Hive war beast)",
+      "status": "approved",
+      "reference": "hive-beast.png",
+      "render": "hive-beast-lobster.png",
+      "notes": [
+        "A lobster centaur, about player height and two and a half blocks long.",
+        "Lower body: a long carapace on eight crawling legs, with a finned glowing crest, a segmented tail and a tail fan.",
+        "An upright plated torso rises from the front, with thick claw arms held out to the sides that snap in a fight.",
+        "Head after the reference: a tall spiked crown with two horns, a heavy brow over a row of glowing eyes, a jutting snout, broad bone tusk-blades and thin fangs.",
+        "Summoned at the altar; up to 10 per commander, a limit meant to grow with base level."
+      ]
+    },
+    {
+      "id": "demon-beast",
+      "race": "Demon",
+      "title": "Bone Stalker (Demon war beast)",
+      "status": "planned",
+      "reference": "demon-beast.png",
+      "notes": [
+        "Gaunt, bone-white and skeletal, prowling on all fours, with blood-red barbs, talons and spines.",
+        "Thin insect-like wings with torn pale membrane, and a long spined tail ending in a scorpion stinger.",
+        "Works like the Deepmaw: a rare altar unit. Not built yet."
+      ]
+    }
   ]
 }

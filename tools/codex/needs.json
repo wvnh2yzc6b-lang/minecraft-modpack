@@ -32,6 +32,14 @@
     "demon/beast": {
       "status": "partial",
       "note": "Reference received (bone-white winged stalker with a stinger tail). Model not built yet."
+    },
+    "orc/farmer": {
+      "status": "partial",
+      "note": "Goblin Grubber: a goblin with long ears and a hooked nose, in plain orc work clothes. Waiting on your review."
+    },
+    "orc/builder": {
+      "status": "partial",
+      "note": "Goblin Tinker: a goblin with long ears and a hooked nose, in plain orc work clothes. Waiting on your review."
     }
   },
   "default_note": "Placeholder: the basic race skin plus held gear. Needs a look.",

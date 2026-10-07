@@ -589,6 +589,18 @@ public final class WarfrontGameTests {
         h.succeedWhen(() -> h.assertTrue(ally.getTarget() == enemy, "the guard's alarm never reached the hidden ally"));
     }
 
+    @GameTest(template = ARENA)
+    public static void orcWorkersAreGoblins(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);
+        SoldierEntity brute = recruit(h, owner, SoldierRole.SWORDSMAN, Race.ORC, 6, 4);
+        h.assertTrue(goblin.getBody() == com.warfront.army.UnitBody.GOBLIN, "orc farmers should be goblins");
+        h.assertTrue(brute.getBody() == com.warfront.army.UnitBody.HUMANOID, "orc soldiers are not goblins");
+        h.assertTrue(goblin.getScale() < brute.getScale() * 0.8F,
+                "goblins should be well under orc size: " + goblin.getScale() + " vs " + brute.getScale());
+        h.succeed();
+    }
+
     @GameTest(template = ARENA, timeoutTicks = 200)
     public static void workersFleeAndKeepTheirPosts(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);

@@ -2,10 +2,9 @@ package com.warfront.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.warfront.Warfront;
-import com.warfront.army.SoldierRole;
+import com.warfront.army.UnitBody;
 import com.warfront.client.model.UnitGeometry;
 import com.warfront.entity.SoldierEntity;
-import com.warfront.faction.Race;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,9 +34,10 @@ public class RoleGearLayer extends RenderLayer<SoldierEntity, SoldierModel> {
         }
     }
 
-    /** The gear model for a unit: by role and the body-shape race. */
-    static String modelId(SoldierRole role, Race race) {
-        return "gear_" + role.id() + "_" + race.id();
+    /** The gear model for a unit: by role and the body-shape race (goblins have their own). */
+    static String modelId(SoldierEntity entity) {
+        String shape = entity.getBody() == UnitBody.GOBLIN ? "goblin" : entity.getVisualRace().id();
+        return "gear_" + entity.getRole().id() + "_" + shape;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RoleGearLayer extends RenderLayer<SoldierEntity, SoldierModel> {
                        float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks,
                        float netHeadYaw, float headPitch) {
         if (entity.isInvisible() || !entity.getRole().posted()) return;
-        String id = modelId(entity.getRole(), entity.getVisualRace());
+        String id = modelId(entity);
         ModelPart root = gear.get(id);
         if (root == null) return;
         SoldierModel model = getParentModel();
