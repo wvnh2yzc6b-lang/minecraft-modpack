@@ -135,7 +135,7 @@
     },
     {
       "topic": "Bases",
-      "answer": "Base level comes from buildings. A base is everything on one mana network: its wells and pylons plus the towers and altars in their reach. 4, 8, 14 and 20 buildings reach levels 2 to 5. Each level allows 2 war beasts, so 10 at level 5."
+      "answer": "Base level needs two things at once: buildings on the base's mana network (wells, pylons, towers, altars) and siege waves won at a War Standard on that network. The lower of the two sets the level, so it can't be built or fought up alone. Levels 2 to 5 need 6/12/20/30 buildings and 3/8/15/25 waves. Each level allows 2 war beasts (10 at level 5). If the War Standard falls, its wave count is lost."
     },
     {
       "topic": "Hive",

@@ -121,22 +121,22 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         Race race = raceOf(player);
         int needed = BaseLevel.requiredLevel(role);
         if (role == SoldierRole.BEAST && !UnitNames.hasBeast(race)) return new Result(false, "Your race has no war beast yet.");
-        int buildings = needed > 1 || role == SoldierRole.BEAST
-                ? BaseLevel.buildings(level, worldPosition, factionKey(server.getServer())) : 0;
-        int baseLevel = BaseLevel.forBuildings(buildings);
+        BaseLevel.Status base = needed > 1 || role == SoldierRole.BEAST
+                ? BaseLevel.of(level, worldPosition, factionKey(server.getServer())) : new BaseLevel.Status(0, 0);
+        int baseLevel = base.level();
         if (baseLevel < needed) {
             return new Result(false, "A " + UnitNames.of(race, role) + " needs a level " + needed + " base; this one is level "
-                    + baseLevel + ". Build " + BaseLevel.toLevel(buildings, needed) + " more wells, pylons, towers or altars on this network.");
+                    + baseLevel + ". To get there, " + base.missingFor(needed) + ".");
         }
         if (role == SoldierRole.BEAST) {
             int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
                     s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size();
             int cap = BaseLevel.beastCap(baseLevel);
             if (beasts >= cap) {
-                int more = BaseLevel.toNextLevel(buildings);
+                String next = baseLevel < BaseLevel.MAX_LEVEL && cap < WFConfig.BEAST_LIMIT.get()
+                        ? " To raise it, " + base.missingFor(baseLevel + 1) + "." : "";
                 return new Result(false, "You already command " + beasts + " war beasts, the most you can field (" + cap
-                        + ") from a level " + baseLevel + " base." + (more > 0 && cap < WFConfig.BEAST_LIMIT.get()
-                        ? " Build " + more + " more wells, pylons, towers or altars on this network to raise it." : ""));
+                        + ") from a level " + baseLevel + " base." + next);
             }
         }
         int cost = role.manaCost(race);

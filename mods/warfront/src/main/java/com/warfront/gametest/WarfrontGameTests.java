@@ -274,30 +274,45 @@ public final class WarfrontGameTests {
         });
     }
 
+    /** Places {@code n} pylons owned by {@code owner} along the arena's north edge, then its south edge. */
+    private static void pylons(GameTestHelper h, Player owner, int n) {
+        for (int i = 0; i < n; i++) {
+            BlockPos p = i < 9 ? new BlockPos(i, 1, 0) : new BlockPos(i - 9, 1, 8);
+            h.setBlock(p, WFRegistry.MANA_PYLON.get());
+            ((com.warfront.mana.ManaNodeBlockEntity) h.getBlockEntity(p)).setOwner(owner.getUUID());
+        }
+    }
+
+    private static com.warfront.block.WarStandardBlockEntity standard(GameTestHelper h, BlockPos pos, Player owner, int wavesWon) {
+        h.setBlock(pos, WFRegistry.WAR_STANDARD.get());
+        com.warfront.block.WarStandardBlockEntity s = (com.warfront.block.WarStandardBlockEntity) h.getBlockEntity(pos);
+        s.setOwner(owner.getUUID());
+        s.setWavesWon(wavesWon);
+        return s;
+    }
+
     @GameTest(template = ARENA, timeoutTicks = 200)
-    public static void baseLevelGrowsWithBuildings(GameTestHelper h) {
+    public static void baseLevelNeedsBuildingsAndWaves(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), owner, true);
         well(h, new BlockPos(8, 1, 8), owner, 100F);
+        com.warfront.block.WarStandardBlockEntity flag = standard(h, new BlockPos(0, 2, 4), owner, 0);
+        pylons(h, owner, 10);
         String key = altar.factionKey(h.getLevel().getServer());
         BlockPos core = h.absolutePos(new BlockPos(4, 2, 4));
         h.runAfterDelay(2, () -> {
-            int before = com.warfront.world.BaseLevel.buildings(h.getLevel(), core, key);
-            h.assertTrue(before == 2, "an altar and one well should count as 2 buildings, counted " + before);
-            h.assertTrue(com.warfront.world.BaseLevel.forBuildings(before) == 1, "2 buildings should be base level 1");
-            for (int i = 0; i < 6; i++) {
-                BlockPos p = new BlockPos(1 + i, 1, 8);
-                h.setBlock(p, WFRegistry.MANA_PYLON.get());
-                ((com.warfront.mana.ManaNodeBlockEntity) h.getBlockEntity(p)).setOwner(owner.getUUID());
-            }
-            h.runAfterDelay(2, () -> {
-                int after = com.warfront.world.BaseLevel.buildings(h.getLevel(), core, key);
-                int lvl = com.warfront.world.BaseLevel.forBuildings(after);
-                h.assertTrue(after == 8 && lvl == 3, "8 buildings should be base level 3, counted " + after + " at level " + lvl);
-                h.assertTrue(com.warfront.world.BaseLevel.beastCap(lvl) == 6, "a level 3 base should allow 6 beasts, was "
-                        + com.warfront.world.BaseLevel.beastCap(lvl));
-                h.succeed();
-            });
+            com.warfront.world.BaseLevel.Status built = com.warfront.world.BaseLevel.of(h.getLevel(), core, key);
+            h.assertTrue(built.buildings() == 12 && built.level() == 1,
+                    "12 buildings and no waves won should stay level 1, was " + built + " at level " + built.level());
+            flag.setWavesWon(8);
+            com.warfront.world.BaseLevel.Status fought = com.warfront.world.BaseLevel.of(h.getLevel(), core, key);
+            h.assertTrue(fought.waves() == 8 && fought.level() == 3,
+                    "12 buildings and 8 waves won should be level 3, was " + fought + " at level " + fought.level());
+            flag.setWavesWon(40);
+            com.warfront.world.BaseLevel.Status capped = com.warfront.world.BaseLevel.of(h.getLevel(), core, key);
+            h.assertTrue(capped.level() == 3, "buildings should hold the base at level 3 however many waves are won, was " + capped.level());
+            h.assertTrue(com.warfront.world.BaseLevel.beastCap(3) == 6, "a level 3 base should allow 6 beasts");
+            h.succeed();
         });
     }
 
@@ -308,17 +323,14 @@ public final class WarfrontGameTests {
         owner.moveTo(h.absoluteVec(new Vec3(4.5, 2, 7.5)));
         SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), owner, true);
         well(h, new BlockPos(8, 1, 8), owner, 2000F);
+        standard(h, new BlockPos(0, 2, 4), owner, 3);
         h.runAfterDelay(2, () -> {
             SummoningAltarBlockEntity.Result early = altar.summon(owner, SoldierRole.CAPTAIN);
             h.assertTrue(!early.ok() && early.message().contains("level 2"), "a level 1 base should refuse a captain: " + early.message());
-            for (int i = 0; i < 2; i++) {
-                BlockPos p = new BlockPos(1 + i, 1, 8);
-                h.setBlock(p, WFRegistry.MANA_PYLON.get());
-                ((com.warfront.mana.ManaNodeBlockEntity) h.getBlockEntity(p)).setOwner(owner.getUUID());
-            }
+            pylons(h, owner, 4);
             h.runAfterDelay(2, () -> {
                 SummoningAltarBlockEntity.Result captain = altar.summon(owner, SoldierRole.CAPTAIN);
-                h.assertTrue(captain.ok(), "a level 2 base should summon a captain: " + captain.message());
+                h.assertTrue(captain.ok(), "6 buildings and 3 waves won should summon a captain: " + captain.message());
                 SummoningAltarBlockEntity.Result champion = altar.summon(owner, SoldierRole.CHAMPION);
                 h.assertTrue(!champion.ok() && champion.message().contains("level 4"),
                         "a level 2 base should refuse a champion: " + champion.message());

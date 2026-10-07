@@ -3,6 +3,7 @@ package com.warfront.world;
 import com.warfront.army.SoldierRole;
 import com.warfront.block.SummoningAltarBlockEntity;
 import com.warfront.block.TowerBlockEntity;
+import com.warfront.block.WarStandardBlockEntity;
 import com.warfront.config.WFConfig;
 import com.warfront.faction.Factions;
 import com.warfront.faction.Relation;
@@ -20,23 +21,52 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A base is everything on one mana network: the wells and pylons linked to a spot, plus the towers and summoning
- * altars within their reach. Its level comes from how many of those buildings it has, and the level sets how many
- * war beasts its commander may field and whether Captains and Champions can be summoned.
+ * A base is everything on one mana network: the wells and pylons linked to a spot, plus the towers, summoning altars
+ * and War Standards within their reach. Its level needs two things at once: enough buildings, and enough siege waves
+ * won at a War Standard on the network. The lower of the two sets the level, so a base can't be built up without
+ * fighting for it, or fought up without building. The level sets how many war beasts its commander may field and
+ * whether Captains and Champions can be summoned.
  */
 public final class BaseLevel {
     /** Buildings needed for levels 2, 3, 4 and 5. */
-    private static final int[] THRESHOLDS = {4, 8, 14, 20};
-    public static final int MAX_LEVEL = THRESHOLDS.length + 1;
+    private static final int[] BUILDINGS = {6, 12, 20, 30};
+    /** Siege waves won needed for levels 2, 3, 4 and 5. */
+    private static final int[] WAVES = {3, 8, 15, 25};
+    public static final int MAX_LEVEL = BUILDINGS.length + 1;
     /** War beasts allowed per base level. */
     public static final int BEASTS_PER_LEVEL = 2;
 
     private BaseLevel() {}
 
-    /** How many allied wells, pylons, towers and altars make up the base around {@code from}. */
-    public static int buildings(Level level, BlockPos from, String factionKey) {
+    /** A base's buildings, the most siege waves won at one of its War Standards, and the level they give. */
+    public record Status(int buildings, int waves) {
+        public int level() {
+            return Math.min(tier(buildings, BUILDINGS), tier(waves, WAVES));
+        }
+
+        /** What the base still lacks for {@code target} level, in words; empty if it is there. */
+        public String missingFor(int target) {
+            if (target <= 1 || target > MAX_LEVEL) return "";
+            int b = Math.max(0, BUILDINGS[target - 2] - buildings);
+            int w = Math.max(0, WAVES[target - 2] - waves);
+            String build = b > 0 ? "build " + b + " more wells, pylons, towers or altars on this network" : "";
+            String fight = w > 0 ? "win " + w + " more siege waves at a War Standard on this network" : "";
+            if (!build.isEmpty() && !fight.isEmpty()) return build + " and " + fight;
+            return build + fight;
+        }
+    }
+
+    private static int tier(int value, int[] thresholds) {
+        int lvl = 1;
+        for (int t : thresholds) if (value >= t) lvl++;
+        return lvl;
+    }
+
+    /** Surveys the base around {@code from} for {@code factionKey}. */
+    public static Status of(Level level, BlockPos from, String factionKey) {
         List<ManaNodeBlockEntity> nodes = ManaNetwork.nodes(level, from, factionKey);
-        int count = nodes.size();
+        int buildings = nodes.size();
+        int waves = 0;
         double reach = WFConfig.MANA_LINK_RANGE.get();
         double reachSq = reach * reach;
         int chunkReach = ((int) reach >> 4) + 1;
@@ -55,37 +85,21 @@ public final class BaseLevel {
                 String key;
                 if (be instanceof TowerBlockEntity tower) key = tower.factionKey(server);
                 else if (be instanceof SummoningAltarBlockEntity altar && altar.hasOwner()) key = altar.factionKey(server);
+                else if (be instanceof WarStandardBlockEntity standard) key = standard.factionKey(server);
                 else continue;
-                if (Factions.relation(server, factionKey, key) != Relation.ALLY) continue;
-                BlockPos pos = be.getBlockPos();
-                for (ManaNodeBlockEntity node : nodes) {
-                    if (node.getBlockPos().distSqr(pos) <= reachSq) {
-                        count++;
-                        break;
-                    }
-                }
+                if (Factions.relation(server, factionKey, key) != Relation.ALLY || !inReach(nodes, be.getBlockPos(), reachSq)) continue;
+                if (be instanceof WarStandardBlockEntity standard) waves = Math.max(waves, standard.getWavesWon());
+                else buildings++;
             }
         }
-        return count;
+        return new Status(buildings, waves);
     }
 
-    /** Buildings still needed to reach {@code target} level, or 0 if already there. */
-    public static int toLevel(int buildings, int target) {
-        if (target <= 1) return 0;
-        return Math.max(0, THRESHOLDS[Math.min(target, MAX_LEVEL) - 2] - buildings);
-    }
-
-    /** The level a base with this many buildings has, 1 to {@link #MAX_LEVEL}. */
-    public static int forBuildings(int buildings) {
-        int lvl = 1;
-        for (int t : THRESHOLDS) if (buildings >= t) lvl++;
-        return lvl;
-    }
-
-    /** Buildings still needed for the next level, or 0 at the top level. */
-    public static int toNextLevel(int buildings) {
-        for (int t : THRESHOLDS) if (buildings < t) return t - buildings;
-        return 0;
+    private static boolean inReach(List<ManaNodeBlockEntity> nodes, BlockPos pos, double reachSq) {
+        for (ManaNodeBlockEntity node : nodes) {
+            if (node.getBlockPos().distSqr(pos) <= reachSq) return true;
+        }
+        return false;
     }
 
     /** The base level a role needs before an altar will summon it: Captains 2, Champions 4, everyone else 1. */

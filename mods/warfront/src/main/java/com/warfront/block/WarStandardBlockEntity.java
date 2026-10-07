@@ -50,6 +50,8 @@ public class WarStandardBlockEntity extends BlockEntity {
     @Nullable private UUID owner;
     private int health = -1;
     private int wave;
+    /** Siege waves beaten at this standard, ever. Counts toward the base's level; lost if the standard falls. */
+    private int wavesWon;
     @Nullable private UUID warband;
     private int waveSize;
     private long siegeStart;
@@ -91,6 +93,21 @@ public class WarStandardBlockEntity extends BlockEntity {
 
     public int getWave() {
         return wave;
+    }
+
+    public int getWavesWon() {
+        return wavesWon;
+    }
+
+    public void setWavesWon(int wavesWon) {
+        this.wavesWon = Math.max(0, wavesWon);
+        setChanged();
+    }
+
+    /** The faction this standard belongs to. */
+    public String factionKey(@Nullable net.minecraft.server.MinecraftServer server) {
+        if (owner == null) return com.warfront.faction.Factions.WILD;
+        return server == null ? "p:" + owner : FactionData.get(server).keyOf(owner);
     }
 
     private int maxHealth() {
@@ -232,6 +249,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         warband = null;
         lastSiege = level.getGameTime();
         health = maxHealth();
+        wavesWon++;
 
         int marks = 4 + wave * 2;
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.WAR_MARK.get(), marks));
@@ -321,7 +339,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         String status = warband != null ? "UNDER SIEGE (wave " + wave + ")"
                 : campaign ? "Campaign: next wave soon" : "Peaceful";
         player.displayClientMessage(Component.literal("War Standard: " + status + "  |  Integrity " + health() + "/"
-                + maxHealth() + "  |  Waves survived: " + Math.max(0, warband != null ? wave - 1 : wave))
+                + maxHealth() + "  |  Waves won: " + wavesWon)
                 .withStyle(warband != null ? ChatFormatting.RED : ChatFormatting.GOLD), true);
     }
 
@@ -341,6 +359,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         if (warband != null) tag.putUUID("Warband", warband);
         tag.putInt("Health", health);
         tag.putInt("Wave", wave);
+        tag.putInt("WavesWon", wavesWon);
         tag.putInt("WaveSize", waveSize);
         tag.putLong("SiegeStart", siegeStart);
         tag.putLong("LastSiege", lastSiege);
@@ -356,6 +375,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         warband = tag.hasUUID("Warband") ? tag.getUUID("Warband") : null;
         health = tag.contains("Health") ? tag.getInt("Health") : -1;
         wave = tag.getInt("Wave");
+        wavesWon = tag.contains("WavesWon") ? tag.getInt("WavesWon") : Math.max(0, warband != null ? wave - 1 : wave);
         waveSize = tag.getInt("WaveSize");
         siegeStart = tag.getLong("SiegeStart");
         lastSiege = tag.getLong("LastSiege");
