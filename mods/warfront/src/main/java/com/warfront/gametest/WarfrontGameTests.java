@@ -635,4 +635,74 @@ public final class WarfrontGameTests {
             h.succeed();
         });
     }
+
+    // ------------------------------------------------------------------ test mode
+
+    private static Player tester(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.CREATIVE);
+        p.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
+        return p;
+    }
+
+    @GameTest(template = ARENA)
+    public static void testModeIsGatedAndSpawnsUnits(GameTestHelper h) {
+        Player p = tester(h);
+        h.assertTrue(!com.warfront.test.TestActions.allowed(p), "test tools need test mode on");
+        p.setData(WFRegistry.TEST_MODE, true);
+        h.assertTrue(!com.warfront.test.TestActions.allowed(p), "test tools also need operator rights");
+        var r = com.warfront.test.TestActions.spawn(p, Race.ORC, SoldierRole.SWORDSMAN, 3, "friendly");
+        int owned = com.warfront.test.TestActions.owned(p).size();
+        h.assertTrue(r.ok() && owned == 3, "spawn 3 friendly should give 3 owned units, had " + owned + " (" + r.message() + ")");
+        com.warfront.test.TestActions.army(p, "heal");
+        com.warfront.test.TestActions.army(p, "dismiss");
+        h.assertTrue(com.warfront.test.TestActions.owned(p).isEmpty(), "dismiss all should remove the army");
+        var e = com.warfront.test.TestActions.spawn(p, null, SoldierRole.ARCHER, 2, "the_swarm");
+        List<SoldierEntity> swarm = h.getLevel().getEntitiesOfClass(SoldierEntity.class, p.getBoundingBox().inflate(12),
+                s -> NpcFaction.THE_SWARM.key().equals(s.getFactionKey()));
+        h.assertTrue(e.ok() && swarm.size() >= 2, "enemy spawn should make Swarm raiders, found " + swarm.size());
+        swarm.forEach(SoldierEntity::discard);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void testModeSetsBaseLevelAndMana(GameTestHelper h) {
+        Player p = tester(h);
+        BlockPos wellPos = new BlockPos(4, 2, 4);
+        h.setBlock(wellPos, WFRegistry.MANA_WELL.get());
+        if (!(h.getBlockEntity(wellPos) instanceof ManaWellBlockEntity well)) throw new IllegalStateException("no well");
+        well.setOwner(p.getUUID());
+        h.runAtTickTime(3, () -> {
+            BlockPos abs = h.absolutePos(wellPos);
+            String key = "p:" + p.getUUID();
+            com.warfront.test.TestActions.setBaseLevel(p, 4, 3);
+            var base = com.warfront.world.BaseLevel.of(h.getLevel(), abs, key);
+            h.assertTrue(base.level() == 4 && base.isTest(), "TEST base level should be 4, was " + base.level());
+            com.warfront.test.TestActions.fillMana(p, 3);
+            h.assertTrue(well.getMana() >= ManaWellBlockEntity.capacity(), "fill should top up the well, has " + well.getMana());
+            com.warfront.test.TestActions.setInfinite(p, true, 3);
+            well.take(50F);
+            h.assertTrue(well.getMana() >= ManaWellBlockEntity.capacity(), "an infinite well never drains");
+            com.warfront.test.TestActions.setInfinite(p, false, 3);
+            com.warfront.test.TestActions.setBaseLevel(p, 0, 3);
+            h.assertTrue(!com.warfront.world.BaseLevel.of(h.getLevel(), abs, key).isTest(), "level 0 clears the TEST level");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void testModeStartsAndEndsWaves(GameTestHelper h) {
+        Player p = tester(h);
+        BlockPos pos = new BlockPos(4, 2, 4);
+        h.setBlock(pos, WFRegistry.WAR_STANDARD.get());
+        if (!(h.getBlockEntity(pos) instanceof WarStandardBlockEntity standard)) throw new IllegalStateException("no standard");
+        var r = com.warfront.test.TestActions.jumpToWave(p, 6);
+        h.assertTrue(r.ok() && standard.isUnderSiege() && standard.getWave() == 6,
+                "jump to wave 6 should start wave 6, wave " + standard.getWave() + " (" + r.message() + ")");
+        com.warfront.test.TestActions.endSiege(p);
+        h.assertTrue(!standard.isUnderSiege(), "end siege should stop the wave");
+        var s = com.warfront.test.TestActions.startWave(p, NpcFaction.IRONBEARD_CLAN);
+        h.assertTrue(s.ok() && standard.isUnderSiege() && standard.getLastSpawned() > 0, "start wave should spawn attackers");
+        com.warfront.test.TestActions.endSiege(p);
+        h.succeed();
+    }
 }

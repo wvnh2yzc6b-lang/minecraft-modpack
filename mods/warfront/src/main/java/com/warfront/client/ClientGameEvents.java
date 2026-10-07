@@ -37,6 +37,12 @@ public final class ClientGameEvents {
                     ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
         }
         jumpWasDown = jumpDown;
+
+        while (ClientSetup.TEST_PANEL.consumeClick()) {
+            if (com.warfront.network.TestModePayload.clientOn) mc.setScreen(new TestPanelScreen());
+            else player.displayClientMessage(net.minecraft.network.chat.Component.literal(
+                    "Test mode is off. An operator turns it on with /wftest on."), true);
+        }
     }
 
     /** Demon players see their own clawed demon arm in first person. */

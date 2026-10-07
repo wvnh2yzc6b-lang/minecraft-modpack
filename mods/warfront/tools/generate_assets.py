@@ -666,6 +666,8 @@ def effect_icons():
 def lang():
     names = {
         "itemGroup.warfront": "Warfront",
+        "key.categories.warfront": "Warfront",
+        "key.warfront.test_panel": "Test Panel (test mode)",
         "block.warfront.arrow_tower": "Arrow Tower",
         "block.warfront.arcane_spire": "Arcane Spire",
         "block.warfront.healing_shrine": "Healing Shrine",

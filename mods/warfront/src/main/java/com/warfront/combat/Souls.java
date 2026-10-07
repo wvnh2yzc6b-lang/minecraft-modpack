@@ -69,6 +69,11 @@ public final class Souls {
         return BURST_DAMAGE;
     }
 
+    /** Test mode: a full harvest. */
+    public static void fill(LivingEntity e) {
+        set(e, MAX);
+    }
+
     private static void set(LivingEntity demon, int souls) {
         demon.getPersistentData().putInt(KEY, souls);
         AttributeInstance attack = demon.getAttribute(Attributes.ATTACK_DAMAGE);

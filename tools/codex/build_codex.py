@@ -251,6 +251,7 @@ def worker_names():
 
 PAGES = [
     ("home", "Home", ["progress", "gaps"]),
+    ("play", "Play", ["play"]),
     ("designs", "Designs", ["designs"]),
     ("models", "Models", ["models", "demon", "imps", "hive", "workers"]),
     ("skins", "Skins", ["skins", "foes", "textures"]),

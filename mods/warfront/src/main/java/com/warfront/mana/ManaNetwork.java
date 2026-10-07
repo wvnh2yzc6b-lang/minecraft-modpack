@@ -79,6 +79,17 @@ public final class ManaNetwork {
         return found;
     }
 
+    /** Every loaded well and pylon within {@code radius} blocks of {@code pos}, of any faction (test tools). */
+    public static List<ManaNodeBlockEntity> near(Level level, BlockPos pos, double radius) {
+        List<ManaNodeBlockEntity> out = new ArrayList<>();
+        Set<BlockPos> all = NODES.get(level.dimension());
+        if (all == null) return out;
+        for (BlockPos n : new ArrayList<>(all)) {
+            if (n.distSqr(pos) <= radius * radius && level.getBlockEntity(n) instanceof ManaNodeBlockEntity node) out.add(node);
+        }
+        return out;
+    }
+
     /** Total mana a consumer at {@code from} can draw. */
     public static float available(Level level, BlockPos from, String factionKey) {
         float sum = 0F;

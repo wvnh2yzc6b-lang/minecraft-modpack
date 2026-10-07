@@ -51,6 +51,7 @@ public final class GameEvents {
     @SubscribeEvent
     public static void onCommands(RegisterCommandsEvent event) {
         WFCommands.register(event.getDispatcher());
+        com.warfront.command.TestCommands.register(event.getDispatcher());
     }
 
     @SubscribeEvent
@@ -66,6 +67,8 @@ public final class GameEvents {
         if (player instanceof ServerPlayer sp) {
             com.warfront.network.RaceSync.broadcast(sp);
             com.warfront.network.RaceSync.sendAllTo(sp);
+            com.warfront.test.TestActions.sync(sp);
+            com.warfront.test.TestActions.reapplyGod(sp);
         }
         Race race = Race.byId(player.getData(WFRegistry.RACE));
         if (race != null) {
@@ -93,6 +96,7 @@ public final class GameEvents {
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Race race = Race.byId(event.getEntity().getData(WFRegistry.RACE));
         if (race != null) race.apply(event.getEntity());
+        if (event.getEntity() instanceof ServerPlayer sp) com.warfront.test.TestActions.reapplyGod(sp);
     }
 
     private static void give(Player player, ItemStack stack) {

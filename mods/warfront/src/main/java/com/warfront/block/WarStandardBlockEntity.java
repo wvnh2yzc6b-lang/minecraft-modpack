@@ -61,6 +61,9 @@ public class WarStandardBlockEntity extends BlockEntity {
     private boolean campaign;
     private long nextWaveAt;
     @Nullable private String attackerName;
+    /** Test mode: the campaign clock is stopped, with this many ticks left until the next wave. */
+    private boolean paused;
+    private long pausedLeft;
 
     @Nullable private ServerBossEvent bar;
 
@@ -140,7 +143,7 @@ public class WarStandardBlockEntity extends BlockEntity {
             }
         }
 
-        if (be.warband == null && be.campaign && time % 20 == 0) {
+        if (be.warband == null && be.campaign && !be.paused && time % 20 == 0) {
             if (time >= be.nextWaveAt) {
                 be.startSiege(server);
             } else {
@@ -199,10 +202,15 @@ public class WarStandardBlockEntity extends BlockEntity {
 
     /** Begins the next siege wave. Returns false if a wave is already underway. */
     public boolean startSiege(ServerLevel level) {
+        return startSiege(level, null);
+    }
+
+    /** Begins the next siege wave from {@code chosen}, or a faction picked by the biome when null. */
+    public boolean startSiege(ServerLevel level, @Nullable NpcFaction chosen) {
         if (warband != null) return false;
         wave++;
         BlockPos biomePos = worldPosition;
-        NpcFaction faction = NpcFaction.pick(level.getBiome(biomePos), level, level.random);
+        NpcFaction faction = chosen != null ? chosen : NpcFaction.pick(level.getBiome(biomePos), level, level.random);
         List<SoldierRole> roles = WarbandSpawner.siegeComposition(wave, faction);
         int tier = Math.min(4, 1 + wave / 3);
         int groups = wave >= 8 ? 3 : wave >= 4 ? 2 : 1;
@@ -244,6 +252,43 @@ public class WarStandardBlockEntity extends BlockEntity {
                 + String.join(" and ", fronts) + "!").withStyle(faction.color, ChatFormatting.BOLD));
         updateBar(level, spawned.size());
         return true;
+    }
+
+    // ------------------------------------------------------------------ test mode
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    /** Test mode: the next wave to come will be wave {@code n}. */
+    public void setNextWave(int n) {
+        wave = Math.max(0, n - 1);
+        setChanged();
+    }
+
+    /** Test mode: stops or restarts the campaign clock. */
+    public void setPaused(ServerLevel level, boolean pause) {
+        if (pause == paused) return;
+        paused = pause;
+        if (pause) pausedLeft = Math.max(0, nextWaveAt - level.getGameTime());
+        else nextWaveAt = level.getGameTime() + pausedLeft;
+        setChanged();
+    }
+
+    /** Test mode: removes the attackers and ends the siege and any campaign, with no reward. */
+    public void endSiege(ServerLevel level) {
+        UUID id = warband;
+        if (id != null) {
+            for (SoldierEntity s : level.getEntitiesOfClass(SoldierEntity.class, new AABB(worldPosition).inflate(BAR_RANGE * 2),
+                    s -> id.equals(s.getWarbandId()))) s.discard();
+        }
+        warband = null;
+        campaign = false;
+        paused = false;
+        lastSiege = level.getGameTime();
+        clearBar();
+        setChanged();
+        announce(level, Component.literal("The siege is called off (test mode).").withStyle(ChatFormatting.GRAY));
     }
 
     private static String direction(float angle) {
@@ -344,7 +389,7 @@ public class WarStandardBlockEntity extends BlockEntity {
 
     public void describeTo(Player player) {
         String status = warband != null ? "UNDER SIEGE (wave " + wave + ")"
-                : campaign ? "Campaign: next wave soon" : "Peaceful";
+                : campaign ? (paused ? "Campaign: PAUSED" : "Campaign: next wave soon") : "Peaceful";
         player.displayClientMessage(Component.literal("War Standard: " + status + "  |  Integrity " + health() + "/"
                 + maxHealth() + "  |  Waves won: " + wavesWon)
                 .withStyle(warband != null ? ChatFormatting.RED : ChatFormatting.GOLD), true);
@@ -373,6 +418,8 @@ public class WarStandardBlockEntity extends BlockEntity {
         tag.putBoolean("Campaign", campaign);
         tag.putLong("NextWaveAt", nextWaveAt);
         if (attackerName != null) tag.putString("Attacker", attackerName);
+        tag.putBoolean("Paused", paused);
+        tag.putLong("PausedLeft", pausedLeft);
     }
 
     @Override
@@ -389,5 +436,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         campaign = tag.getBoolean("Campaign");
         nextWaveAt = tag.getLong("NextWaveAt");
         attackerName = tag.contains("Attacker") ? tag.getString("Attacker") : null;
+        paused = tag.getBoolean("Paused");
+        pausedLeft = tag.getLong("PausedLeft");
     }
 }

@@ -39,14 +39,25 @@ public final class BaseLevel {
     private BaseLevel() {}
 
     /** A base's buildings, the most siege waves won at one of its War Standards, and the level they give. */
-    public record Status(int buildings, int waves) {
+    public record Status(int buildings, int waves, int testLevel) {
+        public Status(int buildings, int waves) {
+            this(buildings, waves, 0);
+        }
+
+        /** The level; a test-mode override (shown as TEST) wins over what was built and fought for. */
         public int level() {
+            if (testLevel > 0) return Math.min(MAX_LEVEL, testLevel);
             return Math.min(tier(buildings, BUILDINGS), tier(waves, WAVES));
+        }
+
+        public boolean isTest() {
+            return testLevel > 0;
         }
 
         /** What the base still lacks for {@code target} level, in words; empty if it is there. */
         public String missingFor(int target) {
             if (target <= 1 || target > MAX_LEVEL) return "";
+        if (testLevel > 0) return "change the TEST level in the Test Panel";
             int b = Math.max(0, BUILDINGS[target - 2] - buildings);
             int w = Math.max(0, WAVES[target - 2] - waves);
             String build = b > 0 ? "build " + b + " more wells, pylons, towers or altars on this network" : "";
@@ -66,6 +77,8 @@ public final class BaseLevel {
     public static Status of(Level level, BlockPos from, String factionKey) {
         List<ManaNodeBlockEntity> nodes = ManaNetwork.nodes(level, from, factionKey);
         int buildings = nodes.size();
+        int testLevel = 0;
+        for (ManaNodeBlockEntity node : nodes) testLevel = Math.max(testLevel, node.getTestLevel());
         int waves = 0;
         double reach = WFConfig.MANA_LINK_RANGE.get();
         double reachSq = reach * reach;
@@ -92,7 +105,7 @@ public final class BaseLevel {
                 else buildings++;
             }
         }
-        return new Status(buildings, waves);
+        return new Status(buildings, waves, testLevel);
     }
 
     private static boolean inReach(List<ManaNodeBlockEntity> nodes, BlockPos pos, double reachSq) {

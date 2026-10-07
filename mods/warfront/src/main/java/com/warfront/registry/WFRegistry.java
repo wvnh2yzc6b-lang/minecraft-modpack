@@ -64,6 +64,13 @@ public final class WFRegistry {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> STARTER_KIT = ATTACHMENTS.register(
             "starter_kit", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
+    /** Test mode: unlocks the Test Panel (F8) and /wftest for this player. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> TEST_MODE = ATTACHMENTS.register(
+            "test_mode", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+    /** Test mode god mode: invulnerable with creative-style flight. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> GOD_MODE = ATTACHMENTS.register(
+            "god_mode", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
     // ---- entities ----
     public static final DeferredHolder<EntityType<?>, EntityType<SoldierEntity>> SOLDIER = ENTITIES.register("soldier",
             () -> EntityType.Builder.<SoldierEntity>of(SoldierEntity::new, MobCategory.MISC)

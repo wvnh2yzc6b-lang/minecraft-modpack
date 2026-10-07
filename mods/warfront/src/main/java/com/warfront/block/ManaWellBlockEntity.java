@@ -17,6 +17,8 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
     public static final float CRYSTAL_MANA = 50F;
 
     private float mana;
+    /** Test mode: never runs dry. */
+    private boolean infinite;
 
     /** Hoppers and pipes can push fuel in; nothing comes out. */
     public final IItemHandler fuelInput = new IItemHandler() {
@@ -69,7 +71,17 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
     }
 
     public float getMana() {
-        return mana;
+        return infinite ? capacity() : mana;
+    }
+
+    public boolean isInfinite() {
+        return infinite;
+    }
+
+    public void setInfinite(boolean infinite) {
+        this.infinite = infinite;
+        if (infinite) mana = capacity();
+        changed();
     }
 
     public void setMana(float value) {
@@ -91,6 +103,7 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
 
     /** Removes up to {@code amount} mana and returns how much was taken. */
     public float take(float amount) {
+        if (infinite) return amount;
         float taken = Math.min(amount, mana);
         setMana(mana - taken);
         return taken;
@@ -118,11 +131,13 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putFloat("Mana", mana);
+        if (infinite) tag.putBoolean("Infinite", true);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         mana = tag.getFloat("Mana");
+        infinite = tag.getBoolean("Infinite");
     }
 }

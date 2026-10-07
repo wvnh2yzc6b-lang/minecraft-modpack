@@ -32,5 +32,9 @@ public final class ModEvents {
                 com.warfront.network.AltarSummonPayload::handle);
         registrar.playToClient(com.warfront.network.RacePayload.TYPE, com.warfront.network.RacePayload.STREAM_CODEC,
                 com.warfront.network.RacePayload::handle);
+        registrar.playToClient(com.warfront.network.TestModePayload.TYPE, com.warfront.network.TestModePayload.STREAM_CODEC,
+                com.warfront.network.TestModePayload::handle);
+        registrar.playToServer(com.warfront.network.TestActionPayload.TYPE, com.warfront.network.TestActionPayload.STREAM_CODEC,
+                com.warfront.network.TestActionPayload::handle);
     }
 }

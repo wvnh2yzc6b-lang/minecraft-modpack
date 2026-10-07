@@ -16,6 +16,8 @@ import java.util.UUID;
 /** A block that is part of a mana network (a Mana Well or a Mana Pylon). It belongs to whoever placed it. */
 public abstract class ManaNodeBlockEntity extends BlockEntity {
     @Nullable private UUID owner;
+    /** Test mode: forces the base level of the network this node is on (0 = off). */
+    private int testLevel;
 
     protected ManaNodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -23,6 +25,15 @@ public abstract class ManaNodeBlockEntity extends BlockEntity {
 
     public void setOwner(UUID owner) {
         this.owner = owner;
+        setChanged();
+    }
+
+    public int getTestLevel() {
+        return testLevel;
+    }
+
+    public void setTestLevel(int level) {
+        testLevel = Math.max(0, level);
         setChanged();
     }
 
@@ -54,11 +65,13 @@ public abstract class ManaNodeBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (owner != null) tag.putUUID("Owner", owner);
+        if (testLevel > 0) tag.putInt("TestLevel", testLevel);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
+        testLevel = tag.getInt("TestLevel");
     }
 }

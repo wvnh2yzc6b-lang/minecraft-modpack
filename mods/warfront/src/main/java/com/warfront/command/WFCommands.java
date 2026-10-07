@@ -150,6 +150,12 @@ public final class WFCommands {
                 .collect(Collectors.joining(", "))).withStyle(ChatFormatting.YELLOW));
         ok(ctx, Component.literal(String.format("Average health %.0f%%, morale %.0f", 100 * health / army.size(),
                 morale / army.size())).withStyle(ChatFormatting.GRAY));
+        com.warfront.world.BaseLevel.Status base = com.warfront.world.BaseLevel.of(p.level(), p.blockPosition(),
+                com.warfront.faction.Factions.keyOf(p.getServer(), p));
+        if (base.buildings() > 0 || base.isTest()) {
+            ok(ctx, Component.literal("Base level " + base.level() + (base.isTest() ? " (TEST)" : ""))
+                    .withStyle(base.isTest() ? ChatFormatting.AQUA : ChatFormatting.GRAY));
+        }
         return army.size();
     }
 

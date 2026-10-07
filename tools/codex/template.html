@@ -601,6 +601,24 @@ nav.pages a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
   <p class="legend">Starter kit on first join: Commander's Baton, Summoning Altar, 4 Mana Braziers, Mana Well, 24 Mana Shards, 4 Manabloom Seeds.</p>
 </section>
 
+<section id="play">
+  <header>
+    <span class="eyebrow">Private, on your own computer</span>
+    <h2>Play it</h2>
+    <p>The pack isn't published anywhere. You download the build GitHub makes on every push and load it in the Modrinth App.</p>
+  </header>
+  <div class="prose">
+    <ol>
+      <li><b>Install the Modrinth App</b> from modrinth.com/app (free).</li>
+      <li><b>Download the pack.</b> On GitHub, signed in, open the repo's <b>Actions</b> tab, click the newest run with a green tick, scroll to <b>Artifacts</b> and download <code>warfront-modpack</code>. Unzip it: inside is <code>Warfront-Age-of-Banners.mrpack</code>.</li>
+      <li><b>Add it.</b> Modrinth App: <b>+ (Add instance)</b> → <b>From file</b> → pick the <code>.mrpack</code>. Then the instance's settings → Java and memory → give it <b>6 GB or more</b>. Press <b>Play</b>.</li>
+      <li><b>Make a test world.</b> Creative, or Survival with <b>Allow cheats ON</b>.</li>
+      <li><b>Turn on test mode.</b> Type <code>/wftest on</code>, then press <b>F8</b> for the Test Panel (rebind it under Controls → Warfront).</li>
+    </ol>
+    <p>Quick start: Base tab → <b>Starter base</b>, then Spawn tab → spawn some friends and some foes, or Siege tab → <b>Start wave now</b>. Everything on the panel also works as a command: type <code>/wftest</code> for the list.</p>
+  </div>
+</section>
+
 <section id="commands">
   <header>
     <span class="eyebrow">Chat commands</span>
@@ -618,6 +636,12 @@ nav.pages a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2p
       <tr><td><code>/faction info [name]</code> · <code>list</code></td><td>Members, allies and wars</td></tr>
       <tr><td><code>/faction color &lt;color&gt;</code></td><td>Faction color, used for soldier name tags and captains' banners</td></tr>
       <tr><td><code>/faction war|peace|ally &lt;name&gt;</code></td><td>Diplomacy (leader only)</td></tr>
+      <tr><td><code>/wftest on|off</code></td><td>Operators: test mode. Unlocks the Test Panel (F8) and the commands below</td></tr>
+      <tr><td><code>/wftest spawn &lt;race&gt; &lt;role&gt; [count] [friendly|faction]</code></td><td>Spawn 1–10 units in front of you, yours or an enemy faction's</td></tr>
+      <tr><td><code>/wftest army heal|kill|dismiss</code></td><td>Act on every unit you own within 128 blocks</td></tr>
+      <tr><td><code>/wftest base level &lt;0-5&gt;|fill|infinite on|off|starter</code></td><td>TEST base level (0 clears), fill or infinite mana within 32 blocks, or build a starter base</td></tr>
+      <tr><td><code>/wftest siege start [faction]|wave &lt;n&gt;|pause|resume|end</code></td><td>Control the nearest War Standard's siege</td></tr>
+      <tr><td><code>/wftest player race|fill|day|night|clear|god|kit</code></td><td>Switch race, fill souls/rage/glider, time and weather, god mode, every Warfront item</td></tr>
     </tbody>
   </table></div>
 </section>

@@ -3,6 +3,11 @@
   "pack_mods": 68,
   "log": [
     {
+      "status": "done",
+      "title": "Test mode: the Test Panel",
+      "detail": "Type /wftest on (cheats on) and press F8. Four tabs: Spawn (any race and role, 1 to 10, yours or any enemy faction's, war beasts with no limit; heal, kill or dismiss your army), Base (set a TEST base level, fill or make mana infinite, drop a ready-made starter base), Siege (start a wave from any faction, jump to wave N, pause, resume, end) and Player (switch race, fill souls/rage/glider, day/night/clear, god mode, a kit of every Warfront item). Every button is also a /wftest command. The Codex has a new Play page with install steps."
+    },
+    {
       "status": "planned",
       "title": "Roadmap: a skill tree for every build",
       "detail": "Your build is yours, not your race's. Fighting the war earns Renown, and every Renown level gives a skill point to spend across six paths open to every race: Blade, Bulwark, Marksman, Arcane, Skirmisher and Commander, plus a path of your own race that strengthens its race power. Pick up to four active skills from any path, so a dwarf archer or an elf shield-tank is a real build. Each race starts a little ahead in two paths that fit its lore. All six shared paths are designed, each with two branches and a capstone: Blade (Blade Storm), Bulwark (Guardian's Aegis), Marksman (Rain of Arrows), Arcane (Arcane Surge), Skirmisher (Shadow Dance) and Commander (Last Order). The race paths come next."
@@ -26,11 +31,6 @@
       "status": "planned",
       "title": "Roadmap: the warlord campaign",
       "detail": "The endgame. Raids hit you from mixed factions at random, and every faction you beat back fills a war meter. Fill it and you get a War Map to that faction's warlord fortress in its homeland, from a plains keep to a citadel in the Nether, the Aether and the Otherside, and you march your army there. Your own race's renegades come last. Each warlord gives a trophy banner for your base and unique gear; beat all seven to earn the Warlord title and uncover the hidden warlord behind it all."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: test mode for playtesting",
-      "detail": "Next up, ahead of everything else: type /wftest on and press F8 for a Test Panel that spawns any unit (friend or foe), sets base level, fills mana, drops a starter base, starts siege waves, switches race and turns on god mode. A new Play page in the Codex will walk through installing the pack privately with the Modrinth App."
     },
     {
       "status": "planned",
@@ -228,6 +228,9 @@
     "elfArrowsFlyFaster": "An arrow shot by an elf leaves 20% faster",
     "demonKillsHarvestSoulsAndBurst": "A demon's souls cap at 10 and raise its attack damage; a full harvest bursts and empties",
     "orcWorkersAreGoblins": "An orc farmer is a goblin and well under orc size; an orc soldier is not",
-    "manaGliderIsHumanOnlyAndGlides": "Only a human can fly the Mana Glider, and it bleeds off excess speed and softens the sink"
+    "manaGliderIsHumanOnlyAndGlides": "Only a human can fly the Mana Glider, and it bleeds off excess speed and softens the sink",
+    "testModeIsGatedAndSpawnsUnits": "Test tools need test mode and operator rights; spawn makes friendly and enemy units; dismiss clears the army",
+    "testModeSetsBaseLevelAndMana": "A TEST base level overrides the real one and clears with 0; fill tops up wells; infinite wells never drain",
+    "testModeStartsAndEndsWaves": "Jump to wave 6 starts wave 6, end siege stops it, start wave spawns a chosen faction"
   }
 }

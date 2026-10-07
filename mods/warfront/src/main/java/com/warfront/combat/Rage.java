@@ -61,6 +61,14 @@ public final class Rage {
         }
     }
 
+    /** Test mode: rage one hit short of a Frenzy. */
+    public static void fill(LivingEntity e) {
+        CompoundTag d = e.getPersistentData();
+        d.putInt(KEY, MAX - 1);
+        d.putLong(TIME_KEY, e.level().getGameTime());
+        if (e instanceof ServerPlayer p) p.displayClientMessage(bar(MAX - 1), true);
+    }
+
     private static Component bar(int rage) {
         int filled = rage / 10;
         return Component.literal("Rage ").withStyle(ChatFormatting.RED)

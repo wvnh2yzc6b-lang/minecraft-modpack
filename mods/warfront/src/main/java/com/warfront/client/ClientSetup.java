@@ -14,6 +14,16 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 public final class ClientSetup {
     private ClientSetup() {}
 
+    /** F8: the Test Panel, when test mode is on. */
+    public static final net.minecraft.client.KeyMapping TEST_PANEL = new net.minecraft.client.KeyMapping(
+            "key.warfront.test_panel", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+            org.lwjgl.glfw.GLFW.GLFW_KEY_F8, "key.categories.warfront");
+
+    @SubscribeEvent
+    public static void onKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
+        event.register(TEST_PANEL);
+    }
+
     @SubscribeEvent
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(WFRegistry.SOLDIER.get(), SoldierRenderer::new);
