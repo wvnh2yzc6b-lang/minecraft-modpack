@@ -1,11 +1,4 @@
 {
   "about": "Ideas floated but not decided yet, in the owner's words. Once the owner decides one, it moves to settled in needs.json and into backlog.json.",
-  "ideas": [
-    {
-      "from": "claude",
-      "date": "2026-10-07",
-      "idea": "Veterancy: units that survive battles rank up with small bonuses, so even basic troops are worth protecting.",
-      "note": "Offered as an add-on to mortal units; the owner chose mortal + hero revive without it for now."
-    }
-  ]
+  "ideas": []
 }

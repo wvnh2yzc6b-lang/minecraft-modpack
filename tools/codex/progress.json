@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: veterancy",
+      "detail": "Battle units climb five ranks, Recruit to Legend, from kills and surviving siege waves. Each rank adds about 10% health and damage, Elites and Legends never break and run, and you can see it: armor upgrades a tier per rank and chevrons on the shoulder count the rank. Troops lose it when they die; fallen heroes keep theirs. Queued for a build session."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: dwarves dig in",
       "detail": "Dwarves get tunnels instead of flight: a Rune Drill that cuts 3x3 tunnels fast, Rune Stone walls that raiders and Hive tunnelers can't break through, and three tunnel traps: a hidden spike floor, a rune mine that only blows up enemies, and a flame vent that runs on base mana. Queued for a build session."
     },

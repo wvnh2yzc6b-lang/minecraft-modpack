@@ -18,6 +18,24 @@
       ]
     },
     {
+      "id": "veterancy",
+      "status": "ready",
+      "title": "Veterancy: 5 ranks with armor upgrades and insignia",
+      "decided": "Owner, 2026-10-07: 5 ranks with a slow climb, small stat boost per rank, upgraded armor tier and rank insignia.",
+      "spec": [
+        "Applies to battle units (every role except Farmer, Builder and the retired Guard), heroes and war beasts included. Workers don't rank.",
+        "Ranks: 0 Recruit, 1 Regular, 2 Veteran, 3 Elite, 4 Legend. XP stored on the unit (saved to NBT, synced to the client for rendering).",
+        "XP: a kill gives XP equal to the victim's max health / 2 (min 1); surviving a won siege wave within range of the War Standard gives 25. Thresholds 100 / 300 / 700 / 1500 (config), so Legend takes many fights.",
+        "Bonuses, as permanent attribute modifiers with fixed ids per rank: +10% max health and +10% attack damage per rank (config), so Legend is +40%. Elite and Legend units never rout (hook into the existing rout check, same as frenzied orcs). Ranged units use the damage bonus on their projectiles.",
+        "Death: rank-and-file troops lose everything (they're gone). Fallen heroes (fallen-heroes item) keep rank and XP through revive and altar return; store it on the returning-heroes entry.",
+        "Armor look, one tier per rank, in the unit's race colors: Recruit as now; Regular gains leather/padded pieces; Veteran chain or iron pieces; Elite full plate; Legend plate with gold or race-colored trim. Built as generated texture overlays/armor layers from the generators (units.py / generate_assets.py), not hand-edited. Hive and imps get chitin or harness plating instead of metal.",
+        "Insignia: one chevron per rank on the shoulder (0 to 4), race-colored, as a small render layer.",
+        "Feedback: a rank-up gives a short particle burst and sound, plus a chat line for the owner ('Your Footman is now a Veteran'). The unit's name shows the rank title when it has one.",
+        "Codex: render one unit per race at all 5 ranks side by side.",
+        "Game tests: kills raise XP and rank at the threshold; health and damage modifiers match the rank; an Elite unit doesn't rout; a revived hero keeps its rank."
+      ]
+    },
+    {
       "id": "rank-sizes",
       "status": "ready",
       "title": "Rank ladder: bigger Captains and Champions",

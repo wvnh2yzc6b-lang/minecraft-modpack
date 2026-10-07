@@ -102,6 +102,10 @@
   ],
   "settled": [
     {
+      "topic": "Army",
+      "answer": "Veterancy: battle units climb 5 ranks (Recruit, Regular, Veteran, Elite, Legend) slowly, from kills and from surviving siege waves. Each rank adds about +10% health and damage through vanilla attributes, and Elite and Legend units don't rout. Rank shows on the unit: its armor upgrades a tier per rank and it wears rank insignia (one chevron per rank). Troops lose their rank when they die; fallen heroes keep it when revived."
+    },
+    {
       "topic": "Dwarf",
       "answer": "Dwarves don't fly; they tunnel. A dwarf-only rune drill digs 3×3 tunnels fast, and dwarves can line them with rune stone that enemies (raiders, Hive tunnelers, explosions) struggle to break, so their tunnels are an underground fortress. Tunnel traps: a spike floor (hidden, reusable), a rune mine (explodes on enemies only, single use, costs a Mana Crystal) and a flame vent (fires down the tunnel, runs on base mana like a tower)."
     },
