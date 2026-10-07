@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Campaign, parts 2 and 3: fortresses and the seven warlords",
+      "detail": "Each faction now has a warlord fortress in its homeland, rare and far apart (about one per 1,500 blocks): the Black Legion on the plains, Silverwood in forests, Ironbeard in the mountains, the Marauders in badlands and savanna, the Burning Horde in the Nether, the Fallen Host on high peaks (and in the Aether when it's installed), the Swarm in the deep dark (and the Otherside). Placeholder looks in each faction's materials: a walled courtyard, four towers, a keep, and the Warlord's Seat at its heart. A War Map charts the way there. Come within 40 blocks and the garrison takes its posts and the warlord rises: a huge named Champion with a boss bar and three phases, calling defenders at two thirds and one third health and using a signature attack from its race (Soul Burst, Frenzy, arrow volleys, rune lightning, holy smite, a burrowing ambush, a shield wall). Fallen defenders are slowly replaced until the warlord dies. Then the garrison breaks and it drops its trophy banner and a unique piece of gear: Skullsplitter, Legion Warplate, Emberbrand, Broodfang, Thornbow, Runehammer, Fallen Halo. Plant a trophy banner within 8 blocks of your War Standard and your units get its lasting bonus (damage, health, armor, speed, knockback resistance, toughness, or extra mana for the Fallen Host's). Beat all seven to wear the Warlord title and receive the Seal of the Seven, the clue to the hidden warlord. Test Panel (Campaign tab): go to or place any fortress, reset it. Warlord names and looks are stand-ins until you design them."
+    },
+    {
+      "status": "done",
       "title": "Campaign, part 1: mixed raids and war meters",
       "detail": "Raids now come from factions picked at random but kept mixed: never more than three of the same in a row, and factions you haven't seen in a while grow more likely. Your own race's renegades stay away until the other six warlords have fallen. Each raid you beat (its last raider down) fills that faction's war meter; once it holds 5 and your base is level 3 or more, the last raider of the next raid you beat drops that faction's War Map. Use the map to chart the way to the faction's warlord fortress, like an explorer map. Test Panel (Campaign tab): set any meter, give any War Map, mark warlords beaten, list the meters."
     },
@@ -105,11 +110,6 @@
       "status": "planned",
       "title": "Roadmap: the daily loop",
       "detail": "Quiet days now build toward the next fight. Your troops eat from a Mess Hall (fed troops hold the line better, hungry ones never die), farmers stock it and tend Manabloom, and builders repair raid damage. The advisor posts a few small bounties each day, enemy camps appear that you can hit first to weaken the coming raid, and a traveling merchant drops by every few days to trade rare goods for crystals and raid loot."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: the warlord campaign",
-      "detail": "The endgame. Raids hit you from mixed factions at random, and every faction you beat back fills a war meter. Fill it and you get a War Map to that faction's warlord fortress in its homeland, from a plains keep to a citadel in the Nether, the Aether and the Otherside, and you march your army there. Your own race's renegades come last. Each warlord gives a trophy banner for your base and unique gear; beat all seven to earn the Warlord title and uncover the hidden warlord behind it all."
     },
     {
       "status": "planned",
@@ -307,6 +307,9 @@
     "outpostsComeEveryFifthWave": "Outposts rise on waves 5 and 10, not on 4 or 6",
     "outpostHoldsTheWaveAndComesDownClean": "A standing outpost holds the wave; a full raid chest can't be broken; breaking the empty chest removes every outpost block",
     "beatenRaidsFillTheMeterAndTheMapNeedsBaseLevel3": "Beating a raid fills its faction's meter; the War Map drops from the last raider only with a full meter at base level 3+",
-    "renegadesWaitForTheOtherSixWarlords": "Your own race's renegades never raid until the other six warlords fall; no faction raids more than three times in a row"
+    "renegadesWaitForTheOtherSixWarlords": "Your own race's renegades never raid until the other six warlords fall; no faction raids more than three times in a row",
+    "fortressTemplatesLoadAndTheGarrisonIsHostile": "All seven fortress templates load; a woken fortress posts a hostile garrison and raises its warlord",
+    "beatenWarlordsDropRewardsAndSevenMakeAWarlord": "A slain warlord ends its fortress, routs the garrison and drops its trophy banner and gear; all seven make you a Warlord with the Seal of the Seven",
+    "trophyBannerAuraReachesUnitsNearTheStandard": "A trophy banner within 8 blocks of your War Standard gives your nearby units its aura"
   }
 }

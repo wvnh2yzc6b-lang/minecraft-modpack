@@ -1146,4 +1146,66 @@ public final class WarfrontGameTests {
         h.assertTrue(maxRow <= 3, "no faction raids more than three times in a row, saw " + maxRow);
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ fortresses and warlords
+
+    @GameTest(template = ARENA)
+    public static void fortressTemplatesLoadAndTheGarrisonIsHostile(GameTestHelper h) {
+        for (NpcFaction f : NpcFaction.values()) {
+            var t = h.getLevel().getStructureManager().get(Warfront.id("fortress_" + f.name().toLowerCase(java.util.Locale.ROOT)));
+            h.assertTrue(t.isPresent() && t.get().getSize().getX() == 33, "the " + f.displayName + " fortress template should load");
+        }
+        Player p = tester(h);
+        BlockPos pos = new BlockPos(4, 2, 4);
+        h.setBlock(pos, WFRegistry.FORTRESS_CORE.get().defaultBlockState().setValue(com.warfront.fortress.FortressCoreBlock.FACTION, 1));
+        var core = (com.warfront.fortress.FortressCoreBlockEntity) h.getBlockEntity(pos);
+        core.activate(h.getLevel());
+        var garrison = core.garrison(h.getLevel());
+        h.assertTrue(garrison.size() >= 8, "the garrison should take its posts, found " + garrison.size());
+        h.assertTrue(garrison.stream().allMatch(s -> com.warfront.faction.Factions.relation(h.getLevel().getServer(), s.getFactionKey(),
+                "p:" + p.getUUID()) == com.warfront.faction.Relation.ENEMY), "defenders are hostile to players");
+        h.assertTrue(core.getWarlord() != null && h.getLevel().getEntity(core.getWarlord()) instanceof SoldierEntity w && w.isWarlord(),
+                "the warlord rises from the seat");
+        core.reset(h.getLevel());
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void beatenWarlordsDropRewardsAndSevenMakeAWarlord(GameTestHelper h) {
+        Player p = tester(h);
+        BlockPos pos = new BlockPos(4, 2, 4);
+        h.setBlock(pos, WFRegistry.FORTRESS_CORE.get().defaultBlockState().setValue(com.warfront.fortress.FortressCoreBlock.FACTION, 0));
+        var core = (com.warfront.fortress.FortressCoreBlockEntity) h.getBlockEntity(pos);
+        core.activate(h.getLevel());
+        SoldierEntity w = (SoldierEntity) h.getLevel().getEntity(core.getWarlord());
+        w.hurt(h.getLevel().damageSources().genericKill(), Float.MAX_VALUE);
+        h.assertTrue(core.isDefeated(), "the warlord's death ends the fortress");
+        var drops = h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(h.absolutePos(pos)).inflate(3));
+        h.assertTrue(drops.stream().anyMatch(e -> e.getItem().is(WFRegistry.TROPHY_BANNER_ITEM.get())), "the trophy banner drops");
+        h.assertTrue(drops.stream().anyMatch(e -> e.getItem().is(WFRegistry.SKULLSPLITTER.get())), "the Marauder warlord drops Skullsplitter");
+        drops.forEach(Entity::discard);
+        h.assertTrue(core.garrison(h.getLevel()).isEmpty(), "the garrison routs");
+        for (NpcFaction f : NpcFaction.values()) com.warfront.fortress.Warlords.beaten(p, f);
+        h.assertTrue(com.warfront.war.Campaign.warlordsBeaten(p) == 7 && p.getData(WFRegistry.WARLORD_TITLE),
+                "seven warlords make a Warlord");
+        h.assertTrue(p.getInventory().countItem(WFRegistry.SEAL_OF_SEVEN.get()) == 1, "the Seal of the Seven is the clue to the last one");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void trophyBannerAuraReachesUnitsNearTheStandard(GameTestHelper h) {
+        Player p = tester(h);
+        BlockPos standardPos = new BlockPos(4, 2, 4), bannerPos = new BlockPos(2, 2, 2);
+        h.setBlock(standardPos, WFRegistry.WAR_STANDARD.get());
+        var standard = (WarStandardBlockEntity) h.getBlockEntity(standardPos);
+        standard.setOwner(p.getUUID());
+        h.setBlock(bannerPos, WFRegistry.TROPHY_BANNER.get());
+        SoldierEntity s = recruit(h, p, SoldierRole.SWORDSMAN, Race.HUMAN, 6, 6);
+        h.assertTrue(com.warfront.fortress.TrophyBanners.standardNear(h.getLevel(), h.absolutePos(bannerPos)) != null,
+                "the banner should find the War Standard within 8 blocks");
+        com.warfront.fortress.TrophyBanners.apply(h.getLevel(), h.absolutePos(bannerPos), NpcFaction.MARAUDERS,
+                standard.factionKey(h.getLevel().getServer()));
+        h.assertTrue(s.hasEffect(WFRegistry.TROPHY_AURAS.get(NpcFaction.MARAUDERS)), "your units near the standard get the aura");
+        h.succeed();
+    }
 }

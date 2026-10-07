@@ -205,6 +205,10 @@ public class TestPanelScreen extends Screen {
         send(0, row + 1, "Give War Map", "war", "map", id);
         send(1, row + 1, "Warlord beaten", "war", "beaten", id);
         send(2, row + 1, "War status", "war", "status");
+        send(0, row + 2, "Go to fortress", "war", "tp", id);
+        send(1, row + 2, "Place fortress", "war", "place", id)
+                .setTooltip(Tooltip.create(Component.literal("Builds this faction's fortress 36 blocks ahead. Test worlds only: it overwrites what's there.")));
+        send(2, row + 2, "Reset fortress", "war", "reset");
     }
 
     private void advisorTab() {
@@ -216,7 +220,7 @@ public class TestPanelScreen extends Screen {
         Race r = Race.values()[race];
         cycle(0, 2, "Guise: " + r.displayName(), () -> race = (race + 1) % Race.values().length);
         send(1, 2, "Set guise", "advisor", "disguise", r.id());
-        warRows(4);
+        warRows(3);
     }
 
     // ------------------------------------------------------------------ drawing

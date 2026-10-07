@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "faction=0": {
+      "model": "warfront:block/fortress_core"
+    },
+    "faction=1": {
+      "model": "warfront:block/fortress_core"
+    },
+    "faction=2": {
+      "model": "warfront:block/fortress_core"
+    },
+    "faction=3": {
+      "model": "warfront:block/fortress_core"
+    },
+    "faction=4": {
+      "model": "warfront:block/fortress_core"
+    },
+    "faction=5": {
+      "model": "warfront:block/fortress_core"
+    },
+    "faction=6": {
+      "model": "warfront:block/fortress_core"
+    }
+  }
+}

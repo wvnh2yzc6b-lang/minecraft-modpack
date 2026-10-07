@@ -160,7 +160,10 @@ public final class TestActions {
                         com.warfront.war.Campaign.status(player).forEach(player::sendSystemMessage);
                         yield Result.ok("War meters listed in chat.");
                     }
-                    default -> Result.fail("war meter <faction> <n>|map <faction>|beaten <faction|all|none> [no]|status");
+                    case "tp" -> fortressTp(player, faction(arg(args, 2)));
+                    case "place" -> fortressPlace(player, faction(arg(args, 2)));
+                    case "reset" -> fortressReset(player);
+                    default -> Result.fail("war meter <faction> <n>|map <faction>|beaten <faction|all|none> [no]|status|tp|place|reset");
                 };
                 case "advisor" -> switch (b) {
                     case "step" -> advisorStep(player, parseInt(arg(args, 2), 0));
@@ -568,6 +571,44 @@ public final class TestActions {
         if (level == null || clock.home == null) return Result.fail("You have no War Standard to recall to.");
         int n = com.warfront.war.Recall.perform(player, level, clock.home, clock);
         return Result.ok("Recalled home with " + n + " units.");
+    }
+
+    // ------------------------------------------------------------------ fortresses
+
+    /** Teleports to the nearest fortress of this faction in the current dimension. */
+    public static Result fortressTp(ServerPlayer player, @Nullable NpcFaction f) {
+        if (f == null) return Result.fail("Unknown faction.");
+        BlockPos at = player.serverLevel().findNearestMapStructure(com.warfront.war.WarMapItem.fortressTag(f), player.blockPosition(), 100, false);
+        if (at == null) return Result.fail("No " + f.displayName + " fortress in this dimension.");
+        BlockPos ground = player.serverLevel().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at.offset(0, 0, 24));
+        player.teleportTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5);
+        return Result.ok("At the gates of the " + f.displayName + " fortress.");
+    }
+
+    /** Places a fortress 20 blocks ahead (test worlds: it flattens what's there). */
+    public static Result fortressPlace(ServerPlayer player, @Nullable NpcFaction f) {
+        if (f == null) return Result.fail("Unknown faction.");
+        ServerLevel level = player.serverLevel();
+        var template = level.getStructureManager().get(com.warfront.Warfront.id("fortress_" + f.name().toLowerCase(Locale.ROOT)));
+        if (template.isEmpty()) return Result.fail("The fortress template is missing.");
+        Vec3 c = ahead(player, 36);
+        BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(c.x, 0, c.z));
+        BlockPos corner = ground.offset(-16, 0, -16);
+        template.get().placeInWorld(level, corner, corner, new net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings(),
+                level.random, 2);
+        return Result.ok("A " + f.displayName + " fortress stands ahead. Walk within 40 blocks of its keep to wake it.");
+    }
+
+    /** Puts the nearest fortress back to sleep (garrison gone, warlord gone, not beaten). */
+    public static Result fortressReset(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        for (BlockPos p : BlockPos.betweenClosed(player.blockPosition().offset(-48, -16, -48), player.blockPosition().offset(48, 16, 48))) {
+            if (level.getBlockEntity(p) instanceof com.warfront.fortress.FortressCoreBlockEntity core) {
+                core.reset(level);
+                return Result.ok("Fortress reset.");
+            }
+        }
+        return Result.fail("No fortress within 48 blocks.");
     }
 
     // ------------------------------------------------------------------ advisor

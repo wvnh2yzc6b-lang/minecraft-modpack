@@ -53,6 +53,22 @@ public final class WFRegistry {
             MOB_EFFECTS.register("frenzy", () -> new com.warfront.combat.FrenzyEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.upkeep.WellFedEffect> WELL_FED =
             MOB_EFFECTS.register("well_fed", () -> new com.warfront.upkeep.WellFedEffect());
+    /** Trophy banner auras, one per faction (the Fallen Host's banner gives mana instead). */
+    public static final java.util.Map<com.warfront.faction.NpcFaction,
+            DeferredHolder<net.minecraft.world.effect.MobEffect, net.minecraft.world.effect.MobEffect>> TROPHY_AURAS = trophyAuras();
+
+    private static java.util.Map<com.warfront.faction.NpcFaction, DeferredHolder<net.minecraft.world.effect.MobEffect,
+            net.minecraft.world.effect.MobEffect>> trophyAuras() {
+        var map = new java.util.EnumMap<com.warfront.faction.NpcFaction, DeferredHolder<net.minecraft.world.effect.MobEffect,
+                net.minecraft.world.effect.MobEffect>>(com.warfront.faction.NpcFaction.class);
+        for (var f : com.warfront.faction.NpcFaction.values()) {
+            if (f == com.warfront.faction.NpcFaction.FALLEN_HOST) continue;
+            map.put(f, MOB_EFFECTS.register("trophy_" + f.name().toLowerCase(java.util.Locale.ROOT),
+                    () -> com.warfront.fortress.TrophyBanners.aura(f)));
+        }
+        return map;
+    }
+
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
             DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Warfront.MODID);
 
@@ -87,6 +103,9 @@ public final class WFRegistry {
                     .serialize(net.minecraft.nbt.CompoundTag.CODEC).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> WARLORDS_BEATEN = ATTACHMENTS.register(
             "warlords_beaten", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    /** All seven warlords beaten: the player carries the Warlord title. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> WARLORD_TITLE = ATTACHMENTS.register(
+            "warlord_title", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
     // ---- entities ----
     public static final DeferredHolder<EntityType<?>, EntityType<com.warfront.advisor.AdvisorEntity>> ADVISOR_ENTITY =
@@ -155,6 +174,13 @@ public final class WFRegistry {
             () -> new com.warfront.outpost.RaidChestBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
                     .strength(3.0F, 1200.0F).sound(SoundType.WOOD)));
 
+    public static final DeferredBlock<com.warfront.fortress.FortressCoreBlock> FORTRESS_CORE = BLOCKS.register("fortress_core",
+            () -> new com.warfront.fortress.FortressCoreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
+                    .strength(-1.0F, 3600000.0F).noLootTable().lightLevel(s -> 10)));
+    public static final DeferredBlock<com.warfront.fortress.TrophyBannerBlock> TROPHY_BANNER = BLOCKS.register("trophy_banner",
+            () -> new com.warfront.fortress.TrophyBannerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
+                    .strength(2.0F, 1200.0F).sound(SoundType.WOOD).noOcclusion()));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowerBlockEntity>> TOWER_BE =
             BLOCK_ENTITIES.register("tower", () -> BlockEntityType.Builder.of(TowerBlockEntity::new,
                     ARROW_TOWER.get(), ARCANE_SPIRE.get(), HEALING_SHRINE.get()).build(null));
@@ -179,6 +205,13 @@ public final class WFRegistry {
             BLOCK_ENTITIES.register("raid_chest", () -> BlockEntityType.Builder.of(com.warfront.outpost.RaidChestBlockEntity::new,
                     RAID_CHEST.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.fortress.FortressCoreBlockEntity>> FORTRESS_CORE_BE =
+            BLOCK_ENTITIES.register("fortress_core", () -> BlockEntityType.Builder.of(com.warfront.fortress.FortressCoreBlockEntity::new,
+                    FORTRESS_CORE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.fortress.TrophyBannerBlockEntity>> TROPHY_BANNER_BE =
+            BLOCK_ENTITIES.register("trophy_banner", () -> BlockEntityType.Builder.of(com.warfront.fortress.TrophyBannerBlockEntity::new,
+                    TROPHY_BANNER.get()).build(null));
+
     // ---- items ----
     public static final DeferredItem<BlockItem> ARROW_TOWER_ITEM = ITEMS.registerSimpleBlockItem(ARROW_TOWER);
     public static final DeferredItem<BlockItem> ARCANE_SPIRE_ITEM = ITEMS.registerSimpleBlockItem(ARCANE_SPIRE);
@@ -189,6 +222,26 @@ public final class WFRegistry {
     public static final DeferredItem<BlockItem> MANA_BRAZIER_ITEM = ITEMS.registerSimpleBlockItem(MANA_BRAZIER);
     public static final DeferredItem<BlockItem> SUMMONING_ALTAR_ITEM = ITEMS.registerSimpleBlockItem(SUMMONING_ALTAR);
     public static final DeferredItem<BlockItem> MESS_HALL_ITEM = ITEMS.registerSimpleBlockItem(MESS_HALL);
+    public static final DeferredItem<BlockItem> TROPHY_BANNER_ITEM = ITEMS.register("trophy_banner",
+            () -> new BlockItem(TROPHY_BANNER.get(), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    // The warlords' gear.
+    public static final DeferredItem<Item> SKULLSPLITTER = ITEMS.register("skullsplitter", com.warfront.fortress.WarlordGear.Skullsplitter::new);
+    public static final DeferredItem<Item> LEGION_WARPLATE = ITEMS.register("legion_warplate", com.warfront.fortress.WarlordGear.LegionWarplate::new);
+    public static final DeferredItem<Item> EMBERBRAND = ITEMS.register("emberbrand", com.warfront.fortress.WarlordGear.Emberbrand::new);
+    public static final DeferredItem<Item> BROODFANG = ITEMS.register("broodfang", com.warfront.fortress.WarlordGear.Broodfang::new);
+    public static final DeferredItem<Item> THORNBOW = ITEMS.register("thornbow", com.warfront.fortress.WarlordGear.Thornbow::new);
+    public static final DeferredItem<Item> RUNEHAMMER = ITEMS.register("runehammer", com.warfront.fortress.WarlordGear.Runehammer::new);
+    public static final DeferredItem<Item> FALLEN_HALO = ITEMS.register("fallen_halo", com.warfront.fortress.WarlordGear.FallenHalo::new);
+    /** Dropped when the seventh warlord falls: the clue to the hidden warlord. */
+    public static final DeferredItem<Item> SEAL_OF_SEVEN = ITEMS.register("seal_of_seven",
+            () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)) {
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext ctx, java.util.List<Component> tooltip,
+                                            net.minecraft.world.item.TooltipFlag flag) {
+                    tooltip.add(Component.literal("Seven War Maps, fitted together. They point to a battlefield out of time.")
+                            .withStyle(net.minecraft.ChatFormatting.GOLD));
+                }
+            });
 
     public static final DeferredItem<BlockItem> MANA_ORE_ITEM = ITEMS.registerSimpleBlockItem(MANA_ORE);
     public static final DeferredItem<BlockItem> DEEPSLATE_MANA_ORE_ITEM = ITEMS.registerSimpleBlockItem(DEEPSLATE_MANA_ORE);

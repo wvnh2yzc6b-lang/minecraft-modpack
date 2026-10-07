@@ -671,6 +671,15 @@ public class SoldierEntity extends PathfinderMob {
         refreshName();
     }
 
+    /** A fortress warlord: tougher still than a siege warlord, and named. */
+    public void makeCampaignWarlord(String name) {
+        setModifier(Attributes.MAX_HEALTH, "campaign_warlord_health", 1.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        setModifier(Attributes.SCALE, "campaign_warlord_scale", 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+        setHealth(getMaxHealth());
+        setCustomName(Component.literal(name).withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD));
+        setCustomNameVisible(true);
+    }
+
     /** Where this soldier is trying to get to: its target, or its march/charge objective. */
     @Nullable
     public Vec3 currentObjective() {

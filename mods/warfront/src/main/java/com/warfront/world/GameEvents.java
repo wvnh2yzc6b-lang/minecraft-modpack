@@ -61,6 +61,8 @@ public final class GameEvents {
         com.warfront.upkeep.RaidDamage.clearAll();
         com.warfront.outpost.Outposts.clearAll();
         com.warfront.war.Campaign.clearAll();
+        com.warfront.fortress.Warlords.clearAll();
+        com.warfront.fortress.TrophyBannerBlockEntity.clearAll();
     }
 
     // ------------------------------------------------------------ players
@@ -222,7 +224,10 @@ public final class GameEvents {
         if (event.getSource().getEntity() instanceof LivingEntity killer && Race.of(killer) == Race.DEMON) {
             Souls.harvest(killer, victim);
         }
-        if (victim instanceof SoldierEntity raider && raider.getOwnerUUID() == null) com.warfront.war.Campaign.raiderDied(raider);
+        if (victim instanceof SoldierEntity raider && raider.getOwnerUUID() == null) {
+            com.warfront.fortress.Warlords.died(raider, event.getSource().getEntity());
+            com.warfront.war.Campaign.raiderDied(raider);
+        }
         if (event.getSource().getEntity() instanceof SoldierEntity killer && killer != victim) {
             killer.addXp(com.warfront.army.Veterancy.killXp(victim.getMaxHealth()));
         }
@@ -300,6 +305,15 @@ public final class GameEvents {
             com.warfront.upkeep.Upkeep.tick(server);
             com.warfront.war.Bounties.tick(server);
             com.warfront.merchant.Caravan.tick(server);
+            com.warfront.fortress.TrophyBanners.tick(server);
+        }
+    }
+
+    /** Warlords wear their title. */
+    @SubscribeEvent
+    public static void onNameFormat(PlayerEvent.NameFormat event) {
+        if (event.getEntity().getData(WFRegistry.WARLORD_TITLE)) {
+            event.setDisplayname(Component.literal("[Warlord] ").withStyle(ChatFormatting.GOLD).append(event.getDisplayname()));
         }
     }
 

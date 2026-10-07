@@ -1,0 +1,8 @@
+{
+  "parent": "warfront:block/war_standard",
+  "textures": {
+    "pole": "warfront:block/trophy_banner_pole",
+    "flag": "warfront:block/trophy_banner_ironbeard_clan",
+    "particle": "warfront:block/trophy_banner_ironbeard_clan"
+  }
+}

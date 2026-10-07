@@ -713,6 +713,22 @@ def lang():
         "key.warfront.war_table": "War Table",
         "block.warfront.mess_hall": "Mess Hall",
         "block.warfront.raid_chest": "Raid Chest",
+        "block.warfront.fortress_core": "Warlord's Seat",
+        "block.warfront.trophy_banner": "Trophy Banner",
+        "item.warfront.skullsplitter": "Skullsplitter",
+        "item.warfront.legion_warplate": "Legion Warplate",
+        "item.warfront.emberbrand": "Emberbrand",
+        "item.warfront.broodfang": "Broodfang",
+        "item.warfront.thornbow": "Thornbow",
+        "item.warfront.runehammer": "Runehammer",
+        "item.warfront.fallen_halo": "Fallen Halo",
+        "item.warfront.seal_of_seven": "Seal of the Seven",
+        "effect.warfront.trophy_marauders": "Marauder Trophy",
+        "effect.warfront.trophy_black_legion": "Legion Trophy",
+        "effect.warfront.trophy_burning_horde": "Horde Trophy",
+        "effect.warfront.trophy_the_swarm": "Swarm Trophy",
+        "effect.warfront.trophy_silverwood_reavers": "Silverwood Trophy",
+        "effect.warfront.trophy_ironbeard_clan": "Ironbeard Trophy",
         "effect.warfront.well_fed": "Well Fed",
         "entity.warfront.advisor": "Advisor",
         "entity.warfront.merchant": "Traveling Merchant",
@@ -813,6 +829,12 @@ def recipes():
 def loot_and_tags():
     blocks = ["arrow_tower", "arcane_spire", "healing_shrine", "war_standard",
               "mana_well", "mana_pylon", "mana_brazier", "summoning_altar", "mess_hall"]
+    # The trophy banner keeps its faction when broken and picked up again.
+    write_json(DATA / MODID / "loot_table" / "blocks" / "trophy_banner.json", {
+        "type": "minecraft:block",
+        "pools": [{"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MODID}:trophy_banner",
+                    "functions": [{"function": "minecraft:copy_state", "block": f"{MODID}:trophy_banner", "properties": ["faction"]}]}],
+                   "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
     for b in blocks:
         write_json(DATA / MODID / "loot_table" / "blocks" / f"{b}.json", {
             "type": "minecraft:block",
@@ -1058,6 +1080,107 @@ def raid_chests():
     write_json(ASSETS / "models" / "item" / "raid_chest.json", {"parent": f"{MODID}:block/raid_chest_marauders"})
 
 
+def campaign_assets():
+    """The Warlord's Seat, the seven trophy banners, the warlords' gear and the Seal of the Seven."""
+    keys = ["marauders", "black_legion", "burning_horde", "the_swarm", "silverwood_reavers", "ironbeard_clan", "fallen_host"]
+    colors = {"marauders": ("8a2a1a", "d8cdb0"), "black_legion": ("1a1a1e", "ece8dc"), "burning_horde": ("5a1a12", "ff6a1a"),
+              "the_swarm": ("141d1a", "8aff3a"), "silverwood_reavers": ("2e4a22", "dde6ee"),
+              "ironbeard_clan": ("1a2a4a", "d4a017"), "fallen_host": ("4a4458", "b8a870")}
+    # Warlord's Seat: black stone with an ember crown.
+    seat = Image.new("RGBA", (16, 16))
+    noise_fill(seat, hexc("1a1418"), 0.12, 501)
+    for x in range(16):
+        seat.putpixel((x, 0), hexc("ff7a1a"))
+        seat.putpixel((x, 15), hexc("3a0a04"))
+    for x in (2, 5, 8, 11, 14):
+        for y in range(1, 4):
+            seat.putpixel((x, y), hexc("ff9a3a"))
+    save(seat, "block/fortress_core.png")
+    write_json(ASSETS / "models" / "block" / "fortress_core.json",
+               {"parent": "minecraft:block/cube_all", "textures": {"all": f"{MODID}:block/fortress_core"}})
+    write_json(ASSETS / "blockstates" / "fortress_core.json",
+               {"variants": {f"faction={i}": {"model": f"{MODID}:block/fortress_core"} for i in range(7)}})
+    write_json(ASSETS / "models" / "item" / "fortress_core.json", {"parent": f"{MODID}:block/fortress_core"})
+    # Trophy banners: the War Standard shape, a dark pole and the beaten warlord's colors.
+    pole = Image.new("RGBA", (16, 16))
+    noise_fill(pole, hexc("2a2024"), 0.1, 502)
+    for x in range(16):
+        pole.putpixel((x, 0), hexc("d4a017"))
+    save(pole, "block/trophy_banner_pole.png")
+    variants = {}
+    for i, k in enumerate(keys):
+        base, mark = colors[k]
+        flag = Image.new("RGBA", (16, 16))
+        noise_fill(flag, hexc(base), 0.08, 510 + i)
+        for y in range(1, 13):
+            flag.putpixel((0, y), hexc("d4a017"))
+            flag.putpixel((6, y), hexc("d4a017"))
+        for x, y in ((3, 4), (2, 5), (3, 5), (4, 5), (3, 6), (2, 7), (4, 7), (3, 8), (3, 9)):   # a trophy emblem
+            flag.putpixel((x, y), hexc(mark))
+        for x in range(7):
+            flag.putpixel((x, 12), hexc("d4a017") if x % 2 == 0 else hexc(base))
+        save(flag, f"block/trophy_banner_{k}.png")
+        write_json(ASSETS / "models" / "block" / f"trophy_banner_{k}.json", {
+            "parent": f"{MODID}:block/war_standard",
+            "textures": {"pole": f"{MODID}:block/trophy_banner_pole", "flag": f"{MODID}:block/trophy_banner_{k}",
+                         "particle": f"{MODID}:block/trophy_banner_{k}"}})
+        variants[f"faction={i}"] = {"model": f"{MODID}:block/trophy_banner_{k}"}
+    write_json(ASSETS / "blockstates" / "trophy_banner.json", {"variants": variants})
+    write_json(ASSETS / "models" / "item" / "trophy_banner.json", {"parent": f"{MODID}:block/trophy_banner_marauders"})
+
+    # The warlords' gear.
+    def axe(head, haft, glow):
+        return sprite([
+            "................", "........HHH.....", ".......HHHHH....", "......HHHgHHH...", ".......HHHHHH...",
+            "........HHsHH...", ".........sHH....", "........s.......", ".......s........", "......s.........",
+            ".....s..........", "....s...........", "...s............", "..s.............", "................",
+            "................"], {"H": hexc(head), "g": hexc(glow), "s": hexc(haft)})
+
+    def sword(blade, hilt, glow):
+        return sprite([
+            "................", "..............B.", ".............BB.", "............BgB.", "...........BgB..",
+            "..........BgB...", ".........BgB....", "........BgB.....", ".......BgB......", "..h...BgB.......",
+            "...h.BBB........", "....hh..........", "....sh..........", "...s..h.........", "..s.............",
+            "................"], {"B": hexc(blade), "g": hexc(glow), "h": hexc(hilt), "s": hexc(hilt)})
+    save(axe("8a8c92", "5a3a22", "c8281e"), "item/skullsplitter.png")
+    save(sword("3a2a24", "1a1210", "ff6a1a"), "item/emberbrand.png")
+    save(sword("1c2622", "0b1210", "8aff3a"), "item/broodfang.png")
+    save(axe("5a5c62", "3a2414", "5ab0ff"), "item/runehammer.png")
+    save(sprite([
+        "................", "...WWW..........", "..W..WW.........", ".W.....W........", ".W......W.......",
+        "W........W......", "W.........W.....", "W.........sW....", "W.........sW....", "W........W......",
+        ".W......W.......", ".W.....W........", "..W..WW.........", "...WWW..........", "................",
+        "................"], {"W": hexc("e6eef4"), "s": hexc("2e4a22")}), "item/thornbow.png")
+    save(sprite([
+        "................", "...PP......PP...", "..PPPP....PPPP..", "..PPPPPPPPPPPP..", "...PPPPPPPPPP...",
+        "...PPPPggPPPP...", "...PPPPPPPPPP...", "...PPPPPPPPPP...", "...PPPPggPPPP...", "...PPPPPPPPPP...",
+        "...PPPPPPPPPP...", "....PPPPPPPP....", "................", "................", "................",
+        "................"], {"P": hexc("1e1e22"), "g": hexc("ece8dc")}), "item/legion_warplate.png")
+    save(sprite([
+        "................", "................", "................", "....HHH.HHH.....", "...H.........H..",
+        "..H...........H.", "..H...........H.", "...H.........H..", "....HHH..HHHH...", "................",
+        "................", "................", "................", "................", "................",
+        "................"], {"H": hexc("b8a870")}), "item/fallen_halo.png")
+    save(sprite([
+        "................", "......WWWW......", "....WWrrrrWW....", "...WrrRRRRrrW...", "..WrRRWWWWRRrW..",
+        "..WrRWRRRRWRrW..", ".WrRWRRggRRWRrW.", ".WrRWRggggRWRrW.", ".WrRWRRggRRWRrW.", "..WrRWRRRRWRrW..",
+        "..WrRRWWWWRRrW..", "...WrrRRRRrrW...", "....WWrrrrWW....", "......WWWW......", "................",
+        "................"], {"W": hexc("7a5a2a"), "r": hexc("e8d8a8"), "R": hexc("8b1a1a"), "g": hexc("d4a017")}),
+        "item/seal_of_seven.png")
+    for item, parent in [("skullsplitter", "handheld"), ("emberbrand", "handheld"), ("broodfang", "handheld"),
+                         ("runehammer", "handheld"), ("legion_warplate", "generated"), ("fallen_halo", "generated"),
+                         ("seal_of_seven", "generated")]:
+        write_json(ASSETS / "models" / "item" / f"{item}.json",
+                   {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
+    # The Thornbow draws like a vanilla bow.
+    write_json(ASSETS / "models" / "item" / "thornbow.json", {
+        "parent": "minecraft:item/bow", "textures": {"layer0": f"{MODID}:item/thornbow"},
+        "overrides": [
+            {"predicate": {"pulling": 1}, "model": "minecraft:item/bow_pulling_0"},
+            {"predicate": {"pulling": 1, "pull": 0.65}, "model": "minecraft:item/bow_pulling_1"},
+            {"predicate": {"pulling": 1, "pull": 0.9}, "model": "minecraft:item/bow_pulling_2"}]})
+
+
 def mess_hall():
     """The Mess Hall: a plank-and-barrel larder with a laid table on top."""
     plank, dark = hexc("9c6b3c"), hexc("6b4423")
@@ -1133,6 +1256,8 @@ def platform_structure():
 
 if __name__ == "__main__":
     platform_structure()
+    import fortresses
+    fortresses.generate(DATA)
     mana_textures()
     item_textures()
     hammer_texture()
@@ -1143,6 +1268,7 @@ if __name__ == "__main__":
     mana_blocks()
     mess_hall()
     raid_chests()
+    campaign_assets()
     effect_icons()
     lang()
     recipes()

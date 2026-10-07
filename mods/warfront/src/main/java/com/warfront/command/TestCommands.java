@@ -114,6 +114,11 @@ public final class TestCommands {
                                         .executes(ctx -> run(ctx, "war", "meter", str(ctx, "faction"), num(ctx, "n"))))))
                         .then(Commands.literal("map").then(Commands.argument("faction", StringArgumentType.word()).suggests(FACTIONS)
                                 .executes(ctx -> run(ctx, "war", "map", str(ctx, "faction")))))
+                        .then(Commands.literal("tp").then(Commands.argument("faction", StringArgumentType.word()).suggests(FACTIONS)
+                                .executes(ctx -> run(ctx, "war", "tp", str(ctx, "faction")))))
+                        .then(Commands.literal("place").then(Commands.argument("faction", StringArgumentType.word()).suggests(FACTIONS)
+                                .executes(ctx -> run(ctx, "war", "place", str(ctx, "faction")))))
+                        .then(simple("reset", "war", "reset"))
                         .then(Commands.literal("beaten").then(Commands.argument("which", StringArgumentType.word())
                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(Stream.concat(Stream.of("all", "none"),
                                         Arrays.stream(NpcFaction.values()).map(f -> f.name().toLowerCase(Locale.ROOT))), b))
@@ -167,7 +172,7 @@ public final class TestCommands {
                 "/wftest player race <race>|fill|day|night|clear|god|kit",
                 "/wftest difficulty <easy|normal|hard|warlord>",
                 "/wftest raid warn|siege|grace|recall",
-                "/wftest war status|meter <faction> <n>|map <faction>|beaten <faction|all|none>",
+                "/wftest war status|meter <faction> <n>|map <faction>|beaten <faction|all|none>|tp <faction>|place <faction>|reset",
                 "/wftest advisor step <0-7>|respawn|disguise <race>"
         };
         for (String l : lines) ctx.getSource().sendSuccess(() -> Component.literal(l).withStyle(ChatFormatting.AQUA), false);
