@@ -108,8 +108,8 @@
     {
       "topic": "Endgame",
       "priority": "low",
-      "question": "The hidden warlord (the one who was secretly trying to stop the advisor): who is he, what does he look like, and where is his fortress?",
-      "why": "He's the boss after the seven warlords, then the twist reveals he was on your side. A name, a look and a place are enough to start."
+      "question": "The hidden warlord's look and his fortress: where it is and what makes it feel ancient.",
+      "why": "Decided: he's the advisor's brother and dies handing you the key to the End. Still open: his look, and a fortress setting that feels ancient (the Deep Dark, surface capital, sky island and sunken fortress ideas were turned down)."
     },
     {
       "topic": "Endgame",
@@ -119,6 +119,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Endgame",
+      "answer": "The hidden warlord is the advisor's brother: the same old power on the opposite side. He started the wars between the factions to stop the advisor's chosen champion (you) from rising, which is why he set every faction against you. When you beat him he dies: a short dying scene reveals the truth about his brother, and he hands you his blade and the key to the End, which opens the betrayal fight."
+    },
     {
       "topic": "Daily loop",
       "answer": "Quiet days feed the war. Troops eat from a Mess Hall at your base (any food, other mods' crops included): fed troops get a small morale bonus, hungry ones just lose it, nobody dies or leaves. The advisor posts 2-3 small daily bounties (clear a camp, scout a spot, bring materials, rescue a captured unit) for mana, crystals and troop XP. Enemy raider camps appear in the world: hit one first with your army to weaken or rob the raid it was preparing. Workers run the base: farmers also tend Manabloom and stock the Mess Hall, builders repair raid damage. Every few days a neutral traveling merchant visits, trading rare materials, beast eggs and scrolls for Mana Crystals and raid loot."

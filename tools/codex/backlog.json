@@ -321,12 +321,13 @@
     {
       "id": "campaign-final-boss",
       "status": "blocked",
-      "blocked_on": "Owner design for the hidden warlord (name, look, fortress), open question in needs.json; also needs campaign-warlords built.",
+      "blocked_on": "Owner design for the hidden warlord's look and fortress (open question in needs.json); also needs campaign-warlords built.",
       "title": "Campaign, part 4: the hidden warlord (secretly the good guy)",
-      "decided": "Owner, 2026-10-07: campaign endgame. Random mixed raids start wars; beating a faction's raids opens its warlord's fortress in its homeland; you march on it; own race's renegades last; then the hidden warlord behind the wars. Rewards: base trophy, warlord gear, Warlord title.",
+      "decided": "Owner, 2026-10-07: campaign endgame. Random mixed raids start wars; beating a faction's raids opens its warlord's fortress in its homeland; you march on it; own race's renegades last; then the hidden warlord behind the wars. Rewards: base trophy, warlord gear, Warlord title. Owner, 2026-10-07: he is the advisor's brother; on defeat he dies and hands over his blade and the key to the End.",
       "spec": [
         "Fought in a last fortress of his own after all seven warlords, using every race's tricks across his phases.",
-        "On defeat he doesn't die outright: a short dying scene (dialogue lines in chat/toast style) reveals he was fighting the advisor, and hands over the clue that turns the player against the advisor. This triggers campaign-betrayal."
+        "Identity: the advisor's brother, same ancient power. He set the factions against the player to stop the advisor's chosen champion from rising.",
+        "On defeat he dies: a short dying scene (chat/toast-style lines) reveals the advisor is his brother and the true enemy, then drops his blade (unique weapon, any race) and the Key to the End, which triggers campaign-betrayal."
       ]
     },
     {
