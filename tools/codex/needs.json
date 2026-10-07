@@ -108,17 +108,15 @@
     {
       "topic": "Endgame",
       "priority": "low",
-      "question": "The hidden warlord's look and his fortress: where it is and what makes it feel ancient.",
-      "why": "Decided: he's the advisor's brother and dies handing you the key to the End. Still open: his look, and a fortress setting that feels ancient (the Deep Dark, surface capital, sky island and sunken fortress ideas were turned down)."
-    },
-    {
-      "topic": "Endgame",
-      "priority": "low",
-      "question": "The advisor: his seven disguises (one per race) and his true form and name.",
-      "why": "He guides every player from the first hour and turns out to be the final villain. Until you design him, the disguises are robed elders in each race's colors, and the true form waits on you."
+      "question": "The two brothers, designed together: the advisor's seven disguises, his true form and name, and the hidden warlord's look.",
+      "why": "Decided: they share one face and build, the advisor shining and robed and his brother scarred and armored, so players can spot the resemblance later. Until you design them, the disguises are robed elders in each race's colors. Names, pictures or a few words for either brother are enough to start."
     }
   ],
   "settled": [
+    {
+      "topic": "Endgame",
+      "answer": "The hidden warlord's fortress is the battlefield where the two brothers' first war ended, sealed out of time in its own pocket dimension: ruined ground with ancient armies of every race turned to stone in mid-fight. The seven War Maps join into a portal to it. The brothers are designed together: one face and build, the advisor shining and robed, the brother scarred and armored, so players can notice the resemblance before the reveal."
+    },
     {
       "topic": "Endgame",
       "answer": "The hidden warlord is the advisor's brother: the same old power on the opposite side. He started the wars between the factions to stop the advisor's chosen champion (you) from rising, which is why he set every faction against you. When you beat him he dies: a short dying scene reveals the truth about his brother, and he hands you his blade and the key to the End, which opens the betrayal fight."

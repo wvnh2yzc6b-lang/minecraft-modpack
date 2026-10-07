@@ -321,13 +321,15 @@
     {
       "id": "campaign-final-boss",
       "status": "blocked",
-      "blocked_on": "Owner design for the hidden warlord's look and fortress (open question in needs.json); also needs campaign-warlords built.",
+      "blocked_on": "The brothers' look (open question in needs.json; a stand-in can be used); also needs campaign-warlords built.",
       "title": "Campaign, part 4: the hidden warlord (secretly the good guy)",
-      "decided": "Owner, 2026-10-07: campaign endgame. Random mixed raids start wars; beating a faction's raids opens its warlord's fortress in its homeland; you march on it; own race's renegades last; then the hidden warlord behind the wars. Rewards: base trophy, warlord gear, Warlord title. Owner, 2026-10-07: he is the advisor's brother; on defeat he dies and hands over his blade and the key to the End.",
+      "decided": "Owner, 2026-10-07: campaign endgame. Random mixed raids start wars; beating a faction's raids opens its warlord's fortress in its homeland; you march on it; own race's renegades last; then the hidden warlord behind the wars. Rewards: base trophy, warlord gear, Warlord title. Owner, 2026-10-07: he is the advisor's brother; on defeat he dies and hands over his blade and the key to the End. Owner, 2026-10-07: his fortress is the frozen battlefield of the brothers' first war, a pocket dimension reached by joining the seven War Maps; the brothers share one face and build.",
       "spec": [
-        "Fought in a last fortress of his own after all seven warlords, using every race's tricks across his phases.",
         "Identity: the advisor's brother, same ancient power. He set the factions against the player to stop the advisor's chosen champion from rising.",
-        "On defeat he dies: a short dying scene (chat/toast-style lines) reveals the advisor is his brother and the true enemy, then drops his blade (unique weapon, any race) and the Key to the End, which triggers campaign-betrayal."
+        "On defeat he dies: a short dying scene (chat/toast-style lines) reveals the advisor is his brother and the true enemy, then drops his blade (unique weapon, any race) and the Key to the End, which triggers campaign-betrayal.",
+        "Fortress: a Warfront pocket dimension ('the Frozen Field'): a battlefield sealed out of time under a still, colorless sky, with stone statues of armies of all seven races caught mid-fight, broken siege engines and banners. Structures: outer field, a ruined war camp of mixed race styles, and his keep at the center. Fought there using every race's tricks across his phases; statues near him can wake up as defenders at phase changes.",
+        "Entry: after all seven warlords, combining the seven War Maps (crafting or right-click with all seven) makes the Sealed Map; using it at a War Standard opens a portal there. Your whole army can march through. Leaving or losing returns you home.",
+        "Look: same face and build as the advisor's true form, but scarred and armored. Until the owner designs them, use a stand-in: tall knight in worn, mismatched armor, a cracked crown, gray and faded gold."
       ]
     },
     {

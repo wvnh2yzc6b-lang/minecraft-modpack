@@ -183,3 +183,8 @@ Enemy factions keep their race's body and colors and add one signature piece eac
 bone trophies; Black Legion skull tabard and spiked pauldron; Burning Horde smoldering chains and brand;
 Swarm acid sacs and black chitin spurs; Silverwood thorn-vine wraps and antler-bone mask; Ironbeard
 rune-etched face guard and beard rings; Fallen Host torn ash-gray wings and a cracked halo.
+
+## The two brothers (owner direction, 2026-10-07, no reference yet)
+- The advisor and the hidden warlord are brothers, designed together: same face and build.
+- The advisor (true form): shining and robed. The hidden warlord: scarred and armored.
+- The hidden warlord's fortress, the Frozen Field: a battlefield sealed out of time, colorless sky, armies of all seven races turned to stone mid-fight.
