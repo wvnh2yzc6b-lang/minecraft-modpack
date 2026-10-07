@@ -4,9 +4,9 @@
   "log": [
     {
       "status": "done",
-      "title": "Deepmaw rebuilt as a crab-beast",
-      "detail": "On the owner's direction the Deepmaw is now a hunched crab-beast like Fallout's Mirelurk Hunter, keeping the Hive's sculk look: a domed back shell that hoods the head, a finned glowing crest, eye stalks, tusk-mandibles, two great pincers that snap in a fight, thick legs and a short plated tail.",
-      "image": "hive-beast-crab.png"
+      "title": "Deepmaw rebuilt as an eight-legged lobster",
+      "detail": "On the owner's direction the Deepmaw is now a low, slim lobster-like crawler instead of a tall upright beast: eight legs that crawl in an alternating gait, two big pincers held out in front that snap in a fight, long antennae, eye stalks, a finned glowing crest and a segmented tail with a fan. About a block high and three long, with a flat hitbox to match. Keeps the Hive's sculk look.",
+      "image": "hive-beast-lobster.png"
     },
     {
       "status": "done",

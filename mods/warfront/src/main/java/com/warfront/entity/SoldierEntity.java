@@ -345,6 +345,21 @@ public class SoldierEntity extends PathfinderMob {
         return skin < races.length ? races[skin] : NpcFaction.values()[skin - races.length].race;
     }
 
+    /** The Deepmaw crawls low and long, so it gets a wide, flat hitbox instead of a humanoid one. */
+    @Override
+    public EntityDimensions getDefaultDimensions(Pose pose) {
+        if (entityData != null && getBody() == com.warfront.army.UnitBody.HIVE_BEAST) {
+            return EntityDimensions.scalable(1.1F, 0.7F).withEyeHeight(0.5F);
+        }
+        return super.getDefaultDimensions(pose);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (DATA_ROLE.equals(key) || DATA_SKIN.equals(key)) refreshDimensions();
+    }
+
     public com.warfront.army.UnitBody getBody() {
         return com.warfront.army.UnitBody.of(getVisualRace(), getRole());
     }
