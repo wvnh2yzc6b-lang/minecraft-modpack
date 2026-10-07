@@ -121,6 +121,10 @@
   "settled": [
     {
       "topic": "Skill tree",
+      "answer": "Arcane path: boosts Iron's Spells (or Warfront's own magic without it). Attunement and Focus lead to two branches: Battlemage for blade and spell (Spellblade active, Arcane Armor, Mana Strike) and Evoker for the pure caster (Overcharge active, Deep Well, Spell Echo). They rejoin at Ley Tap, where your mana regenerates twice as fast inside your base's mana network, and the capstone is the Arcane Surge active."
+    },
+    {
+      "topic": "Skill tree",
       "answer": "Marksman path: bows, crossbows, tridents and throwing weapons. Steady Aim and Quick Draw lead to two branches: Sniper for long range (Piercing Shot active, Hawkeye, Headhunter) and Ranger for close and many (Volley active, Run and Gun, Retrieval). They rejoin at Hunter's Mark, and the capstone is the Rain of Arrows active."
     },
     {
