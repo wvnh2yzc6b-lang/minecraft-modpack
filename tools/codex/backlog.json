@@ -434,6 +434,21 @@
       ]
     },
     {
+      "id": "angel-identity",
+      "status": "ready",
+      "title": "Angel identity: Judgment, sky shrine start, Sunwells",
+      "decided": "Owner, 2026-10-07: angels are the sun race. Race power Judgment (Radiance meter, sunbeam strike), start at a sky shrine on a high peak, and Sunwells as the economy perk.",
+      "spec": [
+        "Judgment, Radiance 0-100 (a player attachment, synced; same pattern as the other race powers). Gain +2 per second in daylight with open sky above (canSeeSky, not raining), +5 per hit with a Holy spell or a melee hit while in sunlight. Slowly drains (1 per second) at night or underground; never drains in daylight.",
+        "At 100, use the power key while looking at a block or entity up to 48 blocks away: after a 1 s telegraph (a ring of light on the ground and a rising chime), a sunbeam strikes a 4-block radius for 12 damage (+50% to entities in #minecraft:undead, demons and Hive, via Warfront race lookup and an entity tag other mods can add to), sets them glowing for 5 s and gives Blindness for 3 s. Spends all Radiance. Doesn't hurt the caster's own army or allies; doesn't break blocks or start fires.",
+        "Angel soldiers (Starbow archers and Seraph Champion) build Radiance and call Judgment on the densest enemy cluster on their own; the Seraph's is twice the radius.",
+        "Sky shrine start: when a player first picks angel, find the highest point within a bounded radius of spawn (heightmap sample), place a small marble shrine on it (white stone pillars, gold trim, a light beam using a beacon-style beam renderer or end-rod particles) and move the player there with their respawn set. No suitable peak: build the shrine on a short pillar at spawn. Reuse the Hive, dwarf and human start code path.",
+        "Sunwells: Mana Wells placed by an angel player (owner race) gain about 1 mana per second in daylight with open sky above the well; nothing at night, underground or in rain. Show it in the base mana overlay as 'Sunwell'.",
+        "HUD: Radiance meter in the race-power slot (gold-white, glows when Judgment is ready). Test Panel and /wftest: fill or empty Radiance, call Judgment at the crosshair, place a sky shrine here.",
+        "Game tests: Radiance rises under open sky by day and not underground; Judgment damages an enemy in radius, skips an ally and deals bonus damage to an undead mob; an angel-owned Mana Well gains mana by day and not at night."
+      ]
+    },
+    {
       "id": "art-driven-models",
       "status": "blocked",
       "blocked_on": "Owner's reference images (see the high-priority questions in needs.json).",

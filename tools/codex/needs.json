@@ -114,6 +114,10 @@
   ],
   "settled": [
     {
+      "topic": "Angel",
+      "answer": "Angel identity: angels are the sun race, the mirror of the Hive. Race power, Judgment: Radiance charges in sunlight under open sky and from Holy hits. At full, call a sunbeam down on a target area: heavy damage, extra against undead, demons and the Hive, and it blinds. It's the only race power that strikes at range, made for attacking from the air. Start, sky shrine: a new angel player begins at a small marble shrine on the highest peak near spawn, with a beam of light, and glides down to choose a base. Economy, Sunwells: angel Mana Wells slowly fill on their own in daylight under open sky, and not at night."
+    },
+    {
       "topic": "Human",
       "answer": "Human identity: humans are the banner race, the best commanders rather than the best fighters. Race power, Rally the Banner: Valor fills from your own kills and your army's. At full, raise your banner: allies nearby heal, hit harder and stop routing for about 10 seconds. It's the only race power that boosts the army instead of the player. Start, village charter: a new human player begins beside the nearest vanilla village with a charter; claiming it lets its villagers be hired as workers. Economy, traders: the traveling merchant visits humans more often and charges them less, and villager trades are cheaper."
     },
