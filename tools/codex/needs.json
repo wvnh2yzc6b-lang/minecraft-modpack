@@ -121,6 +121,10 @@
   "settled": [
     {
       "topic": "Skill tree",
+      "answer": "Marksman path: bows, crossbows, tridents and throwing weapons. Steady Aim and Quick Draw lead to two branches: Sniper for long range (Piercing Shot active, Hawkeye, Headhunter) and Ranger for close and many (Volley active, Run and Gun, Retrieval). They rejoin at Hunter's Mark, and the capstone is the Rain of Arrows active."
+    },
+    {
+      "topic": "Skill tree",
       "answer": "Bulwark path: shields and heavy armor. Iron Skin and Shield Training lead to two branches: Sentinel to hold ground (Shield Wall active, Unshakable, Steel Thorns) and Vanguard to push forward (Shield Bash active, Provoke, Momentum). They rejoin at Last Stand, and the capstone is Guardian's Aegis: you take half the damage meant for nearby allies."
     },
     {
