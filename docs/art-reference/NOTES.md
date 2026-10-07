@@ -43,6 +43,18 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - **Feel:** it bursts up out of the ground, scattering dirt. This suits the Hive's cave theme: a burrowing ambusher.
 - **Open:** whether to keep the red-orange colors or shift it to the Hive's sculk and Warden look (dark teal, black).
 
+## Demon: beast unit (owner reference image, not stored as a file)
+- A Demon war beast. Picture only; ignore the book text.
+- **Size:** large and long-limbed, taller than a player when it rears up. It moves on all fours like a hunched predator.
+- **Body:** gaunt, bone-white and skeletal, with ribs and spine showing through tight pale hide.
+- **Head:** a skull-like face with a gaping jaw full of long fangs, small red eyes, and a crown of swept-back spikes.
+- **Spikes:** blood-red barbs and spines all over: the spine, shoulders, elbows, knees and heels.
+- **Limbs:** long, thin, jointed arms and legs ending in long red-tipped talons.
+- **Wings:** tall, thin, insect-like wings: bony red struts with torn, pale, translucent membrane. Unlike the leathery
+  demon player and imp wings.
+- **Tail:** long, segmented and lined with spines, ending in a large curved red stinger like a scorpion's.
+- **Colors:** bone white and pale grey, with dark blood-red barbs, talons, wing struts and stinger.
+
 ## Creatures (owner direction, later)
 - Add a range of fantastical creatures over time. Each race gets a few assigned to it; most creatures are neutral.
 - Not started.

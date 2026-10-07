@@ -49,6 +49,12 @@
       "why": "The reference is rust-red with gold markings. The rest of the Hive is going dark teal and black like sculk. Either works; tell me which."
     },
     {
+      "topic": "Beasts",
+      "priority": "medium",
+      "question": "What role should the beasts play?",
+      "why": "Options: a new rare, expensive unit summoned at the altar (one per army), a mount players can ride, or a wild neutral creature you tame. The Hive beast and Demon beast should probably work the same way."
+    },
+    {
       "topic": "Players",
       "priority": "high",
       "question": "Reference art for the Hive player character.",
@@ -131,6 +137,10 @@
     {
       "topic": "Hive",
       "answer": "The Hive gets a large burrowing beast unit based on your reference (hive-beast.png). It's a unit, not the player character."
+    },
+    {
+      "topic": "Demon",
+      "answer": "The Demons get a large beast unit: a bone-white, skeletal flier with red barbs, insect-like wings and a scorpion stinger tail, from your reference."
     },
     {
       "topic": "Creatures",
