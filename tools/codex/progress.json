@@ -1,7 +1,12 @@
 {
-  "updated": "2026-10-06",
+  "updated": "2026-10-07",
   "pack_mods": 68,
   "log": [
+    {
+      "status": "done",
+      "title": "Race magic: each race has a strong and a weak spell school",
+      "detail": "On the owner's pick, every race gets +25% spell power in one Iron's Spells school and -10% in another: Human Evocation/Eldritch, Elf Nature/Fire, Dwarf Lightning/Ender, Orc Blood/Evocation, Demon Fire/Holy, Angel Holy/Blood, Hive Eldritch/Holy. It is applied as attribute modifiers alongside the other race stats, shown in the race picker and /warfront race, and skipped when Iron's Spells isn't installed."
+    },
     {
       "status": "done",
       "title": "Base levels: earned by building and by holding sieges",
@@ -106,6 +111,7 @@
     "beastsAreLimitedAndRaceBound": "A commander at the beast limit is refused, and races without a beast cannot summon one",
     "hiveIsStrongerUnderground": "Hive soldiers gain Strength underground and are not weakened there",
     "captainsAndChampionsNeedABiggerBase": "A base with 3 waves won but only 2 buildings refuses a Captain; four more pylons make it level 2, which summons a Captain but still refuses a Champion.",
-    "baseLevelNeedsBuildingsAndWaves": "12 buildings with no waves won stay level 1; 8 waves won lift the base to level 3, and more waves can't push it past what the buildings allow."
+    "baseLevelNeedsBuildingsAndWaves": "12 buildings with no waves won stay level 1; 8 waves won lift the base to level 3, and more waves can't push it past what the buildings allow.",
+    "eachRaceHasItsOwnSpellSchool": "No two races share a strong school, none is weak in its own, and race stats apply without Iron's Spells"
   }
 }

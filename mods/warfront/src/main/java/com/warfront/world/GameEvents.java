@@ -100,7 +100,7 @@ public final class GameEvents {
             line.append(Component.literal("[" + r.displayName() + "]").withStyle(style -> style
                     .withColor(r.color).withBold(true)
                     .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warfront race " + r.id()))
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(r.description)))));
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(r.description + "\n" + r.magicLine())))));
             line.append(Component.literal(" "));
         }
         player.sendSystemMessage(line);

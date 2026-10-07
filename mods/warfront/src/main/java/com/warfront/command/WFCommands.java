@@ -86,7 +86,7 @@ public final class WFCommands {
         if (race == null) {
             GameEvents.sendRacePrompt(p);
         } else {
-            ok(ctx, Component.literal("You are of the " + race.displayName() + " race. " + race.description)
+            ok(ctx, Component.literal("You are of the " + race.displayName() + " race. " + race.description + " " + race.magicLine())
                     .withStyle(race.color));
         }
         return 1;
@@ -104,7 +104,7 @@ public final class WFCommands {
         race.apply(p);
         com.warfront.network.RaceSync.broadcast(p);
         p.setHealth(p.getMaxHealth());
-        ok(ctx, Component.literal("You are now of the " + race.displayName() + " race. " + race.description)
+        ok(ctx, Component.literal("You are now of the " + race.displayName() + " race. " + race.description + " " + race.magicLine())
                 .withStyle(race.color, ChatFormatting.BOLD));
         if (current == null && race == Race.HIVE) {
             com.warfront.world.HiveAdaptation.sendToCave(p);

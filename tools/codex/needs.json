@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06",
+  "updated": "2026-10-07",
   "cells": {
     "demon/spearman": {
       "status": "done",
@@ -49,12 +49,6 @@
     "beast": "A rare war beast summoned at the altar. Only races with a designed beast can field one."
   },
   "questions": [
-    {
-      "topic": "Magic",
-      "priority": "medium",
-      "question": "Which magic should each race lean toward?",
-      "why": "Player mana would come from Iron's Spells, with each race getting bonus spell power in a school: for example demons fire, angels holy, elves nature, the Hive poison. Pick the pairings and I'll wire it in as an optional link."
-    },
     {
       "topic": "Units",
       "priority": "high",
@@ -129,6 +123,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Magic",
+      "answer": "Each race casts one Iron's Spells school 25% stronger and one 10% weaker: Human Evocation (weak Eldritch), Elf Nature (weak Fire), Dwarf Lightning (weak Ender), Orc Blood (weak Evocation), Demon Fire (weak Holy), Angel Holy (weak Blood), Hive Eldritch (weak Holy). It works through Iron's spell power attributes, so Warfront runs fine without Iron's Spells."
+    },
     {
       "topic": "Bases",
       "answer": "Captains need a level 2 base and Champions a level 4 base before an altar will summon them. Everyone else needs only a complete altar and the mana."

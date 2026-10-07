@@ -79,6 +79,20 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void eachRaceHasItsOwnSpellSchool(GameTestHelper h) {
+        java.util.Set<com.warfront.faction.SpellSchool> seen = new java.util.HashSet<>();
+        for (Race r : Race.values()) {
+            h.assertTrue(r.school != r.weakSchool, r.displayName() + " is strong and weak in the same school");
+            h.assertTrue(seen.add(r.school), r.displayName() + " shares its school " + r.school + " with another race");
+        }
+        // Iron's Spells isn't in the test world: applying a race must still work without it.
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        Race.DEMON.apply(p);
+        Race.clear(p);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void formationGivesDistinctSlotsWithShieldsInFront(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierRole[] roles = {SoldierRole.ARCHER, SoldierRole.SHIELDBEARER, SoldierRole.HEALER,
