@@ -805,4 +805,55 @@ public final class WarfrontGameTests {
         h.assertTrue(com.warfront.war.Recall.refusal(clock, now) != null, "only one recall per attack");
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ daily upkeep
+
+    @GameTest(template = ARENA)
+    public static void messHallFeedsTroopsWhileItHasFood(GameTestHelper h) {
+        Player owner = tester(h);
+        BlockPos hallPos = new BlockPos(1, 2, 1);
+        h.setBlock(hallPos, WFRegistry.MESS_HALL.get());
+        var hall = (com.warfront.upkeep.MessHallBlockEntity) h.getBlockEntity(hallPos);
+        hall.setOwner(owner.getUUID());
+        hall.setItem(0, new ItemStack(Items.BREAD, 1));   // 5 food points: enough for one unit
+        SoldierEntity first = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 4, 4);
+        SoldierEntity second = recruit(h, owner, SoldierRole.ARCHER, Race.HUMAN, 6, 6);
+        var hungry = com.warfront.upkeep.Upkeep.feed(hall, 1000L);
+        boolean a = first.hasEffect(WFRegistry.WELL_FED), b = second.hasEffect(WFRegistry.WELL_FED);
+        h.assertTrue(a != b, "one loaf feeds exactly one unit (fed: " + a + ", " + b + ")");
+        h.assertTrue(hungry.contains(owner.getUUID()), "the unit left hungry should be reported");
+        h.assertTrue(hall.foodPoints() == 0, "the loaf should be eaten");
+        h.assertTrue(!hall.canPlaceItem(0, new ItemStack(Items.STONE)), "a Mess Hall only takes food");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void farmerDeliversFoodToTheMessHall(GameTestHelper h) {
+        Player owner = tester(h);
+        BlockPos hallPos = new BlockPos(2, 2, 7);
+        h.setBlock(hallPos, WFRegistry.MESS_HALL.get());
+        var hall = (com.warfront.upkeep.MessHallBlockEntity) h.getBlockEntity(hallPos);
+        hall.setOwner(owner.getUUID());
+        SoldierEntity farmer = posted(h, owner, SoldierRole.FARMER, Race.HUMAN, 4, 4);
+        farmer.getWorkItems().addItem(new ItemStack(Items.CARROT, 40));
+        h.succeedWhen(() -> h.assertTrue(hall.foodPoints() > 0, "the farmer should carry food to the Mess Hall"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 400)
+    public static void buildersRepairRaidDamageFirst(GameTestHelper h) {
+        Player owner = tester(h);
+        BlockPos near = new BlockPos(4, 2, 3), far = new BlockPos(7, 2, 7);
+        h.setBlock(near, Blocks.STONE_BRICKS);
+        h.setBlock(far, Blocks.STONE_BRICKS);
+        SoldierEntity builder = posted(h, owner, SoldierRole.BUILDER, Race.DWARF, 3, 3);
+        builder.setBlueprint(com.warfront.entity.work.Blueprint.survey(h.getLevel(), h.absolutePos(new BlockPos(4, 2, 4)), 4, 1, 3));
+        builder.getWorkItems().addItem(new ItemStack(Items.STONE_BRICKS, 1));   // one brick: it must choose
+        h.setBlock(near, Blocks.AIR);
+        com.warfront.upkeep.RaidDamage.log(h.getLevel(), h.absolutePos(far));
+        h.setBlock(far, Blocks.AIR);
+        h.succeedWhen(() -> {
+            h.assertTrue(h.getBlockState(far).is(Blocks.STONE_BRICKS), "the raid-broken block should be rebuilt");
+            h.assertTrue(h.getBlockState(near).isAir(), "raid damage comes before other repairs");
+        });
+    }
 }

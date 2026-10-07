@@ -53,6 +53,39 @@ public final class WorkSites {
         return best;
     }
 
+    /** The nearest Mana Well near {@code post} with room for more fuel. */
+    @Nullable
+    public static BlockPos findWell(Level level, BlockPos post) {
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (com.warfront.mana.ManaNodeBlockEntity n : com.warfront.mana.ManaNetwork.near(level, post, STORAGE_RADIUS)) {
+            if (!(n instanceof com.warfront.block.ManaWellBlockEntity w)
+                    || w.getMana() + com.warfront.block.ManaWellBlockEntity.SHARD_MANA > com.warfront.block.ManaWellBlockEntity.capacity()) continue;
+            double d = n.getBlockPos().distSqr(post);
+            if (d < bestDist) {
+                bestDist = d;
+                best = n.getBlockPos();
+            }
+        }
+        return best;
+    }
+
+    /** The nearest Mess Hall near {@code post} with an empty slot. */
+    @Nullable
+    public static BlockPos findMessHall(Level level, BlockPos post) {
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
+        for (BlockPos p : com.warfront.upkeep.MessHallBlockEntity.loaded(level)) {
+            double d = p.distSqr(post);
+            if (d > STORAGE_RADIUS * STORAGE_RADIUS * 2 || d >= bestDist) continue;
+            if (level.getBlockEntity(p) instanceof com.warfront.upkeep.MessHallBlockEntity hall && hasSpace(hall)) {
+                bestDist = d;
+                best = p;
+            }
+        }
+        return best;
+    }
+
     public static int count(Container c, Item item) {
         int n = 0;
         for (int i = 0; i < c.getContainerSize(); i++) {

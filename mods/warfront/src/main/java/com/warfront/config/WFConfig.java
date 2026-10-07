@@ -27,6 +27,7 @@ public final class WFConfig {
 
     public static final ModConfigSpec.BooleanValue BUILDERS_NEED_MATERIALS;
     public static final ModConfigSpec.IntValue GUARD_ALARM_RADIUS;
+    public static final ModConfigSpec.IntValue FOOD_PER_UNIT;
 
     public static final ModConfigSpec.BooleanValue RAIDERS_BREAK_BLOCKS;
     public static final ModConfigSpec.DoubleValue MAX_BREAK_HARDNESS;
@@ -132,6 +133,8 @@ public final class WFConfig {
         BUILDERS_NEED_MATERIALS = b.comment("Builders must carry, or fetch from a nearby chest, every block they put back.",
                         "Turn off to let them rebuild from nothing.")
                 .define("buildersNeedMaterials", true);
+        FOOD_PER_UNIT = b.comment("Food points each battle unit eats from a Mess Hall every morning (bread is 5, a carrot 3).")
+                .defineInRange("foodPerUnit", 4, 0, 40);
         GUARD_ALARM_RADIUS = b.comment("How far a guard's alarm reaches, in blocks. Allied troops within it join the fight.")
                 .defineInRange("guardAlarmRadius", 16, 0, 64);
         b.pop();

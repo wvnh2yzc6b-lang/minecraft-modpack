@@ -3,21 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "daily-upkeep",
-      "status": "ready",
-      "title": "Daily loop, part 1: Mess Hall food upkeep and the worker economy",
-      "decided": "Owner, 2026-10-07: light food upkeep, advisor bounties, raid-the-raiders camps, a fuller worker economy and a neutral traveling merchant.",
-      "spec": [
-        "Mess Hall: a base block with a large inventory (like a double chest) on the base's network area. Accepts any item in the vanilla/conventional food tags (c:foods), so other mods' crops count.",
-        "Once per in-game day (dawn) each battle unit within base range eats one food point budget (config, about 4 food points per unit) from the Mess Hall. Fed units get a 'Well Fed' morale bonus until next dawn: +10% resistance to routing and slow out-of-combat regen. Unfed units just don't get it. Never damage, desertion or death. Units away with the player eat when they return. Workers don't eat.",
-        "Farmers (FarmerGoal): also harvest grown Manabloom shards into the nearest Mana Well or chest, and deliver food to the Mess Hall before other chests.",
-        "Builders (BuilderGoal): after a raid, repair raid damage first (blocks broken by raiders, logged during the raid), then their normal blueprint work. Repairs use blocks from base chests, as now.",
-        "HUD / War Table: Mess Hall stock in days of food; toast at dawn if the troops went hungry.",
-        "Test Panel: controls for each part (fill/empty the Mess Hall, new bounties now, spawn a raider camp, summon the merchant).",
-        "Game tests: units in range get Well Fed when the Mess Hall has food and don't when it's empty; a farmer delivers food to the Mess Hall; builders rebuild a raider-broken block."
-      ]
-    },
-    {
       "id": "daily-bounties",
       "status": "ready",
       "title": "Daily loop, part 2: advisor bounties and raider camps",

@@ -96,6 +96,7 @@ public final class TestActions {
                     case "fill" -> fillMana(player);
                     case "infinite" -> setInfinite(player, !"off".equals(arg(args, 2)));
                     case "starter" -> starterBase(player);
+                    case "food" -> messHall(player, !"empty".equals(arg(args, 2)));
                     default -> Result.fail("base level|fill|infinite|starter");
                 };
                 case "siege" -> switch (b) {
@@ -273,6 +274,12 @@ public final class TestActions {
         }
         return wells == 0 ? Result.fail("No Mana Well within " + (int) BASE_RADIUS + " blocks.")
                 : Result.ok("Infinite mana " + (on ? "ON" : "OFF") + " for " + wells + " well" + (wells == 1 ? "" : "s") + ".");
+    }
+
+    public static Result messHall(Player player, boolean fill) {
+        int n = com.warfront.upkeep.Upkeep.fillOrEmpty(player, fill, BASE_RADIUS);
+        return n == 0 ? Result.fail("No Mess Hall within " + (int) BASE_RADIUS + " blocks.")
+                : Result.ok((fill ? "Filled " : "Emptied ") + n + " Mess Hall" + (n == 1 ? "" : "s") + ".");
     }
 
     /**

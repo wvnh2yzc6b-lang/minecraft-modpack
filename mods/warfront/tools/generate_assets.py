@@ -662,6 +662,18 @@ def effect_icons():
                 img.putpixel((min(17, x + 2), y), hot if i == 1 else red)
     save(img, "mob_effect/frenzy.png")
 
+    # Well Fed: a loaf of bread.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    crust, crumb, dark = hexc("c98a3a"), hexc("f0c070"), hexc("7a4a18")
+    for x in range(3, 15):
+        for y in range(6, 13):
+            edge = x in (3, 14) or y in (6, 12)
+            img.putpixel((x, y), dark if edge else crust)
+    for x in (6, 9, 12):
+        for y in range(7, 11):
+            img.putpixel((x, y), crumb)
+    save(img, "mob_effect/well_fed.png")
+
 
 def lang():
     names = {
@@ -669,6 +681,8 @@ def lang():
         "key.categories.warfront": "Warfront",
         "key.warfront.test_panel": "Test Panel (test mode)",
         "key.warfront.recall": "Recall home (during an attack)",
+        "block.warfront.mess_hall": "Mess Hall",
+        "effect.warfront.well_fed": "Well Fed",
         "entity.warfront.advisor": "Advisor",
         "block.warfront.arrow_tower": "Arrow Tower",
         "block.warfront.arcane_spire": "Arcane Spire",
@@ -755,6 +769,9 @@ def recipes():
            {"C": C, "W": "minecraft:stone_brick_wall", "S": "minecraft:stone_brick_slab"}, "warfront:mana_pylon")
     shaped("mana_brazier", ["IMI", " I ", "SSS"],
            {"I": "minecraft:iron_ingot", "M": M, "S": "minecraft:stone_brick_slab"}, "warfront:mana_brazier")
+    shaped("mess_hall", ["WBW", "PSP", "PCP"],
+           {"W": "minecraft:wheat", "B": "minecraft:bread", "P": "#minecraft:planks", "S": "minecraft:smoker",
+            "C": "minecraft:chest"}, "warfront:mess_hall")
     shaped("summoning_altar", ["CBC", "GOG", "SSS"],
            {"C": C, "B": "minecraft:book", "G": "minecraft:gold_ingot", "O": "minecraft:obsidian",
             "S": "minecraft:stone_bricks"}, "warfront:summoning_altar")
@@ -762,7 +779,7 @@ def recipes():
 
 def loot_and_tags():
     blocks = ["arrow_tower", "arcane_spire", "healing_shrine", "war_standard",
-              "mana_well", "mana_pylon", "mana_brazier", "summoning_altar"]
+              "mana_well", "mana_pylon", "mana_brazier", "summoning_altar", "mess_hall"]
     for b in blocks:
         write_json(DATA / MODID / "loot_table" / "blocks" / f"{b}.json", {
             "type": "minecraft:block",
@@ -772,7 +789,7 @@ def loot_and_tags():
             "random_sequence": f"{MODID}:blocks/{b}"})
     ores = ["mana_ore", "deepslate_mana_ore"]
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "pickaxe.json",
-               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:] + ores]})
+               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:8] + ores]})
     # Floors a summoning altar can stand on: any brick or stone-brick block, so every race can build in its style.
     write_json(DATA / MODID / "tags" / "block" / "altar_base.json", {"replace": False, "values": [
         "#minecraft:stone_bricks", "minecraft:polished_blackstone_bricks", "minecraft:cracked_polished_blackstone_bricks",
@@ -848,7 +865,7 @@ def loot_and_tags():
     write_json(DATA / "neoforge" / "loot_modifiers" / "global_loot_modifiers.json", {
         "replace": False, "entries": [f"{MODID}:seeds_from_{g}" for g in ("short_grass", "tall_grass", "fern")]})
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "axe.json",
-               {"replace": False, "values": [f"{MODID}:war_standard"]})
+               {"replace": False, "values": [f"{MODID}:war_standard", f"{MODID}:mess_hall"]})
 
 
 # --------------------------------------------------------------------------- mana infrastructure
@@ -958,6 +975,33 @@ def mana_blocks():
 
 # --------------------------------------------------------------------------- game test structure
 
+def mess_hall():
+    """The Mess Hall: a plank-and-barrel larder with a laid table on top."""
+    plank, dark = hexc("9c6b3c"), hexc("6b4423")
+    side = Image.new("RGBA", (16, 16))
+    noise_fill(side, plank, 0.08, 61)
+    for y in (0, 5, 10, 15):
+        for x in range(16):
+            side.putpixel((x, y), dark)
+    for x, y in ((3, 7), (4, 7), (5, 7), (10, 7), (11, 7), (12, 7), (3, 8), (12, 8)):   # hanging sausages and a loaf
+        side.putpixel((x, y), hexc("a83a2a") if x < 8 else hexc("d9a441"))
+    save(side, "block/mess_hall_side.png")
+    top = Image.new("RGBA", (16, 16))
+    noise_fill(top, hexc("b07a45"), 0.06, 62)
+    for x in range(4, 12):
+        for y in range(5, 11):
+            top.putpixel((x, y), hexc("e8e2d0") if (x + y) % 2 else hexc("d8d0bc"))   # tablecloth
+    for x, y in ((6, 7), (7, 7), (8, 8), (9, 8)):
+        top.putpixel((x, y), hexc("d9a441"))
+    save(top, "block/mess_hall_top.png")
+    write_json(ASSETS / "blockstates" / "mess_hall.json", {"variants": {"": {"model": f"{MODID}:block/mess_hall"}}})
+    write_json(ASSETS / "models" / "block" / "mess_hall.json", {
+        "parent": "minecraft:block/cube_bottom_top",
+        "textures": {"side": f"{MODID}:block/mess_hall_side", "top": f"{MODID}:block/mess_hall_top",
+                     "bottom": "minecraft:block/oak_planks"}})
+    write_json(ASSETS / "models" / "item" / "mess_hall.json", {"parent": f"{MODID}:block/mess_hall"})
+
+
 def _nbt_payload(tag_type, value):
     import struct
     if tag_type == 3:
@@ -1014,6 +1058,7 @@ if __name__ == "__main__":
     soldier_skins()
     models_and_states()
     mana_blocks()
+    mess_hall()
     effect_icons()
     lang()
     recipes()

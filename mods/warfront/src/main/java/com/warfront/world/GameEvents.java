@@ -57,6 +57,8 @@ public final class GameEvents {
     @SubscribeEvent
     public static void onServerStopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
         com.warfront.mana.ManaNetwork.clear();
+        com.warfront.upkeep.MessHallBlockEntity.clearAll();
+        com.warfront.upkeep.RaidDamage.clearAll();
     }
 
     // ------------------------------------------------------------ players
@@ -282,6 +284,7 @@ public final class GameEvents {
             com.warfront.war.RaidScheduler.tick(server);
             com.warfront.war.RaidScheduler.releaseHomes(server.overworld().getGameTime());
         }
+        if (server.getTickCount() % 200 == 0) com.warfront.upkeep.Upkeep.tick(server);
     }
 
     @SubscribeEvent

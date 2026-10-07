@@ -3,6 +3,8 @@
   "key.categories.warfront": "Warfront",
   "key.warfront.test_panel": "Test Panel (test mode)",
   "key.warfront.recall": "Recall home (during an attack)",
+  "block.warfront.mess_hall": "Mess Hall",
+  "effect.warfront.well_fed": "Well Fed",
   "entity.warfront.advisor": "Advisor",
   "block.warfront.arrow_tower": "Arrow Tower",
   "block.warfront.arcane_spire": "Arcane Spire",

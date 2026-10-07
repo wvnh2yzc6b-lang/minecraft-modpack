@@ -109,6 +109,7 @@ public class BreachGoal extends Goal {
             lastStage = stage;
         }
         if (progress >= needed) {
+            com.warfront.upkeep.RaidDamage.log(soldier.level(), target);
             soldier.level().destroyBlock(target, true, soldier);
             soldier.resetStuck();
         }

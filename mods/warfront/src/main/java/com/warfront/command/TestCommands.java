@@ -66,7 +66,10 @@ public final class TestCommands {
                         .then(Commands.literal("infinite")
                                 .then(simple("on", "base", "infinite", "on"))
                                 .then(simple("off", "base", "infinite", "off")))
-                        .then(simple("starter", "base", "starter")))
+                        .then(simple("starter", "base", "starter"))
+                        .then(Commands.literal("food")
+                                .then(simple("fill", "base", "food", "fill"))
+                                .then(simple("empty", "base", "food", "empty"))))
                 .then(Commands.literal("siege")
                         .then(Commands.literal("start").executes(ctx -> run(ctx, "siege", "start"))
                                 .then(Commands.argument("faction", StringArgumentType.word()).suggests(FACTIONS)
@@ -138,7 +141,7 @@ public final class TestCommands {
                 "/wftest on|off  then press F8 for the Test Panel",
                 "/wftest spawn <race> <role> [count] [friendly|faction]",
                 "/wftest army heal|kill|dismiss",
-                "/wftest base level <0-5>|fill|infinite on|off|starter",
+                "/wftest base level <0-5>|fill|infinite on|off|starter|food fill|empty",
                 "/wftest siege start [faction]|wave <n>|pause|resume|end",
                 "/wftest player race <race>|fill|day|night|clear|god|kit",
                 "/wftest difficulty <easy|normal|hard|warlord>",

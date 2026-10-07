@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "warfront:block/mess_hall_side",
+    "top": "warfront:block/mess_hall_top",
+    "bottom": "minecraft:block/oak_planks"
+  }
+}

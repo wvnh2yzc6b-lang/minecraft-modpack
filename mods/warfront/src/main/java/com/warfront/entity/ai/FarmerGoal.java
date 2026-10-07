@@ -36,7 +36,7 @@ public class FarmerGoal extends Goal {
     public static final int FIELD_RADIUS = 8;
     private static final int CARRY_LIMIT = 32;
 
-    private enum Job { HARVEST, PLANT, TILL, DEPOSIT }
+    private enum Job { HARVEST, PLANT, TILL, DEPOSIT, FUEL }
 
     private final SoldierEntity farmer;
     @Nullable private Job job;
@@ -107,6 +107,15 @@ public class FarmerGoal extends Goal {
         if (post == null || !(farmer.level() instanceof ServerLevel level)) return false;
         SimpleContainer bag = farmer.getWorkItems();
         if (produce(bag) >= CARRY_LIMIT || !WorkSites.hasSpace(bag)) {
+            // Shards go to the nearest Mana Well, food to the Mess Hall, the rest to a chest.
+            if (WorkSites.count(bag, com.warfront.registry.WFRegistry.MANA_SHARD.get()) > 0) {
+                BlockPos well = WorkSites.findWell(level, post);
+                if (well != null) return set(Job.FUEL, well);
+            }
+            if (hasFood(bag)) {
+                BlockPos hall = WorkSites.findMessHall(level, post);
+                if (hall != null) return set(Job.DEPOSIT, hall);
+            }
             BlockPos chest = WorkSites.findStorage(level, post, WorkSites::hasSpace);
             if (chest != null) return set(Job.DEPOSIT, chest);
         }
@@ -191,6 +200,14 @@ public class FarmerGoal extends Goal {
                 level.playSound(null, target, SoundEvents.HOE_TILL, SoundSource.NEUTRAL, 1F, 1F);
                 level.gameEvent(farmer, GameEvent.BLOCK_CHANGE, target);
             }
+            case FUEL -> {
+                if (!(level.getBlockEntity(target) instanceof com.warfront.block.ManaWellBlockEntity well)) return;
+                for (int i = 0; i < bag.getContainerSize(); i++) {
+                    ItemStack stack = bag.getItem(i);
+                    if (com.warfront.block.ManaWellBlockEntity.fuelValue(stack) > 0F) bag.setItem(i, well.fuelInput.insertItem(0, stack, false));
+                }
+                level.playSound(null, target, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6F, 1.2F);
+            }
             case DEPOSIT -> {
                 Container chest = WorkSites.containerAt(level, target);
                 if (chest == null) return;
@@ -236,6 +253,13 @@ public class FarmerGoal extends Goal {
             if (isSeed(it)) return ((BlockItem) it).getBlock();
         }
         return null;
+    }
+
+    private static boolean hasFood(SimpleContainer bag) {
+        for (int i = 0; i < bag.getContainerSize(); i++) {
+            if (com.warfront.upkeep.MessHallBlockEntity.isFood(bag.getItem(i))) return true;
+        }
+        return false;
     }
 
     private static int produce(SimpleContainer bag) {

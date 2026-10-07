@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Daily loop, part 1: the Mess Hall",
+      "detail": "A new block, the Mess Hall (54 slots, food only: anything edible, other mods' food too). Every morning each battle unit within 32 blocks eats about 4 food points and is Well Fed until the next morning: morale holds 10% better and wounds slowly close out of combat. Hungry units just miss the bonus, nothing worse, and you get a toast. Units that were away eat when they return; workers don't eat. Farmers now carry Manabloom shards to the nearest Mana Well and food to the Mess Hall before chests. Builders repair blocks raiders broke before anything else. Right-click the hall to see how many days of food it holds. Test Panel (Base tab): fill or empty Mess Halls."
+    },
+    {
+      "status": "done",
       "title": "Difficulty and the rhythm of war",
       "detail": "Each world picks Easy, Normal, Hard or Warlord on first join (click in chat, or /warfront difficulty; Normal if you don't). Presets scale raid size, enemy health and damage, and how often raids come (all in the config). Raids grow with the base level they hit, never with your army. Nothing attacks in the first three days, or before you've planted a War Standard. Then each player has a raid clock: about one raid a day, a siege on your War Standard every three to four nights, and a quiet day after every two raids. The clock runs at half speed while you're in another dimension. Every attack is announced two minutes ahead with a toast, a horn and a countdown bar, wherever you are. Press H (or /warfront home) to recall: 5 seconds standing still, broken by damage, then you and the units following you land at your War Standard. Once per attack. Your base stays loaded during the attack, so towers and guards fight even when you're away. Test Panel (Siege tab): set the preset, skip the grace period, force a raid or siege warning, recall now. Still to come: war meters adding to raid size, and Warlord's permadeath for heroes once mortal units exist."
     },
@@ -236,6 +241,9 @@
     "advisorCannotBeHurtOrPushed": "The advisor takes no damage, can't be pushed, and wears his race's guise",
     "difficultyPresetScalesRaiders": "Hard raiders get 1.25x health; raid size grows with the preset and the base level",
     "noRaidsInTheGracePeriod": "No raids before day 3, or before the War Standard is planted",
-    "recallBringsFollowersHomeOncePerRaid": "Recall moves the player and following units to the War Standard, leaves holding units, and works once per attack"
+    "recallBringsFollowersHomeOncePerRaid": "Recall moves the player and following units to the War Standard, leaves holding units, and works once per attack",
+    "messHallFeedsTroopsWhileItHasFood": "A Mess Hall feeds units until its food runs out, reports the hungry ones, and only takes food",
+    "farmerDeliversFoodToTheMessHall": "A farmer with a full bag carries food to the Mess Hall",
+    "buildersRepairRaidDamageFirst": "With one brick, a builder rebuilds the raid-broken block before other damage"
   }
 }

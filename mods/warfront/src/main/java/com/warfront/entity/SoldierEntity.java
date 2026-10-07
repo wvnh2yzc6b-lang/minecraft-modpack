@@ -228,6 +228,11 @@ public class SoldierEntity extends PathfinderMob {
         setHealth(getMaxHealth());
     }
 
+    /** Well Fed units hold their nerve 10% better. */
+    private float moraleLossFactor() {
+        return hasEffect(WFRegistry.WELL_FED) ? 0.9f : 1f;
+    }
+
     /** Scales health and damage (difficulty presets for enemies). 1 removes the scaling. */
     public void applyStrength(double multiplier) {
         setModifier(Attributes.MAX_HEALTH, "difficulty_health", multiplier - 1.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -722,6 +727,8 @@ public class SoldierEntity extends PathfinderMob {
             regen += 4f;
         }
         morale = Mth.clamp(morale + regen, 0f, 100f);
+        // Well Fed: wounds slowly close out of combat.
+        if (getTarget() == null && hasEffect(WFRegistry.WELL_FED) && (tickCount / 20) % 5 == 0 && getHealth() < getMaxHealth()) heal(1f);
 
         if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this) && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
             routTicks = 120;
@@ -895,7 +902,7 @@ public class SoldierEntity extends PathfinderMob {
         }
         boolean hurt = super.hurt(source, amount);
         if (hurt && !level().isClientSide) {
-            morale = Math.max(0f, morale - amount * 2.5f);
+            morale = Math.max(0f, morale - amount * 2.5f * moraleLossFactor());
         }
         return hurt;
     }
@@ -907,7 +914,7 @@ public class SoldierEntity extends PathfinderMob {
 
         float shock = getRole() == SoldierRole.CAPTAIN ? 35f : 12f;
         for (SoldierEntity ally : nearbyAllies(12, SoldierEntity.class)) {
-            ally.morale = Math.max(0f, ally.morale - shock);
+            ally.morale = Math.max(0f, ally.morale - shock * ally.moraleLossFactor());
         }
 
         for (ItemStack carried : workItems.removeAllItems()) spawnAtLocation(carried);

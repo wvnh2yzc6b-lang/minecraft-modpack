@@ -121,8 +121,10 @@ public class BuilderGoal extends Goal {
         if (bp == null) return false;
         long now = level.getGameTime();
         skipUntil.values().removeIf(t -> t < now);
-        List<Map.Entry<BlockPos, BlockState>> damage = bp.damage(level, builder.blockPosition(), 96);
+        List<Map.Entry<BlockPos, BlockState>> damage = new java.util.ArrayList<>(bp.damage(level, builder.blockPosition(), 96));
         if (damage.isEmpty()) return false;
+        // Raid damage first, then the rest (a stable sort keeps the nearest-first order within each).
+        damage.sort(java.util.Comparator.comparing(e -> !com.warfront.upkeep.RaidDamage.contains(level, e.getKey())));
         SimpleContainer bag = builder.getWorkItems();
         boolean free = !WFConfig.BUILDERS_NEED_MATERIALS.get();
         for (Map.Entry<BlockPos, BlockState> e : damage) {
@@ -172,6 +174,7 @@ public class BuilderGoal extends Goal {
         Item item = Blueprint.itemFor(wanted);
         if (WFConfig.BUILDERS_NEED_MATERIALS.get() && !WorkSites.takeOne(builder.getWorkItems(), item)) return false;
         level.setBlock(target, wanted, 3);
+        com.warfront.upkeep.RaidDamage.repaired(level, target);
         SoundType sound = wanted.getSoundType(level, target, builder);
         level.playSound(null, target, sound.getPlaceSound(), SoundSource.BLOCKS, (sound.getVolume() + 1F) / 2F, sound.getPitch() * 0.8F);
         level.gameEvent(builder, GameEvent.BLOCK_PLACE, target);

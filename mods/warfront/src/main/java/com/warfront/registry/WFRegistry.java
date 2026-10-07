@@ -51,6 +51,8 @@ public final class WFRegistry {
             DeferredRegister.create(Registries.MOB_EFFECT, Warfront.MODID);
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.FrenzyEffect> FRENZY =
             MOB_EFFECTS.register("frenzy", () -> new com.warfront.combat.FrenzyEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.upkeep.WellFedEffect> WELL_FED =
+            MOB_EFFECTS.register("well_fed", () -> new com.warfront.upkeep.WellFedEffect());
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
             DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Warfront.MODID);
 
@@ -133,6 +135,10 @@ public final class WFRegistry {
             () -> new SummoningAltarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(4.0F, 12.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.STONE).noOcclusion().lightLevel(s -> 9)));
 
+    public static final DeferredBlock<com.warfront.upkeep.MessHallBlock> MESS_HALL = BLOCKS.register("mess_hall",
+            () -> new com.warfront.upkeep.MessHallBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
+                    .strength(2.5F).sound(SoundType.WOOD)));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowerBlockEntity>> TOWER_BE =
             BLOCK_ENTITIES.register("tower", () -> BlockEntityType.Builder.of(TowerBlockEntity::new,
                     ARROW_TOWER.get(), ARCANE_SPIRE.get(), HEALING_SHRINE.get()).build(null));
@@ -149,6 +155,10 @@ public final class WFRegistry {
             BLOCK_ENTITIES.register("summoning_altar", () -> BlockEntityType.Builder.of(SummoningAltarBlockEntity::new,
                     SUMMONING_ALTAR.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.upkeep.MessHallBlockEntity>> MESS_HALL_BE =
+            BLOCK_ENTITIES.register("mess_hall", () -> BlockEntityType.Builder.of(com.warfront.upkeep.MessHallBlockEntity::new,
+                    MESS_HALL.get()).build(null));
+
     // ---- items ----
     public static final DeferredItem<BlockItem> ARROW_TOWER_ITEM = ITEMS.registerSimpleBlockItem(ARROW_TOWER);
     public static final DeferredItem<BlockItem> ARCANE_SPIRE_ITEM = ITEMS.registerSimpleBlockItem(ARCANE_SPIRE);
@@ -158,6 +168,7 @@ public final class WFRegistry {
     public static final DeferredItem<BlockItem> MANA_PYLON_ITEM = ITEMS.registerSimpleBlockItem(MANA_PYLON);
     public static final DeferredItem<BlockItem> MANA_BRAZIER_ITEM = ITEMS.registerSimpleBlockItem(MANA_BRAZIER);
     public static final DeferredItem<BlockItem> SUMMONING_ALTAR_ITEM = ITEMS.registerSimpleBlockItem(SUMMONING_ALTAR);
+    public static final DeferredItem<BlockItem> MESS_HALL_ITEM = ITEMS.registerSimpleBlockItem(MESS_HALL);
 
     public static final DeferredItem<BlockItem> MANA_ORE_ITEM = ITEMS.registerSimpleBlockItem(MANA_ORE);
     public static final DeferredItem<BlockItem> DEEPSLATE_MANA_ORE_ITEM = ITEMS.registerSimpleBlockItem(DEEPSLATE_MANA_ORE);

@@ -141,6 +141,11 @@ public class TestPanelScreen extends Screen {
             PacketDistributor.sendToServer(new TestActionPayload(new ArrayList<>(List.of("base", "infinite", infinite ? "on" : "off"))));
             rebuildWidgets();
         });
+        send(0, 2, "Fill Mess Hall", "base", "food", "fill");
+        send(1, 2, "Empty Mess Hall", "base", "food", "empty");
+        coming(0, 4, "New bounties", "Advisor bounties are not built yet.");
+        coming(1, 4, "Raider camp", "Raider camps are not built yet.");
+        coming(2, 4, "Merchant", "The traveling merchant is not built yet.");
         send(0, 3, "Starter base", "base", "starter")
                 .setTooltip(Tooltip.create(Component.literal("Clears a flat spot in front of you and builds a Mana Well, two Pylons, "
                         + "a Summoning Altar, a War Standard and an Arrow Tower.")));
