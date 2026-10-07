@@ -20,18 +20,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Work clothes and kit for humanoid farmers, builders and guards: hats and helmets, aprons, tool
- * belts, baskets, tabards, lanterns. Each race has its own set; NPC factions recolor their race's.
+ * Gear drawn over the soldier's body: work clothes and kit for farmers and builders (hats, aprons, tool belts,
+ * baskets), and full armor where a race's soldiers have their own (the demon hellknights). Each race has its own
+ * set; NPC factions recolor their race's.
  */
 public class RoleGearLayer extends RenderLayer<SoldierEntity, SoldierModel> {
     private static final int FULL_BRIGHT = 0xF000F0;
     private final Map<String, ModelPart> gear = new HashMap<>();
+    private static final java.util.Set<String> IDS = java.util.Set.copyOf(UnitGeometry.all().keySet());
 
     public RoleGearLayer(RenderLayerParent<SoldierEntity, SoldierModel> parent, EntityModelSet models) {
         super(parent);
         for (String id : UnitGeometry.all().keySet()) {
             if (id.startsWith("gear_")) gear.put(id, models.bakeLayer(WFModelLayers.of(id)));
         }
+    }
+
+    /** Whether this unit wears a full armor model of its own (rank armor then stays off). */
+    public static boolean hasArmorModel(SoldierEntity entity) {
+        return !entity.getRole().posted() && IDS.contains(modelId(entity));
     }
 
     /** The gear model for a unit: by role and the body-shape race (goblins have their own). */
@@ -44,7 +51,7 @@ public class RoleGearLayer extends RenderLayer<SoldierEntity, SoldierModel> {
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, SoldierEntity entity,
                        float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks,
                        float netHeadYaw, float headPitch) {
-        if (entity.isInvisible() || !entity.getRole().posted()) return;
+        if (entity.isInvisible()) return;
         String id = modelId(entity);
         ModelPart root = gear.get(id);
         if (root == null) return;

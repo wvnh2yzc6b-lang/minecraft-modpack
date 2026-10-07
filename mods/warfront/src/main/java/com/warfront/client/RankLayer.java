@@ -51,7 +51,12 @@ public class RankLayer extends RenderLayer<SoldierEntity, SoldierModel> {
         int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
         SoldierModel model = getParentModel();
 
-        // Armor by rank: Regular chest and boots; Veteran adds legs; Elite and Legend add the helmet.
+        // Armor by rank: Regular chest and boots; Veteran adds legs; Elite and Legend add the helmet. Units with
+        // armor of their own (demon hellknights) keep just the chevrons.
+        if (RoleGearLayer.hasArmorModel(entity)) {
+            chevrons(poseStack, buffer, light, overlay, model, rank, color);
+            return;
+        }
         String material = MATERIAL[Math.min(rank, MATERIAL.length - 1)];
         int tint = rank == 1 ? color : 0xFFFFFFFF;
         piece(poseStack, buffer, light, overlay, entity, model, EquipmentSlot.CHEST, material, tint);
@@ -59,7 +64,11 @@ public class RankLayer extends RenderLayer<SoldierEntity, SoldierModel> {
         if (rank >= 2) piece(poseStack, buffer, light, overlay, entity, model, EquipmentSlot.LEGS, material, tint);
         if (rank >= 3) piece(poseStack, buffer, light, overlay, entity, model, EquipmentSlot.HEAD, material, tint);
 
-        // Chevrons on the left shoulder.
+        chevrons(poseStack, buffer, light, overlay, model, rank, color);
+    }
+
+    /** Chevrons on the left shoulder. */
+    private void chevrons(PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, SoldierModel model, int rank, int color) {
         poseStack.pushPose();
         model.leftArm.translateAndRotate(poseStack);
         var vc = buffer.getBuffer(RenderType.entityCutoutNoCull(INSIGNIA));

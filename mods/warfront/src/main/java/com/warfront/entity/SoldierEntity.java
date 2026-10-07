@@ -416,6 +416,10 @@ public class SoldierEntity extends PathfinderMob {
                     gear(EquipmentSlot.MAINHAND, axes ? (iron ? Items.IRON_AXE : Items.STONE_AXE)
                             : iron ? Items.IRON_SWORD : Items.STONE_SWORD);
                     gear(EquipmentSlot.OFFHAND, Items.SHIELD);
+                    // A Hellguard's shield is black iron.
+                    if (race == Race.DEMON && getOffhandItem().is(Items.SHIELD)) {
+                        getOffhandItem().set(net.minecraft.core.component.DataComponents.BASE_COLOR, DyeColor.BLACK);
+                    }
                 }
             }
             case SPEARMAN -> {

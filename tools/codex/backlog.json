@@ -3,19 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "demon-hellknights",
-      "status": "ready",
-      "title": "Demon hellknights: Hellguard, Fiend, Archfiend, Hellknight, Blood Witch",
-      "spec": [
-        "Generated in mods/warfront/tools/units.py like the imps, on the demon rig (no wings).",
-        "Shared look: faceless black-iron plate; horns breaking through the helm; digitigrade legs ending in hooves; emissive ember-orange in the visor slit and plate seams.",
-        "Hellguard: heaviest plate + tower shield. Fiend: plate + blade. Archfiend (Captain): crest or banner, cape. Hellknight (Champion): most ornate, bigger horns. Sizes from the rank ladder.",
-        "Blood Witch (healer): blood-red robes over light pauldrons, horned hood, no full plate.",
-        "Render the five beside a Black Legion soldier to prove they read as demons; set designs.json status to review."
-      ],
-      "decided": "Owner, 2026-10-07: armored hellknights with horns, hooves and ember seams; Blood Witch robed over light plate."
-    },
-    {
       "id": "faction-trim",
       "status": "ready",
       "title": "Enemy faction trim",

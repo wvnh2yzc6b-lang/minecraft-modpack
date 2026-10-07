@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Demon hellknights",
+      "detail": "Full-sized demon soldiers now wear their own armor: faceless black-iron plate with an ember visor slit, horns through the helm, glowing seams and hooves. Hellguard (shieldbearer, heaviest plate and a black shield), Fiend (swordsman), Archfiend (Captain, crest and cape), Hellknight (Champion, great horns, spiked pauldrons, chest sigil) and Blood Witch (healer, red robes and horned hood). Rank armor stays off them; their rank shows as chevrons. Waiting on your review on the Designs page."
+    },
+    {
+      "status": "done",
       "title": "UI, part 5: the Summoning Altar, redesigned",
       "detail": "The altar menu is now a themed panel: a grid of unit cards for your race with their mana cost, locked cards greyed with the reason (Captains need a level 2 base, Champions level 4), a detail pane for the selected card (health, melee or ranged, armor, what it does) with a Summon button, mana in reach, war beasts used out of allowed, and a Returning Heroes strip with countdowns and half-cost buttons."
     },

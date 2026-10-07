@@ -106,14 +106,15 @@
       "id": "demon-hellknights",
       "race": "Demon",
       "title": "Hellknights (Hellguard, Fiend, Archfiend, Hellknight, Blood Witch)",
-      "status": "planned",
+      "status": "review",
       "notes": [
-        "Owner direction: the full-size demons are armored hellknights.",
-        "Faceless black-iron plate; horns break through the helm; legs end in hooves; ember-orange fire glows through the visor slit and the plate seams.",
-        "Hellguard heavy with a tower shield; Fiend a plate swordsman; Archfiend a Captain with crest or banner (15% bigger); Hellknight the Champion (30% bigger), the most ornate.",
-        "Blood Witch (healer): blood-red robes over light black-iron pauldrons, horned hood.",
-        "Not built yet."
-      ]
+        "Built and in the game: the full-sized demon soldiers wear generated armor over the demon body.",
+        "Left to right in the render: Blood Witch (healer), Hellknight (Champion), Archfiend (Captain), Fiend (swordsman), Hellguard (shieldbearer), and a Black Legion soldier for comparison. Front row, then from behind.",
+        "Faceless black-iron plate with a single ember visor slit, horns breaking out of the helm, ember light along the plate seams, hooves with a backward hock spur on each leg as a hint of a beast's bent leg.",
+        "Hellguard: doubled pauldrons, a gorget and a black shield. Archfiend: a crest and a cape. Hellknight: great horns, spiked pauldrons, an ember sigil on the chest, a longer cape. Blood Witch: blood-red robes and hood with ember eyes, light pauldrons, no full plate.",
+        "Captains and Champions stand 15% and 30% taller. The Burning Horde wears the same armor in darker colors with brighter embers."
+      ],
+      "render": "demon-hellknights-render.png"
     },
     {
       "id": "faction-trim",
