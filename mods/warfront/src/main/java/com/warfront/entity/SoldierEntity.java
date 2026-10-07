@@ -302,7 +302,7 @@ public class SoldierEntity extends PathfinderMob {
 
     @Override
     public boolean canBeSeenAsEnemy() {
-        return !isFallen() && super.canBeSeenAsEnemy();
+        return !isFallen() && !com.warfront.war.Bounties.isCaptive(this) && super.canBeSeenAsEnemy();
     }
 
     // ------------------------------------------------------------------ veterancy
@@ -1078,6 +1078,7 @@ public class SoldierEntity extends PathfinderMob {
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (!isOwnedBy(player)) return super.mobInteract(player, hand);
         if (level().isClientSide) return InteractionResult.SUCCESS;
+        if (com.warfront.war.Bounties.tryFree(player, this)) return InteractionResult.CONSUME;
         if (isFallen()) {
             revive();
             player.displayClientMessage(Component.literal("Your " + getUnitName() + " gets back on its feet.").withStyle(ChatFormatting.GREEN), true);

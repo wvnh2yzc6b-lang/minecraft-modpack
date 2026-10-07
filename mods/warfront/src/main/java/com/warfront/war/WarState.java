@@ -79,6 +79,10 @@ public class WarState extends SavedData {
         /** Game time until which the attack counts as underway (for the recall). */
         public long activeUntil;
         public boolean recallUsed;
+        /** The faction a raider camp says is coming next (empty: any). */
+        public String nextFaction = "";
+        /** A camp of this faction was taken: its next raid comes a third smaller. */
+        public String shrinkFaction = "";
         @Nullable public BlockPos home;
         @Nullable public ResourceKey<Level> homeDim;
 
@@ -94,6 +98,8 @@ public class WarState extends SavedData {
             t.putString("Faction", faction);
             t.putLong("ActiveUntil", activeUntil);
             t.putBoolean("RecallUsed", recallUsed);
+            t.putString("NextFaction", nextFaction);
+            t.putString("ShrinkFaction", shrinkFaction);
             if (home != null && homeDim != null) {
                 t.putLong("Home", home.asLong());
                 t.putString("HomeDim", homeDim.location().toString());
@@ -117,6 +123,8 @@ public class WarState extends SavedData {
             c.faction = t.getString("Faction");
             c.activeUntil = t.getLong("ActiveUntil");
             c.recallUsed = t.getBoolean("RecallUsed");
+            c.nextFaction = t.getString("NextFaction");
+            c.shrinkFaction = t.getString("ShrinkFaction");
             if (t.contains("Home")) {
                 c.home = BlockPos.of(t.getLong("Home"));
                 c.homeDim = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(t.getString("HomeDim")));
@@ -149,6 +157,27 @@ public class WarState extends SavedData {
     }
 
     private final Map<UUID, java.util.List<Returning>> returning = new HashMap<>();
+    private final Map<UUID, java.util.List<Bounties.Bounty>> bounties = new HashMap<>();
+    private final java.util.List<Bounties.Camp> camps = new java.util.ArrayList<>();
+
+    /** The player's open bounties (a live list: change it, then setDirty). */
+    public java.util.List<Bounties.Bounty> bounties(UUID player) {
+        return bounties.computeIfAbsent(player, k -> new java.util.ArrayList<>());
+    }
+
+    public java.util.List<Bounties.Camp> camps() {
+        return camps;
+    }
+
+    public void addCamp(Bounties.Camp camp) {
+        camps.add(camp);
+        setDirty();
+    }
+
+    public void removeCamp(Bounties.Camp camp) {
+        camps.remove(camp);
+        setDirty();
+    }
 
     public java.util.List<Returning> returning(UUID player) {
         return returning.getOrDefault(player, java.util.List.of());
@@ -224,6 +253,16 @@ public class WarState extends SavedData {
             heroes.add(t);
         }));
         tag.put("Returning", heroes);
+        ListTag offers = new ListTag();
+        bounties.forEach((id, l) -> l.forEach(b -> {
+            CompoundTag t = b.save();
+            t.putUUID("Player", id);
+            offers.add(t);
+        }));
+        tag.put("Bounties", offers);
+        ListTag campTags = new ListTag();
+        camps.forEach(c -> campTags.add(c.save()));
+        tag.put("Camps", campTags);
         return tag;
     }
 
@@ -241,6 +280,15 @@ public class WarState extends SavedData {
             CompoundTag c = (CompoundTag) t;
             Returning r = Returning.load(c);
             if (r != null && c.hasUUID("Player")) s.returning.computeIfAbsent(c.getUUID("Player"), k -> new java.util.ArrayList<>()).add(r);
+        }
+        for (Tag t : tag.getList("Bounties", Tag.TAG_COMPOUND)) {
+            CompoundTag c = (CompoundTag) t;
+            Bounties.Bounty b = Bounties.Bounty.load(c);
+            if (b != null && c.hasUUID("Player")) s.bounties(c.getUUID("Player")).add(b);
+        }
+        for (Tag t : tag.getList("Camps", Tag.TAG_COMPOUND)) {
+            Bounties.Camp c = Bounties.Camp.load((CompoundTag) t);
+            if (c != null) s.camps.add(c);
         }
         return s;
     }

@@ -257,7 +257,8 @@ public class FarmerGoal extends Goal {
 
     private static boolean hasFood(SimpleContainer bag) {
         for (int i = 0; i < bag.getContainerSize(); i++) {
-            if (com.warfront.upkeep.MessHallBlockEntity.isFood(bag.getItem(i))) return true;
+            ItemStack s = bag.getItem(i);
+            if (com.warfront.upkeep.MessHallBlockEntity.isFood(s) && !isSeed(s.getItem())) return true;   // carrots kept for planting don't count
         }
         return false;
     }

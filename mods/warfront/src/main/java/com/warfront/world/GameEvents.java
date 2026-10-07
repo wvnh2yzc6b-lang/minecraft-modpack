@@ -291,7 +291,10 @@ public final class GameEvents {
             com.warfront.war.RaidScheduler.tick(server);
             com.warfront.war.RaidScheduler.releaseHomes(server.overworld().getGameTime());
         }
-        if (server.getTickCount() % 200 == 0) com.warfront.upkeep.Upkeep.tick(server);
+        if (server.getTickCount() % 200 == 0) {
+            com.warfront.upkeep.Upkeep.tick(server);
+            com.warfront.war.Bounties.tick(server);
+        }
     }
 
     @SubscribeEvent

@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Daily loop, part 2: bounties and raider camps",
+      "detail": "Once you've planted a War Standard, your advisor posts up to three bounties every morning: clear a raider camp, scout a marked spot, bring him a stack of materials, or rescue a captive. They pay Mana Shards and Crystals, give 30 XP to the units with you, and expire after two days. Talk to the advisor to see them; hold the goods when you talk to him to deliver. Raider camps (two tents, a campfire, 4 to 8 raiders of one faction) appear 100 to 300 blocks from your base and are that faction's next raid: take the camp and the raid comes a third smaller, and they leave a chest of War Marks and shards. Camps not taken in three days break up. Rescue camps hold one of your race's soldiers bound; beat the guards and right-click to free them. Test Panel (Base tab): new bounties, raider camp (shift-click for a rescue camp). Still to come with the war meters: camps filling the meter."
+    },
+    {
+      "status": "done",
       "title": "Veterancy and fallen heroes",
       "detail": "Battle units now earn XP (kills give half the victim's max health, a won siege wave 25) and climb five ranks: Recruit, Regular (100), Veteran (300), Elite (700), Legend (1500). Each rank adds 10% health and damage (arrows too), Elite and Legend never rout, and the unit's name shows its rank. Ranks show on the body: Regular wears padded leather in the race's color, Veteran chain, Elite full plate, Legend gilded plate, plus one race-colored chevron per rank on the shoulder (humanoid units; Hive and imp plating still to come). Your Captains, Champions and war beasts no longer die: they fall and wait 60 seconds for you to right-click them back up at half health. Leave them and they're carried off, then after 5 minutes you can summon them again at any altar for half cost, rank kept. They still count against your army and beast caps meanwhile. Raiders' heroes still die, and on Warlord difficulty so do yours. Test Panel: spawn at any rank, and Revive heroes."
     },
@@ -242,6 +247,8 @@
     "buildersRepairRaidDamageFirst": "With one brick, a builder rebuilds the raid-broken block before other damage",
     "xpRaisesRankHealthAndDamage": "XP raises rank exactly at the threshold, with +10% health and damage per rank; Elite never routs; workers don't rank",
     "heroesFallAndAreRevivedButFootmenDie": "A Champion at lethal damage falls instead of dying, can't be hurt while down, gets up at half health; a footman still dies",
-    "unrevivedHeroReturnsAtHalfCostWithItsRank": "A hero nobody revives goes on the returning list and is summoned again at half cost, keeping its rank"
+    "unrevivedHeroReturnsAtHalfCostWithItsRank": "A hero nobody revives goes on the returning list and is summoned again at half cost, keeping its rank",
+    "takenCampShrinksItsRaid": "Taking a camp makes that faction's next raid a third smaller, once, and leaves other factions' raids alone",
+    "deliveryBountyPaysAndBountiesExpire": "Handing over a delivery pays shards and a crystal; expired bounties drop"
   }
 }

@@ -97,6 +97,8 @@ public final class TestActions {
                     case "fill" -> fillMana(player);
                     case "infinite" -> setInfinite(player, !"off".equals(arg(args, 2)));
                     case "starter" -> starterBase(player);
+                    case "bounties" -> newBounties(player);
+                    case "camp" -> raiderCamp(player, "rescue".equals(arg(args, 2)));
                     case "food" -> messHall(player, !"empty".equals(arg(args, 2)));
                     default -> Result.fail("base level|fill|infinite|starter");
                 };
@@ -291,6 +293,30 @@ public final class TestActions {
         }
         return wells == 0 ? Result.fail("No Mana Well within " + (int) BASE_RADIUS + " blocks.")
                 : Result.ok("Infinite mana " + (on ? "ON" : "OFF") + " for " + wells + " well" + (wells == 1 ? "" : "s") + ".");
+    }
+
+    public static Result newBounties(ServerPlayer player) {
+        var war = com.warfront.war.WarState.get(player.server);
+        war.bounties(player.getUUID()).clear();
+        int n = com.warfront.war.Bounties.offer(player);
+        com.warfront.war.Bounties.lines(player).forEach(l -> player.sendSystemMessage(
+                net.minecraft.network.chat.Component.literal("Bounty: " + l).withStyle(net.minecraft.ChatFormatting.GOLD)));
+        return Result.ok(n + " new bounties.");
+    }
+
+    /** Builds a raider camp 30 blocks ahead, with a bounty for it. */
+    public static Result raiderCamp(ServerPlayer player, boolean rescue) {
+        var war = com.warfront.war.WarState.get(player.server);
+        Vec3 at = ahead(player, 30);
+        var camp = com.warfront.war.Bounties.planCamp(player, player.blockPosition(), rescue, BlockPos.containing(at), player.getRandom());
+        camp.dim = player.level().dimension().location().toString();
+        com.warfront.war.Bounties.build(player.serverLevel(), camp, player);
+        war.addCamp(camp);
+        war.bounties(player.getUUID()).add(new com.warfront.war.Bounties.Bounty(UUID.randomUUID(),
+                rescue ? com.warfront.war.Bounties.Type.RESCUE : com.warfront.war.Bounties.Type.CAMP, camp.center, "", 0, camp.id,
+                player.server.overworld().getGameTime() + 2L * com.warfront.war.RaidScheduler.DAY, 12, 1));
+        war.setDirty();
+        return Result.ok("A " + camp.faction.displayName + " camp of " + camp.raiders + " raiders is up ahead.");
     }
 
     public static Result messHall(Player player, boolean fill) {

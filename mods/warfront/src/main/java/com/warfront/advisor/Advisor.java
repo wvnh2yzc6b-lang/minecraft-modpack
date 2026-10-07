@@ -226,7 +226,11 @@ public final class Advisor {
             player.sendSystemMessage(skip);
             return;
         }
+        if (com.warfront.war.Bounties.deliver(player, player.getMainHandItem())) return;
         say(player, "Counsel", counsel(player, advisor));
+        for (String line : com.warfront.war.Bounties.lines(player)) {
+            player.sendSystemMessage(Component.literal("  Bounty: " + line).withStyle(ChatFormatting.GRAY));
+        }
     }
 
     /** After the first hour: what to build next, and war news. */

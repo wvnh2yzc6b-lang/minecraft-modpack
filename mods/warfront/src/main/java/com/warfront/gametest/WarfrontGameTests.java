@@ -835,7 +835,7 @@ public final class WarfrontGameTests {
         var hall = (com.warfront.upkeep.MessHallBlockEntity) h.getBlockEntity(hallPos);
         hall.setOwner(owner.getUUID());
         SoldierEntity farmer = posted(h, owner, SoldierRole.FARMER, Race.HUMAN, 4, 4);
-        farmer.getWorkItems().addItem(new ItemStack(Items.CARROT, 40));
+        farmer.getWorkItems().addItem(new ItemStack(Items.BREAD, 40));
         h.succeedWhen(() -> h.assertTrue(hall.foodPoints() > 0, "the farmer should carry food to the Mess Hall"));
     }
 
@@ -926,5 +926,47 @@ public final class WarfrontGameTests {
             h.assertTrue(war.returning(owner.getUUID()).isEmpty(), "the returning list should be empty");
             h.succeed();
         });
+    }
+
+    // ------------------------------------------------------------------ bounties and camps
+
+    @GameTest(template = ARENA)
+    public static void takenCampShrinksItsRaid(GameTestHelper h) {
+        var clock = new com.warfront.war.WarState.Clock();
+        var preset = com.warfront.war.WarState.Preset.NORMAL;
+        int full = com.warfront.war.RaidScheduler.raidRoles(clock, NpcFaction.MARAUDERS, net.minecraft.util.RandomSource.create(3), 3, preset).size();
+        clock.shrinkFaction = NpcFaction.MARAUDERS.name();
+        int other = com.warfront.war.RaidScheduler.raidRoles(clock, NpcFaction.BLACK_LEGION, net.minecraft.util.RandomSource.create(3), 3, preset).size();
+        h.assertTrue(!clock.shrinkFaction.isEmpty(), "another faction's raid doesn't use up the shrink");
+        int shrunk = com.warfront.war.RaidScheduler.raidRoles(clock, NpcFaction.MARAUDERS, net.minecraft.util.RandomSource.create(3), 3, preset).size();
+        h.assertTrue(shrunk == Math.max(1, Math.round(full * 2F / 3F)), "the raid should come a third smaller: " + full + " -> " + shrunk);
+        h.assertTrue(clock.shrinkFaction.isEmpty(), "the shrink applies once");
+        h.assertTrue(other > 0, "other raids still come");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void deliveryBountyPaysAndBountiesExpire(GameTestHelper h) {
+        Player p = tester(h);
+        var war = com.warfront.war.WarState.get(h.getLevel().getServer());
+        long now = h.getLevel().getServer().overworld().getGameTime();
+        var list = war.bounties(p.getUUID());
+        var deliver = new com.warfront.war.Bounties.Bounty(UUID.randomUUID(), com.warfront.war.Bounties.Type.DELIVER, BlockPos.ZERO,
+                "minecraft:oak_log", 64, null, now + 1000, 9, 1);
+        var stale = new com.warfront.war.Bounties.Bounty(UUID.randomUUID(), com.warfront.war.Bounties.Type.SCOUT, BlockPos.ZERO,
+                "", 0, null, now - 1, 5, 0);
+        list.add(deliver);
+        list.add(stale);
+        com.warfront.war.Bounties.expire(war, p.getUUID(), now);
+        h.assertTrue(!list.contains(stale) && list.contains(deliver), "expired bounties are dropped, live ones kept");
+        ItemStack logs = new ItemStack(Items.OAK_LOG, 64);
+        p.getInventory().add(logs);
+        h.assertTrue(com.warfront.war.Bounties.deliver(p, p.getInventory().getItem(p.getInventory().findSlotMatchingItem(new ItemStack(Items.OAK_LOG)))),
+                "handing over 64 logs should fulfil the bounty");
+        h.assertTrue(p.getInventory().countItem(Items.OAK_LOG) == 0, "the logs should be handed over");
+        h.assertTrue(p.getInventory().countItem(WFRegistry.MANA_SHARD.get()) == 9 && p.getInventory().countItem(WFRegistry.MANA_CRYSTAL.get()) == 1,
+                "the bounty should pay 9 shards and a crystal");
+        h.assertTrue(war.bounties(p.getUUID()).isEmpty(), "the bounty is done");
+        h.succeed();
     }
 }

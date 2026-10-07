@@ -124,7 +124,15 @@ public final class RaidScheduler {
         ServerLevel at = homeLevel(p, c);
         BlockPos where = at != null && c.home != null ? c.home : p.blockPosition();
         ServerLevel biomeLevel = at != null ? at : p.serverLevel();
-        NpcFaction f = faction != null ? faction : NpcFaction.pick(biomeLevel.getBiome(where), biomeLevel, p.getRandom());
+        NpcFaction f = faction;
+        if (f == null && !c.nextFaction.isEmpty()) {
+            try {
+                f = NpcFaction.valueOf(c.nextFaction);   // the faction whose camp was spotted
+            } catch (IllegalArgumentException ignored) {
+            }
+            c.nextFaction = "";
+        }
+        if (f == null) f = NpcFaction.pick(biomeLevel.getBiome(where), biomeLevel, p.getRandom());
         c.pending = type;
         c.faction = f.name();
         c.hitsAt = now + WFConfig.RAID_WARNING.get();
@@ -199,7 +207,7 @@ public final class RaidScheduler {
             GameEvents.trySpawnWarband(p);
             return;
         }
-        if (type != WarState.Pending.SIEGE || !standard.startSiege(home, f)) raidBase(home, c.home, f, p);
+        if (type != WarState.Pending.SIEGE || !standard.startSiege(home, f)) raidBase(home, c.home, f, p, c);
         // The base stays loaded while the attack plays out, so towers and guards fight even with the player away.
         ACTIVE_HOMES.put(p.getUUID(), new ActiveHome(home, c.home, now + ACTIVE_TICKS));
     }
@@ -220,14 +228,29 @@ public final class RaidScheduler {
     }
 
     /** A warband marching on the base from 40 blocks out. */
-    private static void raidBase(ServerLevel level, BlockPos home, NpcFaction f, ServerPlayer p) {
+    /**
+     * The raid party for a base of {@code baseLevel}. If a camp of this faction was taken, it comes a third smaller
+     * (once).
+     */
+    public static java.util.List<com.warfront.army.SoldierRole> raidRoles(WarState.Clock c, NpcFaction f, net.minecraft.util.RandomSource r,
+                                                                      int baseLevel, WarState.Preset preset) {
+        java.util.List<com.warfront.army.SoldierRole> roles = WarbandSpawner.raidComposition(r, f, baseLevel, preset);
+        if (f.name().equals(c.shrinkFaction)) {
+            c.shrinkFaction = "";
+            int keep = Math.max(1, Math.round(roles.size() * 2F / 3F));
+            roles = new java.util.ArrayList<>(roles.subList(0, keep));
+        }
+        return roles;
+    }
+
+    private static void raidBase(ServerLevel level, BlockPos home, NpcFaction f, ServerPlayer p, WarState.Clock c) {
         float angle = level.random.nextFloat() * Mth.TWO_PI;
         int x = home.getX() + Mth.floor(Mth.cos(angle) * 40), z = home.getZ() + Mth.floor(Mth.sin(angle) * 40);
         BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
         String key = Factions.keyOf(level.getServer(), p);
         int baseLevel = BaseLevel.of(level, home, key).level();
-        WarbandSpawner.spawn(level, f, WarbandSpawner.raidComposition(level.random, f, baseLevel,
-                WarState.get(level.getServer()).preset()), ground, Vec3.atBottomCenterOf(home), null, Math.min(4, baseLevel));
+        WarbandSpawner.spawn(level, f, raidRoles(c, f, level.random, baseLevel, WarState.get(level.getServer()).preset()),
+                ground, Vec3.atBottomCenterOf(home), null, Math.min(4, baseLevel));
         p.sendSystemMessage(Component.literal("The " + f.displayName + " have reached your base!").withStyle(f.color, ChatFormatting.BOLD));
     }
 

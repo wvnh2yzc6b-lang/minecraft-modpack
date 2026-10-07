@@ -3,19 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "daily-bounties",
-      "status": "ready",
-      "title": "Daily loop, part 2: advisor bounties and raider camps",
-      "decided": "Owner, 2026-10-07: light food upkeep, advisor bounties, raid-the-raiders camps, a fuller worker economy and a neutral traveling merchant.",
-      "spec": [
-        "Bounties: each dawn the advisor offers up to 3 (talk to him or the War Table). Types: clear a raider camp; scout a marked location (reach it); deliver materials (a stack of logs, iron, food...); rescue a captured unit (a bound friendly unit in a small camp, freed by right-click after clearing guards). Rewards: Mana Shards/Crystals and veterancy XP for the units that took part. Unfinished bounties expire after 2 days.",
-        "Raider camps: small enemy camps (tents, a fire, 4-8 raiders of one faction) spawn 100-300 blocks from the base, one every couple of days, each tied to the next scheduled raid of that faction. Taking the camp (all raiders beaten) shrinks that raid by about a third and drops part of its loot. Camps not taken in 3 days disband into their raid.",
-        "Camps fill the war meter like a beaten raid (half a point).",
-        "Test Panel: controls for each part (fill/empty the Mess Hall, new bounties now, spawn a raider camp, summon the merchant).",
-        "Game tests: a beaten camp lowers its linked raid's size; a delivered bounty pays out; bounties expire."
-      ]
-    },
-    {
       "id": "merchant",
       "status": "ready",
       "title": "Daily loop, part 3: the traveling merchant",
