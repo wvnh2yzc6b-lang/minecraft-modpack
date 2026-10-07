@@ -66,6 +66,10 @@ public class SoldierEntity extends PathfinderMob {
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNER =
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Integer> DATA_RANK =
+            SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_FALLEN =
+            SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.BOOLEAN);
 
     public static final int SKIN_COUNT = Race.values().length + NpcFaction.values().length;
 
@@ -81,6 +85,9 @@ public class SoldierEntity extends PathfinderMob {
     private int givenMask;
 
     private float morale = 100f;
+    private int xp;
+    /** Game time a fallen hero gives up waiting for its commander. */
+    private long fallenUntil;
     private int routTicks;
     private boolean warlord;
     /** Seconds this soldier has failed to make progress towards its objective (for block breaching). */
@@ -119,6 +126,8 @@ public class SoldierEntity extends PathfinderMob {
         builder.define(DATA_ORDER, Order.FOLLOW.ordinal());
         builder.define(DATA_FACTION, Factions.WILD);
         builder.define(DATA_OWNER, Optional.empty());
+        builder.define(DATA_RANK, 0);
+        builder.define(DATA_FALLEN, false);
     }
 
     @Override
@@ -226,6 +235,127 @@ public class SoldierEntity extends PathfinderMob {
             }
         }
         setHealth(getMaxHealth());
+    }
+
+    // ------------------------------------------------------------------ fallen heroes
+
+    /** Player-owned Captains, Champions and war beasts fall instead of dying. */
+    public boolean isHero() {
+        SoldierRole r = getRole();
+        return getOwnerUUID() != null && (r == SoldierRole.CAPTAIN || r == SoldierRole.CHAMPION || r == SoldierRole.BEAST);
+    }
+
+    public boolean isFallen() {
+        return entityData.get(DATA_FALLEN);
+    }
+
+    /**
+     * Called as this unit would die. A hero falls instead (unless the world is on Warlord, or the damage bypasses
+     * invulnerability): it lies at 1 health for a while, waiting for its commander. Returns true if it fell.
+     */
+    public boolean tryFall(DamageSource source) {
+        if (!isHero() || isFallen() || level().isClientSide || source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
+        MinecraftServer server = level().getServer();
+        if (server != null && com.warfront.war.WarState.get(server).preset().heroesStayDead()) return false;
+        setHealth(1F);
+        entityData.set(DATA_FALLEN, true);
+        fallenUntil = level().getGameTime() + com.warfront.config.WFConfig.FALL_WINDOW.get() * 20L;
+        setTarget(null);
+        getNavigation().stop();
+        setNoAi(true);
+        playSound(SoundEvents.PLAYER_HURT, 1.0F, 0.6F);
+        Player owner = getOwner();
+        if (owner != null) {
+            owner.sendSystemMessage(Component.literal("Your " + getUnitName() + " has fallen at " + blockPosition().toShortString()
+                    + ". Right-click it within " + com.warfront.config.WFConfig.FALL_WINDOW.get() + " seconds to get it back on its feet.")
+                    .withStyle(ChatFormatting.RED));
+        }
+        return true;
+    }
+
+    /** The commander helps a fallen hero up: back at half health. */
+    public void revive() {
+        if (!isFallen()) return;
+        entityData.set(DATA_FALLEN, false);
+        setNoAi(false);
+        setHealth(getMaxHealth() * 0.5F);
+        playSound(SoundEvents.TOTEM_USE, 0.6F, 1.4F);
+        if (level() instanceof ServerLevel server) {
+            server.sendParticles(net.minecraft.core.particles.ParticleTypes.HAPPY_VILLAGER, getX(), getY(0.5), getZ(), 15, 0.4, 0.4, 0.4, 0.1);
+        }
+    }
+
+    /** Nobody came: the hero leaves the field and returns to the commander's altars after a while. */
+    public void giveUpWaiting() {
+        UUID owner = getOwnerUUID();
+        MinecraftServer server = level().getServer();
+        if (owner != null && server != null) {
+            long ready = level().getGameTime() + com.warfront.config.WFConfig.HERO_RETURN.get() * 20L;
+            com.warfront.war.WarState.get(server).addReturning(owner,
+                    new com.warfront.war.WarState.Returning(getRole(), race, xp, ready));
+            Player p = getOwner();
+            if (p != null) p.sendSystemMessage(Component.literal("Your " + getUnitName() + " was carried from the field. "
+                    + "It can be summoned again at an altar for half its cost.").withStyle(ChatFormatting.GOLD));
+        }
+        discard();
+    }
+
+    @Override
+    public boolean canBeSeenAsEnemy() {
+        return !isFallen() && super.canBeSeenAsEnemy();
+    }
+
+    // ------------------------------------------------------------------ veterancy
+
+    public int getRank() {
+        return entityData.get(DATA_RANK);
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    /** Sets XP (and with it the rank) without fanfare: test tools, loading, returning heroes. */
+    public void setXp(int xp) {
+        this.xp = Math.max(0, xp);
+        int rank = com.warfront.army.Veterancy.ranks(getRole()) ? com.warfront.army.Veterancy.rankFor(this.xp) : 0;
+        entityData.set(DATA_RANK, rank);
+        applyRank();
+    }
+
+    /** Earned XP; a new rank brings a burst, a sound and a word to the commander. */
+    public void addXp(int amount) {
+        if (amount <= 0 || !com.warfront.army.Veterancy.ranks(getRole()) || level().isClientSide) return;
+        int before = getRank();
+        xp += amount;
+        int rank = com.warfront.army.Veterancy.rankFor(xp);
+        if (rank == before) return;
+        entityData.set(DATA_RANK, rank);
+        float healthFrac = getHealth() / getMaxHealth();
+        applyRank();
+        setHealth(getMaxHealth() * healthFrac);
+        refreshName();
+        if (level() instanceof ServerLevel server) {
+            server.sendParticles(net.minecraft.core.particles.ParticleTypes.TOTEM_OF_UNDYING, getX(), getY(1.0), getZ(), 20, 0.3, 0.5, 0.3, 0.2);
+        }
+        playSound(SoundEvents.PLAYER_LEVELUP, 0.8F, 1.3F);
+        Player owner = getOwner();
+        if (owner != null) {
+            owner.sendSystemMessage(Component.literal("Your " + getUnitName() + " is now a "
+                    + com.warfront.army.Veterancy.TITLES[rank] + ".").withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    private void applyRank() {
+        double bonus = com.warfront.army.Veterancy.bonus(getRank());
+        setModifier(Attributes.MAX_HEALTH, "rank_health", bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        setModifier(Attributes.ATTACK_DAMAGE, "rank_damage", bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+        if (getHealth() > getMaxHealth()) setHealth(getMaxHealth());
+    }
+
+    /** Multiplier on this unit's arrows and bolts from its rank. */
+    public double rangedBonus() {
+        return 1.0 + com.warfront.army.Veterancy.bonus(getRank());
     }
 
     /** Well Fed units hold their nerve 10% better. */
@@ -696,6 +826,11 @@ public class SoldierEntity extends PathfinderMob {
 
     @Override
     public void aiStep() {
+        if (isFallen()) {
+            if (!level().isClientSide && level().getGameTime() >= fallenUntil) giveUpWaiting();
+            super.aiStep();
+            return;
+        }
         if (!level().isClientSide && race == Race.HIVE && tickCount % 40 == 0) {
             com.warfront.world.HiveAdaptation.apply(this, 60);
         }
@@ -730,7 +865,8 @@ public class SoldierEntity extends PathfinderMob {
         // Well Fed: wounds slowly close out of combat.
         if (getTarget() == null && hasEffect(WFRegistry.WELL_FED) && (tickCount / 20) % 5 == 0 && getHealth() < getMaxHealth()) heal(1f);
 
-        if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this) && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
+        if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this)
+                && !com.warfront.army.Veterancy.neverRouts(getRank()) && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
             routTicks = 120;
             setTarget(null);
             level().playSound(null, getX(), getY(), getZ(), SoundEvents.VILLAGER_HURT, SoundSource.HOSTILE, 1f, 0.8f);
@@ -859,10 +995,11 @@ public class SoldierEntity extends PathfinderMob {
     private void refreshName() {
         MinecraftServer server = level().getServer();
         String key = getFactionKey();
+        int rank = getRank();
         Component name = Component.literal("[" + Factions.displayName(server, key) + "] ")
                 .withStyle(Factions.colorOf(server, key))
                 .append(Component.literal(warlord ? race.displayName() + " Warlord"
-                        : getUnitName())
+                        : (rank > 0 ? com.warfront.army.Veterancy.TITLES[rank] + " " : "") + getUnitName())
                         .withStyle(warlord ? ChatFormatting.DARK_RED : ChatFormatting.WHITE));
         setCustomName(name);
         setCustomNameVisible(false);
@@ -894,6 +1031,7 @@ public class SoldierEntity extends PathfinderMob {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        if (isFallen() && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) return false;
         if (!level().isClientSide && race == Race.ELF && getRole() == SoldierRole.CHAMPION
                 && source.getEntity() != null && !source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)
                 && random.nextFloat() < 0.3F) {
@@ -910,7 +1048,7 @@ public class SoldierEntity extends PathfinderMob {
     @Override
     public void die(DamageSource source) {
         super.die(source);
-        if (!(level() instanceof ServerLevel server)) return;
+        if (!(level() instanceof ServerLevel server) || !isDeadOrDying()) return;   // a hero fell instead
 
         float shock = getRole() == SoldierRole.CAPTAIN ? 35f : 12f;
         for (SoldierEntity ally : nearbyAllies(12, SoldierEntity.class)) {
@@ -940,6 +1078,11 @@ public class SoldierEntity extends PathfinderMob {
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (!isOwnedBy(player)) return super.mobInteract(player, hand);
         if (level().isClientSide) return InteractionResult.SUCCESS;
+        if (isFallen()) {
+            revive();
+            player.displayClientMessage(Component.literal("Your " + getUnitName() + " gets back on its feet.").withStyle(ChatFormatting.GREEN), true);
+            return InteractionResult.CONSUME;
+        }
 
         ItemStack held = player.getItemInHand(hand);
         if (!getRole().posted() && player.isShiftKeyDown() && held.isEmpty()) {
@@ -1034,6 +1177,8 @@ public class SoldierEntity extends PathfinderMob {
         tag.putInt("Formation", formation.ordinal());
         tag.putInt("Tier", tier);
         tag.putFloat("Morale", morale);
+        tag.putInt("Xp", xp);
+        if (isFallen()) tag.putLong("FallenUntil", fallenUntil);
         tag.putInt("Given", givenMask);
         tag.putBoolean("Configured", configured);
         tag.putBoolean("Warlord", warlord);
@@ -1064,6 +1209,12 @@ public class SoldierEntity extends PathfinderMob {
         formation = Formation.byOrdinal(tag.getInt("Formation"));
         tier = tag.getInt("Tier");
         morale = tag.contains("Morale") ? tag.getFloat("Morale") : 100f;
+        xp = tag.getInt("Xp");
+        if (tag.contains("FallenUntil")) {
+            entityData.set(DATA_FALLEN, true);
+            fallenUntil = tag.getLong("FallenUntil");
+        }
+        entityData.set(DATA_RANK, com.warfront.army.Veterancy.ranks(getRole()) ? com.warfront.army.Veterancy.rankFor(xp) : 0);
         givenMask = tag.getInt("Given");
         configured = tag.getBoolean("Configured");
         warlord = tag.getBoolean("Warlord");

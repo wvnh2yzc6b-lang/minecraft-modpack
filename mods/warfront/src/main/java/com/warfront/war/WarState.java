@@ -125,6 +125,48 @@ public class WarState extends SavedData {
         }
     }
 
+    /** A hero carried from the field, waiting to be summoned again at half cost. */
+    public record Returning(com.warfront.army.SoldierRole role, com.warfront.faction.Race race, int xp, long readyAt) {
+        CompoundTag save() {
+            CompoundTag t = new CompoundTag();
+            t.putString("Role", role.name());
+            t.putString("Race", race.id());
+            t.putInt("Xp", xp);
+            t.putLong("Ready", readyAt);
+            return t;
+        }
+
+        @Nullable
+        static Returning load(CompoundTag t) {
+            try {
+                com.warfront.faction.Race r = com.warfront.faction.Race.byId(t.getString("Race"));
+                return new Returning(com.warfront.army.SoldierRole.valueOf(t.getString("Role")),
+                        r == null ? com.warfront.faction.Race.HUMAN : r, t.getInt("Xp"), t.getLong("Ready"));
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        }
+    }
+
+    private final Map<UUID, java.util.List<Returning>> returning = new HashMap<>();
+
+    public java.util.List<Returning> returning(UUID player) {
+        return returning.getOrDefault(player, java.util.List.of());
+    }
+
+    public void addReturning(UUID player, Returning hero) {
+        returning.computeIfAbsent(player, k -> new java.util.ArrayList<>()).add(hero);
+        setDirty();
+    }
+
+    @Nullable
+    public Returning takeReturning(UUID player, int index) {
+        java.util.List<Returning> list = returning.get(player);
+        if (list == null || index < 0 || index >= list.size()) return null;
+        setDirty();
+        return list.remove(index);
+    }
+
     private Preset preset = Preset.NORMAL;
     private boolean presetChosen;
     /** Test mode: the grace period is over. */
@@ -175,6 +217,13 @@ public class WarState extends SavedData {
             list.add(t);
         });
         tag.put("Clocks", list);
+        ListTag heroes = new ListTag();
+        returning.forEach((id, l) -> l.forEach(r -> {
+            CompoundTag t = r.save();
+            t.putUUID("Player", id);
+            heroes.add(t);
+        }));
+        tag.put("Returning", heroes);
         return tag;
     }
 
@@ -187,6 +236,11 @@ public class WarState extends SavedData {
         for (Tag t : tag.getList("Clocks", Tag.TAG_COMPOUND)) {
             CompoundTag c = (CompoundTag) t;
             if (c.hasUUID("Player")) s.clocks.put(c.getUUID("Player"), Clock.load(c));
+        }
+        for (Tag t : tag.getList("Returning", Tag.TAG_COMPOUND)) {
+            CompoundTag c = (CompoundTag) t;
+            Returning r = Returning.load(c);
+            if (r != null && c.hasUUID("Player")) s.returning.computeIfAbsent(c.getUUID("Player"), k -> new java.util.ArrayList<>()).add(r);
         }
         return s;
     }

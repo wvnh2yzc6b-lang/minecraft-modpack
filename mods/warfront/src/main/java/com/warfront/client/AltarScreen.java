@@ -57,6 +57,21 @@ public class AltarScreen extends Screen {
             b.active = creative || cost <= data.mana();
             addRenderableWidget(b);
         }
+        // Returning heroes: half cost once they've recovered.
+        int heroTop = top + rows * (BUTTON_H + GAP) + 14;
+        for (int i = 0; i < data.heroNames().size(); i++) {
+            int index = i;
+            int cost = data.heroCosts().get(i), wait = data.heroWait().get(i);
+            String label = data.heroNames().get(i) + "  ·  " + cost + (wait > 0 ? "  (" + wait / 60 + ":" + String.format("%02d", wait % 60) + ")" : "");
+            Button b = Button.builder(Component.literal(label),
+                            btn -> PacketDistributor.sendToServer(new com.warfront.network.AltarReturnPayload(data.pos(), index)))
+                    .bounds(left + (i % 2) * (BUTTON_W + GAP), heroTop + (i / 2) * (BUTTON_H + GAP), BUTTON_W, BUTTON_H)
+                    .tooltip(Tooltip.create(Component.literal(wait > 0 ? "Still recovering. Ready in " + wait / 60 + ":"
+                            + String.format("%02d", wait % 60) + "." : "A returning hero, with its rank. Half cost: " + cost + " mana.")))
+                    .build();
+            b.active = wait <= 0 && (creative || cost <= data.mana());
+            addRenderableWidget(b);
+        }
     }
 
     private int visible() {
@@ -73,6 +88,10 @@ public class AltarScreen extends Screen {
         g.drawCenteredString(font, title, width / 2, top, 0xE2B55A);
         if (data.missing().isEmpty()) {
             g.drawCenteredString(font, Component.literal("Mana in reach: " + (int) data.mana()), width / 2, top + 14, 0x7FD8FF);
+            if (!data.heroNames().isEmpty()) {
+                int heroLabel = height / 2 - (rows * (BUTTON_H + GAP)) / 2 + 10 + rows * (BUTTON_H + GAP) + 3;
+                g.drawCenteredString(font, Component.literal("Returning heroes"), width / 2, heroLabel, 0xE2B55A);
+            }
         } else {
             g.drawCenteredString(font, Component.literal("This altar is not complete."), width / 2, top + 16, 0xFF8080);
             List<FormattedCharSequence> lines = font.split(Component.literal(data.missing()), Math.min(320, width - 40));

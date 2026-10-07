@@ -51,6 +51,7 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
                 ctx.getModelManager()));
         this.addLayer(new RoleGearLayer(this, ctx.getModelSet()));
+        this.addLayer(new RankLayer(this, ctx.getModelSet()));
     }
 
     private CreatureRenderer<?> creatureFor(SoldierEntity entity) {
@@ -61,12 +62,17 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
     @Override
     public void render(SoldierEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight) {
-        CreatureRenderer<?> creature = creatureFor(entity);
-        if (creature != null) {
-            creature.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-            return;
+        boolean fallen = entity.isFallen();
+        if (fallen) {
+            // A fallen hero lies on its side, waiting for its commander.
+            poseStack.pushPose();
+            poseStack.translate(0.0, 0.25, 0.0);
+            poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(90.0F));
         }
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        CreatureRenderer<?> creature = creatureFor(entity);
+        if (creature != null) creature.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        else super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        if (fallen) poseStack.popPose();
     }
 
     @Override

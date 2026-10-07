@@ -9,6 +9,10 @@ public final class WFConfig {
     public static final ModConfigSpec.IntValue BEAST_LIMIT;
     public static final ModConfigSpec.BooleanValue FRIENDLY_FIRE;
     public static final ModConfigSpec.BooleanValue STARTER_KIT;
+    public static final ModConfigSpec.IntValue[] RANK_XP = new ModConfigSpec.IntValue[4];
+    public static final ModConfigSpec.DoubleValue RANK_BONUS;
+    public static final ModConfigSpec.IntValue FALL_WINDOW;
+    public static final ModConfigSpec.IntValue HERO_RETURN;
 
     public static final ModConfigSpec.BooleanValue WARBANDS_ENABLED;
     public static final ModConfigSpec.IntValue WARBAND_INTERVAL;
@@ -57,6 +61,18 @@ public final class WFConfig {
                 .define("friendlyFire", false);
         STARTER_KIT = b.comment("Give new players a Commander's Baton and a few recruit contracts.")
                 .define("starterKit", true);
+        String[] ranks = {"regular", "veteran", "elite", "legend"};
+        int[] xp = {100, 300, 700, 1500};
+        for (int i = 0; i < 4; i++) {
+            RANK_XP[i] = b.comment(i == 0 ? "XP a battle unit needs for each rank. Kills give the victim's max health / 2; a won siege wave 25." : "")
+                    .defineInRange(ranks[i] + "Xp", xp[i], 1, 1_000_000);
+        }
+        RANK_BONUS = b.comment("Extra max health and attack damage per rank (0.1 = +10% per rank, +40% at Legend).")
+                .defineInRange("rankBonus", 0.1, 0.0, 2.0);
+        FALL_WINDOW = b.comment("Seconds a fallen Captain, Champion or war beast waits for its commander to revive it.")
+                .defineInRange("fallenSeconds", 60, 5, 3600);
+        HERO_RETURN = b.comment("Seconds before a hero that wasn't revived can be summoned again (at half cost).")
+                .defineInRange("heroReturnSeconds", 300, 0, 86400);
         b.pop();
 
         b.push("warbands");

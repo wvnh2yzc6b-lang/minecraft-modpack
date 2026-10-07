@@ -26,11 +26,13 @@ public final class ModEvents {
 
     @SubscribeEvent
     public static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar("1");
+        var registrar = event.registrar("2");
         registrar.playToClient(com.warfront.network.AltarOpenPayload.TYPE, com.warfront.network.AltarOpenPayload.STREAM_CODEC,
                 com.warfront.network.AltarOpenPayload::handle);
         registrar.playToServer(com.warfront.network.AltarSummonPayload.TYPE, com.warfront.network.AltarSummonPayload.STREAM_CODEC,
                 com.warfront.network.AltarSummonPayload::handle);
+        registrar.playToServer(com.warfront.network.AltarReturnPayload.TYPE, com.warfront.network.AltarReturnPayload.STREAM_CODEC,
+                com.warfront.network.AltarReturnPayload::handle);
         registrar.playToClient(com.warfront.network.RacePayload.TYPE, com.warfront.network.RacePayload.STREAM_CODEC,
                 com.warfront.network.RacePayload::handle);
         registrar.playToClient(com.warfront.network.AdvisorLinePayload.TYPE, com.warfront.network.AdvisorLinePayload.STREAM_CODEC,

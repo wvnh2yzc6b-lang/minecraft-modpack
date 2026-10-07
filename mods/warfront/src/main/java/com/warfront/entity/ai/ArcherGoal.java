@@ -108,6 +108,7 @@ public class ArcherGoal extends Goal {
                         soldier.getEyeY() - 0.3, soldier.getZ(), 8, 0.2, 0.2, 0.2, 0.02);
             }
         }
+        arrow.setBaseDamage(arrow.getBaseDamage() * soldier.rangedBonus());
         soldier.level().addFreshEntity(arrow);
         soldier.playSound(!spitter() ? SoundEvents.SKELETON_SHOOT
                         : soldier.getRace() == Race.HIVE ? SoundEvents.LLAMA_SPIT : SoundEvents.BLAZE_SHOOT, 1.0F, 1.0F / (soldier.getRandom().nextFloat() * 0.4F + 0.8F));

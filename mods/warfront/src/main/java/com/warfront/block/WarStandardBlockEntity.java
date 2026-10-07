@@ -304,6 +304,12 @@ public class WarStandardBlockEntity extends BlockEntity {
         if (owner != null && level.getServer().getPlayerList().getPlayer(owner) instanceof ServerPlayer p) {
             com.warfront.advisor.Advisor.complete(p, com.warfront.advisor.Advisor.Step.RAID);
         }
+        // Defenders who saw the wave through earn their XP.
+        for (SoldierEntity s : level.getEntitiesOfClass(SoldierEntity.class, new AABB(worldPosition).inflate(BAR_RANGE / 2),
+                s -> s.isAlive() && s.getOwnerUUID() != null && com.warfront.faction.Factions.relation(level.getServer(),
+                        factionKey(level.getServer()), s.getFactionKey()) == com.warfront.faction.Relation.ALLY)) {
+            s.addXp(com.warfront.army.Veterancy.WAVE_XP);
+        }
         int marks = 4 + wave * 2;
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.WAR_MARK.get(), marks));
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.MANA_SHARD.get(), 2 + wave));

@@ -213,8 +213,15 @@ public final class GameEvents {
     public static void onDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
         LivingEntity victim = event.getEntity();
         if (victim.level().isClientSide) return;
+        if (victim instanceof SoldierEntity hero && hero.tryFall(event.getSource())) {
+            event.setCanceled(true);
+            return;
+        }
         if (event.getSource().getEntity() instanceof LivingEntity killer && Race.of(killer) == Race.DEMON) {
             Souls.harvest(killer, victim);
+        }
+        if (event.getSource().getEntity() instanceof SoldierEntity killer && killer != victim) {
+            killer.addXp(com.warfront.army.Veterancy.killXp(victim.getMaxHealth()));
         }
     }
 

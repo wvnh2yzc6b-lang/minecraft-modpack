@@ -88,7 +88,8 @@ public final class TestActions {
         String b = arg(args, 1);
         try {
             return switch (a) {
-                case "spawn" -> spawn(player, Race.byId(b), role(arg(args, 2)), parseInt(arg(args, 3), 1), arg(args, 4));
+                case "spawn" -> spawn(player, Race.byId(b), role(arg(args, 2)), parseInt(arg(args, 3), 1), arg(args, 4),
+                        parseInt(arg(args, 5), 0));
                 case "beast" -> spawn(player, Race.byId(b), SoldierRole.BEAST, parseInt(arg(args, 2), 1), arg(args, 3));
                 case "army" -> army(player, b);
                 case "base" -> switch (b) {
@@ -166,6 +167,11 @@ public final class TestActions {
      * faction name makes them that faction's raiders. War beasts ignore the beast limit here.
      */
     public static Result spawn(Player player, @Nullable Race race, @Nullable SoldierRole role, int count, String side) {
+        return spawn(player, race, role, count, side, 0);
+    }
+
+    /** As above, at a veterancy rank (0 Recruit to 4 Legend). */
+    public static Result spawn(Player player, @Nullable Race race, @Nullable SoldierRole role, int count, String side, int rank) {
         if (role == null || role.retired()) return Result.fail("Unknown role.");
         count = Mth.clamp(count, 1, 10);
         ServerLevel level = (ServerLevel) player.level();
@@ -195,6 +201,7 @@ public final class TestActions {
                 s.setupAsRaider(enemy, role, warband, null, null, 1);
                 level.addFreshEntity(s);
             }
+            if (rank > 0) s.setXp(com.warfront.army.Veterancy.threshold(Math.min(rank, com.warfront.army.Veterancy.MAX_RANK)));
             made++;
         }
         return Result.ok("Spawned " + made + " " + (friendly ? r.displayName() + " " : enemy.displayName + " ")
@@ -218,8 +225,18 @@ public final class TestActions {
             case "heal" -> army.forEach(s -> s.setHealth(s.getMaxHealth()));
             case "kill" -> army.forEach(s -> s.hurt(player.damageSources().genericKill(), Float.MAX_VALUE));
             case "dismiss" -> army.forEach(SoldierEntity::discard);
+            case "revive" -> {
+                army.forEach(SoldierEntity::revive);
+                if (player.getServer() != null) {
+                    var war = com.warfront.war.WarState.get(player.getServer());
+                    var list = new ArrayList<>(war.returning(player.getUUID()));
+                    for (int i = list.size() - 1; i >= 0; i--) war.takeReturning(player.getUUID(), i);
+                    for (var r : list) war.addReturning(player.getUUID(), new com.warfront.war.WarState.Returning(r.role(), r.race(), r.xp(), 0));
+                }
+                return Result.ok("Fallen heroes revived; returning heroes are ready at the altar.");
+            }
             default -> {
-                return Result.fail("army heal|kill|dismiss");
+                return Result.fail("army heal|kill|dismiss|revive");
             }
         }
         return Result.ok(switch (what) {

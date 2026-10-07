@@ -674,6 +674,14 @@ def effect_icons():
             img.putpixel((x, y), crumb)
     save(img, "mob_effect/well_fed.png")
 
+    # Rank chevron: a light plate with a darker rim, tinted to the race's color when drawn.
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for x in range(16):
+        for y in range(16):
+            rim = x in (0, 15) or y in (0, 15)
+            img.putpixel((x, y), hexc("b0b0b0") if rim else hexc("ffffff"))
+    save(img, "entity/insignia.png")
+
 
 def lang():
     names = {

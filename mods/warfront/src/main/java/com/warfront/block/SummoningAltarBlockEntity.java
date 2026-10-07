@@ -114,8 +114,10 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         if (!missing.isEmpty()) return new Result(false, "The altar is incomplete. It needs " + String.join(" and ", missing) + ".");
 
         int max = WFConfig.MAX_ARMY_SIZE.get();
+        // Heroes waiting to return still count, so letting them fall can't get round the caps.
+        List<com.warfront.war.WarState.Returning> away = com.warfront.war.WarState.get(server.getServer()).returning(player.getUUID());
         int count = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
-                s -> s.isAlive() && s.isOwnedBy(player)).size();
+                s -> s.isAlive() && s.isOwnedBy(player)).size() + away.size();
         if (count >= max) return new Result(false, "Your army is at full strength (" + max + ").");
 
         Race race = raceOf(player);
@@ -131,7 +133,8 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         }
         if (role == SoldierRole.BEAST) {
             int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
-                    s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size();
+                    s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size()
+                    + (int) away.stream().filter(r -> r.role() == SoldierRole.BEAST).count();
             int cap = BaseLevel.beastCap(baseLevel);
             if (beasts >= cap) {
                 String next = baseLevel < BaseLevel.MAX_LEVEL && cap < WFConfig.BEAST_LIMIT.get()
@@ -147,11 +150,48 @@ public class SummoningAltarBlockEntity extends BlockEntity {
                     + ", the linked wells hold " + (int) availableMana() + ".");
         }
 
-        SoldierEntity soldier = WFRegistry.SOLDIER.get().create(level);
+        SoldierEntity soldier = spawnUnit(server, player, role, race, 0);
         if (soldier == null) return new Result(false, "The summoning failed.");
+        com.warfront.advisor.Advisor.complete(player, com.warfront.advisor.Advisor.Step.SUMMON);
+        return new Result(true, "A " + soldier.getUnitName() + " answers your summons. (" + (count + 1) + "/" + max
+                + ", -" + cost + " mana)" + (role.posted() ? " It works here; sneak + right-click it to move its post." : ""));
+    }
+
+    /** What it costs to call a returning hero back: half its usual cost. */
+    public static int returnCost(com.warfront.war.WarState.Returning hero) {
+        return Math.max(1, hero.role().manaCost(hero.race()) / 2);
+    }
+
+    /** Summons returning hero number {@code index}: ready, half cost, with its rank. */
+    public Result summonReturning(Player player, int index) {
+        if (!(level instanceof ServerLevel server)) return new Result(false, "");
+        if (!mayUse(player)) return new Result(false, "This altar belongs to another faction.");
+        if (!missing(level, worldPosition).isEmpty()) return new Result(false, "The altar is incomplete.");
+        var war = com.warfront.war.WarState.get(server.getServer());
+        List<com.warfront.war.WarState.Returning> list = war.returning(player.getUUID());
+        if (index < 0 || index >= list.size()) return new Result(false, "That hero isn't waiting any more.");
+        com.warfront.war.WarState.Returning hero = list.get(index);
+        long wait = (hero.readyAt() - level.getGameTime()) / 20;
+        if (wait > 0) return new Result(false, "Your " + UnitNames.of(hero.race(), hero.role()) + " is still recovering ("
+                + wait / 60 + ":" + String.format("%02d", wait % 60) + ").");
+        int cost = returnCost(hero);
+        if (!player.getAbilities().instabuild && !ManaNetwork.draw(level, worldPosition, factionKey(server.getServer()), cost)) {
+            return new Result(false, "Not enough mana in reach: calling it back costs " + cost + ".");
+        }
+        war.takeReturning(player.getUUID(), index);
+        SoldierEntity soldier = spawnUnit(server, player, hero.role(), hero.race(), hero.xp());
+        if (soldier == null) return new Result(false, "The summoning failed.");
+        return new Result(true, "Your " + soldier.getUnitName() + " returns to the field. (-" + cost + " mana)");
+    }
+
+    @Nullable
+    private SoldierEntity spawnUnit(ServerLevel server, Player player, SoldierRole role, Race race, int xp) {
+        SoldierEntity soldier = WFRegistry.SOLDIER.get().create(level);
+        if (soldier == null) return null;
         float yaw = player.getYRot() + 180F;
         soldier.moveTo(worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, yaw, 0F);
         soldier.setupAsRecruit(player, role, race);
+        if (xp > 0) soldier.setXp(xp);
         boolean posted = role.posted();
         if (posted) {
             level.addFreshEntity(soldier);   // join the level first so a builder can survey around it
@@ -165,12 +205,10 @@ public class SummoningAltarBlockEntity extends BlockEntity {
             level.addFreshEntity(soldier);
         }
 
-        com.warfront.advisor.Advisor.complete(player, com.warfront.advisor.Advisor.Step.SUMMON);
         server.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2,
                 worldPosition.getZ() + 0.5, 40, 0.4, 0.8, 0.4, 0.04);
         level.playSound(null, worldPosition, SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.BLOCKS, 0.9F, 1.1F);
-        return new Result(true, "A " + soldier.getUnitName() + " answers your summons. (" + (count + 1) + "/" + max
-                + ", -" + cost + " mana)" + (posted ? " It works here; sneak + right-click it to move its post." : ""));
+        return soldier;
     }
 
     @Override

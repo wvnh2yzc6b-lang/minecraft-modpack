@@ -856,4 +856,75 @@ public final class WarfrontGameTests {
             h.assertTrue(h.getBlockState(near).isAir(), "raid damage comes before other repairs");
         });
     }
+
+    // ------------------------------------------------------------------ veterancy and fallen heroes
+
+    @GameTest(template = ARENA)
+    public static void xpRaisesRankHealthAndDamage(GameTestHelper h) {
+        Player owner = tester(h);
+        SoldierEntity s = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 4, 4);
+        float hp = s.getMaxHealth();
+        double dmg = s.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        s.addXp(com.warfront.army.Veterancy.threshold(2) - 1);
+        h.assertTrue(s.getRank() == 1, "just short of Veteran should be Regular, was " + s.getRank());
+        s.addXp(1);
+        h.assertTrue(s.getRank() == 2, "reaching the threshold should make a Veteran, was " + s.getRank());
+        double bonus = 1 + com.warfront.army.Veterancy.bonus(2);
+        h.assertTrue(Math.abs(s.getMaxHealth() - hp * bonus) < 0.6, "Veteran health should be x" + bonus + ": " + hp + " -> " + s.getMaxHealth());
+        double dmg2 = s.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        h.assertTrue(dmg2 > dmg, "Veteran damage should rise: " + dmg + " -> " + dmg2);
+        h.assertTrue(com.warfront.army.Veterancy.neverRouts(3) && !com.warfront.army.Veterancy.neverRouts(2), "Elite and Legend never rout");
+        SoldierEntity farmer = posted(h, owner, SoldierRole.FARMER, Race.HUMAN, 2, 2);
+        farmer.addXp(5000);
+        h.assertTrue(farmer.getRank() == 0, "workers don't rank");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void heroesFallAndAreRevivedButFootmenDie(GameTestHelper h) {
+        Player owner = tester(h);
+        SoldierEntity champion = recruit(h, owner, SoldierRole.CHAMPION, Race.HUMAN, 3, 4);
+        SoldierEntity footman = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 6, 4);
+        champion.hurt(h.getLevel().damageSources().generic(), 1000F);
+        h.assertTrue(champion.isAlive() && champion.isFallen() && champion.getHealth() == 1F,
+                "a Champion at lethal damage should fall, not die (alive " + champion.isAlive() + ", fallen " + champion.isFallen() + ")");
+        h.assertTrue(!champion.hurt(h.getLevel().damageSources().generic(), 5F), "a fallen hero can't be hurt");
+        champion.revive();
+        h.assertTrue(!champion.isFallen() && Math.abs(champion.getHealth() - champion.getMaxHealth() * 0.5F) < 0.01F,
+                "a revived hero gets up at half health, has " + champion.getHealth());
+        footman.hurt(h.getLevel().damageSources().generic(), 1000F);
+        h.assertTrue(!footman.isAlive(), "rank-and-file troops still die");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void unrevivedHeroReturnsAtHalfCostWithItsRank(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        owner.moveTo(h.absoluteVec(new Vec3(4.5, 2, 7.5)));
+        SummoningAltarBlockEntity altar = altar(h, new BlockPos(4, 2, 4), owner, true);
+        ManaWellBlockEntity well = well(h, new BlockPos(8, 1, 8), owner, 0F);
+        SoldierEntity captain = recruit(h, owner, SoldierRole.CAPTAIN, Race.HUMAN, 1, 7);
+        captain.setXp(com.warfront.army.Veterancy.threshold(3));
+        captain.hurt(h.getLevel().damageSources().generic(), 1000F);
+        captain.giveUpWaiting();
+        var war = com.warfront.war.WarState.get(h.getLevel().getServer());
+        var list = war.returning(owner.getUUID());
+        h.assertTrue(list.size() == 1 && list.get(0).role() == SoldierRole.CAPTAIN, "the captain should be on the returning list");
+        var hero = list.get(0);
+        war.takeReturning(owner.getUUID(), 0);
+        war.addReturning(owner.getUUID(), new com.warfront.war.WarState.Returning(hero.role(), hero.race(), hero.xp(), 0));   // ready now
+        int half = SummoningAltarBlockEntity.returnCost(hero);
+        h.assertTrue(half == SoldierRole.CAPTAIN.manaCost(Race.HUMAN) / 2, "a returning hero costs half");
+        h.runAfterDelay(2, () -> {
+            well.setMana(100F);
+            var r = altar.summonReturning(owner, 0);
+            h.assertTrue(r.ok(), "the returning hero should be summoned: " + r.message());
+            h.assertTrue(Math.abs(well.getMana() - (100F - half)) < 0.01F, "it should cost " + half + ", well has " + well.getMana());
+            SoldierEntity back = h.getLevel().getEntitiesOfClass(SoldierEntity.class, new net.minecraft.world.phys.AABB(h.absolutePos(new BlockPos(4, 3, 4))).inflate(2),
+                    e -> e.isOwnedBy(owner) && e.getRole() == SoldierRole.CAPTAIN).stream().findFirst().orElse(null);
+            h.assertTrue(back != null && back.getRank() == 3, "it should come back an Elite, rank " + (back == null ? "none" : back.getRank()));
+            h.assertTrue(war.returning(owner.getUUID()).isEmpty(), "the returning list should be empty");
+            h.succeed();
+        });
+    }
 }

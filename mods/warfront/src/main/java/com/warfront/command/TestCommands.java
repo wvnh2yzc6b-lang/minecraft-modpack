@@ -54,11 +54,15 @@ public final class TestCommands {
                                                 .executes(ctx -> run(ctx, "spawn", str(ctx, "race"), str(ctx, "role"), num(ctx, "count")))
                                                 .then(Commands.argument("side", StringArgumentType.word()).suggests(SIDES)
                                                         .executes(ctx -> run(ctx, "spawn", str(ctx, "race"), str(ctx, "role"),
-                                                                num(ctx, "count"), str(ctx, "side"))))))))
+                                                                num(ctx, "count"), str(ctx, "side")))
+                                                        .then(Commands.argument("rank", IntegerArgumentType.integer(0, 4))
+                                                                .executes(ctx -> run(ctx, "spawn", str(ctx, "race"), str(ctx, "role"),
+                                                                        num(ctx, "count"), str(ctx, "side"), num(ctx, "rank")))))))))
                 .then(Commands.literal("army")
                         .then(simple("heal", "army", "heal"))
                         .then(simple("kill", "army", "kill"))
-                        .then(simple("dismiss", "army", "dismiss")))
+                        .then(simple("dismiss", "army", "dismiss"))
+                        .then(simple("revive", "army", "revive")))
                 .then(Commands.literal("base")
                         .then(Commands.literal("level").then(Commands.argument("level", IntegerArgumentType.integer(0, 5))
                                 .executes(ctx -> run(ctx, "base", "level", num(ctx, "level")))))
@@ -139,8 +143,8 @@ public final class TestCommands {
         String[] lines = {
                 "== Warfront test mode ==",
                 "/wftest on|off  then press F8 for the Test Panel",
-                "/wftest spawn <race> <role> [count] [friendly|faction]",
-                "/wftest army heal|kill|dismiss",
+                "/wftest spawn <race> <role> [count] [friendly|faction] [rank 0-4]",
+                "/wftest army heal|kill|dismiss|revive",
                 "/wftest base level <0-5>|fill|infinite on|off|starter|food fill|empty",
                 "/wftest siege start [faction]|wave <n>|pause|resume|end",
                 "/wftest player race <race>|fill|day|night|clear|god|kit",

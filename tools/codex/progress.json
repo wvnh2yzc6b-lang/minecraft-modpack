@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Veterancy and fallen heroes",
+      "detail": "Battle units now earn XP (kills give half the victim's max health, a won siege wave 25) and climb five ranks: Recruit, Regular (100), Veteran (300), Elite (700), Legend (1500). Each rank adds 10% health and damage (arrows too), Elite and Legend never rout, and the unit's name shows its rank. Ranks show on the body: Regular wears padded leather in the race's color, Veteran chain, Elite full plate, Legend gilded plate, plus one race-colored chevron per rank on the shoulder (humanoid units; Hive and imp plating still to come). Your Captains, Champions and war beasts no longer die: they fall and wait 60 seconds for you to right-click them back up at half health. Leave them and they're carried off, then after 5 minutes you can summon them again at any altar for half cost, rank kept. They still count against your army and beast caps meanwhile. Raiders' heroes still die, and on Warlord difficulty so do yours. Test Panel: spawn at any rank, and Revive heroes."
+    },
+    {
+      "status": "done",
       "title": "Daily loop, part 1: the Mess Hall",
       "detail": "A new block, the Mess Hall (54 slots, food only: anything edible, other mods' food too). Every morning each battle unit within 32 blocks eats about 4 food points and is Well Fed until the next morning: morale holds 10% better and wounds slowly close out of combat. Hungry units just miss the bonus, nothing worse, and you get a toast. Units that were away eat when they return; workers don't eat. Farmers now carry Manabloom shards to the nearest Mana Well and food to the Mess Hall before chests. Builders repair blocks raiders broke before anything else. Right-click the hall to see how many days of food it holds. Test Panel (Base tab): fill or empty Mess Halls."
     },
@@ -49,11 +54,6 @@
     },
     {
       "status": "planned",
-      "title": "Roadmap: veterancy",
-      "detail": "Battle units climb five ranks, Recruit to Legend, from kills and surviving siege waves. Each rank adds about 10% health and damage, Elites and Legends never break and run, and you can see it: armor upgrades a tier per rank and chevrons on the shoulder count the rank. Troops lose it when they die; fallen heroes keep theirs. Queued for a build session."
-    },
-    {
-      "status": "planned",
       "title": "Roadmap: the Hive calls the Swarm",
       "detail": "The Hive gets an active race power. Kills fill a Swarm meter, twice as fast underground. At half full, call four Hive soldiers up out of the ground; or save it, and at full call up a Deepmaw. Called units fight for that battle only, then burrow away about 20 seconds after it ends, and they don't count toward your army or beast limits. With this, every race has its own power. Queued for a build session."
     },
@@ -86,11 +86,6 @@
       "status": "planned",
       "title": "Roadmap: heroes stand taller",
       "detail": "Captains will be 15% bigger and Champions 30% bigger than the soldiers of their race, so heroes stand out on the field, both yours and the enemy's. Queued for the next build session."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: mortal units, fallen heroes",
-      "detail": "Basic troops and workers die for good. Captains, Champions and war beasts fall instead: an owner can revive them on the field within about 60 seconds, or they come back at the altar after a cooldown for part of their mana cost. Not built yet."
     },
     {
       "status": "planned",
@@ -244,6 +239,9 @@
     "recallBringsFollowersHomeOncePerRaid": "Recall moves the player and following units to the War Standard, leaves holding units, and works once per attack",
     "messHallFeedsTroopsWhileItHasFood": "A Mess Hall feeds units until its food runs out, reports the hungry ones, and only takes food",
     "farmerDeliversFoodToTheMessHall": "A farmer with a full bag carries food to the Mess Hall",
-    "buildersRepairRaidDamageFirst": "With one brick, a builder rebuilds the raid-broken block before other damage"
+    "buildersRepairRaidDamageFirst": "With one brick, a builder rebuilds the raid-broken block before other damage",
+    "xpRaisesRankHealthAndDamage": "XP raises rank exactly at the threshold, with +10% health and damage per rank; Elite never routs; workers don't rank",
+    "heroesFallAndAreRevivedButFootmenDie": "A Champion at lethal damage falls instead of dying, can't be hurt while down, gets up at half health; a footman still dies",
+    "unrevivedHeroReturnsAtHalfCostWithItsRank": "A hero nobody revives goes on the returning list and is summoned again at half cost, keeping its rank"
   }
 }

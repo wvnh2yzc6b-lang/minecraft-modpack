@@ -32,6 +32,7 @@ public class TestPanelScreen extends Screen {
     private static int race;
     private static int role;
     private static int count = 1;
+    private static int rank;
     /** -1 = friendly, else an NpcFaction ordinal. */
     private static int side = -1;
     private static int baseLevel = 1;
@@ -120,14 +121,16 @@ public class TestPanelScreen extends Screen {
         cycle(0, 1, sideName, () -> side = side + 1 >= NpcFaction.values().length ? -1 : side + 1)
                 .setTooltip(Tooltip.create(Component.literal("Friendly units join your army. A faction spawns its raiders (they use the faction's race).")));
         String sideArg = side < 0 ? "friendly" : lower(NpcFaction.values()[side]);
-        send(1, 1, "Spawn", "spawn", r.id(), ro.id(), Integer.toString(count), sideArg);
+        send(1, 1, "Spawn", "spawn", r.id(), ro.id(), Integer.toString(count), sideArg, Integer.toString(rank));
         send(2, 1, "War beast", "beast", r.id(), "1", sideArg)
                 .setTooltip(Tooltip.create(Component.literal("Ignores the beast limit in test mode. Only races with a beast have a model for it.")));
         send(0, 3, "Heal all", "army", "heal");
         send(1, 3, "Kill all", "army", "kill");
         send(2, 3, "Dismiss all", "army", "dismiss");
-        coming(0, 5, "Rank", "Pick a unit's rank once veterancy is built.");
-        coming(1, 5, "Revive heroes", "Revive fallen heroes once mortal units are built.");
+        cycle(0, 5, "Rank: " + com.warfront.army.Veterancy.TITLES[rank], () -> rank = (rank + 1) % com.warfront.army.Veterancy.TITLES.length)
+                .setTooltip(Tooltip.create(Component.literal("The veterancy rank units spawn at.")));
+        send(1, 5, "Revive heroes", "army", "revive")
+                .setTooltip(Tooltip.create(Component.literal("Gets fallen heroes up, and makes returning heroes ready at the altar.")));
     }
 
     private void baseTab() {
