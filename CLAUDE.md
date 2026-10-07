@@ -1,0 +1,78 @@
+# Warfront: Age of Banners
+
+A NeoForge 1.21.1 modpack built around **Warfront**, a custom mod (in `mods/warfront/`) with playable races,
+factions, armies in formation, mana as base power, and tower defense. The owner directs the design; Claude builds
+it. The owner reads crypto/stock-style briefings: keep replies broad, short, decisive and in plain words.
+
+## Start of every session: lead with a decision
+
+The owner wants to open a session and be handed a decision right away. Before anything else:
+
+1. Read `tools/codex/needs.json` (open questions, most important first: `high`, then `medium`, then `low`) and
+   skim the top of `tools/codex/progress.json` (what was done last).
+2. In two or three lines, say where things stand: what was built last and whether CI was green.
+3. Ask the most important open question with the AskUserQuestion tool: 2 to 4 concrete options, your
+   recommendation first and marked "(Recommended)", each with a one-line consequence.
+4. Act on the answer, then offer the next open question.
+
+If the owner opens with their own request, do that instead.
+
+## The two pages the owner uses
+
+Both are generated from the repo and published as claude.ai artifacts. Republish to the **same URLs** after any
+change they cover (a new session must pass `url` and read the artifact first, or it creates a duplicate).
+
+| Page | URL | Build |
+|---|---|---|
+| Warfront Codex: progress, confirmed designs, models, systems, tests | https://claude.ai/artifact/8mbSQF2ZteBXw5VcU7Aef1 | `python3 tools/codex/build_codex.py` → `build/codex/warfront-codex.html` |
+| Design Needs: every race and role by name, open questions, settled decisions | https://claude.ai/artifact/WLp7LPGzYr36T3nPoU5fBR | `python3 tools/codex/build_needs.py` → `build/codex/design-needs.html` |
+
+Data behind them, edit these instead of the HTML:
+- `tools/codex/progress.json`: build log (newest first, current state only: fold superseded entries) and game
+  test descriptions.
+- `tools/codex/designs.json`: the Confirmed designs page (status `approved`, `review`, or `planned`).
+- `tools/codex/needs.json`: open questions, settled decisions, per race/role design status.
+- The Codex is page-based (`PAGES` in `build_codex.py`); keep it under 16 MB (repeated images are deduplicated).
+
+When the owner decides something: move it from `questions` to `settled` in `needs.json`, record art direction in
+`docs/art-reference/NOTES.md`, and add or update the design in `designs.json`.
+
+## Standing decisions (owner direction)
+
+- **Compatibility first.** Use vanilla systems other mods understand: attributes, mob effects, item/block tags,
+  NeoForge capabilities. Integrations (Iron's Spells, Ars Nouveau...) are optional; Warfront must run without them.
+  Player spell mana should come from Iron's Spells, not a third mana bar.
+- **Mana is base power**, not a player stat: wells store it, pylons extend reach (16 blocks), towers and the
+  Summoning Altar spend it. Manabloom grows shards; Mana Ore gives crystals (fuel and building material).
+- **Imps are one demon species**, used only for the Impaler (spearman) and Firecaster (archer).
+- **Workers look plain and humanoid** in every race: no horns, antennae, wings or crests.
+- **The Hive is a sculk/Warden-like cave race**: dark teal chitin, glowing cyan veins; the Swarm is black with
+  acid green. Stronger underground, weaker in sunlight; Swarm raids tunnel up; new Hive players start in a cave.
+- **War beasts** are rare altar units, up to 10 per commander (`beastLimit`), meant to grow with base level once
+  bases have levels. Hive: Deepmaw (built). Demon: Bone Stalker (reference only, not built).
+- **Player flight per race** (not built): orc jetpack/tech, angel wings, elf flight magic, human undecided;
+  demons already fly. Player models come from the owner's references, Hive first.
+- **Creatures** (later): a few fantastical creatures per race, mostly neutral.
+- Champions, captains and most soldiers have **no design yet**; they wait on the owner's references.
+
+## How to work in this repo
+
+- **References:** every image the owner sends goes to `docs/art-reference/` (crop out book text and stat blocks)
+  with design notes in `NOTES.md`, written from the picture only. Build models from them, render, and compare
+  side by side before calling a model done.
+- **Models** are generated: `tools/units.py` (imps, demon player, Hive units via `tools/hive_units.py`, worker
+  gear via `tools/worker_gear.py`) writes `UnitGeometry.java` and textures. Blocks, items, recipes, loot and race
+  skins come from `tools/generate_assets.py`. Edit the generators, then run them; don't hand-edit their output.
+  `generate_assets.py` also rewrites `mana_ore.png`, `deepslate_mana_ore.png` and `platform.nbt` with no real
+  change: `git checkout` those three afterwards.
+- **Rendering previews:** Chromium + Playwright (node, at `/opt/node22/lib/node_modules/playwright`) with three.js
+  installed from npm into the scratchpad, using `tools/codex/mcmodel.js` (the game's own cube/UV rules).
+- **Building:** the NeoForge maven is blocked from the cloud container, so Gradle can't build here. **CI is the
+  compiler and test runner**: every push runs `./gradlew build` and `runGameTestServer`
+  (`.github/workflows/build.yml`). Push, then check the run (GitHub MCP tools) and fix failures before moving on.
+- **Game tests** (`WarfrontGameTests.java`) run in parallel 9×9 arenas: archers and mobs from a neighbouring arena
+  can interfere, so assert on the thing under test (counters, state), not on a mob's health. Block entities join
+  the mana network on their first tick: wait a couple of ticks before using it.
+- **Git:** `git rm` stages immediately, so a deletion can ride along in an unrelated commit and break CI; stage
+  with explicit paths. Commit messages describe the change in plain words.
+- Work on the session's designated branch and push there; don't open PRs unless asked.

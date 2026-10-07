@@ -45,21 +45,25 @@ permanent, and it shapes both you and every soldier you recruit.
 | **Orc** | +1.5 damage, +2 health, towering. Morale breaks easily. |
 | **Demon** | Immune to fire and lava. Demon soldiers set their foes ablaze. Recruits cost 15% more mana. |
 | **Angel** | No fall damage, slow regeneration, +50% damage against undead and demons. Never rout. Recruits cost 20% more mana. |
-| **Hive** | Small, fast swarmers with less health. Never rout, hit harder in packs, and cost **40% less** mana. |
+| **Hive** | A sculk-dark cave race. Small, fast swarmers with less health. Never rout, hit harder in packs, cost **40% less** mana, and grow stronger underground (below Y=40) but weaker in sunlight. New Hive players start in a cave. |
 
-### 2. Gather mana
-Summoning troops costs **mana**. Your pool is the blue bar above the hotbar, starting at 100 max.
-* **Mana Ore** generates underground, in stone and deepslate up to Y=80. It needs an iron
-  pickaxe, and Fortune works on it. It drops **Mana Shards**.
-* **Manabloom** is a glowing crop. Its seeds drop from grass (about 5%), or you can craft them from a
-  shard and wheat seeds. Plant it on farmland, and ripe blooms drop 1 to 3 shards.
-* Right-click a shard to absorb it (+10 mana). Sneak to absorb as many as fit.
-* A **Mana Crystal** (8 shards around an amethyst shard) permanently adds +25 max mana, up to 1000.
-* Mana trickles back on its own, but only up to 20. Raiders and won waves also drop shards.
+### 2. Mana: power for your base
+Mana is base power, not a personal bar. You grow and mine it, store it in wells, and spend it on
+towers and summoning.
+* **Manabloom** is a glowing crop that grows **Mana Shards** (+10 mana each). Its seeds drop from
+  grass (about 5%), or you can craft them from a shard and wheat seeds.
+* **Mana Ore** generates underground, in stone and deepslate up to Y=80. It needs an iron pickaxe and
+  drops **Mana Crystals** (+50 mana each), which are also what wells, pylons and altars are built from.
+* A **Mana Well** stores up to 2,000 mana. Right-click it with shards or crystals (sneak for the
+  whole stack), or feed it with a hopper.
+* Wells and **Mana Pylons** each reach 16 blocks and chain together. Anything in reach of the chain
+  draws from every well on it.
+* Towers spend mana on every shot or heal, and sputter without it.
 
-### 3. Raise an army
-Use **Recruit Contracts** (paper + Mana Shard + a role item, or paper + 2 War Marks + a role item).
-Signing one costs mana, scaled by your race:
+### 3. Raise an army at a Summoning Altar
+Lay a 3×3 floor of any brick or stone-brick block, put the **Summoning Altar** in the middle, and a
+**Mana Brazier** two blocks out on each diagonal corner. Keep a filled well in reach, then
+right-click the altar to choose a unit. Its cost comes from the wells, scaled by your race:
 
 | Role | Mana | Job on the battlefield |
 |---|---|---|
@@ -70,6 +74,9 @@ Signing one costs mana, scaled by your race:
 | **Archer** | 20 | Back ranks. Fires in **synchronized volleys**, and arrows fly through your own troops. |
 | **Healer** | 30 | Stays behind the lines and tends the most wounded ally nearby. |
 | **Champion** | 60 | The race's elite, with a signature weapon and ability. |
+| **War Beast** | 150 | A huge beast, for races that have one (the Hive's Deepmaw so far). Up to 10 per commander. |
+
+The starter kit includes an altar, four braziers, a well and 24 shards.
 
 Right-click your own soldier with armor or a sword or axe to re-equip them. Empty-handed, it shows
 their health, morale and orders.
@@ -87,7 +94,7 @@ have it follow you, and again to post it where it stands.
 
 Hand a worker seeds or blocks by right-clicking it with them. Farmers and builders never fight: they
 run from enemies. Each race has its own workers (Farmhand, Grovetender, Stonemason, Gatekeeper,
-Sentry Drone...), dressed for the job; demon workers are imps.
+Sentry Drone...), in plain work clothes in their race's colors.
 
 ### 5. Command with the Commander's Baton
 * **Right-click** to cycle orders. **Follow** marches in formation behind you. **Hold the line**
@@ -131,11 +138,11 @@ walls, doors and fences**. Harder blocks take longer, and obsidian and anything 
 * Place a **War Standard** to found a stronghold. At night, while you're nearby, **sieges** come:
   waves of enemies march from a random direction, and each wave is bigger and better equipped.
   Attackers that reach the standard hack at it, and if its integrity hits zero it falls.
-* Build defenses around it:
+* Build defenses around it (each draws mana from your wells):
   * **Arrow Tower**: shoots enemies in range
   * **Arcane Spire**: erupts evoker fangs beneath enemies
   * **Healing Shrine**: heals allies around it
-* Repel a wave to earn **War Marks** (diamonds every 5th wave). Spend them on contracts and towers,
+* Repel a wave to earn **War Marks** (diamonds every 5th wave). Spend them on towers and Mana Shards,
   or trade 4 for an emerald.
 * Sound a **War Horn** near your standard to begin a **wave campaign**. These are endless,
   escalating waves with a **boss bar** that shows the wave number, enemies remaining and the
