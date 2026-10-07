@@ -50,12 +50,6 @@
   },
   "questions": [
     {
-      "topic": "Magic",
-      "priority": "high",
-      "question": "What kind of dark magic should demons have?",
-      "why": "Demons are strong in Fire magic, and you want something darker on top. Options: curses and hexes that weaken foes, soul harvesting (kills feed power), blood pacts (spend health for power), or summoning lesser demons mid-fight."
-    },
-    {
       "topic": "Units",
       "priority": "high",
       "question": "Reference images for each race's soldiers.",
@@ -129,6 +123,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Demon",
+      "answer": "Demon dark magic is Soul Harvest: every kill takes a soul (up to 10), healing 2 health and adding 2% attack damage per soul. With 10 souls the next hit unleashes a Soul Burst: +6 damage to the target and 4 to enemies within 3 blocks, spending every soul. Souls are lost on death. Works for demon players and soldiers."
+    },
     {
       "topic": "Orc",
       "answer": "Orcs build Rage by landing and taking hits (10 and 15 points); at 100 they go into a Frenzy for 8 seconds: +30% damage, +20% attack speed, +15% speed, but 15% more damage taken. Frenzied orc soldiers don't rout. Rage drains after 3 seconds out of combat. Works for orc players and soldiers."

@@ -107,6 +107,23 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void demonKillsHarvestSoulsAndBurst(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity demon = recruit(h, owner, SoldierRole.SWORDSMAN, Race.DEMON, 3, 4);
+        SoldierEntity prey = recruit(h, owner, SoldierRole.SWORDSMAN, Race.HUMAN, 5, 4);
+        double base = demon.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        for (int i = 0; i < com.warfront.combat.Souls.MAX + 2; i++) com.warfront.combat.Souls.harvest(demon, prey);
+        int souls = com.warfront.combat.Souls.count(demon);
+        double empowered = demon.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        h.assertTrue(souls == com.warfront.combat.Souls.MAX, "souls should cap at " + com.warfront.combat.Souls.MAX + ", had " + souls);
+        h.assertTrue(empowered > base, "souls should raise attack damage: " + base + " -> " + empowered);
+        float extra = com.warfront.combat.Souls.burst(demon, prey);
+        h.assertTrue(extra > 0 && com.warfront.combat.Souls.count(demon) == 0,
+                "a full harvest should burst and empty, extra " + extra + ", souls " + com.warfront.combat.Souls.count(demon));
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void elfArrowsFlyFaster(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity elf = recruit(h, owner, SoldierRole.ARCHER, Race.ELF, 4, 4);

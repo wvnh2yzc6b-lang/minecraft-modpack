@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import com.warfront.combat.Rage;
+import com.warfront.combat.Souls;
 import com.warfront.Warfront;
 import com.warfront.command.WFCommands;
 import com.warfront.config.WFConfig;
@@ -173,9 +174,22 @@ public final class GameEvents {
                 event.setAmount(event.getAmount() * bonus);
             }
             if (attackerRace == Race.ORC && living != victim) Rage.gain(living, Rage.ON_HIT);
+            if (attackerRace == Race.DEMON && direct == living && living != victim) {
+                event.setAmount(event.getAmount() + Souls.burst(living, victim));
+            }
         }
         if (victimRace == Race.ORC && attacker != null && attacker != victim) Rage.gain(victim, Rage.ON_HURT);
         if (Rage.isFrenzied(victim)) event.setAmount(event.getAmount() * 1.15F);
+    }
+
+    /** Demons take the soul of whatever they kill. */
+    @SubscribeEvent
+    public static void onDeath(net.neoforged.neoforge.event.entity.living.LivingDeathEvent event) {
+        LivingEntity victim = event.getEntity();
+        if (victim.level().isClientSide) return;
+        if (event.getSource().getEntity() instanceof LivingEntity killer && Race.of(killer) == Race.DEMON) {
+            Souls.harvest(killer, victim);
+        }
     }
 
     /** Blocks away an elf's arrow must fly to count as a long shot. */

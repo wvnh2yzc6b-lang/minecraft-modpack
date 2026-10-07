@@ -33,7 +33,7 @@ public enum Race {
             "Brutal and towering. Fighting builds rage that bursts into a Frenzy: faster, deadlier, reckless. Morale is fragile."),
     DEMON(ChatFormatting.DARK_RED,     2,   0.00,  1.0,  1,    1.00,  1.0,    true,  1.15,
             SpellSchool.FIRE, SpellSchool.HOLY,
-            "Born of hellfire. Immune to fire and lava; demon soldiers set their foes ablaze."),
+            "Born of hellfire. Immune to fire and lava; demon soldiers set their foes ablaze. Kills harvest souls that heal and empower them; a full harvest unleashes a Soul Burst."),
     ANGEL(ChatFormatting.YELLOW,       0,   0.05,  0.0,  0,    1.08,  2.0,    false, 1.2,
             SpellSchool.HOLY, SpellSchool.BLOOD,
             "Radiant and unbreakable. No fall damage, slow regeneration, +50% damage to undead and demons."),
