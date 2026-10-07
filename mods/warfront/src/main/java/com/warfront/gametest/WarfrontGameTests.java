@@ -227,8 +227,15 @@ public final class WarfrontGameTests {
                 .thenExecuteAfter(80, () -> h.assertTrue(tower.actions() == 0,
                         "a tower with no mana should not fire, but it fired " + tower.actions() + " times"))
                 .thenExecute(() -> well.setMana(50F))
-                .thenWaitUntil(() -> h.assertTrue(tower.actions() > 0 && well.getMana() < 50F,
-                        "a powered tower should draw mana to fire"))
+                .thenWaitUntil(() -> {
+                    BlockPos abs = h.absolutePos(towerPos);
+                    String key = tower.factionKey(h.getLevel().getServer());
+                    h.assertTrue(tower.actions() > 0 && well.getMana() < 50F, "a powered tower should draw mana to fire"
+                            + " (shots " + tower.actions() + ", well " + well.getMana() + ", in reach "
+                            + com.warfront.mana.ManaNetwork.available(h.getLevel(), abs, key) + ", key " + key
+                            + ", well key " + well.factionKey(h.getLevel().getServer()) + ", husk alive " + husk.isAlive()
+                            + " at " + husk.blockPosition().subtract(abs) + ")");
+                })
                 .thenSucceed();
     }
 
