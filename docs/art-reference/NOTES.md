@@ -32,6 +32,18 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - Impaler: rugged and sharper, with some armor. Firecaster: a magical look. Imps are low tier, so
   keep it modest.
 
+## Hive: spearman (Lancer-Drone) - `hive-spearman.png`
+- The Hive's spearman. Picture only; ignore the book text.
+- **Build:** a lean, upright insect-humanoid about player height, with long thin limbs and a narrow waist.
+- **Arms:** four arms. The upper pair holds the polearm; the lower pair holds a small throwing blade.
+- **Head:** a smooth, narrow ant-like head with large faceted green eyes, small mandibles and two long, thin,
+  banded antennae sweeping back.
+- **Legs:** digitigrade, bending backward, with small spikes on the shins and heels.
+- **Weapon:** a long two-handed polearm with a blade at each end (a gythka), plus a three-pointed throwing blade.
+- **Gear:** a ragged purple and magenta shoulder wrap and a short straw-and-grass skirt. Otherwise bare chitin.
+- **Colors:** orange to rust chitin, with darker segment joints. Should shift toward the Hive's sculk look if we
+  recolor the Hive, keeping the green eyes.
+
 ## Hive: beast unit - `hive-beast.png`
 - A Hive war beast, not the player character. Look at the picture only; ignore the book text.
 - **Size:** large, well above player height. It stands upright on its rear legs, hunched forward.

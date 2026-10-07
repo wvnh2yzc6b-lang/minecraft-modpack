@@ -20,6 +20,10 @@
     "*/guard": {
       "status": "partial",
       "note": "Plain work clothes are done. The body underneath is still the basic race skin."
+    },
+    "hive/spearman": {
+      "status": "partial",
+      "note": "Reference received: a four-armed ant-warrior with a double-bladed polearm. Model not built yet."
     }
   },
   "default_note": "Placeholder: the basic race skin plus held gear. Needs a look.",
@@ -134,6 +138,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Hive",
+      "answer": "The Hive spearman (Lancer-Drone) follows your reference: a four-armed ant-warrior with a double-bladed polearm."
+    },
     {
       "topic": "Hive",
       "answer": "The Hive gets a large burrowing beast unit based on your reference (hive-beast.png). It's a unit, not the player character."
