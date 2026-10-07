@@ -218,7 +218,7 @@ public final class WarfrontGameTests {
         TowerBlockEntity tower = (TowerBlockEntity) h.getBlockEntity(towerPos);
         tower.setOwner(owner.getUUID());
         ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 7), owner, 0F);
-        Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 4));
+        Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 2, 4));
         husk.setPersistenceRequired();
         // Archers in neighbouring test arenas may shoot this husk too: keep it alive so the tower always has a target.
         husk.setInvulnerable(true);
@@ -233,7 +233,7 @@ public final class WarfrontGameTests {
                     h.assertTrue(tower.actions() > 0 && well.getMana() < 50F, "a powered tower should draw mana to fire"
                             + " (shots " + tower.actions() + ", well " + well.getMana() + ", in reach "
                             + com.warfront.mana.ManaNetwork.available(h.getLevel(), abs, key) + ", key " + key
-                            + ", well key " + well.factionKey(h.getLevel().getServer()) + ", husk alive " + husk.isAlive()
+                            + ", well key " + well.factionKey(h.getLevel().getServer()) + ", saw target " + tower.sawTarget() + ", husk alive " + husk.isAlive()
                             + " at " + husk.blockPosition().subtract(abs) + ")");
                 })
                 .thenSucceed();

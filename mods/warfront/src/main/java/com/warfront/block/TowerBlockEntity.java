@@ -40,6 +40,8 @@ public class TowerBlockEntity extends BlockEntity {
     private int cooldown;
     /** How many times this tower has fired or healed since it loaded. */
     private int actions;
+    /** Whether the last check found an enemy to shoot at; for diagnostics. */
+    private boolean sawTarget;
 
     public TowerBlockEntity(BlockPos pos, BlockState state) {
         super(WFRegistry.TOWER_BE.get(), pos, state);
@@ -52,6 +54,10 @@ public class TowerBlockEntity extends BlockEntity {
 
     public int actions() {
         return actions;
+    }
+
+    public boolean sawTarget() {
+        return sawTarget;
     }
 
     /** The faction this tower fights for. */
@@ -74,6 +80,7 @@ public class TowerBlockEntity extends BlockEntity {
         switch (type) {
             case ARROW -> {
                 LivingEntity target = findEnemy(server, key, eye, box, range);
+                tower.sawTarget = target != null;
                 if (target != null && power(server, pos, key, type)) {
                     shootArrow(server, key, eye, target);
                     tower.actions++;
