@@ -1,0 +1,72 @@
+{
+  "about": "Build queue. Work the 'ready' items top to bottom without re-asking the owner; they are decided. 'blocked' items wait on what 'blocked_on' says. When an item is done, delete it here and add a 'done' entry to progress.json (replacing its 'planned' entry if it has one).",
+  "updated": "2026-10-07",
+  "items": [
+    {
+      "id": "fallen-heroes",
+      "status": "ready",
+      "title": "Mortal units, fallen heroes",
+      "decided": "Owner, 2026-10-07: units are mortal; heroes fall and can be revived.",
+      "spec": [
+        "Basic troops and workers (every role except CAPTAIN, CHAMPION, BEAST) die for good, as now.",
+        "Player-owned Captains, Champions and war beasts don't die: at lethal damage they fall instead (cancel the death, health to 1, a FALLEN state synced to the client so they lie down; raiders' heroes still die).",
+        "While fallen: no AI or attacks, untargetable by enemies, can't be hurt; the owner sees a chat line saying where it fell. Window: 60 seconds (config).",
+        "Owner right-clicks a fallen hero within the window: it gets up at 50% health, with a short sound and particle cue.",
+        "Window runs out: the hero leaves the world and goes on its owner's 'returning heroes' list (a player attachment: role, race, tier, ready time). After 5 minutes (config) the owner can re-summon it at any of their altars for 50% of its mana cost; the altar menu shows returning heroes with a countdown.",
+        "Returning heroes still count toward beastLimit and the army cap, so they can't be dodged by letting heroes fall.",
+        "Game tests: a Champion at lethal damage falls instead of dying; a fallen hero is revived by its owner at half health; an expired hero lands on the returning list and is summoned at half cost; a Footman still dies."
+      ]
+    },
+    {
+      "id": "glider-model",
+      "status": "ready",
+      "title": "Mana Glider: visible wing on the player's back",
+      "decided": "Owner approved the glider; the item works but nothing shows on the back yet.",
+      "spec": [
+        "A generated model (tools/units.py): a swept blue sailcloth wing on a wooden frame with a mana crystal at the nose, matching the item icon.",
+        "Render layer on players wearing the Mana Glider: folded flat on the back on the ground, spread wide while gliding, with a blend between the two.",
+        "Render previews (folded, gliding, from behind and the side), compare against the item icon, add the render to the Codex progress entry."
+      ]
+    },
+    {
+      "id": "codex-workers",
+      "status": "ready",
+      "title": "Codex worker viewer: drop guards, add goblins",
+      "decided": "Follows from the guard-duty and goblin changes.",
+      "spec": [
+        "build_codex.py still lists guard gear and reads the guard name (names[9]) per race; show farmer and builder only.",
+        "Show the orc farmer and builder as goblins (goblin skin + gear_*_goblin), with their names.",
+        "Re-render the 'workers for every race' shot without guards and with the goblins."
+      ]
+    },
+    {
+      "id": "siege-outposts",
+      "status": "blocked",
+      "blocked_on": "Owner's answers to the 'Siege outposts' question in needs.json (which waves, size, pressure, raid chest art).",
+      "title": "Siege outposts and the raid chest",
+      "spec": [
+        "Some siege waves build a temporary enemy outpost nearby; the siege can't be won while it stands.",
+        "At its heart, a large raid chest with custom art (from the owner's reference). Loot it, break it, and the whole outpost despawns.",
+        "Proposed defaults if the owner accepts them: outposts on boss waves (every 5th) plus a small chance from wave 8; a camp (tents, palisade, watchtower) below wave 10, a small fort from wave 10; the outpost sends a few raiders every couple of minutes until taken."
+      ]
+    },
+    {
+      "id": "race-flight",
+      "status": "blocked",
+      "blocked_on": "Owner decisions (a good brainstorm topic): how the orc jetpack, angel wings and elf flight magic should feel and what they cost.",
+      "title": "Flight for orcs, angels and elves",
+      "spec": [
+        "Settled direction only: orcs fly with a jetpack or similar tech, angels with wings, elves with flight magic. Humans have the Mana Glider; demons fly on their wings."
+      ]
+    },
+    {
+      "id": "art-driven-models",
+      "status": "blocked",
+      "blocked_on": "Owner's reference images (see the high-priority questions in needs.json).",
+      "title": "Models from references: Hive player, soldiers, Champions, sizes",
+      "spec": [
+        "Hive player first, then each race's soldiers, the seven Champions, and per-unit size and silhouette."
+      ]
+    }
+  ]
+}

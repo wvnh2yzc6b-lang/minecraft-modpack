@@ -29,6 +29,19 @@ opening without its own request) means: run this routine. Before anything else:
 
 If the owner opens with their own request, do that instead.
 
+**Build queue first.** `tools/codex/backlog.json` holds decided work in order. If it has `ready` items, step 3 is
+replaced by: say what's queued in a line, then build the ready items top to bottom without re-asking (they are
+decided), pushing and checking CI after each. Ask the owner only about `blocked` items, or when a spec is unclear.
+When an item is done, remove it from the backlog and log it in `progress.json`.
+
+## Brainstorm sessions
+
+When the owner says the session is for **brainstorming** (or "just ideas"), stay in conversation: no code, no
+models, no designs, and nothing moves into `settled`, `designs.json` or the backlog. Help widen and sharpen ideas
+(ask questions, offer options, point out how an idea interacts with existing systems), and record each idea in
+`tools/codex/ideas.json` in the owner's words. Push `ideas.json` at the end (and on "save progress"). Ideas only
+become questions or backlog items when the owner promotes them in a later session.
+
 **Unfinished work.** Only what is pushed to GitHub survives a session; the container is thrown away. Push after
 every step. When the owner says "save progress" (or is about to switch sessions), push what you have even if it is
 half-done, and add an entry with `"status": "progress"` at the top of the `log` in `tools/codex/progress.json`
