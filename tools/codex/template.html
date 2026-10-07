@@ -149,6 +149,27 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
   .plate { justify-items: center; }
 }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+/* pages */
+nav.pages { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; gap: 6px;
+  padding-block: 12px; background: var(--bg); border-bottom: 1px solid var(--line); }
+nav.pages a { font: 500 0.92rem var(--body); color: var(--ink); text-decoration: none; padding: 6px 12px; border: 1px solid var(--line);
+  border-radius: 4px; background: var(--surface); }
+nav.pages a[aria-current="page"] { border-color: var(--accent); color: var(--accent); background: var(--plate); font-weight: 700; }
+nav.pages a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.page-intro { padding-block: 28px 0; color: var(--muted); max-width: 70ch; }
+.pager { display: flex; justify-content: space-between; gap: 12px; margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--line); }
+.pager a { color: var(--accent); text-decoration: none; font-weight: 600; }
+/* confirmed designs */
+.designs { display: grid; gap: 18px; }
+.design { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.design > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.design .race { font: 600 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.design .pics { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.design figure { margin: 0; display: grid; gap: 4px; align-content: start; }
+.design figure img { width: 100%; height: auto; max-height: 380px; object-fit: contain; border-radius: 4px; border: 1px solid var(--line); background: var(--plate); }
+.design figcaption { font-size: 0.82rem; color: var(--muted); }
+.design ul { margin: 0; padding-left: 1.15em; display: grid; gap: 4px; }
+.status.review { color: var(--accent); }
 </style>
 
 <div class="wrap">
@@ -159,13 +180,7 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
   <div class="tally">%%TALLY%%</div>
 </header>
 
-<nav class="toc" aria-label="Contents">
-  <a href="#progress">Progress</a><a href="#models">3D models</a><a href="#demon">Demon player</a><a href="#imps">Imps</a><a href="#workers">Workers</a><a href="#skins">Race skins</a><a href="#foes">Enemy skins</a><a href="#textures">Textures</a>
-  <a href="#races">Races</a><a href="#roles">Soldiers</a><a href="#command">Command</a>
-  <a href="#mana">Mana</a><a href="#factions">Factions</a><a href="#defense">Tower defense</a>
-  <a href="#breach">Breaching</a><a href="#items">Items &amp; recipes</a><a href="#commands">Commands</a>
-  <a href="#config">Config</a><a href="#pack">Modpack</a><a href="#testing">Testing</a><a href="#gaps">Open items</a>
-</nav>
+<nav class="pages" aria-label="Codex pages">%%PAGENAV%%</nav>
 
 <section id="progress">
   <header>
@@ -228,6 +243,28 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
   </div>
   <div class="shots">
 %%DEMON_SHOTS%%
+  </div>
+</section>
+
+<section id="hive">
+  <header>
+    <span class="eyebrow">The cave race</span>
+    <h2>The Hive</h2>
+    <p>The Hive is sculk-dark: deep teal chitin threaded with glowing cyan veins, after the Warden and the deep dark. The Swarm, its wild kin and enemy, is black with acid-green veins. Spearmen are <b>Lancer-Drones</b>, four-armed ant warriors with a double-bladed polearm. The <b>Deepmaw</b> is the Hive's war beast. Hive soldiers and players gain Strength and Speed below Y=40 or anywhere the sky can't reach, and are weakened in direct sunlight. Swarm raids tunnel up 14 blocks from their target. A new Hive player starts in a cave that becomes their spawn point.</p>
+  </header>
+  <div class="shots">
+%%HIVE_SHOTS%%
+  </div>
+</section>
+
+<section id="designs">
+  <header>
+    <span class="eyebrow">What you've signed off on</span>
+    <h2>Confirmed designs</h2>
+    <p>Every design you've approved, with the reference it came from and how it looks in the mod now. <b>Approved</b> designs are settled. <b>Built, awaiting your review</b> means the model exists but you haven't seen it yet. <b>Approved, not built</b> means the direction is set and the model comes later.</p>
+  </header>
+  <div class="designs">
+%%DESIGNS%%
   </div>
 </section>
 
@@ -655,6 +692,8 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
   </div>
 </section>
 
+<nav class="pager" id="pager" aria-label="Previous and next page"></nav>
+
 <footer>Generated %%UPDATED%% by <code>tools/codex/build_codex.py</code> from the repository. Source: <code>wvnh2yzc6b-lang/minecraft-modpack</code>, branch <code>claude/intelligent-pascal-1crv6c</code>. Mod code is in <code>mods/warfront/</code>. Textures come from <code>tools/generate_assets.py</code>.</footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
@@ -662,3 +701,26 @@ footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line);
 <script>%%WINGJS%%</script>
 <script>const CODEX = %%DATA%%;</script>
 <script>%%VIEWERJS%%</script>
+<script>
+// One page at a time. A bare #page link opens that page; an old #section link opens the page holding it.
+(function () {
+  const PAGES = %%PAGES%%;
+  const nav = document.querySelector('nav.pages');
+  const pageOf = {};
+  for (const p of PAGES) for (const id of p.sections) pageOf[id] = p.id;
+  function show(target, scroll) {
+    const page = PAGES.find(p => p.id === target) ? target : (pageOf[target] || PAGES[0].id);
+    const def = PAGES.find(p => p.id === page);
+    document.querySelectorAll('section[id]').forEach(s => { s.hidden = !def.sections.includes(s.id); });
+    nav.querySelectorAll('a').forEach(a => a.setAttribute('aria-current', a.dataset.page === page ? 'page' : 'false'));
+    const i = PAGES.indexOf(def), prev = PAGES[i - 1], next = PAGES[i + 1];
+    document.getElementById('pager').innerHTML = (prev ? '<a href="#' + prev.id + '">&larr; ' + prev.label + '</a>' : '<span></span>')
+      + (next ? '<a href="#' + next.id + '">' + next.label + ' &rarr;</a>' : '<span></span>');
+    window.dispatchEvent(new Event('resize'));   // the 3D viewer sizes itself when its page appears
+    if (target !== page && scroll) { const el = document.getElementById(target); if (el) el.scrollIntoView(); }
+    else if (scroll) window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', () => show(location.hash.slice(1), true));
+  show(location.hash.slice(1), false);
+})();
+</script>

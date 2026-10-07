@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "The Hive: sculk look, Lancer-Drone, Deepmaw and cave traits",
+      "detail": "The Hive goes sculk-dark with glowing cyan veins; the Swarm is black with acid green. Spearmen are four-armed Lancer-Drones with a double-bladed polearm. A new war beast role brings the Deepmaw, a towering burrower summoned at the altar, up to 10 per commander. Hive units are stronger underground and weaker in sunlight, Swarm raids tunnel up near their target, and new Hive players start in a cave.",
+      "image": "hive-units-render.png"
+    },
+    {
+      "status": "done",
       "title": "Mana is base power: wells, pylons, powered towers and a summoning altar",
       "detail": "Mana no longer lives on the player. Mana Wells store it, Mana Pylons carry it across the base, and towers spend it on every shot. Troops are summoned at a Summoning Altar: a core on a 3×3 brick floor with a Mana Brazier on each corner, with a menu of your race's units and costs. Manabloom grows shards for everyday fuel; Mana Ore gives crystals, which are denser fuel and the material the new blocks are built from. Recruit contracts are gone."
     },
@@ -78,6 +84,9 @@
     "demonImpsAreImpalersAndFirecasters": "Only demon spearmen and archers are imps; Fiends and demon workers are full-sized",
     "altarSummonsWithWellMana": "An altar summons only with mana in a linked well, and spends exactly the unit's cost; hive is cheaper",
     "incompleteAltarRefusesToSummon": "An altar missing a brazier refuses to summon and spends nothing",
-    "towersFireOnlyWithMana": "An arrow tower holds fire with an empty well and draws mana once it is filled"
+    "towersFireOnlyWithMana": "An arrow tower holds fire with an empty well and draws mana once it is filled",
+    "hiveSpearmenAreLancersAndBeastsAreHuge": "Hive spearmen are Lancer-Drones and the Deepmaw beast is huge",
+    "beastsAreLimitedAndRaceBound": "A commander at the beast limit is refused, and races without a beast cannot summon one",
+    "hiveIsStrongerUnderground": "Hive soldiers gain Strength underground and are not weakened there"
   }
 }

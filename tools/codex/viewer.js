@@ -8,10 +8,13 @@
   const MODELS = [
     { id: 'imp_impaler', label: 'Imp Impaler', about: '<b>Imp Impaler</b> · spearman. Studded harness and bone spikes.' },
     { id: 'imp_firecaster', label: 'Imp Firecaster', about: '<b>Imp Firecaster</b> · archer. Rune mantle and a floating ember orb.' },
+    { id: 'hive_lancer', label: 'Lancer-Drone', about: '<b>Lancer-Drone</b> · Hive spearman. Four arms, a double-bladed polearm and a throwing blade.', hive: true },
+    { id: 'hive_beast', label: 'Deepmaw', about: '<b>Deepmaw</b> · Hive war beast. A towering burrower with a spiked frill and one huge hooked claw.', hive: true },
     { id: 'workers', label: 'Workers', about: '<b>Workers and guards</b> · posted roles, dressed by race. Plain work clothes in each race\'s colors.' },
     { id: 'demon_player', label: 'Demon player', about: '<b>Demon player</b> · what a player of the demon race looks like to everyone on the server.' },
   ];
   const PALETTES = [{ id: 'demon', label: 'Player demons' }, { id: 'burning_horde', label: 'Burning Horde' }];
+  const HIVE_PALETTES = [{ id: 'hive', label: 'Player Hive' }, { id: 'the_swarm', label: 'The Swarm' }];
   const ROLES = [{ id: 'farmer', label: 'Farmer' }, { id: 'builder', label: 'Builder' }, { id: 'guard', label: 'Guard' }];
   const RACES = ['human', 'elf', 'dwarf', 'orc', 'angel', 'hive', 'demon'].map(id => ({ id, label: id[0].toUpperCase() + id.slice(1) }));
   const NAMES = CODEX.workerNames || {};
@@ -57,6 +60,9 @@
     const m = MODELS.find(x => x.id === pick.model) || MODELS[0];
     about.innerHTML = m.about;
     document.getElementById('palette-set').hidden = m.id === 'demon_player' || m.id === 'workers';
+    const pals = m.hive ? HIVE_PALETTES : PALETTES;
+    if (!pals.some(p => p.id === pick.palette)) pick.palette = pals[0].id;
+    seg(document.getElementById('pick-palette'), pals, 'palette', build);
     document.getElementById('pose-set').hidden = m.id !== 'demon_player';
     document.getElementById('role-set').hidden = m.id !== 'workers';
     document.getElementById('race-set').hidden = m.id !== 'workers';
@@ -78,7 +84,7 @@
       wingState = WingAnimator.newState();
     } else {
       const g = MCModel.buildModel(CODEX.models[m.id], tex(pick.palette + '/' + m.id), tex(pick.palette + '/' + m.id + '_glow'));
-      g.scale.setScalar(1.25);   // imps are drawn at 0.7x in game; enlarge for inspection
+      g.scale.setScalar(m.id === 'hive_beast' ? 0.75 : m.hive ? 1.0 : 1.25);   // imps are 0.7x in game, the beast 1.75x
       holder.add(g);
       current = { kind: 'imp', P: g.userData.parts };
     }

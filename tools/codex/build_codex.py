@@ -217,9 +217,9 @@ def shots(items):
 def viewer_data():
     models = {m["id"]: m for m in json.loads((MOD / "build" / "unit-models.json").read_text())}
     tex = {}
-    for pal in ("demon", "burning_horde"):
+    for pal in ("demon", "burning_horde", "hive", "the_swarm"):
         for mid in models:
-            if mid.startswith("imp"):
+            if mid.startswith("imp") or mid.startswith("hive_"):
                 for suffix in ("", "_glow"):
                     f = T / "entity" / "soldier" / pal / f"{mid}{suffix}.png"
                     if f.exists():
@@ -234,7 +234,7 @@ def viewer_data():
     for n in ("demon_skin", "demon_skin_glow", "demon_extras", "demon_extras_glow"):
         tex[f"player/{n}"] = uri(Image.open(T / "entity" / "player" / f"{n}.png").convert("RGBA"))
     # Only ship the models the viewer shows.
-    keep = {k: v for k, v in models.items() if k.startswith(("imp", "demon_player", "player_base"))
+    keep = {k: v for k, v in models.items() if k.startswith(("imp", "hive_", "demon_player", "player_base"))
             or k.startswith("gear_") and k.rsplit("_", 1)[1] in ("human", "elf", "dwarf", "orc", "angel", "hive", "demon")}
     return {"models": keep, "tex": tex, "workerNames": worker_names()}
 
@@ -247,6 +247,61 @@ def worker_names():
         if len(names) >= 10:
             out[m.group(1).lower()] = {"farmer": names[7], "builder": names[8], "guard": names[9]}
     return out
+
+
+PAGES = [
+    ("home", "Home", ["progress", "gaps"]),
+    ("designs", "Designs", ["designs"]),
+    ("models", "Models", ["models", "demon", "imps", "hive", "workers"]),
+    ("skins", "Skins", ["skins", "foes", "textures"]),
+    ("races", "Races", ["races", "factions"]),
+    ("army", "Army", ["roles", "command"]),
+    ("mana", "Mana & defense", ["mana", "defense", "breach"]),
+    ("items", "Items", ["items", "commands", "config"]),
+    ("pack", "Pack", ["pack", "testing"]),
+]
+DESIGN_STATUS = {"approved": ("ok", "Approved"), "review": ("review", "Built, awaiting your review"),
+                 "planned": ("plan", "Approved, not built")}
+
+
+def designs():
+    out = []
+    for d in json.loads((HERE / "designs.json").read_text())["designs"]:
+        cls, label = DESIGN_STATUS[d["status"]]
+        pics = []
+        for key, caption in (("reference", "Your reference"), ("render", "In the mod now")):
+            if d.get(key) and (ART / d[key]).exists():
+                pics.append(f'<figure><img src="{file_uri(ART / d[key], 1000, animate=False)}" alt="{esc(d["title"])}: {caption.lower()}" '
+                            f'loading="lazy"><figcaption>{caption}</figcaption></figure>')
+        notes = "".join(f"<li>{esc(n)}</li>" for n in d["notes"])
+        out.append(f'<article class="design" id="design-{d["id"]}"><header><span class="race">{esc(d["race"])}</span>'
+                   f'<h3>{esc(d["title"])}</h3><span class="status {cls}">{label}</span></header>'
+                   f'<div class="pics">{"".join(pics)}</div><ul>{notes}</ul></article>')
+    return "\n".join(out)
+
+
+def dedupe_images(html):
+    """Stores each embedded picture once: repeats point at it by key and a small script fills them in."""
+    seen, order = {}, []
+
+    def swap(m):
+        uri_ = m.group(1)
+        if uri_ not in seen:
+            seen[uri_] = f"i{len(order)}"
+            order.append(uri_)
+        return f'src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-img="{seen[uri_]}"'
+
+    counts = {}
+    for u in re.findall(r'src="(data:image/[^"]+)"', html):
+        counts[u] = counts.get(u, 0) + 1
+    repeated = {u for u, n in counts.items() if n > 1}
+    if not repeated:
+        return html
+    html = re.sub(r'src="(data:image/[^"]+)"', lambda m: swap(m) if m.group(1) in repeated else m.group(0), html)
+    table = ",".join(f'"{seen[u]}":"{u}"' for u in order)
+    script = ("<script>(function(){const I={" + table + "};document.querySelectorAll('img[data-img]')"
+              ".forEach(i=>{i.src=I[i.dataset.img];});})();</script>")
+    return html.replace("</footer>", "</footer>\n" + script, 1)
 
 
 def main():
@@ -277,6 +332,14 @@ def main():
             ("imp-model-preview.png", "Imp roles, side by side.", True),
             ("demon-imp.png", "Imp reference.", False),
         ]),
+        "%%HIVE_SHOTS%%": shots([
+            ("hive-units-render.png", "Lancer-Drone and Deepmaw in the Hive's colors (top) and the Swarm's (bottom): front, side and back.", True),
+            ("hive-spearman.png", "Spearman reference.", False),
+            ("hive-beast.png", "Beast reference.", False),
+        ]),
+        "%%DESIGNS%%": designs(),
+        "%%PAGENAV%%": "".join(f'<a href="#{pid}" data-page="{pid}">{esc(label)}</a>' for pid, label, _ in PAGES),
+        "%%PAGES%%": json.dumps([{"id": pid, "label": label, "sections": secs} for pid, label, secs in PAGES]),
         "%%WORKER_SHOTS%%": shots([("workers-all-races.png", "Farmers, builders and guards for every race, front and back.", True)]),
         "%%RACES%%": race_cards(),
         "%%FACTIONS%%": faction_cards(),
@@ -293,6 +356,7 @@ def main():
     }
     for k, v in subs.items():
         html = html.replace(k, v)
+    html = dedupe_images(html)
     left = re.findall(r"%%[A-Z_]+%%", html)
     if left:
         raise SystemExit(f"unfilled placeholders: {left}")

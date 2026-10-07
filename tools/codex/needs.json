@@ -22,8 +22,16 @@
       "note": "Plain work clothes are done. The body underneath is still the basic race skin."
     },
     "hive/spearman": {
+      "status": "done",
+      "note": "Lancer-Drone built from your reference: four arms, double-bladed polearm. Awaiting your review."
+    },
+    "hive/beast": {
+      "status": "done",
+      "note": "Deepmaw built from your reference. Awaiting your review."
+    },
+    "demon/beast": {
       "status": "partial",
-      "note": "Reference received: a four-armed ant-warrior with a double-bladed polearm. Model not built yet."
+      "note": "Reference received (bone-white winged stalker with a stinger tail). Model not built yet."
     }
   },
   "default_note": "Placeholder: the basic race skin plus held gear. Needs a look.",
@@ -37,26 +45,33 @@
     "healer": "Support caster. Priestly, shamanic, druidic?",
     "farmer": "Grows and harvests crops at its post.",
     "builder": "Repairs the base from a chest of blocks.",
-    "guard": "Patrols its post and raises the alarm."
+    "guard": "Patrols its post and raises the alarm.",
+    "beast": "A rare war beast summoned at the altar. Only races with a designed beast can field one."
   },
   "questions": [
+    {
+      "topic": "Hive",
+      "priority": "high",
+      "question": "How do the Lancer-Drone and Deepmaw look to you?",
+      "why": "Both are built from your references in the Hive's sculk colors. See them on the Codex's Designs and Models pages and tell me what to change."
+    },
+    {
+      "topic": "Bases",
+      "priority": "medium",
+      "question": "What should raise a base's level?",
+      "why": "The beast limit (10 now) is meant to grow with base level, but bases don't have levels yet. Options: waves survived at the War Standard, buildings placed (wells, towers, altars), or an upgrade you craft into the War Standard."
+    },
+    {
+      "topic": "Magic",
+      "priority": "medium",
+      "question": "Which magic should each race lean toward?",
+      "why": "Player mana would come from Iron's Spells, with each race getting bonus spell power in a school: for example demons fire, angels holy, elves nature, the Hive poison. Pick the pairings and I'll wire it in as an optional link."
+    },
     {
       "topic": "Units",
       "priority": "high",
       "question": "Reference images for each race's soldiers.",
       "why": "Every unit marked Needs input uses the plain race skin. Pictures or descriptions let me give each one its own model, gear and size."
-    },
-    {
-      "topic": "Hive",
-      "priority": "medium",
-      "question": "Should the Hive beast keep its red-orange colors, or match the sculk and Warden look?",
-      "why": "The reference is rust-red with gold markings. The rest of the Hive is going dark teal and black like sculk. Either works; tell me which."
-    },
-    {
-      "topic": "Beasts",
-      "priority": "medium",
-      "question": "What role should the beasts play?",
-      "why": "Options: a new rare, expensive unit summoned at the altar (one per army), a mount players can ride, or a wild neutral creature you tame. The Hive beast and Demon beast should probably work the same way."
     },
     {
       "topic": "Players",
@@ -81,12 +96,6 @@
       "priority": "medium",
       "question": "Reference art for the other player races (orc, angel, elf, dwarf, human).",
       "why": "Each player model is built from your references, the same way the demon player was."
-    },
-    {
-      "topic": "Hive",
-      "priority": "high",
-      "question": "How far should the Hive's cave theme go?",
-      "why": "Options: sculk-covered Warden-style bodies; blind units that hunt by sound; weaker in daylight or on the surface; Swarm raids that come up from caves; Hive players start underground. Tell me which of these you want."
     },
     {
       "topic": "Units",
@@ -138,6 +147,18 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Hive",
+      "answer": "Sculk-dark colors; stronger underground and weaker in sunlight; Swarm raids tunnel up near their target; new Hive players start in a cave."
+    },
+    {
+      "topic": "Beasts",
+      "answer": "Beasts are rare altar units: up to 10 per commander, a limit meant to grow with base level."
+    },
+    {
+      "topic": "Mods",
+      "answer": "Keep Warfront compatible with other mods: vanilla attributes, effects, tags and capabilities; optional integrations only."
+    },
     {
       "topic": "Hive",
       "answer": "The Hive spearman (Lancer-Drone) follows your reference: a four-armed ant-warrior with a double-bladed polearm."
