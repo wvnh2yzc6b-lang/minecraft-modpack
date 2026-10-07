@@ -54,6 +54,48 @@
       ]
     },
     {
+      "id": "daily-upkeep",
+      "status": "ready",
+      "title": "Daily loop, part 1: Mess Hall food upkeep and the worker economy",
+      "decided": "Owner, 2026-10-07: light food upkeep, advisor bounties, raid-the-raiders camps, a fuller worker economy and a neutral traveling merchant.",
+      "spec": [
+        "Mess Hall: a base block with a large inventory (like a double chest) on the base's network area. Accepts any item in the vanilla/conventional food tags (c:foods), so other mods' crops count.",
+        "Once per in-game day (dawn) each battle unit within base range eats one food point budget (config, about 4 food points per unit) from the Mess Hall. Fed units get a 'Well Fed' morale bonus until next dawn: +10% resistance to routing and slow out-of-combat regen. Unfed units just don't get it. Never damage, desertion or death. Units away with the player eat when they return. Workers don't eat.",
+        "Farmers (FarmerGoal): also harvest grown Manabloom shards into the nearest Mana Well or chest, and deliver food to the Mess Hall before other chests.",
+        "Builders (BuilderGoal): after a raid, repair raid damage first (blocks broken by raiders, logged during the raid), then their normal blueprint work. Repairs use blocks from base chests, as now.",
+        "HUD / War Table: Mess Hall stock in days of food; toast at dawn if the troops went hungry.",
+        "Test Panel: controls for each part (fill/empty the Mess Hall, new bounties now, spawn a raider camp, summon the merchant).",
+        "Game tests: units in range get Well Fed when the Mess Hall has food and don't when it's empty; a farmer delivers food to the Mess Hall; builders rebuild a raider-broken block."
+      ]
+    },
+    {
+      "id": "daily-bounties",
+      "status": "ready",
+      "title": "Daily loop, part 2: advisor bounties and raider camps",
+      "decided": "Owner, 2026-10-07: light food upkeep, advisor bounties, raid-the-raiders camps, a fuller worker economy and a neutral traveling merchant.",
+      "spec": [
+        "Bounties: each dawn the advisor offers up to 3 (talk to him or the War Table). Types: clear a raider camp; scout a marked location (reach it); deliver materials (a stack of logs, iron, food...); rescue a captured unit (a bound friendly unit in a small camp, freed by right-click after clearing guards). Rewards: Mana Shards/Crystals and veterancy XP for the units that took part. Unfinished bounties expire after 2 days.",
+        "Raider camps: small enemy camps (tents, a fire, 4-8 raiders of one faction) spawn 100-300 blocks from the base, one every couple of days, each tied to the next scheduled raid of that faction. Taking the camp (all raiders beaten) shrinks that raid by about a third and drops part of its loot. Camps not taken in 3 days disband into their raid.",
+        "Camps fill the war meter like a beaten raid (half a point).",
+        "Test Panel: controls for each part (fill/empty the Mess Hall, new bounties now, spawn a raider camp, summon the merchant).",
+        "Game tests: a beaten camp lowers its linked raid's size; a delivered bounty pays out; bounties expire."
+      ]
+    },
+    {
+      "id": "merchant",
+      "status": "ready",
+      "title": "Daily loop, part 3: the traveling merchant",
+      "decided": "Owner, 2026-10-07: light food upkeep, advisor bounties, raid-the-raiders camps, a fuller worker economy and a neutral traveling merchant.",
+      "spec": [
+        "A neutral caravan (merchant plus a pack beast and 2 guards) visits the player's War Standard every 3-5 days, stays one day, then leaves. Arrival toast. Never during a raid.",
+        "Trades (villager-style trade screen, themed later): sells rare materials (other races' building blocks, echo shards, Aether bits when present), beast eggs/summon tokens (still bound by beastLimit), spell scrolls when Iron's Spells is loaded, Manabloom seeds; buys raid loot and faction trophies; currency is Mana Crystals.",
+        "Stock rotates each visit; a couple of trades scale with base level.",
+        "Attacking the merchant makes him leave and skip the next visit.",
+        "Test Panel: controls for each part (fill/empty the Mess Hall, new bounties now, spawn a raider camp, summon the merchant).",
+        "Game tests: the merchant arrives on schedule and not during a raid; a trade exchanges items."
+      ]
+    },
+    {
       "id": "fallen-heroes",
       "status": "ready",
       "title": "Mortal units, fallen heroes",

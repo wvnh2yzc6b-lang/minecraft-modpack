@@ -120,6 +120,10 @@
   ],
   "settled": [
     {
+      "topic": "Daily loop",
+      "answer": "Quiet days feed the war. Troops eat from a Mess Hall at your base (any food, other mods' crops included): fed troops get a small morale bonus, hungry ones just lose it, nobody dies or leaves. The advisor posts 2-3 small daily bounties (clear a camp, scout a spot, bring materials, rescue a captured unit) for mana, crystals and troop XP. Enemy raider camps appear in the world: hit one first with your army to weaken or rob the raid it was preparing. Workers run the base: farmers also tend Manabloom and stock the Mess Hall, builders repair raid damage. Every few days a neutral traveling merchant visits, trading rare materials, beast eggs and scrolls for Mana Crystals and raid loot."
+    },
+    {
       "topic": "Difficulty",
       "answer": "Four difficulty presets, picked per world and changeable in the Test Panel: Easy, Normal, Hard and Warlord (on Warlord, fallen heroes stay down for good). Raids scale with your base level and with the war meter of the faction attacking, never with your army size. Rhythm: no raids for the first 3 in-game days while the advisor's tutorial runs, then about one raid a day and a siege every few nights, with quiet days between. Raids come whether or not you're home: a warning with a countdown goes out first, and you can teleport straight back to your base (with the units following you) to defend it. If you don't, your towers and guards fight alone. While you're in another dimension, raids come at half the rate, so there's time to explore the other mods."
     },

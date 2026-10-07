@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: the daily loop",
+      "detail": "Quiet days now build toward the next fight. Your troops eat from a Mess Hall (fed troops hold the line better, hungry ones never die), farmers stock it and tend Manabloom, and builders repair raid damage. The advisor posts a few small bounties each day, enemy camps appear that you can hit first to weaken the coming raid, and a traveling merchant drops by every few days to trade rare goods for crystals and raid loot."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: difficulty and pacing",
       "detail": "Pick Easy, Normal, Hard or Warlord per world (on Warlord, fallen heroes stay dead). Raids grow with your base level and with how long you've been at war with that faction, never with your army. The first three days are quiet while the advisor teaches you, then about one raid a day and a siege every few nights. Raids hit even when you're away, but a two-minute warning lets you teleport home with your army to defend."
     },
