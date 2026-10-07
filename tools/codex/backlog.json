@@ -464,6 +464,24 @@
       ]
     },
     {
+      "id": "skill-tree",
+      "status": "blocked",
+      "blocked_on": "Node lists for the six shared paths and the seven race paths (open question in needs.json, being designed in brainstorm sessions). The framework below is decided and can be built with placeholder nodes if wanted.",
+      "title": "Player skill tree: Renown, six shared paths, race paths, active skill slots",
+      "decided": "Owner, 2026-10-07: build freedom over race-locked kits. Shared playstyle paths plus one race path, Renown points from battle, small race affinity, Warfront's own system, cooldowns only.",
+      "spec": [
+        "Renown: a player attachment (XP and level), synced. Gains: kills (small, more for Captains/Champions/beasts), raid or siege wave won, raider camp cleared, warlord beaten (large, plus 1 bonus skill point each). Level curve tuned so a player reaches about level 10 by base level 3 and about 25 by the end of the campaign. 1 skill point per level. Total points by the end: enough for about two and a half paths plus some of the race path.",
+        "Paths (shared by all races): Blade (melee; works with any weapon in #minecraft:swords, #minecraft:axes and spear/other melee tags, so Better Combat, Simply Swords and Epic Knights weapons all count), Bulwark (shield and armor), Marksman (bows, crossbows, tridents and thrown weapons), Arcane (boosts Iron's Spells through its attributes; without Iron's Spells, its nodes boost Warfront's own magic damage), Skirmisher (mobility and stealth), Commander (army buffs, army cap, beasts). Plus one race path per race that deepens the race power.",
+        "Nodes: about 10 per path in a short branching tree; each needs its parent. Most are passives (vanilla attribute modifiers or event hooks); 2-3 per path are active skills. Data-driven (JSON nodes in the mod's data folder) so nodes can be tuned without code.",
+        "Active skills: up to 4 equipped in skill slots (keybinds, rebindable), from any path. Cooldowns only, no new mana bar.",
+        "Race affinity: each race has 2 favored paths where the first 3 nodes cost nothing. Proposed: Human Blade + Commander, Elf Marksman + Skirmisher, Dwarf Bulwark + Blade, Orc Blade + Bulwark, Demon Arcane + Skirmisher, Angel Arcane + Bulwark, Hive Skirmisher + Commander (owner can change).",
+        "Respec: at the War Table, refund all points for Mana Crystals (cost grows with points spent).",
+        "UI: a Skill Tree screen in the ui-foundation theme (race accent color), opened from the War Table and a hotkey; skill slots on the combat HUD next to the race power; a Renown bar.",
+        "Test Panel and /wftest: grant Renown or levels, grant points, unlock any node, reset the tree.",
+        "Game tests: Renown rises from a kill and a level grants a point; a node can't be bought without its parent; a passive node applies its attribute and respec removes it; affinity nodes cost 0 for the right race."
+      ]
+    },
+    {
       "id": "art-driven-models",
       "status": "blocked",
       "blocked_on": "Owner's reference images (see the high-priority questions in needs.json).",

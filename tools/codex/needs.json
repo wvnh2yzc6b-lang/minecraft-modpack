@@ -76,6 +76,12 @@
       "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
     },
     {
+      "topic": "Players",
+      "priority": "medium",
+      "question": "The skill tree's six paths and seven race paths: which nodes and active skills go in each?",
+      "why": "The framework is decided (shared paths plus a race path, Renown points, small race affinity). Each path needs about 10 nodes, 2-3 of them active skills. We're designing them one path at a time in brainstorm sessions."
+    },
+    {
       "topic": "Endgame",
       "priority": "medium",
       "question": "The seven warlords: names, looks and how each one fights.",
@@ -113,6 +119,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Players",
+      "answer": "Player builds come from a skill tree, not from race: any race can play any style (a dwarf archer, an elf shield-tank). Warfront's own system, open to every race: six shared playstyle paths (Blade for any melee weapon, Bulwark for shield and armor, Marksman for bows, crossbows and throwing, Arcane to boost Iron's Spells, Skirmisher for mobility and stealth, Commander for the army), plus one race path per race that deepens its race power. About 10 nodes per path, mostly passives plus 2-3 active skills; equip up to 4 actives from any path. Skills run on cooldowns only, with no new mana bar. Points come from Renown, a new player level earned in battle (kills, raids won, warlords beaten, which give bonus points), with enough to max about two and a half paths. Each race has a small affinity: in its 2 favored paths the first 3 nodes are free, but every path stays open. Respec at the War Table for Mana Crystals."
+    },
     {
       "topic": "Hive",
       "answer": "Hive race power, Call the Swarm (owner's idea): kills by you and your army fill a Swarm meter, faster underground or in the dark. At half full you can spend 50 to call 4 basic Hive soldiers out of the ground, or keep saving: at completely full you call a temporary Deepmaw. Summons fight only for that battle: about 20 seconds after the fighting ends they burrow back into the ground. They drop no loot and don't count toward your army or beast limits. The Hive keeps its passive strength underground and weakness in sunlight."

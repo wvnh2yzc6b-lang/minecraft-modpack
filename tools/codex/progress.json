@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: a skill tree for every build",
+      "detail": "Your build is yours, not your race's. Fighting the war earns Renown, and every Renown level gives a skill point to spend across six paths open to every race: Blade, Bulwark, Marksman, Arcane, Skirmisher and Commander, plus a path of your own race that strengthens its race power. Pick up to four active skills from any path, so a dwarf archer or an elf shield-tank is a real build. Each race starts a little ahead in two paths that fit its lore. The paths' skills are being designed now."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: the daily loop",
       "detail": "Quiet days now build toward the next fight. Your troops eat from a Mess Hall (fed troops hold the line better, hungry ones never die), farmers stock it and tend Manabloom, and builders repair raid damage. The advisor posts a few small bounties each day, enemy camps appear that you can hit first to weaken the coming raid, and a traveling merchant drops by every few days to trade rare goods for crystals and raid loot."
     },
