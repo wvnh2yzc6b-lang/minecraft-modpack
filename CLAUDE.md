@@ -36,17 +36,13 @@ When an item is done, remove it from the backlog and log it in `progress.json`.
 
 ## Brainstorm sessions
 
-When the owner says the session is for **brainstorming** (or "just ideas"), stay in conversation: no code, no
-models, no designs, and nothing moves into `settled`, `designs.json` or the backlog. Help widen and sharpen ideas
-(ask questions, offer options, point out how an idea interacts with existing systems), and record each idea in
-`tools/codex/ideas.json` in the owner's words. Push `ideas.json` at the end (and on "save progress"). Ideas only
-become questions or backlog items when the owner promotes them in a later session.
-
-**Unfinished work.** Only what is pushed to GitHub survives a session; the container is thrown away. Push after
-every step. When the owner says "save progress" (or is about to switch sessions), push what you have even if it is
-half-done, and add an entry with `"status": "progress"` at the top of the `log` in `tools/codex/progress.json`
-saying what was in flight, what's done, and the next step. A new session that finds such an entry finishes that
-work first, before asking a new question.
+When the owner says the session is for **brainstorming** (or "just ideas"), nothing gets built: no code, no models,
+no renders. Everything else is recorded as usual. Help widen and sharpen ideas (ask questions, offer options with a
+recommendation, point out how an idea interacts with existing systems), and when the owner decides something,
+record it right away: move it to `settled` in `needs.json`, add any new open questions, and queue the work in
+`tools/codex/backlog.json` with a spec a build session can follow (`ready` if decided, `blocked` if it waits on
+something). Ideas the owner floats but doesn't decide go in `tools/codex/ideas.json` in their words. Push after each
+decision, and republish the two pages when they change.
 
 ## The two pages the owner uses
 

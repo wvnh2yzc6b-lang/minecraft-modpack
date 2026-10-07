@@ -1,5 +1,5 @@
 {
-  "about": "Brainstorm notebook. Raw ideas in the owner's words, unranked and not decided. Nothing here is a design or a task until the owner promotes it in a later session (then it becomes a question in needs.json or an item in backlog.json).",
+  "about": "Ideas floated but not decided yet, in the owner's words. Once the owner decides one, it moves to settled in needs.json and into backlog.json.",
   "ideas": [
     {
       "from": "claude",
