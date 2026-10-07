@@ -120,6 +120,10 @@
   ],
   "settled": [
     {
+      "topic": "Focus",
+      "answer": "Solo play comes first: every system is designed and balanced for one player against the AI factions. Rules for war between players (sieging each other's bases, offline protection, spoils) wait until later."
+    },
+    {
       "topic": "Endgame",
       "answer": "The twist: every race has an advisor, a trusted elder who greets you after you pick your race, runs the first-hour quest line (Mana Well, Manabloom, altar, first troops, first raid) and keeps giving hints, war news and nudges toward the next warlord. It is one villain wearing seven disguises. When you beat the hidden warlord, you learn he was trying to stop the advisor all along. The advisor drops his disguise and teleports you to the End, taking only your Captains, Champions and war beasts. He holds the End island with a mixed army from all seven races and his own towers, and binds a dragon as his mount for the last phase. Beating him frees the End and ends the campaign."
     },

@@ -1,4 +1,11 @@
 {
   "about": "Ideas floated but not decided yet, in the owner's words. Once the owner decides one, it moves to settled in needs.json and into backlog.json.",
-  "ideas": []
+  "ideas": [
+    {
+      "from": "claude",
+      "date": "2026-10-07",
+      "idea": "War between players: can players siege each other's bases, is a War Standard or set hours required (offline protection), and what does the winner take?",
+      "note": "Owner, 2026-10-07: solo play first; come back to this later."
+    }
+  ]
 }
