@@ -98,15 +98,13 @@
       "priority": "low",
       "question": "Raid chest looks: one per enemy faction. Any references or ideas for each?",
       "why": "Decided: each of the seven enemy factions gets its own raid chest. If no references come, I'll design them from each race's palette (Marauder war crate, Black Legion strongbox, Burning Horde bone chest, Swarm chitin pod, Silverwood root-bound coffer, Ironbeard vault, Fallen Host reliquary)."
-    },
-    {
-      "topic": "Pack",
-      "priority": "low",
-      "question": "Otherside crossover: what does the Hive get from it, a war beast, player gear, or both?",
-      "why": "Angels get wings and an armored Moa from the Aether. The Hive already has the Deepmaw, so the Otherside could give a second beast (a tamed sculk stalker), Hive player armor from echo materials, or both."
     }
   ],
   "settled": [
+    {
+      "topic": "Pack",
+      "answer": "The Hive's Otherside reward is echo armor: Hive player armor made from Deeper and Darker's echo materials, stronger in the dark and underground, with quieter footsteps. No second Hive beast; the Deepmaw stays their one war beast."
+    },
     {
       "topic": "Players",
       "answer": "Flight per race, decided: Orcs get a fuel-burst rocket pack: hold jump to thrust up or forward, burns fuel fast, loud, short and strong; for jumping walls and diving into fights, not long trips. Angels get true free flight in daylight under open sky; at night or underground the wings only glide like an elytra. Elves cast flight as a spell (levitate and a wind leap) paid with Iron's Spells mana, with a fallback cost when Iron's Spells isn't installed."
