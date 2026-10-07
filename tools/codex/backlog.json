@@ -21,6 +21,21 @@
       ]
     },
     {
+      "id": "advisor-guide",
+      "status": "ready",
+      "title": "The advisor: first-hour guide and quest line",
+      "decided": "Owner, 2026-10-07: one villain in seven disguises is each race's advisor, runs the tutorial, is revealed after the hidden warlord falls (who was trying to stop him), and is fought in the End with only your heroes and beasts against a mixed army.",
+      "spec": [
+        "An advisor NPC per player (non-hostile, invulnerable, can't be pushed or led), appearing at the player's first base after they pick a race (or at spawn until they have one). Seven disguises: a robed elder in each race's colors (human court wizard, elf seer, dwarf runekeeper, orc shaman, demon whisperer, angel oracle, Hive synapse-elder). Placeholder looks until the owner designs them.",
+        "Never hint at the twist in-game; a few lines can be read differently once you know (write them that way).",
+        "First-hour quest line, one step at a time with a short line from the advisor and a toast: pick a race; place a Mana Well; plant Manabloom and harvest a shard; build the Summoning Altar; summon 3 troops; plant a War Standard; survive your first raid. Each step gives a small reward (shards, a crystal, a starter tower). Progress saved on the player; skippable with a config option or by talking to him and choosing 'I know the way'.",
+        "Afterwards: right-click him for hints about the next thing to unlock (base level, towers, warlords), war news (which faction's war meter is highest), and the nudge to march when a War Map drops.",
+        "Uses toasts and the ui-foundation theme for his lines when that exists; plain chat-style lines until then.",
+        "Test Panel: jump to any quest step; respawn the advisor; switch his disguise.",
+        "Game tests: completing a step advances the quest; skipping works; the advisor can't be hurt."
+      ]
+    },
+    {
       "id": "fallen-heroes",
       "status": "ready",
       "title": "Mortal units, fallen heroes",
@@ -247,11 +262,25 @@
       "id": "campaign-final-boss",
       "status": "blocked",
       "blocked_on": "Owner design for the hidden warlord (name, look, fortress), open question in needs.json; also needs campaign-warlords built.",
-      "title": "Campaign, part 4: the hidden warlord",
+      "title": "Campaign, part 4: the hidden warlord (secretly the good guy)",
       "decided": "Owner, 2026-10-07: campaign endgame. Random mixed raids start wars; beating a faction's raids opens its warlord's fortress in its homeland; you march on it; own race's renegades last; then the hidden warlord behind the wars. Rewards: base trophy, warlord gear, Warlord title.",
       "spec": [
-        "The ancient warlord who set every faction against you. Fought in a last fortress of his own. Uses every race's tricks across his phases.",
-        "Unlocked when all seven warlords are beaten."
+        "Fought in a last fortress of his own after all seven warlords, using every race's tricks across his phases.",
+        "On defeat he doesn't die outright: a short dying scene (dialogue lines in chat/toast style) reveals he was fighting the advisor, and hands over the clue that turns the player against the advisor. This triggers campaign-betrayal."
+      ]
+    },
+    {
+      "id": "campaign-betrayal",
+      "status": "blocked",
+      "blocked_on": "The advisor's true form (open question in needs.json); also campaign-final-boss built first.",
+      "title": "Campaign, part 5: the betrayal and the fight in the End",
+      "decided": "Owner, 2026-10-07: one villain in seven disguises is each race's advisor, runs the tutorial, is revealed after the hidden warlord falls (who was trying to stop him), and is fought in the End with only your heroes and beasts against a mixed army.",
+      "spec": [
+        "After the hidden warlord's dying reveal, the advisor appears, drops his disguise (short scene) and teleports the player to the End main island with only their Captains, Champions and war beasts (fallen or returning heroes come back for this fight). Rank-and-file troops stay home.",
+        "Compatibility: require the vanilla Ender Dragon to be beaten first (the End is then empty); the advisor's dragon is a Warfront 'bound dragon' entity, so the vanilla fight state isn't touched.",
+        "He holds the island with waves of mixed troops from all seven races and his own towers, in phases: army, towers and summons, then he mounts the bound dragon for the last phase.",
+        "Losing returns the player home (heroes fall as usual); the fight can be retried.",
+        "Victory: the End is freed, credits-style closing lines, a final trophy and the campaign marked complete."
       ]
     },
     {

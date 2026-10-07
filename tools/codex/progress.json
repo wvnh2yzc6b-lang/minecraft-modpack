@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: the advisor and the betrayal",
+      "detail": "Every race gets an advisor who greets new players, walks them through their first hour (Mana Well to first raid) and keeps them pointed at the next warlord. It's one villain in seven disguises: beat the hidden warlord and you learn he was trying to stop the advisor. The advisor then pulls you into the End with only your heroes and war beasts, to face his mixed army of all seven races and a bound dragon."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: the warlord campaign",
       "detail": "The endgame. Raids hit you from mixed factions at random, and every faction you beat back fills a war meter. Fill it and you get a War Map to that faction's warlord fortress in its homeland, from a plains keep to a citadel in the Nether, the Aether and the Otherside, and you march your army there. Your own race's renegades come last. Each warlord gives a trophy banner for your base and unique gear; beat all seven to earn the Warlord title and uncover the hidden warlord behind it all."
     },

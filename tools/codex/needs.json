@@ -108,11 +108,21 @@
     {
       "topic": "Endgame",
       "priority": "low",
-      "question": "The hidden warlord behind the wars: who is he, what does he look like, and where is his last fortress?",
-      "why": "He is the final boss after all seven warlords. A name, a look and a place are enough to start."
+      "question": "The hidden warlord (the one who was secretly trying to stop the advisor): who is he, what does he look like, and where is his fortress?",
+      "why": "He's the boss after the seven warlords, then the twist reveals he was on your side. A name, a look and a place are enough to start."
+    },
+    {
+      "topic": "Endgame",
+      "priority": "low",
+      "question": "The advisor: his seven disguises (one per race) and his true form and name.",
+      "why": "He guides every player from the first hour and turns out to be the final villain. Until you design him, the disguises are robed elders in each race's colors, and the true form waits on you."
     }
   ],
   "settled": [
+    {
+      "topic": "Endgame",
+      "answer": "The twist: every race has an advisor, a trusted elder who greets you after you pick your race, runs the first-hour quest line (Mana Well, Manabloom, altar, first troops, first raid) and keeps giving hints, war news and nudges toward the next warlord. It is one villain wearing seven disguises. When you beat the hidden warlord, you learn he was trying to stop the advisor all along. The advisor drops his disguise and teleports you to the End, taking only your Captains, Champions and war beasts. He holds the End island with a mixed army from all seven races and his own towers, and binds a dragon as his mount for the last phase. Beating him frees the End and ends the campaign."
+    },
     {
       "topic": "Endgame",
       "answer": "The endgame is a campaign against all seven enemy factions. Raids come at you at random and mixed (a few orc raids, then the Hive, and so on), and each faction you fight builds a war meter. Beat about five of its raids (base level 3 or higher) and its last raider drops a War Map to that faction's warlord fortress in its homeland: Black Legion keep on the plains, Silverwood Reaver grove in a forest, Ironbeard hold in the mountains, Marauder war camp in the badlands, Burning Horde citadel in the Nether, Fallen Host in the Aether, the Swarm in the Otherside (overworld fallbacks without those mods). You march your army there and beat the warlord. Your own race's renegades come last, as a betrayal finale. Each warlord gives a trophy banner for your base with a small aura bonus and a unique piece of warlord gear. Beat all seven and you earn the Warlord title, and the War Maps reveal the hidden ancient warlord who set every faction against you: the final boss, in a fortress of his own, using every race's tricks."
