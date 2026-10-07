@@ -38,6 +38,9 @@ public final class ClientGameEvents {
         }
         jumpWasDown = jumpDown;
 
+        while (ClientSetup.WAR_TABLE.consumeClick()) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.warfront.network.WarTableActionPayload(-1));
+        }
         while (ClientSetup.RECALL.consumeClick()) {
             net.neoforged.neoforge.network.PacketDistributor.sendToServer(com.warfront.network.RecallPayload.INSTANCE);
         }

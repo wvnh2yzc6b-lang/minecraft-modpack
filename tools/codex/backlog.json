@@ -3,20 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "ui-war-table",
-      "status": "ready",
-      "title": "War Table screen",
-      "decided": "Owner, 2026-10-07: clean dark race-tinted panels; first pass is the combat HUD, War Table, base mana overlay and Altar redesign; toasts and a siege banner replace chat.",
-      "spec": [
-        "Opens on a keybind (default H, rebindable) and from right-clicking the War Standard. Tabs: Army, Heroes, Base.",
-        "Army: a list of your units (race icon, name, role, rank chevrons, health bar, duty: following / guard / patrol / idle, distance). Sort and filter by role or duty. Clicking a unit highlights it in the world for a few seconds (glowing).",
-        "Heroes: Captains, Champions and beasts with rank; fallen heroes with their revive countdown and location; returning heroes with the ready timer.",
-        "Base: base level with both bars (buildings and waves won toward the next level), mana stored / capacity across the network, beasts allowed at this level, the unlocks at the next level.",
-        "Depends on veterancy and fallen-heroes for rank and hero data; build it after them, or show those fields as empty until they land.",
-        "Client-only code under com.warfront.client; data the client needs comes through small synced payloads or attachments, never by reading server state directly. Before the Java, publish an HTML mockup of each screen in the Codex (same panels, colors and layout) so the owner can review the look without a game client; keep the mockup and the Java in step."
-      ]
-    },
-    {
       "id": "ui-mana-overlay",
       "status": "ready",
       "title": "Base mana overlay",

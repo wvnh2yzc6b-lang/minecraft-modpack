@@ -265,6 +265,11 @@ public class SoldierEntity extends PathfinderMob {
         return getOwnerUUID() != null && (r == SoldierRole.CAPTAIN || r == SoldierRole.CHAMPION || r == SoldierRole.BEAST);
     }
 
+    /** Seconds a fallen hero still waits for its commander. */
+    public int fallenSecondsLeft() {
+        return isFallen() ? (int) Math.max(0, (fallenUntil - level().getGameTime()) / 20) : 0;
+    }
+
     public boolean isFallen() {
         return entityData.get(DATA_FALLEN);
     }

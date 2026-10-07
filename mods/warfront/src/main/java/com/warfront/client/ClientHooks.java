@@ -18,6 +18,12 @@ public final class ClientHooks {
         }
     }
 
+    public static void openWarTable(com.warfront.network.WarTablePayload payload) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof WarTableScreen open) open.refresh(payload);
+        else mc.setScreen(new WarTableScreen(payload));
+    }
+
     public static void openAltar(AltarOpenPayload payload) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen instanceof AltarScreen open && open.pos().equals(payload.pos())) open.refresh(payload);

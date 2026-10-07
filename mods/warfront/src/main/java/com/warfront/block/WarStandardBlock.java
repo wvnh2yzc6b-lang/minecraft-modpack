@@ -66,6 +66,10 @@ public class WarStandardBlock extends BaseEntityBlock {
                                                BlockHitResult hit) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarStandardBlockEntity be) {
             be.describeTo(player);
+            // The War Table opens from your own standard (sneak to just read its status).
+            if (!player.isShiftKeyDown() && be.isDefender(player) && player instanceof net.minecraft.server.level.ServerPlayer sp) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(sp, com.warfront.network.WarTablePayload.of(sp));
+            }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

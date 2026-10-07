@@ -67,6 +67,16 @@ public final class BaseLevel {
         }
     }
 
+    /** Buildings a base needs for {@code level} (0 for level 1 or past the top). */
+    public static int buildingsFor(int level) {
+        return level < 2 || level > MAX_LEVEL ? 0 : BUILDINGS[level - 2];
+    }
+
+    /** Siege waves won a base needs for {@code level}. */
+    public static int wavesFor(int level) {
+        return level < 2 || level > MAX_LEVEL ? 0 : WAVES[level - 2];
+    }
+
     private static int tier(int value, int[] thresholds) {
         int lvl = 1;
         for (int t : thresholds) if (value >= t) lvl++;

@@ -24,9 +24,15 @@ public final class ClientSetup {
             "key.warfront.recall", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
             org.lwjgl.glfw.GLFW.GLFW_KEY_J, "key.categories.warfront");
 
+    /** H: the War Table. */
+    public static final net.minecraft.client.KeyMapping WAR_TABLE = new net.minecraft.client.KeyMapping(
+            "key.warfront.war_table", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+            org.lwjgl.glfw.GLFW.GLFW_KEY_H, "key.categories.warfront");
+
     @SubscribeEvent
     public static void onKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
         event.register(TEST_PANEL);
+        event.register(WAR_TABLE);
         event.register(RECALL);
     }
 

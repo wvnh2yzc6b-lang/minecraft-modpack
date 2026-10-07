@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "UI, part 3: the War Table",
+      "detail": "Press H, or right-click your War Standard (sneak-click just reads its status). Army tab: every unit you own with its rank chevrons, role, health bar, duty (following, on guard, patrolling, working, holding) and distance; sort by distance, role, rank or health, filter by duty, scroll, and click a unit to make it glow for five seconds so you can find it. Heroes tab: your Captains, Champions and beasts; fallen ones with their revive countdown and where they lie; returning ones with their ready time. Base tab: base level with bars for buildings and waves won toward the next level, mana stored across the network, beasts allowed, and what the next level unlocks."
+    },
+    {
+      "status": "done",
       "title": "UI, part 2: the combat HUD",
       "detail": "A small panel above the hotbar (bottom left; corner and size in the client config, hidden with F1). Top row is your race power: demon soul pips (glowing at 10), orc rage bar that flashes FRENZY with a timer, the human glider's durability while worn, elf mana shard count, angel wings flight or glide-only by day and night, Hive underground bonus and sky light. Then your army: units following out of total, formation and order, units on guard or patrol, war beasts out of the base's limit. During a siege at your War Standard: the wave and enemies left. Orc rocket fuel and Iron's Spells mana join when those exist."
     },
