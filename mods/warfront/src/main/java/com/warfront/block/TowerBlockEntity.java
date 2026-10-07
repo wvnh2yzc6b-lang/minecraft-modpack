@@ -38,6 +38,8 @@ import java.util.UUID;
 public class TowerBlockEntity extends BlockEntity {
     @Nullable private UUID owner;
     private int cooldown;
+    /** How many times this tower has fired or healed since it loaded. */
+    private int actions;
 
     public TowerBlockEntity(BlockPos pos, BlockState state) {
         super(WFRegistry.TOWER_BE.get(), pos, state);
@@ -46,6 +48,10 @@ public class TowerBlockEntity extends BlockEntity {
     public void setOwner(UUID owner) {
         this.owner = owner;
         setChanged();
+    }
+
+    public int actions() {
+        return actions;
     }
 
     /** The faction this tower fights for. */
@@ -68,13 +74,21 @@ public class TowerBlockEntity extends BlockEntity {
         switch (type) {
             case ARROW -> {
                 LivingEntity target = findEnemy(server, key, eye, box, range);
-                if (target != null && power(server, pos, key, type)) shootArrow(server, key, eye, target);
+                if (target != null && power(server, pos, key, type)) {
+                    shootArrow(server, key, eye, target);
+                    tower.actions++;
+                }
             }
             case ARCANE -> {
                 LivingEntity target = findEnemy(server, key, eye, box, range);
-                if (target != null && power(server, pos, key, type)) summonFangs(server, pos, target);
+                if (target != null && power(server, pos, key, type)) {
+                    summonFangs(server, pos, target);
+                    tower.actions++;
+                }
             }
-            case HEALING -> healAllies(server, key, pos, type);
+            case HEALING -> {
+                if (healAllies(server, key, pos, type)) tower.actions++;
+            }
         }
     }
 
@@ -127,12 +141,12 @@ public class TowerBlockEntity extends BlockEntity {
         level.playSound(null, pos, SoundEvents.EVOKER_CAST_SPELL, SoundSource.BLOCKS, 0.8F, 1.2F);
     }
 
-    private static void healAllies(ServerLevel level, String key, BlockPos pos, TowerType type) {
+    private static boolean healAllies(ServerLevel level, String key, BlockPos pos, TowerType type) {
         AABB box = new AABB(pos).inflate(8);
         List<LivingEntity> wounded = level.getEntitiesOfClass(LivingEntity.class, box, e -> e.isAlive()
                 && e.getHealth() < e.getMaxHealth()
                 && Factions.relation(level.getServer(), key, Factions.keyOf(level.getServer(), e)) == Relation.ALLY);
-        if (wounded.isEmpty() || !power(level, pos, key, type)) return;
+        if (wounded.isEmpty() || !power(level, pos, key, type)) return false;
         boolean any = false;
         for (LivingEntity e : wounded) {
             e.heal(2.0F);
@@ -141,6 +155,7 @@ public class TowerBlockEntity extends BlockEntity {
             any = true;
         }
         if (any) level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 0.6F, 1.4F);
+        return any;
     }
 
     @Override

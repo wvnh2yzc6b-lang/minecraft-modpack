@@ -215,17 +215,18 @@ public final class WarfrontGameTests {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         BlockPos towerPos = new BlockPos(1, 1, 4);
         h.setBlock(towerPos, WFRegistry.ARROW_TOWER.get());
-        ((TowerBlockEntity) h.getBlockEntity(towerPos)).setOwner(owner.getUUID());
+        TowerBlockEntity tower = (TowerBlockEntity) h.getBlockEntity(towerPos);
+        tower.setOwner(owner.getUUID());
         ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 7), owner, 0F);
         Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(7, 1, 4));
         husk.setPersistenceRequired();
-        // Compare with the starting health: zombies can spawn with bonus max health they haven't filled.
-        float startHealth = husk.getHealth();
+        // Count the tower's own shots: archers in neighbouring test arenas may also shoot at this husk.
         h.startSequence()
-                .thenExecuteAfter(80, () -> h.assertTrue(husk.getHealth() >= startHealth && husk.getLastHurtByMob() == null,
-                        "a tower with no mana should not fire (health " + husk.getHealth() + " of " + startHealth + ")"))
+                .thenExecuteAfter(80, () -> h.assertTrue(tower.actions() == 0,
+                        "a tower with no mana should not fire, but it fired " + tower.actions() + " times"))
                 .thenExecute(() -> well.setMana(50F))
-                .thenWaitUntil(() -> h.assertTrue(well.getMana() < 50F, "a powered tower should draw mana to fire"))
+                .thenWaitUntil(() -> h.assertTrue(tower.actions() > 0 && well.getMana() < 50F,
+                        "a powered tower should draw mana to fire"))
                 .thenSucceed();
     }
 
