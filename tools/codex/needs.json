@@ -76,12 +76,6 @@
       "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
     },
     {
-      "topic": "Sieges",
-      "priority": "medium",
-      "question": "Siege outposts: how often, how big, and how should the raid chest look?",
-      "why": "Planned: some sieges raise a temporary enemy outpost you must destroy to win, with a big raid chest that despawns the outpost once looted and broken. Open: which waves get one (every 5th, boss waves, random), its size (watchtower camp or small fort), whether it keeps spawning raiders until taken, and reference art for the raid chest."
-    },
-    {
       "topic": "Players",
       "priority": "medium",
       "question": "Reference art for the other player races (orc, angel, elf, dwarf, human).",
@@ -128,6 +122,12 @@
       "priority": "low",
       "question": "Which creatures do you want, and which races do they belong to?",
       "why": "Reference images or names (griffins, wyverns, trolls, giant spiders...) are enough to start a list."
+    },
+    {
+      "topic": "Sieges",
+      "priority": "low",
+      "question": "Raid chest looks: one per enemy faction. Any references or ideas for each?",
+      "why": "Decided: each of the seven enemy factions gets its own raid chest. If no references come, I'll design them from each race's palette (Marauder war crate, Black Legion strongbox, Burning Horde bone chest, Swarm chitin pod, Silverwood root-bound coffer, Ironbeard vault, Fallen Host reliquary)."
     }
   ],
   "settled": [
@@ -137,7 +137,7 @@
     },
     {
       "topic": "Sieges",
-      "answer": "Roadmap: some sieges raise a temporary enemy outpost nearby that must be destroyed to win. Its big custom-art raid chest is looted, then broken, and the whole outpost despawns."
+      "answer": "Siege outposts: every 5th wave raises a temporary enemy outpost near the War Standard, and the siege can't be won while it stands. It scales with the wave: a watchtower camp early, a small walled fort later. Until it is taken it keeps sending raiders, so you have to go on the attack. At its heart sits a big raid chest, a different one for each enemy faction (bone chest for demons, chitin pod for the Swarm and so on). Loot it, break it, and the whole outpost despawns."
     },
     {
       "topic": "Army",

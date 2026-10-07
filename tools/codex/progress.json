@@ -10,7 +10,7 @@
     {
       "status": "planned",
       "title": "Roadmap: siege outposts and the raid chest",
-      "detail": "Some siege waves will build a temporary enemy outpost nearby. The siege can't be won while it stands: you have to take the outpost and destroy it. At its heart sits a large raid chest with custom art. Loot it, then break it, and the whole outpost despawns. Not built yet; details are open questions on the Design Needs page."
+      "detail": "Decided: every 5th siege wave raises a temporary enemy outpost near your War Standard, and you can't win the wave while it stands. It starts as a watchtower camp and becomes a small walled fort from wave 10. It keeps sending raiders at you until you take it. At its heart is a big raid chest with its own look for each enemy faction. Loot it, break it, and the whole outpost despawns. Queued for the next build session."
     },
     {
       "status": "done",
