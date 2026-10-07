@@ -44,8 +44,13 @@
     },
     {
       "status": "planned",
+      "title": "Roadmap: the Hive calls the Swarm",
+      "detail": "The Hive gets an active race power. Kills fill a Swarm meter, twice as fast underground. At half full, call four Hive soldiers up out of the ground; or save it, and at full call up a Deepmaw. Called units fight for that battle only, then burrow away about 20 seconds after it ends, and they don't count toward your army or beast limits. With this, every race has its own power. Queued for a build session."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: angels bring Judgment",
-      "detail": "Angels become the sun race. Sunlight and Holy hits charge Radiance; at full, you call a sunbeam down from the sky onto a group of enemies, hitting undead, demons and the Hive hardest and blinding them. New angel players start at a marble shrine on the highest peak and glide down to pick a base, and their Mana Wells fill themselves in daylight. With this, every race has its own power. Queued for a build session."
+      "detail": "Angels become the sun race. Sunlight and Holy hits charge Radiance; at full, you call a sunbeam down from the sky onto a group of enemies, hitting undead, demons and the Hive hardest and blinding them. New angel players start at a marble shrine on the highest peak and glide down to pick a base, and their Mana Wells fill themselves in daylight. Queued for a build session."
     },
     {
       "status": "planned",

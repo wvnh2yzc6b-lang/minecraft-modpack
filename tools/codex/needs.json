@@ -114,6 +114,10 @@
   ],
   "settled": [
     {
+      "topic": "Hive",
+      "answer": "Hive race power, Call the Swarm (owner's idea): kills by you and your army fill a Swarm meter, faster underground or in the dark. At half full you can spend 50 to call 4 basic Hive soldiers out of the ground, or keep saving: at completely full you call a temporary Deepmaw. Summons fight only for that battle: about 20 seconds after the fighting ends they burrow back into the ground. They drop no loot and don't count toward your army or beast limits. The Hive keeps its passive strength underground and weakness in sunlight."
+    },
+    {
       "topic": "Angel",
       "answer": "Angel identity: angels are the sun race, the mirror of the Hive. Race power, Judgment: Radiance charges in sunlight under open sky and from Holy hits. At full, call a sunbeam down on a target area: heavy damage, extra against undead, demons and the Hive, and it blinds. It's the only race power that strikes at range, made for attacking from the air. Start, sky shrine: a new angel player begins at a small marble shrine on the highest peak near spawn, with a beam of light, and glides down to choose a base. Economy, Sunwells: angel Mana Wells slowly fill on their own in daylight under open sky, and not at night."
     },
