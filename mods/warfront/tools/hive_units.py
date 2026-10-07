@@ -29,27 +29,28 @@ def bind(ns):
 def _leg(side_x, thigh_mat, shin_mat, spikes=True):
     """Digitigrade insect leg: thigh, backward-bent shin with spurs, ankle, and a hooked foot."""
     shin_children = [part("ankle_r", pivot=(0, 5.5, 0), rot=(-0.8, 0, 0),
-                          boxes=[box((-0.75, 0, -0.75), (1.5, 3.5, 1.5), shin_mat)], children=[
+                          boxes=[box((-1.1, 0, -1.1), (2.2, 3.5, 2.2), shin_mat)], children=[
                               part("foot_r", pivot=(0, 3.5, 0), rot=(0.3, 0, 0),
-                                   boxes=[box((-1, -0.5, -2), (2, 1, 3), shin_mat)],
+                                   boxes=[box((-1.5, -0.5, -2.25), (3, 1, 3.5), shin_mat)],
                                    children=[part("toe_r", pivot=(0, 0, -2), rot=(0.4, 0, 0),
                                                   boxes=[box((-0.5, -0.5, -2), (1, 1, 2), "hook")])])])]
     if spikes:
         shin_children += [part(f"shin_spur_r{i}", pivot=(0, 1.5 + i * 2, 0.9), rot=(1.1, 0, 0),
                                boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "spike")]) for i in range(2)]
     return part("right_leg", pivot=(side_x, 12, 0), rot=(-0.6, 0, 0),
-                boxes=[box((-1.25, 0, -1.25), (2.5, 5, 2.5), thigh_mat)], children=[
+                boxes=[box((-1.75, 0, -1.75), (3.5, 5, 3.5), thigh_mat),
+                       box((-2, 0.5, -2.1), (4, 3, 1), "hb_shell")], children=[
                     part("shin_r", pivot=(0, 5, 0), rot=(1.1, 0, 0),
-                         boxes=[box((-1, 0, -1), (2, 5.5, 2), shin_mat)], children=shin_children)])
+                         boxes=[box((-1.5, 0, -1.5), (3, 5.5, 3), shin_mat)], children=shin_children)])
 
 
 # ----------------------------------------------------------------------------- Lancer-Drone
 
 def hive_lancer():
-    """Hive spearman: a lean, four-armed ant warrior with a double-bladed polearm and a throwing blade."""
+    """Hive spearman: a sturdy, armored four-armed ant warrior with a double-bladed polearm and a throwing blade."""
     head = part("head", pivot=(0, 0, -0.5), boxes=[
         box((-2.5, -7.5, -3), (5, 4.5, 6), "hc_head"),
-        box((-2, -3.5, -3.75), (4, 3, 4.5), "hc_head"),
+        box((-2.25, -3.5, -3.75), (4.5, 3, 4.75), "hc_head"),
     ], children=[
         part("eye_r", pivot=(-2.4, -5.6, -1.6), rot=(0, 0.25, 0), boxes=[box((-0.8, -1.5, -1.6), (1, 3, 3.2), "eye")]),
         part("mandible_r", pivot=(-1.2, -0.6, -3.4), rot=(0.25, 0.3, 0), boxes=[box((-0.5, 0, -0.5), (1, 2, 1), "mandible")],
@@ -62,33 +63,36 @@ def hive_lancer():
     ])
     head["children"] += [mirror(c) for c in list(head["children"])]
 
-    lower_arm = part("lower_arm_r", pivot=(-3, 5.5, -0.5), rot=(-0.55, 0, 0.35),
-                     boxes=[box((-0.75, 0, -0.75), (1.5, 4.5, 1.5), "hc_plate")], children=[
+    lower_arm = part("lower_arm_r", pivot=(-3.75, 5.5, -0.5), rot=(-0.55, 0, 0.35),
+                     boxes=[box((-1.25, 0, -1.25), (2.5, 4.5, 2.5), "hc_plate")], children=[
                          part("lower_forearm_r", pivot=(0, 4.5, 0), rot=(-0.9, 0, -0.25),
-                              boxes=[box((-0.6, 0, -0.6), (1.2, 4.5, 1.2), "hc_dark")], children=[
+                              boxes=[box((-1.1, 0, -1.1), (2.2, 4.5, 2.2), "hc_dark")], children=[
                                   part("lower_hand_r", pivot=(0, 4.5, 0),
-                                       boxes=[box((-0.75, 0, -0.75), (1.5, 1.5, 1.5), "hc_dark")])])])
+                                       boxes=[box((-1.25, 0, -1.25), (2.5, 2, 2.5), "hc_dark")])])])
     lower_arm_l = mirror(lower_arm)
     attach({"parts": [lower_arm_l]}, "lower_hand_l",
            part("chatkcha", pivot=(0, 1.2, -0.6), rot=(0.2, 0, 0.5), boxes=[box((-2, -0.25, -2), (4, 0.5, 4), "chatkcha")]))
 
     body = part("body", rot=(0.08, 0, 0), boxes=[
-        box((-3.5, 0, -2), (7, 5, 4), "hc_plate"),
-        box((-1.5, 5, -1.25), (3, 4, 2.5), "hc_dark"),
-        box((-3, 9, -2), (6, 3, 4), "hc_plate"),
+        box((-4, 0, -2.5), (8, 5.5, 5), "hc_plate"),                      # chest
+        box((-3.5, 0.5, -3.1), (7, 4, 0.75), "hb_shell"),                 # breast plate
+        box((-3.5, 0, 2.2), (7, 7, 1.3), "hb_shell"),                     # back shell
+        box((-2.25, 5.5, -1.75), (4.5, 3.5, 3.5), "hc_dark"),             # waist
+        box((-3.5, 9, -2.25), (7, 3, 4.5), "hc_plate"),                   # hips
     ], children=[
-        part("wrap", boxes=[box((-4.5, -0.6, -2.6), (9, 2.6, 5.2), "wrap")], children=[
-            part("wrap_tail", pivot=(1.5, 2, 2.6), rot=(0.25, 0, 0.12), boxes=[box((-2, 0, 0), (4, 7, 0), "wrap_rag")])]),
-        part("skirt_front", pivot=(0, 11, -2.15), rot=(-0.06, 0, 0), boxes=[box((-3, 0, 0), (6, 6, 0), "grass")]),
-        part("skirt_back", pivot=(0, 11, 2.15), rot=(0.06, 0, 0), boxes=[box((-3, 0, 0), (6, 6, 0), "grass")]),
+        part("wrap", boxes=[box((-5, -0.6, -3.2), (10, 2.6, 6.4), "wrap")], children=[
+            part("wrap_tail", pivot=(1.5, 2, 3.2), rot=(0.25, 0, 0.12), boxes=[box((-2, 0, 0), (4, 7, 0), "wrap_rag")])]),
+        part("skirt_front", pivot=(0, 11, -2.4), rot=(-0.06, 0, 0), boxes=[box((-3.5, 0, 0), (7, 6, 0), "grass")]),
+        part("skirt_back", pivot=(0, 11, 2.4), rot=(0.06, 0, 0), boxes=[box((-3.5, 0, 0), (7, 6, 0), "grass")]),
         lower_arm, lower_arm_l,
     ])
 
-    arm = part("right_arm", pivot=(-5, 2, 0), boxes=[box((-1.5, -2, -1.5), (2.5, 5.5, 3), "hc_plate")], children=[
+    arm = part("right_arm", pivot=(-5.5, 2, 0), boxes=[box((-2, -2, -1.75), (3.5, 5.5, 3.5), "hc_plate"),
+                                                       box((-2.5, -2.75, -2.25), (4, 2.5, 4.5), "hb_shell")], children=[
         part("forearm_r", pivot=(-0.25, 3.5, 0), rot=(-0.15, 0, 0),
-             boxes=[box((-1, 0, -1), (2, 6.5, 2), "hc_dark")], children=[
-                 part("forearm_r_spur", pivot=(0, 2, 1), rot=(1.0, 0, 0), boxes=[box((-0.5, -2, -0.5), (1, 2, 1), "spike")]),
-                 part("hand_r", pivot=(0, 6.5, 0), boxes=[box((-1, 0, -1), (2, 2, 2), "hc_dark")])])])
+             boxes=[box((-1.5, 0, -1.5), (3, 6.5, 3), "hc_dark")], children=[
+                 part("forearm_r_spur", pivot=(0, 2, 1.4), rot=(1.0, 0, 0), boxes=[box((-0.5, -2.5, -0.5), (1, 2.5, 1), "spike")]),
+                 part("hand_r", pivot=(0, 6.5, 0), boxes=[box((-1.5, 0, -1.5), (3, 2.5, 3), "hc_dark")])])])
     arm_l = mirror(arm)
     # The gythka: a long haft with a curved blade at each end, gripped in the upper right hand.
     attach({"parts": [arm]}, "hand_r", part("gythka", pivot=(0, 1, -0.5), rot=(1.35, 0, 0.15),

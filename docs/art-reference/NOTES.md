@@ -51,6 +51,8 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - **Gear:** a ragged purple and magenta shoulder wrap and a short straw-and-grass skirt. Otherwise bare chitin.
 - **Colors:** orange to rust chitin, with darker segment joints. Should shift toward the Hive's sculk look if we
   recolor the Hive, keeping the green eyes.
+- **Owner direction:** sculk colors (settled). Bulk it up: thicker limbs and more chitin plating (shoulders,
+  breastplate, back shell), same height and weapons. Render: `hive-lancer-bulk.png`.
 
 ## Hive: beast unit - `hive-beast.png`
 - A Hive war beast, not the player character. Look at the picture only; ignore the book text.
