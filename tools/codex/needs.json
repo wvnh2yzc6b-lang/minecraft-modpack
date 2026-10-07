@@ -114,6 +114,10 @@
   ],
   "settled": [
     {
+      "topic": "Dwarf",
+      "answer": "Dwarf identity. Race power, Hold the Line: standing your ground in a fight builds Resolve (0-100), which adds armor and knockback resistance; sprinting away bleeds it, and it drains out of combat. At full Resolve, crouch to swear an Oath of Stone: a few seconds of near-immovability and much less damage taken, ending in a stone shockwave that knocks enemies back. Dwarf soldiers build it too and swear the Oath on their own. It is the opposite of the orc Frenzy: defense instead of offense. Start: a new dwarf player begins at a small carved hold gate in the nearest mountainside, with a short starter tunnel, the way Hive players start in a cave. Economy, deep miners: dwarves get extra crystals from Mana Ore and mine stone faster, but Manabloom gives them fewer shards."
+    },
+    {
       "topic": "Endgame",
       "answer": "The hidden warlord's fortress is the battlefield where the two brothers' first war ended, sealed out of time in its own pocket dimension: ruined ground with ancient armies of every race turned to stone in mid-fight. The seven War Maps join into a portal to it. The brothers are designed together: one face and build, the advisor shining and robed, the brother scarred and armored, so players can notice the resemblance before the reveal."
     },
