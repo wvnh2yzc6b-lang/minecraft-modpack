@@ -102,6 +102,10 @@
   ],
   "settled": [
     {
+      "topic": "Dwarf",
+      "answer": "Dwarves don't fly; they tunnel. A dwarf-only rune drill digs 3×3 tunnels fast, and dwarves can line them with rune stone that enemies (raiders, Hive tunnelers, explosions) struggle to break, so their tunnels are an underground fortress. Tunnel traps: a spike floor (hidden, reusable), a rune mine (explodes on enemies only, single use, costs a Mana Crystal) and a flame vent (fires down the tunnel, runs on base mana like a tower)."
+    },
+    {
       "topic": "Pack",
       "answer": "The Hive's Otherside reward is echo armor: Hive player armor made from Deeper and Darker's echo materials, stronger in the dark and underground, with quieter footsteps. No second Hive beast; the Deepmaw stays their one war beast."
     },
@@ -211,7 +215,7 @@
     },
     {
       "topic": "Players",
-      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: the Mana Glider. Demons already fly on their wings. Flight mechanics are decided (see the flight decision); the player models wait on your references."
+      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: the Mana Glider. Demons already fly on their wings. Dwarves tunnel instead of flying. Flight mechanics are decided (see the flight decision); the player models wait on your references."
     },
     {
       "topic": "Hive",

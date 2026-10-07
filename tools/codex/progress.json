@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: dwarves dig in",
+      "detail": "Dwarves get tunnels instead of flight: a Rune Drill that cuts 3x3 tunnels fast, Rune Stone walls that raiders and Hive tunnelers can't break through, and three tunnel traps: a hidden spike floor, a rune mine that only blows up enemies, and a flame vent that runs on base mana. Queued for a build session."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: flight for orcs, angels and elves, and Hive echo armor",
       "detail": "Decided: orcs get a loud fuel-burst rocket pack for short, strong jumps and dives; angels fly freely by day under open sky and only glide at night or underground; elves cast levitate and wind leap with Iron's Spells mana (Mana Shards without that mod). Queued for a build session with placeholder looks until the references come. From the Otherside, the Hive gets echo armor: stronger in the dark and underground, with quiet footsteps."
     },
