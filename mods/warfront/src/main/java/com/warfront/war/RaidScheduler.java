@@ -137,7 +137,8 @@ public final class RaidScheduler {
             }
             c.nextFaction = "";
         }
-        if (f == null) f = NpcFaction.pick(biomeLevel.getBiome(where), biomeLevel, p.getRandom());
+        if (f == null) f = Campaign.pick(p, c, p.getRandom());
+        else Campaign.remember(c, f);
         c.pending = type;
         c.faction = f.name();
         c.hitsAt = now + WFConfig.RAID_WARNING.get();
@@ -211,7 +212,11 @@ public final class RaidScheduler {
             GameEvents.trySpawnWarband(p);
             return;
         }
-        if (type != WarState.Pending.SIEGE || !standard.startSiege(home, f)) raidBase(home, c.home, f, p, c);
+        if (type == WarState.Pending.SIEGE && standard.startSiege(home, f)) {
+            if (standard.getWarbandId() != null) Campaign.track(standard.getWarbandId(), p.getUUID(), f);
+        } else {
+            raidBase(home, c.home, f, p, c);
+        }
         // The base stays loaded while the attack plays out, so towers and guards fight even with the player away.
         ACTIVE_HOMES.put(p.getUUID(), new ActiveHome(home, c.home, now + ACTIVE_TICKS));
     }
@@ -253,8 +258,9 @@ public final class RaidScheduler {
         BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
         String key = Factions.keyOf(level.getServer(), p);
         int baseLevel = BaseLevel.of(level, home, key).level();
-        WarbandSpawner.spawn(level, f, raidRoles(c, f, level.random, baseLevel, WarState.get(level.getServer()).preset()),
+        java.util.UUID band = WarbandSpawner.spawn(level, f, raidRoles(c, f, level.random, baseLevel, WarState.get(level.getServer()).preset()),
                 ground, Vec3.atBottomCenterOf(home), null, Math.min(4, baseLevel));
+        Campaign.track(band, p.getUUID(), f);
         com.warfront.alert.Alerts.banner(p, "raid_arrived", "They're here!", "The " + f.displayName + " have reached your base.",
                 f.color.getColor() == null ? 0xFFFFFF : f.color.getColor());
     }

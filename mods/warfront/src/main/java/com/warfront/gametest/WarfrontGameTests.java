@@ -1087,4 +1087,63 @@ public final class WarfrontGameTests {
         h.assertTrue(!standard.hasOutpost(h.getLevel()), "with the outpost gone the wave can be won");
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ campaign
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void beatenRaidsFillTheMeterAndTheMapNeedsBaseLevel3(GameTestHelper h) {
+        Player p = tester(h);
+        NpcFaction f = NpcFaction.MARAUDERS;
+        com.warfront.war.Campaign.raidBeaten(p, f, null);
+        h.assertTrue(com.warfront.war.Campaign.meter(p, f) == 1, "beating a raid raises its faction's meter");
+        int full = com.warfront.config.WFConfig.WAR_MAP_RAIDS.get();
+        com.warfront.war.Campaign.setMeter(p, f, full - 1);
+        SoldierEntity last = raider(h, SoldierRole.SWORDSMAN, 6, 6);
+        h.assertTrue(!com.warfront.war.Campaign.raidBeaten(p, f, last), "no map before the meter is full");
+        h.assertTrue(!com.warfront.war.Campaign.raidBeaten(p, f, last), "no map below base level 3");
+        BlockPos wellPos = new BlockPos(2, 2, 2);
+        h.setBlock(wellPos, WFRegistry.MANA_WELL.get());
+        var well = (ManaWellBlockEntity) h.getBlockEntity(wellPos);
+        well.setOwner(p.getUUID());
+        h.runAfterDelay(2, () -> {
+            well.setTestLevel(3);
+            boolean dropped = com.warfront.war.Campaign.raidBeaten(p, f, last);
+            h.assertTrue(dropped, "with a full meter at base level 3 the last raider drops the War Map");
+            boolean onGround = !h.getLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, last.getBoundingBox().inflate(3),
+                    e -> e.getItem().is(WFRegistry.WAR_MAP.get()) && com.warfront.war.Campaign.mapFaction(e.getItem()) == f).isEmpty();
+            h.assertTrue(onGround, "the War Map should lie by the last raider");
+            last.discard();
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void renegadesWaitForTheOtherSixWarlords(GameTestHelper h) {
+        Player p = tester(h);
+        p.setData(WFRegistry.RACE, Race.HUMAN.id());
+        NpcFaction own = com.warfront.war.Campaign.renegades(Race.HUMAN);
+        h.assertTrue(own == NpcFaction.BLACK_LEGION, "human renegades are the Black Legion");
+        var clock = new com.warfront.war.WarState.Clock();
+        var rng = net.minecraft.util.RandomSource.create(9);
+        for (int i = 0; i < 200; i++) {
+            h.assertTrue(com.warfront.war.Campaign.pick(p, clock, rng) != own, "renegades raided before the six warlords fell");
+        }
+        int beaten = 0;
+        for (NpcFaction f : NpcFaction.values()) {
+            if (f == own) continue;
+            if (++beaten == 6) h.assertTrue(!com.warfront.war.Campaign.mayRaid(p, own), "five warlords aren't enough");
+            com.warfront.war.Campaign.setWarlordBeaten(p, f, true);
+        }
+        h.assertTrue(com.warfront.war.Campaign.mayRaid(p, own), "after six warlords the renegades come");
+        int inARow = 0, maxRow = 0;
+        NpcFaction prev = null;
+        for (int i = 0; i < 300; i++) {
+            NpcFaction f = com.warfront.war.Campaign.pick(p, clock, rng);
+            inARow = f == prev ? inARow + 1 : 1;
+            maxRow = Math.max(maxRow, inARow);
+            prev = f;
+        }
+        h.assertTrue(maxRow <= 3, "no faction raids more than three times in a row, saw " + maxRow);
+        h.succeed();
+    }
 }

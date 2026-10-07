@@ -107,6 +107,17 @@ public final class TestCommands {
                         .then(simple("siege", "raid", "siege"))
                         .then(simple("grace", "raid", "grace"))
                         .then(simple("recall", "raid", "recall")))
+                .then(Commands.literal("war")
+                        .then(simple("status", "war", "status"))
+                        .then(Commands.literal("meter").then(Commands.argument("faction", StringArgumentType.word()).suggests(FACTIONS)
+                                .then(Commands.argument("n", IntegerArgumentType.integer(0, 100))
+                                        .executes(ctx -> run(ctx, "war", "meter", str(ctx, "faction"), num(ctx, "n"))))))
+                        .then(Commands.literal("map").then(Commands.argument("faction", StringArgumentType.word()).suggests(FACTIONS)
+                                .executes(ctx -> run(ctx, "war", "map", str(ctx, "faction")))))
+                        .then(Commands.literal("beaten").then(Commands.argument("which", StringArgumentType.word())
+                                .suggests((c, b) -> SharedSuggestionProvider.suggest(Stream.concat(Stream.of("all", "none"),
+                                        Arrays.stream(NpcFaction.values()).map(f -> f.name().toLowerCase(Locale.ROOT))), b))
+                                .executes(ctx -> run(ctx, "war", "beaten", str(ctx, "which"))))))
                 .then(Commands.literal("advisor")
                         .then(Commands.literal("step").then(Commands.argument("step", IntegerArgumentType.integer(0, 7))
                                 .executes(ctx -> run(ctx, "advisor", "step", num(ctx, "step")))))
@@ -156,6 +167,7 @@ public final class TestCommands {
                 "/wftest player race <race>|fill|day|night|clear|god|kit",
                 "/wftest difficulty <easy|normal|hard|warlord>",
                 "/wftest raid warn|siege|grace|recall",
+                "/wftest war status|meter <faction> <n>|map <faction>|beaten <faction|all|none>",
                 "/wftest advisor step <0-7>|respawn|disguise <race>"
         };
         for (String l : lines) ctx.getSource().sendSuccess(() -> Component.literal(l).withStyle(ChatFormatting.AQUA), false);

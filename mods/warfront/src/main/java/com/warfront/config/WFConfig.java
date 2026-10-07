@@ -46,6 +46,7 @@ public final class WFConfig {
     public static final ModConfigSpec.DoubleValue[] PRESET_STRENGTH = new ModConfigSpec.DoubleValue[4];
     public static final ModConfigSpec.DoubleValue[] PRESET_RAIDS_PER_DAY = new ModConfigSpec.DoubleValue[4];
     public static final ModConfigSpec.IntValue GRACE_DAYS;
+    public static final ModConfigSpec.IntValue WAR_MAP_RAIDS;
     public static final ModConfigSpec.DoubleValue AWAY_RAID_RATE;
     public static final ModConfigSpec.IntValue RAID_WARNING;
     public static final ModConfigSpec.IntValue SIEGE_MIN_DAYS;
@@ -124,6 +125,9 @@ public final class WFConfig {
         b.pop();
 
         b.push("pacing");
+        WAR_MAP_RAIDS = b.comment("Raids of a faction you must beat to fill its war meter; the next raid you beat after that (at base",
+                        "level 3+) drops its War Map.")
+                .defineInRange("warMapRaids", 5, 1, 100);
         GRACE_DAYS = b.comment("No raids or sieges in a world's first days, and not before the advisor's quest reaches",
                         "'plant a War Standard' (whichever is later).")
                 .defineInRange("graceDays", 3, 0, 100);

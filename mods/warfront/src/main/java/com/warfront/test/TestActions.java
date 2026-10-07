@@ -133,6 +133,35 @@ public final class TestActions {
                     case "recall" -> testRecall(player);
                     default -> Result.fail("raid warn|siege|grace|recall");
                 };
+                case "war" -> switch (b) {
+                    case "meter" -> {
+                        NpcFaction f = faction(arg(args, 2));
+                        if (f == null) yield Result.fail("Unknown faction.");
+                        com.warfront.war.Campaign.setMeter(player, f, parseInt(arg(args, 3), 0));
+                        yield Result.ok(f.displayName + " war meter set to " + com.warfront.war.Campaign.meter(player, f) + ".");
+                    }
+                    case "map" -> {
+                        NpcFaction f = faction(arg(args, 2));
+                        if (f == null) yield Result.fail("Unknown faction.");
+                        ItemStack map = com.warfront.war.Campaign.warMap(f);
+                        if (!player.getInventory().add(map)) player.drop(map, false);
+                        yield Result.ok("War Map: " + f.displayName + ".");
+                    }
+                    case "beaten" -> {
+                        String which = arg(args, 2);
+                        boolean on = !"no".equals(arg(args, 3));
+                        for (NpcFaction f : NpcFaction.values()) {
+                            if (which.equals("all") || which.equals(f.name().toLowerCase(Locale.ROOT))) com.warfront.war.Campaign.setWarlordBeaten(player, f, on);
+                            if (which.equals("none")) com.warfront.war.Campaign.setWarlordBeaten(player, f, false);
+                        }
+                        yield Result.ok(com.warfront.war.Campaign.warlordsBeaten(player) + " warlords marked beaten.");
+                    }
+                    case "status" -> {
+                        com.warfront.war.Campaign.status(player).forEach(player::sendSystemMessage);
+                        yield Result.ok("War meters listed in chat.");
+                    }
+                    default -> Result.fail("war meter <faction> <n>|map <faction>|beaten <faction|all|none> [no]|status");
+                };
                 case "advisor" -> switch (b) {
                     case "step" -> advisorStep(player, parseInt(arg(args, 2), 0));
                     case "respawn" -> advisorRespawn(player);

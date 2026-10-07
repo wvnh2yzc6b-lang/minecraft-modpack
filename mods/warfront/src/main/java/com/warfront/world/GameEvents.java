@@ -60,6 +60,7 @@ public final class GameEvents {
         com.warfront.upkeep.MessHallBlockEntity.clearAll();
         com.warfront.upkeep.RaidDamage.clearAll();
         com.warfront.outpost.Outposts.clearAll();
+        com.warfront.war.Campaign.clearAll();
     }
 
     // ------------------------------------------------------------ players
@@ -221,6 +222,7 @@ public final class GameEvents {
         if (event.getSource().getEntity() instanceof LivingEntity killer && Race.of(killer) == Race.DEMON) {
             Souls.harvest(killer, victim);
         }
+        if (victim instanceof SoldierEntity raider && raider.getOwnerUUID() == null) com.warfront.war.Campaign.raiderDied(raider);
         if (event.getSource().getEntity() instanceof SoldierEntity killer && killer != victim) {
             killer.addXp(com.warfront.army.Veterancy.killXp(victim.getMaxHealth()));
         }
@@ -334,11 +336,13 @@ public final class GameEvents {
                 : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(x, 0, z));
         if (ground == null || !level.getFluidState(ground.below()).isEmpty()) return false;
 
-        NpcFaction faction = NpcFaction.pick(level.getBiome(ground), level, player.getRandom());
+        NpcFaction faction = com.warfront.war.Campaign.pick(player,
+                com.warfront.war.WarState.get(level.getServer()).clock(player.getUUID()), player.getRandom());
         int tier = 1 + (int) (level.getCurrentDifficultyAt(player.blockPosition()).getEffectiveDifficulty() / 2);
-        WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction, 1,
+        java.util.UUID band = WarbandSpawner.spawn(level, faction, WarbandSpawner.raidComposition(player.getRandom(), faction, 1,
                         com.warfront.war.WarState.get(level.getServer()).preset()), ground,
                 player.position(), null, tier);
+        com.warfront.war.Campaign.track(band, player.getUUID(), faction);
         com.warfront.alert.Alerts.toast(player, "warband", faction == NpcFaction.THE_SWARM ? "The ground trembles" : "War drums",
                 faction == NpcFaction.THE_SWARM ? "A Swarm brood is tunneling toward you."
                         : "A " + faction.displayName + " warband is marching on you.",

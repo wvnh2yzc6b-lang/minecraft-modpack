@@ -86,6 +86,8 @@ public class WarState extends SavedData {
         /** When the merchant's caravan comes next (0: not scheduled), and whether it skips that visit. */
         public long merchantDue;
         public boolean merchantSkip;
+        /** The factions that raided last, oldest first (the campaign keeps raids mixed). */
+        public java.util.List<String> recentFactions = new java.util.ArrayList<>();
         @Nullable public BlockPos home;
         @Nullable public ResourceKey<Level> homeDim;
 
@@ -105,6 +107,7 @@ public class WarState extends SavedData {
             t.putString("ShrinkFaction", shrinkFaction);
             t.putLong("MerchantDue", merchantDue);
             t.putBoolean("MerchantSkip", merchantSkip);
+            t.putString("Recent", String.join(",", recentFactions));
             if (home != null && homeDim != null) {
                 t.putLong("Home", home.asLong());
                 t.putString("HomeDim", homeDim.location().toString());
@@ -132,6 +135,7 @@ public class WarState extends SavedData {
             c.shrinkFaction = t.getString("ShrinkFaction");
             c.merchantDue = t.getLong("MerchantDue");
             c.merchantSkip = t.getBoolean("MerchantSkip");
+            for (String f : t.getString("Recent").split(",")) if (!f.isEmpty()) c.recentFactions.add(f);
             if (t.contains("Home")) {
                 c.home = BlockPos.of(t.getLong("Home"));
                 c.homeDim = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(t.getString("HomeDim")));

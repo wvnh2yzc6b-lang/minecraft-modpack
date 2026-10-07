@@ -3,19 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "campaign-wars",
-      "status": "ready",
-      "title": "Campaign, part 1: random mixed raids and war meters",
-      "decided": "Owner, 2026-10-07: campaign endgame. Random mixed raids start wars; beating a faction's raids opens its warlord's fortress in its homeland; you march on it; own race's renegades last; then the hidden warlord behind the wars. Rewards: base trophy, warlord gear, Warlord title.",
-      "spec": [
-        "Raids pick their faction at random, weighted so it stays mixed (no faction more than about 3 times in a row; factions not seen for a while get more likely). The player's own race's renegades only start raiding after the other six warlords are beaten.",
-        "War meter per player per faction (player attachment, saved): +1 per raid of that faction beaten (all raiders dead or routed near your base). At 5 (config) with base level 3+, the last raider of the next beaten raid drops that faction's War Map. Meters show in the War Table later (ui-war-table) and in /wftest.",
-        "War Map item: a filled map pointing to the faction's fortress (vanilla explorer-map style, using the structure tag from campaign-fortresses), named for the faction.",
-        "Test Panel: set any meter, give any War Map, mark warlords beaten.",
-        "Game tests: beating a raid raises its faction's meter; the War Map drops only at the threshold and base level; renegades of your own race don't raid until six warlords are down."
-      ]
-    },
-    {
       "id": "campaign-fortresses",
       "status": "ready",
       "title": "Campaign, part 2: warlord fortresses in each homeland",

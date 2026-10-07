@@ -215,7 +215,10 @@ public class WarStandardBlockEntity extends BlockEntity {
         if (warband != null) return false;
         wave++;
         BlockPos biomePos = worldPosition;
-        NpcFaction faction = chosen != null ? chosen : NpcFaction.pick(level.getBiome(biomePos), level, level.random);
+        ServerPlayer host = owner == null ? null : level.getServer().getPlayerList().getPlayer(owner);
+        NpcFaction faction = chosen != null ? chosen : host != null
+                ? com.warfront.war.Campaign.pick(host, com.warfront.war.WarState.get(level.getServer()).clock(owner), level.random)
+                : NpcFaction.pick(level.getBiome(biomePos), level, level.random);
         int baseLevel = com.warfront.world.BaseLevel.of(level, worldPosition, factionKey(level.getServer())).level();
         double scale = com.warfront.war.WarState.get(level.getServer()).preset().raidSize() * (1.0 + 0.15 * (baseLevel - 1));
         List<SoldierRole> roles = WarbandSpawner.siegeComposition(wave, faction, scale);
@@ -247,6 +250,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         }
 
         warband = id;
+        if (host != null) com.warfront.war.Campaign.track(id, owner, faction);
         if (com.warfront.outpost.Outposts.shouldRaise(wave)) {
             outpostChest = com.warfront.outpost.Outposts.raise(level, this, faction, wave, id);
             if (outpostChest != null) {

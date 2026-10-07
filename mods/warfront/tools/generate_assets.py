@@ -120,6 +120,27 @@ def item_textures():
     ]
     save(sprite(mark, {"D": hexc("7a5300"), "G": hexc("c9a227"), "Y": hexc("f4d35e"),
                        "R": hexc("8b1a1a")}), "item/war_mark.png")
+    # War Map: rolled parchment with a red route and an X.
+    rows = [
+        "................",
+        "..WWWWWWWWWWWW..",
+        ".WPPPPPPPPPPPPW.",
+        ".WPPpPPPPPPPPPW.",
+        ".WPPPrPPPPXPXPW.",
+        ".WPPPPrPPPPXPPW.",
+        ".WPpPPPrrPXPXPW.",
+        ".WPPPPPPPrPPPPW.",
+        ".WPPPPPPPPrPPPW.",
+        ".WPPpPPPPPPrPPW.",
+        ".WPPPPPPPPPPrPW.",
+        ".WPPPPPpPPPPPPW.",
+        ".WPPPPPPPPPPPPW.",
+        "..WWWWWWWWWWWW..",
+        "................",
+        "................",
+    ]
+    save(sprite(rows, {"W": hexc("7a5a2a"), "P": hexc("e8d8a8"), "p": hexc("c8b888"), "r": hexc("8b1a1a"),
+                       "X": hexc("c0281e")}), "item/war_map.png")
 
     horn = [
         "................",
@@ -626,7 +647,7 @@ def models_and_states():
     write_json(ASSETS / "models" / "item" / "war_standard.json", {"parent": f"{MODID}:block/war_standard"})
 
     for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"), ("mason_hammer", "handheld"),
-                         ("war_mark", "generated"), ("war_horn", "generated"), ("mana_glider", "generated")]:
+                         ("war_mark", "generated"), ("war_map", "generated"), ("war_horn", "generated"), ("mana_glider", "generated")]:
         write_json(ASSETS / "models" / "item" / f"{item}.json",
                    {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
     write_json(ASSETS / "models" / "item" / "soldier_spawn_egg.json", {"parent": "minecraft:item/template_spawn_egg"})
@@ -702,6 +723,7 @@ def lang():
         "item.warfront.commander_baton": "Commander's Baton",
         "item.warfront.healing_staff": "Healing Staff",
         "item.warfront.war_mark": "War Mark",
+        "item.warfront.war_map": "War Map",
         "item.warfront.war_horn": "War Horn",
         "item.warfront.soldier_spawn_egg": "Raider Spawn Egg",
         "entity.warfront.soldier": "Soldier",

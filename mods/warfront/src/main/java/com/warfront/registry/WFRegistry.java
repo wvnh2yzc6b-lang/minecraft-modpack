@@ -81,6 +81,13 @@ public final class WFRegistry {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<String>> ADVISOR = ATTACHMENTS.register(
             "advisor", () -> AttachmentType.builder(() -> "").serialize(Codec.STRING).copyOnDeath().build());
 
+    /** Campaign: war meter per NPC faction, and which warlords the player has beaten (a bit per faction). */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<net.minecraft.nbt.CompoundTag>> WAR_METERS = ATTACHMENTS.register(
+            "war_meters", () -> AttachmentType.builder(() -> new net.minecraft.nbt.CompoundTag())
+                    .serialize(net.minecraft.nbt.CompoundTag.CODEC).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Integer>> WARLORDS_BEATEN = ATTACHMENTS.register(
+            "warlords_beaten", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+
     // ---- entities ----
     public static final DeferredHolder<EntityType<?>, EntityType<com.warfront.advisor.AdvisorEntity>> ADVISOR_ENTITY =
             ENTITIES.register("advisor", () -> EntityType.Builder.<com.warfront.advisor.AdvisorEntity>of(
@@ -199,6 +206,8 @@ public final class WFRegistry {
     public static final DeferredItem<HealingStaffItem> HEALING_STAFF = ITEMS.register("healing_staff",
             () -> new HealingStaffItem(new Item.Properties().durability(128)));
     public static final DeferredItem<Item> WAR_MARK = ITEMS.registerSimpleItem("war_mark");
+    public static final DeferredItem<com.warfront.war.WarMapItem> WAR_MAP = ITEMS.register("war_map",
+            () -> new com.warfront.war.WarMapItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     public static final DeferredItem<com.warfront.flight.ManaGliderItem> MANA_GLIDER = ITEMS.register("mana_glider",
             () -> new com.warfront.flight.ManaGliderItem(new Item.Properties().durability(320).rarity(Rarity.UNCOMMON)));
     /** Carried by builders; a display tool with no use of its own. */
