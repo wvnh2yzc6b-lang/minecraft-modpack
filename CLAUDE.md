@@ -72,7 +72,10 @@ When the owner decides something: move it from `questions` to `settled` in `need
   (`.github/workflows/build.yml`). Push, then check the run (GitHub MCP tools) and fix failures before moving on.
 - **Game tests** (`WarfrontGameTests.java`) run in parallel 9×9 arenas: archers and mobs from a neighbouring arena
   can interfere, so assert on the thing under test (counters, state), not on a mob's health. Block entities join
-  the mana network on their first tick: wait a couple of ticks before using it.
+  the mana network on their first tick: wait a couple of ticks before using it. Spawn test mobs at y=2 (as
+  `archerShootsEnemy` does): at y=1 they sit in the arena floor and towers have no line of sight. When a test
+  fails for an unclear reason, put the state in the failure message (as `towersFireOnlyWithMana` does) so the
+  next CI run says what went wrong.
 - **Git:** `git rm` stages immediately, so a deletion can ride along in an unrelated commit and break CI; stage
   with explicit paths. Commit messages describe the change in plain words.
 - Work on the session's designated branch and push there; don't open PRs unless asked.
