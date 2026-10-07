@@ -6,7 +6,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 
 /**
- * The Hive Lancer-Drone: four arms, antennae and bent-back legs. Geometry comes from
+ * The Hive Lancer-Drone: four arms, antennae and bent-back legs, with a spear held in both upper hands. Geometry
+ * comes from
  * {@link UnitGeometry#hive_lancer()}; this class only animates it.
  */
 public class LancerModel extends HumanoidModel<SoldierEntity> {
@@ -44,9 +45,15 @@ public class LancerModel extends HumanoidModel<SoldierEntity> {
         body.xRot += bodyPitch;
         rightLeg.xRot += legPitch;
         leftLeg.xRot += legPitch;
-        // Upper arms carry the polearm at the ready.
-        rightArm.xRot -= 0.35F;
-        leftArm.xRot -= 0.25F;
+        // Upper arms hold the spear in both hands at the ready (same pose as SPEAR_ARM_R/L in hive_units.py). Both
+        // arms move together so the front hand stays on the haft; an attack thrusts the spear forward.
+        float carry = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount * 0.12F - attackTime * 0.9F;
+        rightArm.xRot = -0.3F + carry;
+        rightArm.yRot = 0F;
+        rightArm.zRot = -0.6F;
+        leftArm.xRot = -0.9F + carry;
+        leftArm.yRot = 0F;
+        leftArm.zRot = 0.4F;
         // The lower arms swing against the stride; antennae twitch.
         float swing = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount * 0.6F;
         lowerArmR.xRot = lowerArmX + swing;

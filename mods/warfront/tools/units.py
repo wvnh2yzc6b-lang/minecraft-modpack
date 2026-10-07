@@ -1126,7 +1126,7 @@ public final class UnitGeometry {{
 
 import worker_gear
 import hive_units
-hive_units.bind(dict(part=part, box=box, mirror=mirror, attach=attach, hexc=hexc, mix=mix, shade=shade, glow=glow,
+hive_units.bind(dict(part=part, box=box, mirror=mirror, attach=attach, find=find, hexc=hexc, mix=mix, shade=shade, glow=glow,
                      edge=edge))
 worker_gear.bind(dict(part=part, box=box, mirror=mirror, overlay=overlay, attach=attach, find=find, hexc=hexc,
                       mix=mix, shade=shade, glow=glow, edge=edge, leather_px=leather_px, iron_px=iron_px,

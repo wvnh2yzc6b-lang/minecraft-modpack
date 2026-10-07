@@ -46,8 +46,14 @@ def _leg(side_x, thigh_mat, shin_mat, spikes=True):
 
 # ----------------------------------------------------------------------------- Lancer-Drone
 
+# Upper-arm pose for the two-handed spear grip (radians). Mirrored in LancerModel.java; if you change these,
+# re-solve the spear angle so the haft still runs through the left hand.
+SPEAR_ARM_R = (-0.3, 0, -0.6)
+SPEAR_ARM_L = (-0.9, 0, 0.4)
+SPEAR_FOREARM_L = -0.4
+
 def hive_lancer():
-    """Hive spearman: a sturdy, armored four-armed ant warrior with a double-bladed polearm and a throwing blade."""
+    """Hive spearman: a sturdy, armored four-armed ant warrior with a two-handed spear and clawed lower hands."""
     head = part("head", pivot=(0, 0, -0.5), boxes=[
         box((-2.5, -7.5, -3), (5, 4.5, 6), "hc_head"),
         box((-2.25, -3.5, -3.75), (4.5, 3, 4.75), "hc_head"),
@@ -68,10 +74,13 @@ def hive_lancer():
                          part("lower_forearm_r", pivot=(0, 4.5, 0), rot=(-0.9, 0, -0.25),
                               boxes=[box((-1.1, 0, -1.1), (2.2, 4.5, 2.2), "hc_dark")], children=[
                                   part("lower_hand_r", pivot=(0, 4.5, 0),
-                                       boxes=[box((-1.25, 0, -1.25), (2.5, 2, 2.5), "hc_dark")])])])
+                                       boxes=[box((-1.25, 0, -1.25), (2.5, 2, 2.5), "hc_dark")], children=[
+                                           # Two hooked claw fingers on each lower hand.
+                                           part("lower_claw_r", pivot=(0, 2, -0.8), rot=(0.45, 0, 0),
+                                                boxes=[box((-0.45, 0, -0.45), (0.9, 2, 0.9), "hook")]),
+                                           part("lower_claw_r2", pivot=(0, 2, 0.8), rot=(-0.45, 0, 0),
+                                                boxes=[box((-0.45, 0, -0.45), (0.9, 2, 0.9), "hook")])])])])
     lower_arm_l = mirror(lower_arm)
-    attach({"parts": [lower_arm_l]}, "lower_hand_l",
-           part("chatkcha", pivot=(0, 1.2, -0.6), rot=(0.2, 0, 0.5), boxes=[box((-2, -0.25, -2), (4, 0.5, 4), "chatkcha")]))
 
     body = part("body", rot=(0.08, 0, 0), boxes=[
         box((-4, 0, -2.5), (8, 5.5, 5), "hc_plate"),                      # chest
@@ -87,20 +96,28 @@ def hive_lancer():
         lower_arm, lower_arm_l,
     ])
 
-    arm = part("right_arm", pivot=(-5.5, 2, 0), boxes=[box((-2, -2, -1.75), (3.5, 5.5, 3.5), "hc_plate"),
-                                                       box((-2.5, -2.75, -2.25), (4, 2.5, 4.5), "hb_shell")], children=[
+    # Upper arms hold one spear in both hands at the ready: the rear (right) hand at the hip, the front (left)
+    # hand forward, the spearhead angled up and across. LancerModel keeps the same pose in game.
+    arm = part("right_arm", pivot=(-5.5, 2, 0), rot=SPEAR_ARM_R,
+               boxes=[box((-2, -2, -1.75), (3.5, 5.5, 3.5), "hc_plate"),
+                      box((-2.5, -2.75, -2.25), (4, 2.5, 4.5), "hb_shell")], children=[
         part("forearm_r", pivot=(-0.25, 3.5, 0), rot=(-0.15, 0, 0),
              boxes=[box((-1.5, 0, -1.5), (3, 6.5, 3), "hc_dark")], children=[
                  part("forearm_r_spur", pivot=(0, 2, 1.4), rot=(1.0, 0, 0), boxes=[box((-0.5, -2.5, -0.5), (1, 2.5, 1), "spike")]),
                  part("hand_r", pivot=(0, 6.5, 0), boxes=[box((-1.5, 0, -1.5), (3, 2.5, 3), "hc_dark")])])])
     arm_l = mirror(arm)
-    # The gythka: a long haft with a curved blade at each end, gripped in the upper right hand.
-    attach({"parts": [arm]}, "hand_r", part("gythka", pivot=(0, 1, -0.5), rot=(1.35, 0, 0.15),
-                               boxes=[box((-0.5, -15, -0.5), (1, 30, 1), "haft")], children=[
-                                   part("gythka_top", pivot=(0, -15, 0), rot=(-0.2, 0, 0),
-                                        boxes=[box((-0.5, -7, -1.5), (1, 7, 3), "blade")]),
-                                   part("gythka_bottom", pivot=(0, 15, 0), rot=(0.2, 0, 0),
-                                        boxes=[box((-0.5, 0, -1.5), (1, 6, 3), "blade")])]))
+    arm_l["rot"] = list(SPEAR_ARM_L)
+    find({"parts": [arm_l]}, "forearm_l")["rot"] = [SPEAR_FOREARM_L, 0, 0]
+    # The spear: a long haft through both hands, a leaf-shaped head with a bound socket, and a butt spike.
+    attach({"parts": [arm]}, "hand_r", part("spear", pivot=(0, 1.25, 0), rot=(1.7, -0.78, 0),
+                               boxes=[box((-0.5, -20, -0.5), (1, 28, 1), "haft")], children=[
+                                   part("spear_socket", pivot=(0, -20, 0),
+                                        boxes=[box((-0.75, -1.5, -0.75), (1.5, 1.5, 1.5), "wrap")]),
+                                   part("spear_head", pivot=(0, -21.5, 0),
+                                        boxes=[box((-0.5, -5, -1.5), (1, 5, 3), "blade"),
+                                               box((-0.5, -7.5, -0.75), (1, 2.5, 1.5), "blade")]),
+                                   part("spear_butt", pivot=(0, 8, 0),
+                                        boxes=[box((-0.4, 0, -0.4), (0.8, 2, 0.8), "spike")])]))
 
     leg = _leg(-2, "hc_plate", "hc_dark")
     return {"id": "hive_lancer", "tex": [128, 128],
