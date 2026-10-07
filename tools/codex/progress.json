@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Orc Rage and Frenzy; elven archery",
+      "detail": "Orcs fill a Rage bar by landing and taking hits; when it's full they Frenzy for 8 seconds (+30% damage, +20% attack speed, +15% speed, 15% more damage taken) and frenzied orc soldiers won't rout. Players see the bar above the hotbar. Frenzy is a regular status effect other mods can see. Elves are now master archers: arrows fly 20% faster and hit 25% harder, and long shots from 16+ blocks hit harder still and make the target glow. Both apply to players and soldiers. Demon dark magic is an open question."
+    },
+    {
+      "status": "done",
       "title": "Race magic: each race has a strong and a weak spell school",
       "detail": "On the owner's pick, every race gets +25% spell power in one Iron's Spells school and -10% in another: Human Evocation/Eldritch, Elf Nature/Fire, Dwarf Lightning/Ender, Orc Blood/Evocation, Demon Fire/Holy, Angel Holy/Blood, Hive Eldritch/Holy. It is applied as attribute modifiers alongside the other race stats, shown in the race picker and /warfront race, and skipped when Iron's Spells isn't installed."
     },
@@ -112,6 +117,8 @@
     "hiveIsStrongerUnderground": "Hive soldiers gain Strength underground and are not weakened there",
     "captainsAndChampionsNeedABiggerBase": "A base with 3 waves won but only 2 buildings refuses a Captain; four more pylons make it level 2, which summons a Captain but still refuses a Champion.",
     "baseLevelNeedsBuildingsAndWaves": "12 buildings with no waves won stay level 1; 8 waves won lift the base to level 3, and more waves can't push it past what the buildings allow.",
-    "eachRaceHasItsOwnSpellSchool": "No two races share a strong school, none is weak in its own, and race stats apply without Iron's Spells"
+    "eachRaceHasItsOwnSpellSchool": "No two races share a strong school, none is weak in its own, and race stats apply without Iron's Spells",
+    "orcRageBuildsIntoFrenzy": "An orc soldier at 90 rage isn't frenzied; one more hit sends it into a Frenzy and empties the bar",
+    "elfArrowsFlyFaster": "An arrow shot by an elf leaves 20% faster"
   }
 }

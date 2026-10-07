@@ -54,6 +54,8 @@ public class WarStandardBlockEntity extends BlockEntity {
     private int wavesWon;
     @Nullable private UUID warband;
     private int waveSize;
+    /** Soldiers the latest wave actually spawned (not saved). */
+    private int lastSpawned;
     private long siegeStart;
     private long lastSiege;
     private boolean campaign;
@@ -89,6 +91,10 @@ public class WarStandardBlockEntity extends BlockEntity {
     @Nullable
     public UUID getWarbandId() {
         return warband;
+    }
+
+    public int getLastSpawned() {
+        return lastSpawned;
     }
 
     public int getWave() {
@@ -226,6 +232,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         }
 
         warband = id;
+        lastSpawned = spawned.size();
         waveSize = Math.max(1, spawned.size());
         attackerName = faction.displayName;
         siegeStart = level.getGameTime();

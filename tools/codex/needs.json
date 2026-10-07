@@ -50,6 +50,12 @@
   },
   "questions": [
     {
+      "topic": "Magic",
+      "priority": "high",
+      "question": "What kind of dark magic should demons have?",
+      "why": "Demons are strong in Fire magic, and you want something darker on top. Options: curses and hexes that weaken foes, soul harvesting (kills feed power), blood pacts (spend health for power), or summoning lesser demons mid-fight."
+    },
+    {
       "topic": "Units",
       "priority": "high",
       "question": "Reference images for each race's soldiers.",
@@ -123,6 +129,14 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Orc",
+      "answer": "Orcs build Rage by landing and taking hits (10 and 15 points); at 100 they go into a Frenzy for 8 seconds: +30% damage, +20% attack speed, +15% speed, but 15% more damage taken. Frenzied orc soldiers don't rout. Rage drains after 3 seconds out of combat. Works for orc players and soldiers."
+    },
+    {
+      "topic": "Elf",
+      "answer": "Elves are master archers: their arrows fly 20% faster and hit 25% harder, and a shot from 16+ blocks hits a further 25% harder and makes the target glow for 5 seconds. Elf soldier archers keep their tighter aim. Works for elf players and soldiers."
+    },
     {
       "topic": "Magic",
       "answer": "Each race casts one Iron's Spells school 25% stronger and one 10% weaker: Human Evocation (weak Eldritch), Elf Nature (weak Fire), Dwarf Lightning (weak Ender), Orc Blood (weak Evocation), Demon Fire (weak Holy), Angel Holy (weak Blood), Hive Eldritch (weak Holy). It works through Iron's spell power attributes, so Warfront runs fine without Iron's Spells."

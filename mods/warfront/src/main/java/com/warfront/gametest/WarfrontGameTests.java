@@ -93,6 +93,35 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void orcRageBuildsIntoFrenzy(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity orc = recruit(h, owner, SoldierRole.SWORDSMAN, Race.ORC, 4, 4);
+        for (int i = 0; i < 9; i++) com.warfront.combat.Rage.gain(orc, com.warfront.combat.Rage.ON_HIT);
+        h.assertTrue(!com.warfront.combat.Rage.isFrenzied(orc), "90 rage should not frenzy yet, rage "
+                + com.warfront.combat.Rage.current(orc));
+        com.warfront.combat.Rage.gain(orc, com.warfront.combat.Rage.ON_HIT);
+        h.assertTrue(com.warfront.combat.Rage.isFrenzied(orc), "100 rage should frenzy, rage "
+                + com.warfront.combat.Rage.current(orc));
+        h.assertTrue(com.warfront.combat.Rage.current(orc) == 0, "rage should empty when the frenzy starts");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void elfArrowsFlyFaster(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity elf = recruit(h, owner, SoldierRole.ARCHER, Race.ELF, 4, 4);
+        net.minecraft.world.entity.projectile.Arrow arrow = new net.minecraft.world.entity.projectile.Arrow(
+                h.getLevel(), elf, new net.minecraft.world.item.ItemStack(Items.ARROW), null);
+        arrow.setDeltaMovement(1.0, 0.0, 0.0);
+        h.getLevel().addFreshEntity(arrow);
+        double vx = arrow.getDeltaMovement().x;
+        arrow.discard();
+        h.assertTrue(Math.abs(vx - com.warfront.world.GameEvents.ELF_ARROW_SPEED) < 1e-6,
+                "elf arrow should leave at " + com.warfront.world.GameEvents.ELF_ARROW_SPEED + "x speed, was " + vx);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void formationGivesDistinctSlotsWithShieldsInFront(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierRole[] roles = {SoldierRole.ARCHER, SoldierRole.SHIELDBEARER, SoldierRole.HEALER,
@@ -420,7 +449,10 @@ public final class WarfrontGameTests {
         for (Entity e : h.getLevel().getAllEntities()) {
             if (e instanceof SoldierEntity s && warband != null && warband.equals(s.getWarbandId())) attackers.add(s);
         }
-        h.assertTrue(!attackers.isEmpty(), "the wave should have attackers");
+        // Attackers land 36+ blocks out, possibly in a chunk the test server hasn't made visible, so count what
+        // the wave spawned rather than searching the world for them.
+        h.assertTrue(standard.getLastSpawned() > 0, "the wave should have attackers, spawned "
+                + standard.getLastSpawned() + ", visible " + attackers.size());
         // Clean up so the attackers don't wander into other tests.
         standard.stopCampaign(h.getLevel());
         attackers.forEach(SoldierEntity::discard);

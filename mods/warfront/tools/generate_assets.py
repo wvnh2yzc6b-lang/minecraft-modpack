@@ -608,6 +608,21 @@ def models_and_states():
             "textures": {"crop": f"{MODID}:block/manabloom_stage{st}"}})
 
 
+def effect_icons():
+    """18x18 mob effect icons."""
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    dark, red, hot = hexc("5a0d08"), hexc("b8231a"), hexc("ff6a3d")
+    # three slanted claw slashes, dark edge, red body, hot core
+    for i, x0 in enumerate((3, 7, 11)):
+        for t in range(12):
+            x, y = x0 + t // 3, 3 + t
+            img.putpixel((x, y), dark)
+            img.putpixel((min(17, x + 1), y), red)
+            if 2 <= t <= 9:
+                img.putpixel((min(17, x + 2), y), hot if i == 1 else red)
+    save(img, "mob_effect/frenzy.png")
+
+
 def lang():
     names = {
         "itemGroup.warfront": "Warfront",
@@ -632,6 +647,7 @@ def lang():
         "block.warfront.mana_pylon": "Mana Pylon",
         "block.warfront.mana_brazier": "Mana Brazier",
         "block.warfront.summoning_altar": "Summoning Altar",
+        "effect.warfront.frenzy": "Frenzy",
     }
     write_json(ASSETS / "lang" / "en_us.json", names)
 
@@ -950,6 +966,7 @@ if __name__ == "__main__":
     soldier_skins()
     models_and_states()
     mana_blocks()
+    effect_icons()
     lang()
     recipes()
     loot_and_tags()

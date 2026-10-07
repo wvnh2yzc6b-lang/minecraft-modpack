@@ -1,5 +1,9 @@
 package com.warfront.world;
 
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import com.warfront.combat.Rage;
 import com.warfront.Warfront;
 import com.warfront.command.WFCommands;
 import com.warfront.config.WFConfig;
@@ -159,13 +163,35 @@ public final class GameEvents {
                         .filter(s -> s.getRace() == Race.HIVE).count();
                 event.setAmount(event.getAmount() + Math.min(3.0F, pack * 0.5F));
             }
+            if (attackerRace == Race.ELF && direct instanceof AbstractArrow) {
+                // Elven archery: arrows hit harder, and a long shot marks the target for everyone to see.
+                float bonus = 1.25F;
+                if (living.distanceTo(victim) >= ELF_LONG_SHOT) {
+                    bonus *= 1.25F;
+                    victim.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 0), living);
+                }
+                event.setAmount(event.getAmount() * bonus);
+            }
+            if (attackerRace == Race.ORC && living != victim) Rage.gain(living, Rage.ON_HIT);
         }
+        if (victimRace == Race.ORC && attacker != null && attacker != victim) Rage.gain(victim, Rage.ON_HURT);
+        if (Rage.isFrenzied(victim)) event.setAmount(event.getAmount() * 1.15F);
     }
+
+    /** Blocks away an elf's arrow must fly to count as a long shot. */
+    public static final double ELF_LONG_SHOT = 16.0;
+    /** How much faster elven arrows fly. */
+    public static final double ELF_ARROW_SPEED = 1.2;
 
     /** Hostile monsters treat soldiers as fair game, like villagers. */
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide) return;
+        if (event.getEntity() instanceof AbstractArrow arrow && arrow.getOwner() instanceof LivingEntity owner
+                && Race.of(owner) == Race.ELF && !arrow.getPersistentData().getBoolean("warfront_elf_shot")) {
+            arrow.getPersistentData().putBoolean("warfront_elf_shot", true);
+            arrow.setDeltaMovement(arrow.getDeltaMovement().scale(ELF_ARROW_SPEED));
+        }
         if (event.getEntity() instanceof Monster monster && !(monster instanceof Creeper)) {
             monster.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(monster, SoldierEntity.class, true));
         }

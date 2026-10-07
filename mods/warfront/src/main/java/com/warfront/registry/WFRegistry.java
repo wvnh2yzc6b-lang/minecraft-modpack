@@ -47,6 +47,10 @@ public final class WFRegistry {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Warfront.MODID);
     public static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Warfront.MODID);
+    public static final DeferredRegister<net.minecraft.world.effect.MobEffect> MOB_EFFECTS =
+            DeferredRegister.create(Registries.MOB_EFFECT, Warfront.MODID);
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.FrenzyEffect> FRENZY =
+            MOB_EFFECTS.register("frenzy", () -> new com.warfront.combat.FrenzyEffect());
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS =
             DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Warfront.MODID);
 
@@ -174,5 +178,6 @@ public final class WFRegistry {
         BLOCK_ENTITIES.register(bus);
         TABS.register(bus);
         ATTACHMENTS.register(bus);
+        MOB_EFFECTS.register(bus);
     }
 }

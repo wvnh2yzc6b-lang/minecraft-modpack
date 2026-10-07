@@ -686,7 +686,7 @@ public class SoldierEntity extends PathfinderMob {
         }
         morale = Mth.clamp(morale + regen, 0f, 100f);
 
-        if (race.routs && routTicks == 0 && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
+        if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this) && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
             routTicks = 120;
             setTarget(null);
             level().playSound(null, getX(), getY(), getZ(), SoundEvents.VILLAGER_HURT, SoundSource.HOSTILE, 1f, 0.8f);

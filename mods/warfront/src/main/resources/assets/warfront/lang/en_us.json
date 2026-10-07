@@ -20,5 +20,6 @@
   "block.warfront.mana_well": "Mana Well",
   "block.warfront.mana_pylon": "Mana Pylon",
   "block.warfront.mana_brazier": "Mana Brazier",
-  "block.warfront.summoning_altar": "Summoning Altar"
+  "block.warfront.summoning_altar": "Summoning Altar",
+  "effect.warfront.frenzy": "Frenzy"
 }
