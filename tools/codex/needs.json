@@ -88,12 +88,6 @@
       "why": "I'm building a first version now. Reference images would let me match your style."
     },
     {
-      "topic": "Towers",
-      "priority": "low",
-      "question": "Do you want more tower types, or a new look for the existing three?",
-      "why": "Arrow Tower, Arcane Spire and Healing Shrine are simple textured blocks."
-    },
-    {
       "topic": "Pack",
       "priority": "low",
       "question": "Twilight Forest is CurseForge-only. Skip it, or pick a replacement?",
@@ -113,6 +107,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Towers",
+      "answer": "Towers get real 3D models before any new tower types: the Arrow Tower, Arcane Spire and Healing Shrine each get a proper model, styled by the race of the player who placed it. New tower types come later."
+    },
     {
       "topic": "Enemies",
       "answer": "Enemy factions keep their race's body and colors, plus one signature trim piece each so you can read them at a glance: Marauder Horde (orc): war paint stripes and bone trophies on the belt and shoulders; Black Legion (human): a black tabard with a white skull and a spiked pauldron; Burning Horde (demon): smoldering chains and a soot-blackened brand on the chest; The Swarm (Hive): glowing acid sacs on the back and jagged black chitin spurs; Silverwood Reavers (elf): thorn-vine wraps and a pale antler-bone mask; Ironbeard Clan (dwarf): a rune-etched iron face guard and braided beard rings; Fallen Host (angel): torn, ash-gray wings and a cracked, dimmed halo."
