@@ -33,6 +33,8 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void onGuiLayers(net.neoforged.neoforge.client.event.RegisterGuiLayersEvent event) {
         event.registerAboveAll(Warfront.id("siege_banner"), com.warfront.client.ui.SiegeBanner::render);
+        event.registerAbove(net.neoforged.neoforge.client.gui.VanillaGuiLayers.HOTBAR, Warfront.id("combat_hud"),
+                com.warfront.client.ui.CombatHud::render);
     }
 
     @SubscribeEvent

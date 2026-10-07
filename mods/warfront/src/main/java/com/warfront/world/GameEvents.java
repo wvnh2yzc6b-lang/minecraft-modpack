@@ -290,6 +290,7 @@ public final class GameEvents {
             // Raids and sieges now follow each player's raid clock, with a warning first.
             com.warfront.war.RaidScheduler.tick(server);
             com.warfront.war.RaidScheduler.releaseHomes(server.overworld().getGameTime());
+            com.warfront.war.HudSync.tick(server);
         }
         if (server.getTickCount() % 200 == 0) {
             com.warfront.upkeep.Upkeep.tick(server);

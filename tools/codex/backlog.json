@@ -3,19 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "ui-hud",
-      "status": "ready",
-      "title": "Combat HUD",
-      "decided": "Owner, 2026-10-07: clean dark race-tinted panels; first pass is the combat HUD, War Table, base mana overlay and Altar redesign; toasts and a siege banner replace chat.",
-      "spec": [
-        "A compact corner widget (default bottom-left above the hotbar, position and scale in client config, hidden with F1 and when nothing applies), registered as a GUI layer.",
-        "Race power row: demon soul pips (0-10, glow at 10), orc rage bar (flashes during Frenzy with a timer), human glider durability while worn, orc rocket-pack fuel seconds, elf spell mana (Iron's mana when loaded, Mana Shards count otherwise), angel day-flight / glide-only indicator, Hive light level and underground bonus.",
-        "Army row: units following / total, current formation and stance icon, units on guard or patrol, beasts used / allowed.",
-        "Siege row while a siege is active at your War Standard: wave number, enemies left, outpost standing yes/no.",
-        "Client-only code under com.warfront.client; data the client needs comes through small synced payloads or attachments, never by reading server state directly. Before the Java, publish an HTML mockup of each screen in the Codex (same panels, colors and layout) so the owner can review the look without a game client; keep the mockup and the Java in step."
-      ]
-    },
-    {
       "id": "ui-war-table",
       "status": "ready",
       "title": "War Table screen",

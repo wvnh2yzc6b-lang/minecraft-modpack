@@ -54,6 +54,8 @@ public class WarStandardBlockEntity extends BlockEntity {
     private int wavesWon;
     @Nullable private UUID warband;
     private int waveSize;
+    /** Attackers still standing, as last counted (not saved). */
+    private int attackersLeft;
     /** Soldiers the latest wave actually spawned (not saved). */
     private int lastSpawned;
     private long siegeStart;
@@ -100,6 +102,10 @@ public class WarStandardBlockEntity extends BlockEntity {
         return lastSpawned;
     }
 
+    public int getAttackersLeft() {
+        return warband == null ? 0 : attackersLeft > 0 ? attackersLeft : lastSpawned;
+    }
+
     public int getWave() {
         return wave;
     }
@@ -136,6 +142,7 @@ public class WarStandardBlockEntity extends BlockEntity {
 
         if (be.warband != null && time % 20 == 0) {
             int left = be.countAttackers(server);
+            be.attackersLeft = left;
             if (left == 0 || time - be.siegeStart > 12000) {
                 be.victory(server);
             } else {
