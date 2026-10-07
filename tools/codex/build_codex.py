@@ -333,7 +333,8 @@ def main():
             ("demon-imp.png", "Imp reference.", False),
         ]),
         "%%HIVE_SHOTS%%": shots([
-            ("hive-units-render.png", "Lancer-Drone and Deepmaw in the Hive's colors (top) and the Swarm's (bottom): front, side and back.", True),
+            ("hive-units-render.png", "Lancer-Drone, then the Deepmaw, each in the Hive's colors and the Swarm's: front, side and back.", True),
+            ("hive-beast-crab.png", "Deepmaw before and after the crab-beast rebuild.", True),
             ("hive-spearman.png", "Spearman reference.", False),
             ("hive-beast.png", "Beast reference.", False),
         ]),

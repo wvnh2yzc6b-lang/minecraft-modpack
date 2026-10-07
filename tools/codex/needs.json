@@ -27,7 +27,7 @@
     },
     "hive/beast": {
       "status": "done",
-      "note": "Deepmaw built from your reference. Awaiting your review."
+      "note": "Deepmaw rebuilt as a crab-beast (Mirelurk Hunter style) in sculk colors. Awaiting your review."
     },
     "demon/beast": {
       "status": "partial",
@@ -52,8 +52,8 @@
     {
       "topic": "Hive",
       "priority": "high",
-      "question": "How do the Lancer-Drone and Deepmaw look to you?",
-      "why": "Both are built from your references in the Hive's sculk colors. See them on the Codex's Designs and Models pages and tell me what to change."
+      "question": "How do the Lancer-Drone and the rebuilt crab Deepmaw look to you?",
+      "why": "The Deepmaw is now a hunched crab-beast with a domed shell and two great pincers, per your Mirelurk Hunter direction. See the before and after on the Codex's Designs page; the Lancer-Drone still needs your verdict too."
     },
     {
       "topic": "Bases",
@@ -150,6 +150,10 @@
     {
       "topic": "Hive",
       "answer": "Sculk-dark colors; stronger underground and weaker in sunlight; Swarm raids tunnel up near their target; new Hive players start in a cave."
+    },
+    {
+      "topic": "Hive",
+      "answer": "The Deepmaw is crab/beast-like, in the spirit of Fallout's Mirelurk Hunter: hunched, shelled, two big pincers, keeping the Hive's sculk look."
     },
     {
       "topic": "Beasts",

@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "Deepmaw rebuilt as a crab-beast",
+      "detail": "On the owner's direction the Deepmaw is now a hunched crab-beast like Fallout's Mirelurk Hunter, keeping the Hive's sculk look: a domed back shell that hoods the head, a finned glowing crest, eye stalks, tusk-mandibles, two great pincers that snap in a fight, thick legs and a short plated tail.",
+      "image": "hive-beast-crab.png"
+    },
+    {
+      "status": "done",
       "title": "The Hive: sculk look, Lancer-Drone, Deepmaw and cave traits",
       "detail": "The Hive goes sculk-dark with glowing cyan veins; the Swarm is black with acid green. Spearmen are four-armed Lancer-Drones with a double-bladed polearm. A new war beast role brings the Deepmaw, a towering burrower summoned at the altar, up to 10 per commander. Hive units are stronger underground and weaker in sunlight, Swarm raids tunnel up near their target, and new Hive players start in a cave.",
       "image": "hive-units-render.png"

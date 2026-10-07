@@ -61,7 +61,9 @@ These drive the soldier models (3D parts), skins and unit sizes.
   segmented legs.
 - **Body:** ridged, segmented chitin. Rust-red to orange, with gold swirl markings on the limbs.
 - **Feel:** it bursts up out of the ground, scattering dirt. This suits the Hive's cave theme: a burrowing ambusher.
-- **Open:** whether to keep the red-orange colors or shift it to the Hive's sculk and Warden look (dark teal, black).
+- **Owner direction:** sculk colors (settled), and make it more crab/beast-like, in the spirit of Fallout's
+  Mirelurk Hunter, while keeping the same look: hunched and upright, a domed shell over the back and head, two
+  great pincers, thick legs. Keep the tusk-mandibles, a crest and the glowing veins. Render: `hive-beast-crab.png`.
 
 ## Demon: beast unit - `demon-beast.png`
 - A Demon war beast. Picture only; ignore the book text.
