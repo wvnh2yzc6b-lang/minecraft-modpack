@@ -81,6 +81,7 @@ When the owner decides something: move it from `questions` to `settled` in `need
 - **Player flight per race**: humans have the Mana Glider (built); orc jetpack/tech, angel wings, elf flight magic not built;
   demons already fly. Player models come from the owner's references, Hive first.
 - **Creatures** (later): a few fantastical creatures per race, mostly neutral.
+- **Test mode:** every new feature adds its own Test Panel controls and a `/wftest` subcommand, so the owner can try it in game right away.
 - Champions, captains and most soldiers have **no design yet**; they wait on the owner's references.
 
 ## How to work in this repo

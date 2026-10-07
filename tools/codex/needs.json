@@ -102,6 +102,10 @@
   ],
   "settled": [
     {
+      "topic": "Playtest",
+      "answer": "Warfront gets a test mode for playtesting: /wftest on, then F8 opens a Test Panel to spawn any unit or beast (any race, role, rank, friend or foe), set base level, fill mana, drop a starter base, start or skip siege waves, switch race, fill souls/rage/fuel, flip day and night and turn on god mode. Every button has a matching /wftest command. Each new feature adds its own Test Panel controls. The owner plays the private build through the Modrinth App by importing the .mrpack CI already makes, with a step-by-step Play page in the Codex."
+    },
+    {
       "topic": "Towers",
       "answer": "Each race gets three of its own towers on top of the shared Arrow Tower, Arcane Spire and Healing Shrine, unlocking with base level like beasts. Human: Ballista (level 2), Watchtower Bell (level 3), Trebuchet (level 5); Elf: Thornwood Sentinel (level 2), Moonwell Grove (level 3), Elder Treant Spire (level 5); Dwarf: Rune Cannon (level 2), Stone Warden (level 3), Thunder Forge (level 5); Orc: War Drum Totem (level 2), Goblin Bomb Catapult (level 3), Waaagh Banner (level 5); Demon: Soul Pyre (level 2), Brimstone Chains (level 3), Hellgate (level 5); Angel: Sun Lance (level 2), Choir Bell (level 3), Seraphic Obelisk (level 5); Hive: Lurker Pit (level 2), Brood Nest (level 3), Synapse Spire (level 5). Only that race can build them. Race towers allowed: 2 at base level 2, 4 at level 3, 6 at level 4, 10 at level 5; each capstone is limited to one. Shared towers stay uncapped (mana limits them)."
     },

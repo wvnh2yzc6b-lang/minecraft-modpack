@@ -3,6 +3,24 @@
   "updated": "2026-10-07",
   "items": [
     {
+      "id": "playtest-mode",
+      "status": "ready",
+      "title": "Test mode: Test Panel, /wftest commands and a Play guide",
+      "decided": "Owner, 2026-10-07: a test mode with a clickable Test Panel plus matching commands, covering spawn/army, base/mana, siege and player tools; delivered the easiest private way.",
+      "spec": [
+        "Build this first: the owner wants to start playtesting.",
+        "Server: /wftest on|off (permission level 2, so singleplayer with cheats on or an opped player). A per-player test-mode flag (attachment). Every action below is one server method, reached both by a /wftest subcommand and by a C2S payload from the panel; the server re-checks the flag and permission on every payload.",
+        "Client: F8 (rebindable KeyMapping) opens the Test Panel when test mode is on. Tabs: Spawn, Base, Siege, Player. Plain clean dark panels now; switch to the ui-foundation theme when that lands (don't wait for it).",
+        "Spawn tab: race, role, count (1-10), friendly (yours, joins your army) or enemy (pick faction); spawns in front of the player. War beasts (ignores beastLimit in test mode). Army buttons: heal all, kill all, dismiss all. Rank picker and 'revive all heroes' appear once veterancy and fallen-heroes exist.",
+        "Base tab: set base level 1-5 (a test override stored on the base, shown as 'TEST' in /army and later the War Table); fill all mana networks within 32 blocks; infinite-mana toggle for those networks; 'starter base' places a Mana Well, two Pylons, a Summoning Altar, a War Standard and an Arrow Tower in a clear flat spot in front of the player.",
+        "Siege tab: start a wave now from any enemy faction at the nearest War Standard; jump to wave N; pause/resume; end the siege. Raise/destroy outpost appears once siege-outposts exists.",
+        "Player tab: switch race (same as /warfront race, no cooldown); fill souls, rage, glider durability (and later rocket fuel, spell mana); set day / night / clear weather; god mode (invulnerable + creative-style flight toggle); give a kit of every Warfront item for the current race.",
+        "Buttons for features not built yet are shown greyed with 'coming'. Standing rule: every later feature adds its own Test Panel controls and /wftest subcommand (recorded in CLAUDE.md).",
+        "Game tests: each /wftest subcommand does its job (spawn count, base level override, mana filled, wave started); a player without test mode can't use the payloads.",
+        "Codex: a new 'Play' page: (1) install the Modrinth App, (2) download warfront-modpack from the latest green Actions run (GitHub, signed in), unzip it to get Warfront-Age-of-Banners.mrpack, (3) Modrinth App: Add instance -> From file -> pick it, give it 6+ GB RAM, Play. Then: make a creative or cheats-on world, /wftest on, press F8. Plain words, a screenshot-style step list."
+      ]
+    },
+    {
       "id": "fallen-heroes",
       "status": "ready",
       "title": "Mortal units, fallen heroes",
