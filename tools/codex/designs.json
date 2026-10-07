@@ -127,6 +127,17 @@
         "No stat changes."
       ],
       "render": "faction-trim-render.png"
+    },
+    {
+      "id": "raid-chests",
+      "race": "Enemies",
+      "title": "Raid chests, one per enemy faction",
+      "status": "review",
+      "render": "raid-chests-render.png",
+      "notes": [
+        "Built and in the game, at the heart of every siege outpost. Left to right: Marauder war crate (lashed planks), Black Legion strongbox (black iron, steel bands), Burning Horde bone chest (bone slats, ember lock), Swarm chitin pod (black chitin, acid seams), Silverwood root-bound coffer, Ironbeard vault (iron, gold bands, a blue rune), Fallen Host reliquary (tarnished gilt).",
+        "First pass from each faction's palette, as no references came in. Send pictures to change any of them."
+      ]
     }
   ]
 }

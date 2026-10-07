@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "Siege outposts and raid chests",
+      "detail": "Every fifth siege wave (config) the attackers raise an outpost 30 to 50 blocks from your War Standard: a palisade camp with a watchtower, tent and campfire before wave 10, a walled fort with two corner towers after, in the faction's own materials. It holds guards and sends a few raiders at your standard every 90 seconds, and the wave can't be won while it stands (the siege bar says so). At its heart is the faction's raid chest, full of loot that grows with the wave: War Marks, shards, crystals and the faction's own goods. It can't be broken while it holds anything; empty it and break it, and the whole outpost comes down in a blast of smoke. If the siege ends some other way, the outpost disappears so no ruins are left. Test Panel (Siege tab): raise or destroy an outpost.",
+      "image": "raid-chests-render.png"
+    },
+    {
+      "status": "done",
       "title": "Codex: workers without guards, orc goblins",
       "detail": "The Models page's worker viewer now shows farmers and builders only (guard duty belongs to battle units), and orc workers as the goblins they are in the game. The all-races worker render is redone to match.",
       "image": "workers-all-races.png"
@@ -134,11 +140,6 @@
       "status": "planned",
       "title": "Roadmap: the Aether and the Otherside join the war",
       "detail": "Twilight Forest is out. The Aether and Deeper and Darker come in and tie into Warfront: the Aether is the angels' homeland and the Otherside the Hive's, Fallen Host and Swarm raids come from there, their ores fuel your mana, angel wings and an armored Moa come from the Aether, and enemy outposts with raid chests wait in both dimensions. Warfront still runs without either mod. Queued for build sessions."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: siege outposts and the raid chest",
-      "detail": "Decided: every 5th siege wave raises a temporary enemy outpost near your War Standard, and you can't win the wave while it stands. It starts as a watchtower camp and becomes a small walled fort from wave 10. It keeps sending raiders at you until you take it. At its heart is a big raid chest with its own look for each enemy faction. Loot it, break it, and the whole outpost despawns. Queued for the next build session."
     },
     {
       "status": "done",
@@ -297,6 +298,8 @@
     "merchantComesOnScheduleButNotDuringARaid": "The caravan needs a base, comes when due, never during a raid warning or attack, and visits 3 to 5 days apart",
     "merchantTradesForCrystals": "A trade takes Mana Crystals and gives the goods; diamonds scale with base level; he buys War Marks",
     "captainsAndChampionsStandTaller": "Captains stand 1.15x and Champions 1.30x as tall as a soldier of their race",
-    "alertsGoOutForRankUpsFallenHeroesAndWaves": "A rank-up and a fallen hero send their owner a toast; a wave start sends the siege banner"
+    "alertsGoOutForRankUpsFallenHeroesAndWaves": "A rank-up and a fallen hero send their owner a toast; a wave start sends the siege banner",
+    "outpostsComeEveryFifthWave": "Outposts rise on waves 5 and 10, not on 4 or 6",
+    "outpostHoldsTheWaveAndComesDownClean": "A standing outpost holds the wave; a full raid chest can't be broken; breaking the empty chest removes every outpost block"
   }
 }

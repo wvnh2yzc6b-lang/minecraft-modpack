@@ -63,6 +63,8 @@ public class WarStandardBlockEntity extends BlockEntity {
     private boolean campaign;
     private long nextWaveAt;
     @Nullable private String attackerName;
+    /** The raid chest of this siege's outpost, while one stands. */
+    @Nullable private BlockPos outpostChest;
     /** Test mode: the campaign clock is stopped, with this many ticks left until the next wave. */
     private boolean paused;
     private long pausedLeft;
@@ -143,7 +145,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         if (be.warband != null && time % 20 == 0) {
             int left = be.countAttackers(server);
             be.attackersLeft = left;
-            if (left == 0 || time - be.siegeStart > 12000) {
+            if ((left == 0 || time - be.siegeStart > 12000) && !be.hasOutpost(server)) {
                 be.victory(server);
             } else {
                 be.updateBar(server, left);
@@ -245,6 +247,13 @@ public class WarStandardBlockEntity extends BlockEntity {
         }
 
         warband = id;
+        if (com.warfront.outpost.Outposts.shouldRaise(wave)) {
+            outpostChest = com.warfront.outpost.Outposts.raise(level, this, faction, wave, id);
+            if (outpostChest != null) {
+                banner(level, "outpost_raised", "An outpost rises!", "The " + faction.displayName + " fortify " + outpostChest.toShortString()
+                        + ". Take it and break its raid chest to win the wave.", colorOf(faction.color));
+            }
+        }
         lastSpawned = spawned.size();
         waveSize = Math.max(1, spawned.size());
         attackerName = faction.displayName;
@@ -256,6 +265,44 @@ public class WarStandardBlockEntity extends BlockEntity {
                 + spawned.size() + " from the " + String.join(" and ", fronts) + "!", colorOf(faction.color));
         updateBar(level, spawned.size());
         return true;
+    }
+
+    // ------------------------------------------------------------------ outposts
+
+    /** Whether this siege's outpost still stands (an unloaded one counts as standing). */
+    public boolean hasOutpost(ServerLevel level) {
+        if (outpostChest == null) return false;
+        if (!level.isLoaded(outpostChest)) return true;
+        if (level.getBlockEntity(outpostChest) instanceof com.warfront.outpost.RaidChestBlockEntity) return true;
+        outpostChest = null;
+        return false;
+    }
+
+    @Nullable
+    public BlockPos getOutpostChest() {
+        return outpostChest;
+    }
+
+    /** Links an outpost's chest to this standard (outposts raise themselves; game tests link one by hand). */
+    public void setOutpostChest(@Nullable BlockPos pos) {
+        outpostChest = pos;
+        setChanged();
+    }
+
+    /** Called by the raid chest when it is broken. */
+    public void outpostFallen(ServerLevel level) {
+        if (outpostChest == null) return;
+        outpostChest = null;
+        setChanged();
+        banner(level, "outpost_destroyed", "Outpost destroyed!", "Now finish the wave.", 0xE2B55A);
+    }
+
+    /** Takes this siege's outpost down (the siege ended some other way). */
+    private void removeOutpost(ServerLevel level) {
+        if (outpostChest == null) return;
+        BlockPos chest = outpostChest;
+        outpostChest = null;
+        com.warfront.outpost.Outposts.scheduleRemoval(level, chest, 100);
     }
 
     // ------------------------------------------------------------------ test mode
@@ -290,6 +337,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         campaign = false;
         paused = false;
         lastSiege = level.getGameTime();
+        removeOutpost(level);
         clearBar();
         setChanged();
         announce(level, Component.literal("The siege is called off (test mode).").withStyle(ChatFormatting.GRAY));
@@ -353,6 +401,7 @@ public class WarStandardBlockEntity extends BlockEntity {
             warband = null;
             campaign = false;
             clearBar();
+            removeOutpost(server);
             server.destroyBlock(worldPosition, true);
         }
     }
@@ -365,7 +414,8 @@ public class WarStandardBlockEntity extends BlockEntity {
         }
         if (warband != null) {
             bar.setName(Component.literal("Wave " + wave + " - " + attackerName + " - " + attackersLeft
-                    + " remaining  |  Standard " + health() + "/" + maxHealth()));
+                    + " remaining  |  Standard " + health() + "/" + maxHealth()
+                    + (outpostChest != null ? "  |  Destroy the enemy outpost" : "")));
             bar.setColor(wave % 5 == 0 ? BossEvent.BossBarColor.PURPLE : BossEvent.BossBarColor.RED);
             bar.setProgress(Mth.clamp(attackersLeft / (float) waveSize, 0F, 1F));
         } else {
@@ -390,8 +440,18 @@ public class WarStandardBlockEntity extends BlockEntity {
         }
     }
 
+    private boolean unloading;
+
+    @Override
+    public void onChunkUnloaded() {
+        unloading = true;
+        super.onChunkUnloaded();
+    }
+
     @Override
     public void setRemoved() {
+        // The standard itself was broken or removed (not just unloaded): its outpost leaves no ruins behind.
+        if (!unloading && level instanceof ServerLevel server) removeOutpost(server);
         clearBar();
         super.setRemoved();
     }
@@ -454,6 +514,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         tag.putLong("NextWaveAt", nextWaveAt);
         if (attackerName != null) tag.putString("Attacker", attackerName);
         tag.putBoolean("Paused", paused);
+        if (outpostChest != null) tag.putLong("OutpostChest", outpostChest.asLong());
         tag.putLong("PausedLeft", pausedLeft);
     }
 
@@ -472,6 +533,7 @@ public class WarStandardBlockEntity extends BlockEntity {
         nextWaveAt = tag.getLong("NextWaveAt");
         attackerName = tag.contains("Attacker") ? tag.getString("Attacker") : null;
         paused = tag.getBoolean("Paused");
+        outpostChest = tag.contains("OutpostChest") ? BlockPos.of(tag.getLong("OutpostChest")) : null;
         pausedLeft = tag.getLong("PausedLeft");
     }
 }

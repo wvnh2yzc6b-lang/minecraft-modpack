@@ -36,6 +36,8 @@ public final class WFConfig {
     public static final ModConfigSpec.BooleanValue RAIDERS_BREAK_BLOCKS;
     public static final ModConfigSpec.DoubleValue MAX_BREAK_HARDNESS;
     public static final ModConfigSpec.IntValue WAVE_INTERMISSION;
+    public static final ModConfigSpec.IntValue OUTPOST_INTERVAL;
+    public static final ModConfigSpec.IntValue OUTPOST_PRESSURE;
 
     public static final ModConfigSpec.BooleanValue ADVISOR_QUEST;
 
@@ -101,6 +103,10 @@ public final class WFConfig {
                 .defineInRange("maxBreakHardness", 10.0, 0.0, 100.0);
         WAVE_INTERMISSION = b.comment("Ticks between waves in a War Horn wave campaign.")
                 .defineInRange("waveIntermissionTicks", 600, 100, 24000);
+        OUTPOST_INTERVAL = b.comment("Every this many siege waves the attackers raise an outpost that must be taken before the wave is won (0 turns outposts off).")
+                .defineInRange("outpostEveryWaves", 5, 0, 100);
+        OUTPOST_PRESSURE = b.comment("Seconds between the groups of raiders an outpost sends at the War Standard.")
+                .defineInRange("outpostPressureSeconds", 90, 10, 3600);
         b.pop();
 
         b.push("towers");

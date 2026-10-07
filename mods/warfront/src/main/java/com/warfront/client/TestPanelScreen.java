@@ -174,8 +174,8 @@ public class TestPanelScreen extends Screen {
         send(1, 4, "Siege warning now", "raid", "siege");
         send(2, 4, "Recall now", "raid", "recall")
                 .setTooltip(Tooltip.create(Component.literal("Teleports you and your followers to your War Standard at once.")));
-        coming(0, 5, "Raise outpost", "Siege outposts are not built yet.");
-        coming(1, 5, "Destroy outpost", "Siege outposts are not built yet.");
+        send(0, 5, "Raise outpost", "siege", "outpost");
+        send(1, 5, "Destroy outpost", "siege", "outpost", "destroy");
     }
 
     private void playerTab() {

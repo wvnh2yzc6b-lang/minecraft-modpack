@@ -112,7 +112,8 @@ public final class TestActions {
                     case "pause" -> pause(player, true);
                     case "resume" -> pause(player, false);
                     case "end" -> endSiege(player);
-                    default -> Result.fail("siege start|wave|pause|resume|end");
+                    case "outpost" -> outpost(player, !"destroy".equals(arg(args, 2)));
+                    default -> Result.fail("siege start|wave|pause|resume|end|outpost [destroy]");
                 };
                 case "player" -> switch (b) {
                     case "race" -> setRace(player, Race.byId(arg(args, 2)));
@@ -422,6 +423,25 @@ public final class TestActions {
         if (s == null) return Result.fail(NO_STANDARD);
         s.setPaused((ServerLevel) player.level(), pause);
         return Result.ok(pause ? "Siege clock paused." : "Siege clock running.");
+    }
+
+    /** Raises an outpost at the nearest War Standard now, or takes its outpost down. */
+    public static Result outpost(Player player, boolean raise) {
+        WarStandardBlockEntity s = nearestStandard(player);
+        if (s == null) return Result.fail(NO_STANDARD);
+        ServerLevel level = (ServerLevel) player.level();
+        if (!raise) {
+            BlockPos chest = s.getOutpostChest();
+            if (chest == null) return Result.fail("No outpost stands at that War Standard.");
+            com.warfront.outpost.Outposts.scheduleRemoval(level, chest, 1);
+            return Result.ok("Outpost taken down.");
+        }
+        UUID warband = s.getWarbandId() != null ? s.getWarbandId() : UUID.randomUUID();
+        NpcFaction f = NpcFaction.values()[level.random.nextInt(NpcFaction.values().length)];
+        BlockPos chest = com.warfront.outpost.Outposts.raise(level, s, f, Math.max(5, s.getWave()), warband);
+        if (chest == null) return Result.fail("No solid ground for an outpost 30-50 blocks from the standard.");
+        s.setOutpostChest(chest);
+        return Result.ok("A " + f.displayName + " outpost rises at " + chest.toShortString() + ".");
     }
 
     public static Result endSiege(Player player) {

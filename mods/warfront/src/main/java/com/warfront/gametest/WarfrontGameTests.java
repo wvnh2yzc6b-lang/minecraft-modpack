@@ -1051,4 +1051,40 @@ public final class WarfrontGameTests {
         }
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ siege outposts
+
+    @GameTest(template = ARENA)
+    public static void outpostsComeEveryFifthWave(GameTestHelper h) {
+        h.assertTrue(com.warfront.outpost.Outposts.shouldRaise(5) && com.warfront.outpost.Outposts.shouldRaise(10),
+                "waves 5 and 10 raise outposts");
+        h.assertTrue(!com.warfront.outpost.Outposts.shouldRaise(4) && !com.warfront.outpost.Outposts.shouldRaise(6),
+                "waves 4 and 6 don't");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void outpostHoldsTheWaveAndComesDownClean(GameTestHelper h) {
+        Player p = tester(h);
+        BlockPos standardPos = new BlockPos(4, 2, 4), chestPos = new BlockPos(7, 2, 7);
+        BlockPos wallA = new BlockPos(1, 2, 1), wallB = new BlockPos(1, 3, 1);
+        h.setBlock(standardPos, WFRegistry.WAR_STANDARD.get());
+        h.setBlock(wallA, Blocks.SPRUCE_LOG);
+        h.setBlock(wallB, Blocks.SPRUCE_LOG);
+        h.setBlock(chestPos, WFRegistry.RAID_CHEST.get());
+        var standard = (WarStandardBlockEntity) h.getBlockEntity(standardPos);
+        var chest = (com.warfront.outpost.RaidChestBlockEntity) h.getBlockEntity(chestPos);
+        chest.link(h.absolutePos(standardPos), UUID.randomUUID(), List.of(h.absolutePos(wallA), h.absolutePos(wallB), h.absolutePos(chestPos)));
+        com.warfront.outpost.Outposts.fill(chest, NpcFaction.IRONBEARD_CLAN, 5, h.getLevel().random);
+        standard.setOutpostChest(h.absolutePos(chestPos));
+        h.assertTrue(standard.hasOutpost(h.getLevel()), "the wave can't be won while the outpost stands");
+        var state = h.getBlockState(chestPos);
+        h.assertTrue(state.getDestroyProgress(p, h.getLevel(), h.absolutePos(chestPos)) == 0F, "a full raid chest can't be broken");
+        chest.clearContent();
+        h.assertTrue(state.getDestroyProgress(p, h.getLevel(), h.absolutePos(chestPos)) > 0F, "an empty raid chest can be broken");
+        h.getLevel().destroyBlock(h.absolutePos(chestPos), false);
+        h.assertTrue(h.getBlockState(wallA).isAir() && h.getBlockState(wallB).isAir(), "every outpost block should be removed");
+        h.assertTrue(!standard.hasOutpost(h.getLevel()), "with the outpost gone the wave can be won");
+        h.succeed();
+    }
 }

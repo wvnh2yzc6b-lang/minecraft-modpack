@@ -86,7 +86,9 @@ public final class TestCommands {
                                 .executes(ctx -> run(ctx, "siege", "wave", num(ctx, "wave")))))
                         .then(simple("pause", "siege", "pause"))
                         .then(simple("resume", "siege", "resume"))
-                        .then(simple("end", "siege", "end")))
+                        .then(simple("end", "siege", "end"))
+                        .then(Commands.literal("outpost").executes(ctx -> run(ctx, "siege", "outpost"))
+                                .then(simple("destroy", "siege", "outpost", "destroy"))))
                 .then(Commands.literal("player")
                         .then(Commands.literal("race").then(Commands.argument("race", StringArgumentType.word()).suggests(RACES)
                                 .executes(ctx -> run(ctx, "player", "race", str(ctx, "race")))))
@@ -150,7 +152,7 @@ public final class TestCommands {
                 "/wftest spawn <race> <role> [count] [friendly|faction] [rank 0-4]",
                 "/wftest army heal|kill|dismiss|revive",
                 "/wftest base level <0-5>|fill|infinite on|off|starter|food fill|empty|bounties|camp [rescue]|merchant",
-                "/wftest siege start [faction]|wave <n>|pause|resume|end",
+                "/wftest siege start [faction]|wave <n>|pause|resume|end|outpost [destroy]",
                 "/wftest player race <race>|fill|day|night|clear|god|kit",
                 "/wftest difficulty <easy|normal|hard|warlord>",
                 "/wftest raid warn|siege|grace|recall",

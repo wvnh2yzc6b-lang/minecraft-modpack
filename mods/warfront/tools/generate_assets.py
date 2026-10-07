@@ -691,6 +691,7 @@ def lang():
         "key.warfront.recall": "Recall home (during an attack)",
         "key.warfront.war_table": "War Table",
         "block.warfront.mess_hall": "Mess Hall",
+        "block.warfront.raid_chest": "Raid Chest",
         "effect.warfront.well_fed": "Well Fed",
         "entity.warfront.advisor": "Advisor",
         "entity.warfront.merchant": "Traveling Merchant",
@@ -985,6 +986,56 @@ def mana_blocks():
 
 # --------------------------------------------------------------------------- game test structure
 
+def raid_chests():
+    """One raid chest per enemy faction, the loot at the heart of a siege outpost."""
+    looks = {
+        # faction: (body, band, accent, label)
+        "marauders": ("7a5230", "3a2414", "d8cdb0", "war crate"),          # lashed planks, bone latch
+        "black_legion": ("2a2a30", "8a8c92", "ece8dc", "strongbox"),       # black iron, steel bands, skull
+        "burning_horde": ("d8cdb0", "5a1a12", "ff6a1a", "bone chest"),     # bone slats, ember lock
+        "the_swarm": ("141d1a", "2e7a10", "8aff3a", "chitin pod"),         # black chitin, acid seams
+        "silverwood_reavers": ("5a4630", "2e4a22", "dde6ee", "root-bound coffer"),
+        "ironbeard_clan": ("5a5c62", "d4a017", "5ab0ff", "vault"),         # iron, gold bands, rune
+        "fallen_host": ("e6dcb8", "6a5a8a", "b8a870", "reliquary"),        # tarnished gilt
+    }
+    variants = {}
+    for i, (key, (body, band, accent, _)) in enumerate(looks.items()):
+        side = Image.new("RGBA", (16, 16))
+        noise_fill(side, hexc(body), 0.1, 70 + i)
+        for x in range(16):
+            for y in (2, 13):
+                side.putpixel((x, y), hexc(band))
+        for y in range(16):
+            for x in (0, 15):
+                side.putpixel((x, y), shade(hexc(band), 0.8))
+        if key == "silverwood_reavers":
+            for y in range(16):                                   # roots winding over the lid
+                side.putpixel(((y * 3) % 16, y), hexc(band))
+        if key == "the_swarm":
+            for x in range(1, 15, 3):
+                side.putpixel((x, 8), hexc(accent))
+        for x in range(6, 10):                                    # lock plate
+            for y in range(6, 10):
+                side.putpixel((x, y), hexc(accent) if (x, y) not in ((6, 6), (9, 6), (6, 9), (9, 9)) else hexc(band))
+        if key == "black_legion":
+            for x, y in ((7, 7), (8, 7)):
+                side.putpixel((x, y), hexc("141416"))
+        save(side, f"block/raid_chest_{key}_side.png")
+        top = Image.new("RGBA", (16, 16))
+        noise_fill(top, shade(hexc(body), 1.1), 0.08, 90 + i)
+        for x in range(16):
+            for y in (0, 15, 7, 8):
+                top.putpixel((x, y), hexc(band))
+        save(top, f"block/raid_chest_{key}_top.png")
+        write_json(ASSETS / "models" / "block" / f"raid_chest_{key}.json", {
+            "parent": "minecraft:block/cube_bottom_top",
+            "textures": {"side": f"{MODID}:block/raid_chest_{key}_side", "top": f"{MODID}:block/raid_chest_{key}_top",
+                         "bottom": f"{MODID}:block/raid_chest_{key}_top"}})
+        variants[f"faction={i}"] = {"model": f"{MODID}:block/raid_chest_{key}"}
+    write_json(ASSETS / "blockstates" / "raid_chest.json", {"variants": variants})
+    write_json(ASSETS / "models" / "item" / "raid_chest.json", {"parent": f"{MODID}:block/raid_chest_marauders"})
+
+
 def mess_hall():
     """The Mess Hall: a plank-and-barrel larder with a laid table on top."""
     plank, dark = hexc("9c6b3c"), hexc("6b4423")
@@ -1069,6 +1120,7 @@ if __name__ == "__main__":
     models_and_states()
     mana_blocks()
     mess_hall()
+    raid_chests()
     effect_icons()
     lang()
     recipes()

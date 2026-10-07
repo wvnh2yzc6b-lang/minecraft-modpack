@@ -3,22 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "siege-outposts",
-      "status": "ready",
-      "decided": "Owner, 2026-10-07: every 5th wave, scales with the wave, spawns raiders until taken, one raid chest per enemy faction.",
-      "title": "Siege outposts and the raid chest",
-      "spec": [
-        "Every 5th siege wave at a War Standard (5, 10, 15...) raises an outpost of the attacking NpcFaction 30 to 50 blocks from the standard, on solid ground, out of the base's tower reach where possible. Make the interval a config (default 5).",
-        "While the outpost stands the wave can't be won: the standard's wave-won check waits on it, and the siege bar or chat says 'Destroy the enemy outpost'.",
-        "Size scales with the wave: below wave 10, a watchtower camp (palisade ring, tent, wooden watchtower, campfire, about 11x11); from wave 10, a small fort (stone or faction-material walls, gate, two corner towers, about 17x17). Built from structure templates per faction palette; record every placed block so the outpost can be removed cleanly.",
-        "Pressure: the outpost sends a small group of its faction's raiders at the base every 90 seconds (config) until taken. It has a few guards of its own.",
-        "Raid chest: a new large block entity (2x2 footprint or a big single-block model) at the outpost's heart, with one look per NpcFaction: Marauder war crate, Black Legion strongbox, Burning Horde bone chest, Swarm chitin pod, Silverwood root-bound coffer, Ironbeard vault, Fallen Host reliquary. Holds loot scaled to the wave (loot table per faction). Can't be broken while it still holds items; once empty, breaking it despawns the whole outpost (all recorded blocks and remaining outpost raiders) with a sound and particles, and the wave can then be won.",
-        "If the siege ends some other way (the standard is lost or removed), the outpost despawns after a short delay so no ruins are left behind.",
-        "Game tests: an outpost spawns on wave 5 and not on wave 4; the wave can't be won while the chest stands; breaking the empty chest removes every outpost block; the chest can't be broken while it holds loot.",
-        "Models: render all seven chests side by side for the Codex before calling it done."
-      ]
-    },
-    {
       "id": "campaign-wars",
       "status": "ready",
       "title": "Campaign, part 1: random mixed raids and war meters",

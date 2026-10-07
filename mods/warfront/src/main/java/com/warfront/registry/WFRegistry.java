@@ -144,6 +144,10 @@ public final class WFRegistry {
             () -> new com.warfront.upkeep.MessHallBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
                     .strength(2.5F).sound(SoundType.WOOD)));
 
+    public static final DeferredBlock<com.warfront.outpost.RaidChestBlock> RAID_CHEST = BLOCKS.register("raid_chest",
+            () -> new com.warfront.outpost.RaidChestBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
+                    .strength(3.0F, 1200.0F).sound(SoundType.WOOD)));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowerBlockEntity>> TOWER_BE =
             BLOCK_ENTITIES.register("tower", () -> BlockEntityType.Builder.of(TowerBlockEntity::new,
                     ARROW_TOWER.get(), ARCANE_SPIRE.get(), HEALING_SHRINE.get()).build(null));
@@ -163,6 +167,10 @@ public final class WFRegistry {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.upkeep.MessHallBlockEntity>> MESS_HALL_BE =
             BLOCK_ENTITIES.register("mess_hall", () -> BlockEntityType.Builder.of(com.warfront.upkeep.MessHallBlockEntity::new,
                     MESS_HALL.get()).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.outpost.RaidChestBlockEntity>> RAID_CHEST_BE =
+            BLOCK_ENTITIES.register("raid_chest", () -> BlockEntityType.Builder.of(com.warfront.outpost.RaidChestBlockEntity::new,
+                    RAID_CHEST.get()).build(null));
 
     // ---- items ----
     public static final DeferredItem<BlockItem> ARROW_TOWER_ITEM = ITEMS.registerSimpleBlockItem(ARROW_TOWER);

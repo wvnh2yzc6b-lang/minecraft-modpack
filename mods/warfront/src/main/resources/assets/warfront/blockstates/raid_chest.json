@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "faction=0": {
+      "model": "warfront:block/raid_chest_marauders"
+    },
+    "faction=1": {
+      "model": "warfront:block/raid_chest_black_legion"
+    },
+    "faction=2": {
+      "model": "warfront:block/raid_chest_burning_horde"
+    },
+    "faction=3": {
+      "model": "warfront:block/raid_chest_the_swarm"
+    },
+    "faction=4": {
+      "model": "warfront:block/raid_chest_silverwood_reavers"
+    },
+    "faction=5": {
+      "model": "warfront:block/raid_chest_ironbeard_clan"
+    },
+    "faction=6": {
+      "model": "warfront:block/raid_chest_fallen_host"
+    }
+  }
+}

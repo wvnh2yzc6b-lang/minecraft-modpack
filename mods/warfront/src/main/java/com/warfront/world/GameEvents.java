@@ -59,6 +59,7 @@ public final class GameEvents {
         com.warfront.mana.ManaNetwork.clear();
         com.warfront.upkeep.MessHallBlockEntity.clearAll();
         com.warfront.upkeep.RaidDamage.clearAll();
+        com.warfront.outpost.Outposts.clearAll();
     }
 
     // ------------------------------------------------------------ players
@@ -286,6 +287,7 @@ public final class GameEvents {
             }
         }
         com.warfront.war.Recall.tick(server);
+        com.warfront.outpost.Outposts.tick();
         if (server.getTickCount() % 20 == 0) {
             // Raids and sieges now follow each player's raid clock, with a warning first.
             com.warfront.war.RaidScheduler.tick(server);
