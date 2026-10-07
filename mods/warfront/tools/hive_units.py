@@ -48,9 +48,9 @@ def _leg(side_x, thigh_mat, shin_mat, spikes=True):
 
 # Upper-arm pose for the two-handed spear grip (radians). Mirrored in LancerModel.java; if you change these,
 # re-solve the spear angle so the haft still runs through the left hand.
-SPEAR_ARM_R = (-0.3, 0, -0.6)
-SPEAR_ARM_L = (-0.9, 0, 0.4)
-SPEAR_FOREARM_L = -0.4
+SPEAR_ARM_R = (-0.2, 0, 0.0)
+SPEAR_ARM_L = (-0.9, 0, 0.6)
+SPEAR_FOREARM_L = -0.1
 
 def hive_lancer():
     """Hive spearman: a sturdy, armored four-armed ant warrior with a two-handed spear and clawed lower hands."""
@@ -96,8 +96,9 @@ def hive_lancer():
         lower_arm, lower_arm_l,
     ])
 
-    # Upper arms hold one spear in both hands at the ready: the rear (right) hand at the hip, the front (left)
-    # hand forward, the spearhead angled up and across. LancerModel keeps the same pose in game.
+    # Upper arms hold one spear in both hands at the ready: the rear (right) hand out by the hip, the front (left)
+    # hand reaching across, the spearhead angled up and across. The rear of the haft runs down outside the right
+    # leg so it never clips the thigh. LancerModel keeps the same pose in game.
     arm = part("right_arm", pivot=(-5.5, 2, 0), rot=SPEAR_ARM_R,
                boxes=[box((-2, -2, -1.75), (3.5, 5.5, 3.5), "hc_plate"),
                       box((-2.5, -2.75, -2.25), (4, 2.5, 4.5), "hb_shell")], children=[
@@ -109,14 +110,14 @@ def hive_lancer():
     arm_l["rot"] = list(SPEAR_ARM_L)
     find({"parts": [arm_l]}, "forearm_l")["rot"] = [SPEAR_FOREARM_L, 0, 0]
     # The spear: a long haft through both hands, a leaf-shaped head with a bound socket, and a butt spike.
-    attach({"parts": [arm]}, "hand_r", part("spear", pivot=(0, 1.25, 0), rot=(1.7, -0.78, 0),
-                               boxes=[box((-0.5, -20, -0.5), (1, 28, 1), "haft")], children=[
-                                   part("spear_socket", pivot=(0, -20, 0),
+    attach({"parts": [arm]}, "hand_r", part("spear", pivot=(0, 1.25, 0), rot=(1.3, -0.82, 0),
+                               boxes=[box((-0.5, -22, -0.5), (1, 27, 1), "haft")], children=[
+                                   part("spear_socket", pivot=(0, -22, 0),
                                         boxes=[box((-0.75, -1.5, -0.75), (1.5, 1.5, 1.5), "wrap")]),
-                                   part("spear_head", pivot=(0, -21.5, 0),
+                                   part("spear_head", pivot=(0, -23.5, 0),
                                         boxes=[box((-0.5, -5, -1.5), (1, 5, 3), "blade"),
                                                box((-0.5, -7.5, -0.75), (1, 2.5, 1.5), "blade")]),
-                                   part("spear_butt", pivot=(0, 8, 0),
+                                   part("spear_butt", pivot=(0, 5, 0),
                                         boxes=[box((-0.4, 0, -0.4), (0.8, 2, 0.8), "spike")])]))
 
     leg = _leg(-2, "hc_plate", "hc_dark")
