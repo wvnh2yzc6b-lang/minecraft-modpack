@@ -53,7 +53,8 @@ These drive the soldier models (3D parts), skins and unit sizes.
   recolor the Hive, keeping the green eyes.
 - **Owner direction:** sculk colors (settled). Bulk it up: thicker limbs and more chitin plating (shoulders,
   breastplate, back shell), same height. The weapon is a plain spear, not a double-bladed staff, held in both
-  upper hands so no hand hangs empty; drop the throwing blade (it read as an empty frame). Lower hands clawed.
+  upper hands so no hand hangs empty; drop the throwing blade (it read as an empty frame). Hands are fists that visibly wrap the haft, not
+  claws; the lower hands have short fingers.
   Render: `hive-lancer-bulk.png`.
 
 ## Hive: beast unit - `hive-beast.png`

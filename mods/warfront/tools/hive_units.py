@@ -51,9 +51,10 @@ def _leg(side_x, thigh_mat, shin_mat, spikes=True):
 SPEAR_ARM_R = (-0.2, 0, 0.0)
 SPEAR_ARM_L = (-0.9, 0, 0.6)
 SPEAR_FOREARM_L = -0.1
+SPEAR_GRIP = 11.2          # distance along the haft from the right hand to the left hand
 
 def hive_lancer():
-    """Hive spearman: a sturdy, armored four-armed ant warrior with a two-handed spear and clawed lower hands."""
+    """Hive spearman: a sturdy, armored four-armed ant warrior gripping a spear in both upper hands."""
     head = part("head", pivot=(0, 0, -0.5), boxes=[
         box((-2.5, -7.5, -3), (5, 4.5, 6), "hc_head"),
         box((-2.25, -3.5, -3.75), (4.5, 3, 4.75), "hc_head"),
@@ -75,11 +76,10 @@ def hive_lancer():
                               boxes=[box((-1.1, 0, -1.1), (2.2, 4.5, 2.2), "hc_dark")], children=[
                                   part("lower_hand_r", pivot=(0, 4.5, 0),
                                        boxes=[box((-1.25, 0, -1.25), (2.5, 2, 2.5), "hc_dark")], children=[
-                                           # Two hooked claw fingers on each lower hand.
-                                           part("lower_claw_r", pivot=(0, 2, -0.8), rot=(0.45, 0, 0),
-                                                boxes=[box((-0.45, 0, -0.45), (0.9, 2, 0.9), "hook")]),
-                                           part("lower_claw_r2", pivot=(0, 2, 0.8), rot=(-0.45, 0, 0),
-                                                boxes=[box((-0.45, 0, -0.45), (0.9, 2, 0.9), "hook")])])])])
+                                           # Three short, slightly curled chitin fingers on each lower hand.
+                                           *[part(f"lower_finger_r{i}", pivot=(0, 2, z), rot=(0.25 * (1 - i), 0, 0),
+                                                  boxes=[box((-0.4, 0, -0.4), (0.8, 1.5, 0.8), "hc_dark")])
+                                             for i, z in enumerate((-0.8, 0, 0.8))]])])])
     lower_arm_l = mirror(lower_arm)
 
     body = part("body", rot=(0.08, 0, 0), boxes=[
@@ -105,7 +105,7 @@ def hive_lancer():
         part("forearm_r", pivot=(-0.25, 3.5, 0), rot=(-0.15, 0, 0),
              boxes=[box((-1.5, 0, -1.5), (3, 6.5, 3), "hc_dark")], children=[
                  part("forearm_r_spur", pivot=(0, 2, 1.4), rot=(1.0, 0, 0), boxes=[box((-0.5, -2.5, -0.5), (1, 2.5, 1), "spike")]),
-                 part("hand_r", pivot=(0, 6.5, 0), boxes=[box((-1.5, 0, -1.5), (3, 2.5, 3), "hc_dark")])])])
+                 part("hand_r", pivot=(0, 6.5, 0), boxes=[box((-1.1, 0, -1.1), (2.2, 1.25, 2.2), "hc_dark")])])])
     arm_l = mirror(arm)
     arm_l["rot"] = list(SPEAR_ARM_L)
     find({"parts": [arm_l]}, "forearm_l")["rot"] = [SPEAR_FOREARM_L, 0, 0]
@@ -118,7 +118,12 @@ def hive_lancer():
                                         boxes=[box((-0.5, -5, -1.5), (1, 5, 3), "blade"),
                                                box((-0.5, -7.5, -0.75), (1, 2.5, 1.5), "blade")]),
                                    part("spear_butt", pivot=(0, 5, 0),
-                                        boxes=[box((-0.4, 0, -0.4), (0.8, 2, 0.8), "spike")])]))
+                                        boxes=[box((-0.4, 0, -0.4), (0.8, 2, 0.8), "spike")]),
+                                   # Fists wrapped around the haft where each upper hand grips it, with a thumb on top.
+                                   *[part(f"spear_fist_{n}", pivot=(0, y, 0),
+                                          boxes=[box((-1.3, -1.3, -1.3), (2.6, 2.6, 2.6), "fist"),
+                                                 box((-0.5, -1.9, -1.0), (1, 0.6, 1.2), "fist")])
+                                     for n, y in (("r", 0), ("l", -SPEAR_GRIP))]]))
 
     leg = _leg(-2, "hc_plate", "hc_dark")
     return {"id": "hive_lancer", "tex": [128, 128],
@@ -308,6 +313,14 @@ def hive_material(mat, side, x, y, w, h, pal, rng):
         if side == "front" and y == h // 2 and x == w // 2:
             return glow(hexc(pal["vein"]))
         return _side_shade(shade(c, rng.uniform(0.93, 1.06)), side)
+    if mat == "fist":
+        # Curled fingers: dark chitin with a crease between each finger and lighter knuckles.
+        c = mix(hexc(pal["chitin"]), hexc(pal["chitin_hi"]), 0.55)
+        if side in ("left", "right", "front", "back") and y % 2 == 1:
+            c = mix(c, hexc(pal["chitin_dark"]), 0.7)                     # finger creases
+        if side == "top":
+            c = mix(c, hexc(pal["chitin_hi"]), 0.4)                       # knuckles
+        return shade(c, rng.uniform(0.94, 1.05))
     if mat == "eye":
         facet = (x + y) % 2 == 0
         return glow(hexc(pal["eye"]) if facet else mix(hexc(pal["eye"]), hexc(pal["eye_hi"]), 0.5))

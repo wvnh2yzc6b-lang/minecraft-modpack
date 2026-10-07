@@ -22,7 +22,7 @@
     {"id": "hive-lancer", "race": "Hive", "title": "Lancer-Drone (Hive spearman)", "status": "review",
      "reference": "hive-spearman.png", "render": "hive-lancer-bulk.png",
      "notes": ["Sturdy four-armed ant warrior about player height, on bent-back legs: thick limbs, shoulder plates, a breastplate and a back shell.",
-               "Upper arms hold one spear in both hands at the ready: a long haft, a leaf-shaped head and a butt spike. The lower hands are clawed.",
+               "Upper arms hold one spear in both hands at the ready: a long haft, a leaf-shaped head and a butt spike, with fists wrapped around the haft. The lower hands have short fingers.",
                "Narrow ant head, big glowing compound eyes, small mandibles, long banded antennae. Ragged shoulder wrap and grass skirt."]},
     {"id": "hive-beast", "race": "Hive", "title": "Deepmaw (Hive war beast)", "status": "approved",
      "reference": "hive-beast.png", "render": "hive-beast-lobster.png",
