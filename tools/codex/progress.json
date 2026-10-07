@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: mortal units, fallen heroes",
+      "detail": "Basic troops and workers die for good. Captains, Champions and war beasts fall instead: an owner can revive them on the field within about 60 seconds, or they come back at the altar after a cooldown for part of their mana cost. Not built yet."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: siege outposts and the raid chest",
       "detail": "Some siege waves will build a temporary enemy outpost nearby. The siege can't be won while it stands: you have to take the outpost and destroy it. At its heart sits a large raid chest with custom art. Loot it, then break it, and the whole outpost despawns. Not built yet; details are open questions on the Design Needs page."
     },

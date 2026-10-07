@@ -132,6 +132,10 @@
   ],
   "settled": [
     {
+      "topic": "Army",
+      "answer": "Units are mortal. Rank-and-file troops and workers die for good and are re-summoned with mana. Captains, Champions and war beasts fall instead of dying: revive them on the field within about 60 seconds, or they return to the altar after a cooldown for part of their mana cost."
+    },
+    {
       "topic": "Sieges",
       "answer": "Roadmap: some sieges raise a temporary enemy outpost nearby that must be destroyed to win. Its big custom-art raid chest is looted, then broken, and the whole outpost despawns."
     },
