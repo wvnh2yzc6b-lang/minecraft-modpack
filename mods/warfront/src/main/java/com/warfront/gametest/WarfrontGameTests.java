@@ -969,4 +969,40 @@ public final class WarfrontGameTests {
         h.assertTrue(war.bounties(p.getUUID()).isEmpty(), "the bounty is done");
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ the merchant
+
+    @GameTest(template = ARENA)
+    public static void merchantComesOnScheduleButNotDuringARaid(GameTestHelper h) {
+        var c = new com.warfront.war.WarState.Clock();
+        long now = 100_000L;
+        c.merchantDue = now - 1;
+        h.assertTrue(!com.warfront.merchant.Caravan.shouldArrive(c, now), "no base, no merchant");
+        c.home = BlockPos.ZERO;
+        h.assertTrue(com.warfront.merchant.Caravan.shouldArrive(c, now), "the merchant should come when due");
+        c.pending = com.warfront.war.WarState.Pending.RAID;
+        h.assertTrue(!com.warfront.merchant.Caravan.shouldArrive(c, now), "not while a raid is coming");
+        c.pending = com.warfront.war.WarState.Pending.NONE;
+        c.activeUntil = now + 100;
+        h.assertTrue(!com.warfront.merchant.Caravan.shouldArrive(c, now), "not while a raid is underway");
+        c.activeUntil = 0;
+        c.merchantDue = now + 10;
+        h.assertTrue(!com.warfront.merchant.Caravan.shouldArrive(c, now), "not before he's due");
+        long next = com.warfront.merchant.Caravan.nextVisit(now, net.minecraft.util.RandomSource.create(1));
+        h.assertTrue(next >= now + 3 * 24000L && next <= now + 5 * 24000L, "visits are 3 to 5 days apart");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void merchantTradesForCrystals(GameTestHelper h) {
+        var offers = com.warfront.merchant.MerchantEntity.drawOffers(net.minecraft.util.RandomSource.create(5), 4);
+        var buy = offers.stream().filter(o -> o.getResult().is(Items.DIAMOND)).findFirst().orElseThrow();
+        ItemStack crystals = new ItemStack(WFRegistry.MANA_CRYSTAL.get(), 10);
+        h.assertTrue(buy.satisfiedBy(crystals, ItemStack.EMPTY), "crystals should pay for the diamond trade");
+        h.assertTrue(buy.take(crystals, ItemStack.EMPTY), "the trade should go through");
+        h.assertTrue(crystals.getCount() == 6, "four crystals should be paid, " + crystals.getCount() + " left");
+        h.assertTrue(buy.getResult().getCount() == 3, "a level 4 base gets 3 diamonds per trade");
+        h.assertTrue(offers.stream().anyMatch(o -> o.getCostA().is(WFRegistry.WAR_MARK.get())), "he buys War Marks");
+        h.succeed();
+    }
 }

@@ -3,20 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "merchant",
-      "status": "ready",
-      "title": "Daily loop, part 3: the traveling merchant",
-      "decided": "Owner, 2026-10-07: light food upkeep, advisor bounties, raid-the-raiders camps, a fuller worker economy and a neutral traveling merchant.",
-      "spec": [
-        "A neutral caravan (merchant plus a pack beast and 2 guards) visits the player's War Standard every 3-5 days, stays one day, then leaves. Arrival toast. Never during a raid.",
-        "Trades (villager-style trade screen, themed later): sells rare materials (other races' building blocks, echo shards, Aether bits when present), beast eggs/summon tokens (still bound by beastLimit), spell scrolls when Iron's Spells is loaded, Manabloom seeds; buys raid loot and faction trophies; currency is Mana Crystals.",
-        "Stock rotates each visit; a couple of trades scale with base level.",
-        "Attacking the merchant makes him leave and skip the next visit.",
-        "Test Panel: controls for each part (fill/empty the Mess Hall, new bounties now, spawn a raider camp, summon the merchant).",
-        "Game tests: the merchant arrives on schedule and not during a raid; a trade exchanges items."
-      ]
-    },
-    {
       "id": "ui-foundation",
       "status": "ready",
       "title": "UI foundation: race-tinted theme, toasts and the siege banner",

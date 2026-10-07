@@ -72,6 +72,7 @@ public final class TestCommands {
                                 .then(simple("off", "base", "infinite", "off")))
                         .then(simple("starter", "base", "starter"))
                         .then(simple("bounties", "base", "bounties"))
+                        .then(simple("merchant", "base", "merchant"))
                         .then(Commands.literal("camp").executes(ctx -> run(ctx, "base", "camp"))
                                 .then(simple("rescue", "base", "camp", "rescue")))
                         .then(Commands.literal("food")
@@ -148,7 +149,7 @@ public final class TestCommands {
                 "/wftest on|off  then press F8 for the Test Panel",
                 "/wftest spawn <race> <role> [count] [friendly|faction] [rank 0-4]",
                 "/wftest army heal|kill|dismiss|revive",
-                "/wftest base level <0-5>|fill|infinite on|off|starter|food fill|empty|bounties|camp [rescue]",
+                "/wftest base level <0-5>|fill|infinite on|off|starter|food fill|empty|bounties|camp [rescue]|merchant",
                 "/wftest siege start [faction]|wave <n>|pause|resume|end",
                 "/wftest player race <race>|fill|day|night|clear|god|kit",
                 "/wftest difficulty <easy|normal|hard|warlord>",

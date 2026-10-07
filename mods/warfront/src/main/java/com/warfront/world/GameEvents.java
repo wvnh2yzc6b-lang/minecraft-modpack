@@ -294,6 +294,7 @@ public final class GameEvents {
         if (server.getTickCount() % 200 == 0) {
             com.warfront.upkeep.Upkeep.tick(server);
             com.warfront.war.Bounties.tick(server);
+            com.warfront.merchant.Caravan.tick(server);
         }
     }
 

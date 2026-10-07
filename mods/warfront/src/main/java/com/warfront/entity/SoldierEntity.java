@@ -173,6 +173,22 @@ public class SoldierEntity extends PathfinderMob {
         refreshName();
     }
 
+    /** Configures this soldier as a neutral guard (the merchant's caravan) holding near {@code post}. */
+    public void setupAsNeutral(Race race, SoldierRole role, Vec3 post) {
+        this.configured = true;
+        this.entityData.set(DATA_OWNER, Optional.empty());
+        this.entityData.set(DATA_FACTION, Factions.WILD);
+        this.race = race;
+        this.tier = 2;
+        this.entityData.set(DATA_ROLE, role.ordinal());
+        this.entityData.set(DATA_SKIN, race.ordinal());
+        this.setPersistenceRequired();
+        applyStats();
+        equipLoadout();
+        refreshName();
+        command(Order.HOLD, Formation.LINE, post, 0F);
+    }
+
     /** Configures this soldier as a member of a hostile NPC warband. */
     public void setupAsRaider(NpcFaction faction, SoldierRole role, UUID warband, @Nullable Vec3 objective,
                               @Nullable BlockPos siegeTarget, int tier) {

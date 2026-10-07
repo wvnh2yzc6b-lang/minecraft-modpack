@@ -692,6 +692,7 @@ def lang():
         "block.warfront.mess_hall": "Mess Hall",
         "effect.warfront.well_fed": "Well Fed",
         "entity.warfront.advisor": "Advisor",
+        "entity.warfront.merchant": "Traveling Merchant",
         "block.warfront.arrow_tower": "Arrow Tower",
         "block.warfront.arcane_spire": "Arcane Spire",
         "block.warfront.healing_shrine": "Healing Shrine",

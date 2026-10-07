@@ -150,7 +150,7 @@ public class TestPanelScreen extends Screen {
         add(1, 4, "Raider camp", () -> PacketDistributor.sendToServer(new TestActionPayload(new ArrayList<>(
                 hasShiftDown() ? List.of("base", "camp", "rescue") : List.of("base", "camp")))))
                 .setTooltip(Tooltip.create(Component.literal("Builds a raider camp 30 blocks ahead, with a bounty for it. Sneak-click for one holding a captive.")));
-        coming(2, 4, "Merchant", "The traveling merchant is not built yet.");
+        send(2, 4, "Merchant", "base", "merchant");
         send(0, 3, "Starter base", "base", "starter")
                 .setTooltip(Tooltip.create(Component.literal("Clears a flat spot in front of you and builds a Mana Well, two Pylons, "
                         + "a Summoning Altar, a War Standard and an Arrow Tower.")));

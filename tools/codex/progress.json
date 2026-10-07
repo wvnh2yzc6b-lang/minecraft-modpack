@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Daily loop, part 3: the traveling merchant",
+      "detail": "Every 3 to 5 days a neutral caravan (the merchant, a pack llama and two guards in your race's colors) comes to your War Standard, stays one day and leaves, never during a raid. He trades in Mana Crystals: other races' building blocks, echo shards, Manabloom seeds, name tags and saddles, Aether materials and Iron's Spells essence when those mods are in, diamonds that scale with your base level and netherite scrap at level 4+. He buys War Marks and emeralds for crystals. The stock changes every visit. Hit him and he packs up at once and skips his next visit. Test Panel (Base tab): Merchant. Still to come: beast tokens and faction trophies once those exist."
+    },
+    {
+      "status": "done",
       "title": "Daily loop, part 2: bounties and raider camps",
       "detail": "Once you've planted a War Standard, your advisor posts up to three bounties every morning: clear a raider camp, scout a marked spot, bring him a stack of materials, or rescue a captive. They pay Mana Shards and Crystals, give 30 XP to the units with you, and expire after two days. Talk to the advisor to see them; hold the goods when you talk to him to deliver. Raider camps (two tents, a campfire, 4 to 8 raiders of one faction) appear 100 to 300 blocks from your base and are that faction's next raid: take the camp and the raid comes a third smaller, and they leave a chest of War Marks and shards. Camps not taken in three days break up. Rescue camps hold one of your race's soldiers bound; beat the guards and right-click to free them. Test Panel (Base tab): new bounties, raider camp (shift-click for a rescue camp). Still to come with the war meters: camps filling the meter."
     },
@@ -249,6 +254,8 @@
     "heroesFallAndAreRevivedButFootmenDie": "A Champion at lethal damage falls instead of dying, can't be hurt while down, gets up at half health; a footman still dies",
     "unrevivedHeroReturnsAtHalfCostWithItsRank": "A hero nobody revives goes on the returning list and is summoned again at half cost, keeping its rank",
     "takenCampShrinksItsRaid": "Taking a camp makes that faction's next raid a third smaller, once, and leaves other factions' raids alone",
-    "deliveryBountyPaysAndBountiesExpire": "Handing over a delivery pays shards and a crystal; expired bounties drop"
+    "deliveryBountyPaysAndBountiesExpire": "Handing over a delivery pays shards and a crystal; expired bounties drop",
+    "merchantComesOnScheduleButNotDuringARaid": "The caravan needs a base, comes when due, never during a raid warning or attack, and visits 3 to 5 days apart",
+    "merchantTradesForCrystals": "A trade takes Mana Crystals and gives the goods; diamonds scale with base level; he buys War Marks"
   }
 }

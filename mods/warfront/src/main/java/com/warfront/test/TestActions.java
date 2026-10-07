@@ -98,6 +98,10 @@ public final class TestActions {
                     case "infinite" -> setInfinite(player, !"off".equals(arg(args, 2)));
                     case "starter" -> starterBase(player);
                     case "bounties" -> newBounties(player);
+                    case "merchant" -> {
+                        com.warfront.merchant.Caravan.summonNow(player);
+                        yield Result.ok("The merchant's caravan is here.");
+                    }
                     case "camp" -> raiderCamp(player, "rescue".equals(arg(args, 2)));
                     case "food" -> messHall(player, !"empty".equals(arg(args, 2)));
                     default -> Result.fail("base level|fill|infinite|starter");

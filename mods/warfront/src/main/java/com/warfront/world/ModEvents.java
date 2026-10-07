@@ -15,6 +15,8 @@ public final class ModEvents {
     @SubscribeEvent
     public static void onAttributes(EntityAttributeCreationEvent event) {
         event.put(WFRegistry.SOLDIER.get(), SoldierEntity.createAttributes().build());
+        event.put(WFRegistry.MERCHANT.get(), net.minecraft.world.entity.Mob.createMobAttributes()
+                .add(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, 0.5).build());
         event.put(WFRegistry.ADVISOR_ENTITY.get(), com.warfront.advisor.AdvisorEntity.createAttributes().build());
     }
 

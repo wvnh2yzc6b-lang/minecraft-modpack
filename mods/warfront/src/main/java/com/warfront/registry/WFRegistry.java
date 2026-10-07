@@ -93,6 +93,11 @@ public final class WFRegistry {
                     .clientTrackingRange(10)
                     .build("soldier"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<com.warfront.merchant.MerchantEntity>> MERCHANT =
+            ENTITIES.register("merchant", () -> EntityType.Builder.<com.warfront.merchant.MerchantEntity>of(
+                            com.warfront.merchant.MerchantEntity::new, MobCategory.MISC)
+                    .sized(0.6F, 1.95F).clientTrackingRange(10).build("merchant"));
+
     // ---- blocks ----
     public static final DeferredBlock<TowerBlock> ARROW_TOWER = BLOCKS.register("arrow_tower",
             () -> new TowerBlock(TowerType.ARROW, BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
