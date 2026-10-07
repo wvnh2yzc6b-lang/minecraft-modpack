@@ -121,6 +121,10 @@
   "settled": [
     {
       "topic": "Skill tree",
+      "answer": "Skirmisher path: speed, dodging and stealth. Fleet Foot and Light Landing lead to two branches: Shadow for stealth (Vanish active, Ambush, Quiet Step) and Outrider for speed (Dash active, Hit and Run, Slippery). They rejoin at Opportunist (bonus damage to slowed, rooted, stunned or fleeing enemies), and the capstone is the Shadow Dance active."
+    },
+    {
+      "topic": "Skill tree",
       "answer": "Arcane path: boosts Iron's Spells (or Warfront's own magic without it). Attunement and Focus lead to two branches: Battlemage for blade and spell (Spellblade active, Arcane Armor, Mana Strike) and Evoker for the pure caster (Overcharge active, Deep Well, Spell Echo). They rejoin at Ley Tap, where your mana regenerates twice as fast inside your base's mana network, and the capstone is the Arcane Surge active."
     },
     {
