@@ -156,6 +156,8 @@ public final class WFRegistry {
     public static final DeferredItem<HealingStaffItem> HEALING_STAFF = ITEMS.register("healing_staff",
             () -> new HealingStaffItem(new Item.Properties().durability(128)));
     public static final DeferredItem<Item> WAR_MARK = ITEMS.registerSimpleItem("war_mark");
+    public static final DeferredItem<com.warfront.flight.ManaGliderItem> MANA_GLIDER = ITEMS.register("mana_glider",
+            () -> new com.warfront.flight.ManaGliderItem(new Item.Properties().durability(320).rarity(Rarity.UNCOMMON)));
     /** Carried by builders; a display tool with no use of its own. */
     public static final DeferredItem<Item> MASON_HAMMER = ITEMS.register("mason_hammer",
             () -> new Item(new Item.Properties().stacksTo(1)));

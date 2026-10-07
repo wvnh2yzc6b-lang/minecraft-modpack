@@ -135,7 +135,7 @@
     },
     {
       "topic": "Players",
-      "answer": "Humans fly with a mana-powered glider."
+      "answer": "Humans fly with the Mana Glider: worn in the chest slot and launched like an elytra, human only. It glides rather than dives, and a Mana Shard used mid-flight gives a burst of speed. Repaired with Mana Crystals."
     },
     {
       "topic": "Demon",
@@ -199,7 +199,7 @@
     },
     {
       "topic": "Players",
-      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: undecided. Demons already fly on their wings. Not started; waiting on your references."
+      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: the Mana Glider. Demons already fly on their wings. Not started; waiting on your references."
     },
     {
       "topic": "Hive",

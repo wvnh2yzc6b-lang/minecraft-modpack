@@ -590,6 +590,23 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void manaGliderIsHumanOnlyAndGlides(GameTestHelper h) {
+        Player pilot = h.makeMockPlayer(GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack glider = new net.minecraft.world.item.ItemStack(WFRegistry.MANA_GLIDER.get());
+        pilot.setData(WFRegistry.RACE, Race.HUMAN.id());
+        h.assertTrue(glider.canElytraFly(pilot), "a human should be able to fly the Mana Glider");
+        pilot.setData(WFRegistry.RACE, Race.ORC.id());
+        h.assertTrue(!glider.canElytraFly(pilot), "only humans fly the Mana Glider");
+        pilot.setDeltaMovement(3.0, -1.0, 0.0);
+        pilot.setXRot(0F);
+        com.warfront.flight.ManaGliderItem.glide(pilot);
+        net.minecraft.world.phys.Vec3 v = pilot.getDeltaMovement();
+        h.assertTrue(v.length() < 3.0 && v.y >= -com.warfront.flight.ManaGliderItem.MAX_SINK - 1e-6,
+                "the glider should bleed speed and soften the sink, motion " + v);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

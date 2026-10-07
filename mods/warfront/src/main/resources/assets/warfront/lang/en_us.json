@@ -21,5 +21,6 @@
   "block.warfront.mana_pylon": "Mana Pylon",
   "block.warfront.mana_brazier": "Mana Brazier",
   "block.warfront.summoning_altar": "Summoning Altar",
-  "effect.warfront.frenzy": "Frenzy"
+  "effect.warfront.frenzy": "Frenzy",
+  "item.warfront.mana_glider": "Mana Glider"
 }

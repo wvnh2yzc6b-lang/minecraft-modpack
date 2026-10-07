@@ -143,6 +143,30 @@ def item_textures():
          "item/war_horn.png")
 
 
+def glider_texture():
+    """Mana Glider: a swept wing of blue sailcloth on a wooden frame, mana crystal at the nose."""
+    rows = [
+        "................",
+        ".......CC.......",
+        "......CcCF......",
+        ".....FBBBBF.....",
+        "....FBbBBbBF....",
+        "...FBbBBBBbBF...",
+        "..FBbBBTTBBbBF..",
+        ".FBbBBBTTBBBbBF.",
+        "FBbBBBB..BBBBbBF",
+        "FBBBBB....BBBBBF",
+        "FBBB........BBBF",
+        "FB............BF",
+        "F..............F",
+        "................",
+        "................",
+        "................",
+    ]
+    save(sprite(rows, {"C": hexc("6ee8ff"), "c": hexc("d8fbff"), "F": hexc("6a4424"), "B": hexc("2f5fa8"),
+                       "b": hexc("4f86d0"), "T": hexc("d4a017")}), "item/mana_glider.png")
+
+
 def hammer_texture():
     """Mason's Hammer, carried by builders: a squared iron head on a wrapped wooden haft."""
     rows = [
@@ -602,7 +626,7 @@ def models_and_states():
     write_json(ASSETS / "models" / "item" / "war_standard.json", {"parent": f"{MODID}:block/war_standard"})
 
     for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"), ("mason_hammer", "handheld"),
-                         ("war_mark", "generated"), ("war_horn", "generated")]:
+                         ("war_mark", "generated"), ("war_horn", "generated"), ("mana_glider", "generated")]:
         write_json(ASSETS / "models" / "item" / f"{item}.json",
                    {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
     write_json(ASSETS / "models" / "item" / "soldier_spawn_egg.json", {"parent": "minecraft:item/template_spawn_egg"})
@@ -664,6 +688,7 @@ def lang():
         "block.warfront.mana_brazier": "Mana Brazier",
         "block.warfront.summoning_altar": "Summoning Altar",
         "effect.warfront.frenzy": "Frenzy",
+        "item.warfront.mana_glider": "Mana Glider",
     }
     write_json(ASSETS / "lang" / "en_us.json", names)
 
@@ -690,6 +715,8 @@ def shapeless(name, ingredients, result, count=1):
 
 def recipes():
     W = "warfront:war_mark"
+    shaped("mana_glider", [" C ", "LSL", "S S"], {"C": "warfront:mana_crystal", "L": "minecraft:leather",
+                                                    "S": "minecraft:stick"}, "warfront:mana_glider")
     shaped("commander_baton", ["  G", " S ", "S  "], {"G": "minecraft:gold_ingot", "S": "minecraft:stick"},
            "warfront:commander_baton")
     shaped("healing_staff", ["  M", " S ", "S  "], {"M": "minecraft:glistering_melon_slice", "S": "minecraft:stick"},
@@ -978,6 +1005,7 @@ if __name__ == "__main__":
     mana_textures()
     item_textures()
     hammer_texture()
+    glider_texture()
     block_textures()
     soldier_skins()
     models_and_states()

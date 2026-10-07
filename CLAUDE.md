@@ -63,12 +63,13 @@ When the owner decides something: move it from `questions` to `settled` in `need
 - **Mana is base power**, not a player stat: wells store it, pylons extend reach (16 blocks), towers and the
   Summoning Altar spend it. Manabloom grows shards; Mana Ore gives crystals (fuel and building material).
 - **Imps are one demon species**, used only for the Impaler (spearman) and Firecaster (archer).
-- **Workers look plain and humanoid** in every race: no horns, antennae, wings or crests.
+- **Workers look plain and humanoid** in every race: no horns, antennae, wings or crests. Orc workers are goblins (long ears, hooked nose).
+- **No separate guard unit**: battle units take guard or patrol duty (sneak + right-click to cycle). The Guard role is retired but kept so old saves load.
 - **The Hive is a sculk/Warden-like cave race**: dark teal chitin, glowing cyan veins; the Swarm is black with
   acid green. Stronger underground, weaker in sunlight; Swarm raids tunnel up; new Hive players start in a cave.
 - **War beasts** are rare altar units, up to 10 per commander (`beastLimit`), meant to grow with base level once
   bases have levels. Hive: Deepmaw (built). Demon: Bone Stalker (reference only, not built).
-- **Player flight per race** (not built): orc jetpack/tech, angel wings, elf flight magic, human undecided;
+- **Player flight per race**: humans have the Mana Glider (built); orc jetpack/tech, angel wings, elf flight magic not built;
   demons already fly. Player models come from the owner's references, Hive first.
 - **Creatures** (later): a few fantastical creatures per race, mostly neutral.
 - Champions, captains and most soldiers have **no design yet**; they wait on the owner's references.

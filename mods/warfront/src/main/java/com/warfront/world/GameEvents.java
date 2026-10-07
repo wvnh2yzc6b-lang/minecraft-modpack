@@ -217,6 +217,9 @@ public final class GameEvents {
     @SubscribeEvent
     public static void onPlayerTick(net.neoforged.neoforge.event.tick.PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
+        if (player.isLocalPlayer() && com.warfront.flight.ManaGliderItem.gliding(player)) {
+            com.warfront.flight.ManaGliderItem.glide(player);
+        }
         if (!player.isFallFlying() || !com.warfront.flight.WingFlight.hasWings(player)
                 || com.warfront.flight.WingFlight.wearsWorkingElytra(player)) return;
         if (player.isLocalPlayer()) {
@@ -225,6 +228,17 @@ public final class GameEvents {
                 && player.getFoodData().getFoodLevel() > 6) {
             player.causeFoodExhaustion(com.warfront.flight.WingFlight.EXHAUSTION);
         }
+    }
+
+    /** A Mana Shard used while flying a Mana Glider burns for a burst of speed. */
+    @SubscribeEvent
+    public static void onRightClickItem(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickItem event) {
+        Player player = event.getEntity();
+        ItemStack held = event.getItemStack();
+        if (!held.is(WFRegistry.MANA_SHARD.get()) || !com.warfront.flight.ManaGliderItem.gliding(player)) return;
+        event.setCanceled(true);
+        event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
+        if (!player.level().isClientSide) com.warfront.flight.ManaGliderItem.boost(player, held);
     }
 
     // ------------------------------------------------------------ roaming warbands

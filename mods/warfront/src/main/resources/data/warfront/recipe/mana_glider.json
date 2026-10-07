@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "LSL",
+    "S S"
+  ],
+  "key": {
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "warfront:mana_glider",
+    "count": 1
+  }
+}

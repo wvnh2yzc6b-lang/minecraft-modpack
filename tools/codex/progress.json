@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Human flight: the Mana Glider",
+      "detail": "Humans get the Mana Glider, crafted from a Mana Crystal, two leather and three sticks. Wear it in the chest slot and jump while falling to launch, like an elytra; only humans can fly it. It's a glider, not a rocket: speed bleeds off above a cruising pace and the sink rate stays gentle unless you point steeply down. Use a Mana Shard mid-flight to burn it for a burst of speed. It wears down with use and is repaired with Mana Crystals. No 3D model on the back yet."
+    },
+    {
+      "status": "done",
       "title": "Orc workers are goblins",
       "detail": "The orc farmer and builder are now goblins: the Goblin Grubber and Goblin Tinker. They stand about three quarters of an orc's height, move a little faster and have a little less health, with sallow yellow-green skin, long swept-back ears, a hooked nose and slit yellow eyes, in plain worker gear in orc colors. Orc soldiers are unchanged. Render: two goblins beside an orc, front and three-quarter.",
       "image": "orc-goblin-workers.png"
@@ -132,6 +137,7 @@
     "orcRageBuildsIntoFrenzy": "An orc soldier at 90 rage isn't frenzied; one more hit sends it into a Frenzy and empties the bar",
     "elfArrowsFlyFaster": "An arrow shot by an elf leaves 20% faster",
     "demonKillsHarvestSoulsAndBurst": "A demon's souls cap at 10 and raise its attack damage; a full harvest bursts and empties",
-    "orcWorkersAreGoblins": "An orc farmer is a goblin and well under orc size; an orc soldier is not"
+    "orcWorkersAreGoblins": "An orc farmer is a goblin and well under orc size; an orc soldier is not",
+    "manaGliderIsHumanOnlyAndGlides": "Only a human can fly the Mana Glider, and it bleeds off excess speed and softens the sink"
   }
 }
