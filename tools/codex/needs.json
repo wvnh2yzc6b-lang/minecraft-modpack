@@ -23,7 +23,7 @@
     },
     "hive/spearman": {
       "status": "done",
-      "note": "Lancer-Drone bulked up, with a two-handed spear. Awaiting your review."
+      "note": "Lancer-Drone approved: bulked up, gripping a spear in both upper hands."
     },
     "hive/beast": {
       "status": "done",
@@ -49,12 +49,6 @@
     "beast": "A rare war beast summoned at the altar. Only races with a designed beast can field one."
   },
   "questions": [
-    {
-      "topic": "Hive",
-      "priority": "high",
-      "question": "How does the Lancer-Drone look to you?",
-      "why": "Bulked up on your direction, and now holds one spear in both upper hands; its fists wrap the haft, and the throwing blade is gone. See it on the Codex's Designs page."
-    },
     {
       "topic": "Bases",
       "priority": "medium",
@@ -147,6 +141,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Hive",
+      "answer": "The Lancer-Drone is approved: a sturdy, armored four-armed ant warrior gripping a plain spear in both upper hands, rear of the haft clear of the legs, short-fingered lower hands, no throwing blade."
+    },
     {
       "topic": "Hive",
       "answer": "Sculk-dark colors; stronger underground and weaker in sunlight; Swarm raids tunnel up near their target; new Hive players start in a cave."
