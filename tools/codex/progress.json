@@ -4,13 +4,21 @@
   "log": [
     {
       "status": "done",
+      "title": "Codex: workers without guards, orc goblins",
+      "detail": "The Models page's worker viewer now shows farmers and builders only (guard duty belongs to battle units), and orc workers as the goblins they are in the game. The all-races worker render is redone to match.",
+      "image": "workers-all-races.png"
+    },
+    {
+      "status": "done",
       "title": "Enemy faction trim",
-      "detail": "Raiders now show who they fight for: Marauder war paint and bone trophies, the Black Legion's skull tabard and spiked pauldron, Burning Horde chains and brand, the Swarm's glowing acid sacs and chitin spurs, Silverwood bone masks with antlers and thorn vines, Ironbeard rune face guards and beard rings, the Fallen Host's torn gray wings and cracked halo. Cosmetic only, never on your own units. Waiting on your review on the Designs page."
+      "detail": "Raiders now show who they fight for: Marauder war paint and bone trophies, the Black Legion's skull tabard and spiked pauldron, Burning Horde chains and brand, the Swarm's glowing acid sacs and chitin spurs, Silverwood bone masks with antlers and thorn vines, Ironbeard rune face guards and beard rings, the Fallen Host's torn gray wings and cracked halo. Cosmetic only, never on your own units. Waiting on your review on the Designs page.",
+      "image": "faction-trim-render.png"
     },
     {
       "status": "done",
       "title": "Demon hellknights",
-      "detail": "Full-sized demon soldiers now wear their own armor: faceless black-iron plate with an ember visor slit, horns through the helm, glowing seams and hooves. Hellguard (shieldbearer, heaviest plate and a black shield), Fiend (swordsman), Archfiend (Captain, crest and cape), Hellknight (Champion, great horns, spiked pauldrons, chest sigil) and Blood Witch (healer, red robes and horned hood). Rank armor stays off them; their rank shows as chevrons. Waiting on your review on the Designs page."
+      "detail": "Full-sized demon soldiers now wear their own armor: faceless black-iron plate with an ember visor slit, horns through the helm, glowing seams and hooves. Hellguard (shieldbearer, heaviest plate and a black shield), Fiend (swordsman), Archfiend (Captain, crest and cape), Hellknight (Champion, great horns, spiked pauldrons, chest sigil) and Blood Witch (healer, red robes and horned hood). Rank armor stays off them; their rank shows as chevrons. Waiting on your review on the Designs page.",
+      "image": "demon-hellknights-render.png"
     },
     {
       "status": "done",
@@ -136,7 +144,7 @@
       "status": "done",
       "title": "Human flight: the Mana Glider",
       "detail": "Humans get the Mana Glider, crafted from a Mana Crystal, two leather and three sticks. Wear it in the chest slot and jump while falling to launch, like an elytra; only humans can fly it. It's a glider, not a rocket: speed bleeds off above a cruising pace and the sink rate stays gentle unless you point steeply down. Use a Mana Shard mid-flight to burn it for a burst of speed. It wears down with use and is repaired with Mana Crystals. No 3D model on the back yet. The glider now shows on your back: folded into an A-frame on the ground, spread into the icon's swept chevron while gliding, easing between the two.",
-      "render": "mana-glider-render.png"
+      "image": "mana-glider-render.png"
     },
     {
       "status": "done",

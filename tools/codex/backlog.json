@@ -3,17 +3,6 @@
   "updated": "2026-10-07",
   "items": [
     {
-      "id": "codex-workers",
-      "status": "ready",
-      "title": "Codex worker viewer: drop guards, add goblins",
-      "decided": "Follows from the guard-duty and goblin changes.",
-      "spec": [
-        "build_codex.py still lists guard gear and reads the guard name (names[9]) per race; show farmer and builder only.",
-        "Show the orc farmer and builder as goblins (goblin skin + gear_*_goblin), with their names.",
-        "Re-render the 'workers for every race' shot without guards and with the goblins."
-      ]
-    },
-    {
       "id": "siege-outposts",
       "status": "ready",
       "decided": "Owner, 2026-10-07: every 5th wave, scales with the wave, spawns raiders until taken, one raid chest per enemy faction.",

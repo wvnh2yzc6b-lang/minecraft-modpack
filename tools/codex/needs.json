@@ -40,6 +40,26 @@
     "orc/builder": {
       "status": "partial",
       "note": "Goblin Tinker: a goblin with long ears and a hooked nose, in plain orc work clothes. Waiting on your review."
+    },
+    "demon/shieldbearer": {
+      "status": "partial",
+      "note": "Hellguard built: heaviest black-iron plate, doubled pauldrons, black shield. Waiting on your review."
+    },
+    "demon/swordsman": {
+      "status": "partial",
+      "note": "Fiend built: faceless black-iron plate, horns, ember visor and seams, hooves. Waiting on your review."
+    },
+    "demon/captain": {
+      "status": "partial",
+      "note": "Archfiend built: hellknight plate with a crest and a cape. Waiting on your review."
+    },
+    "demon/champion": {
+      "status": "partial",
+      "note": "Hellknight built: great horns, spiked pauldrons, ember chest sigil, long cape. Waiting on your review."
+    },
+    "demon/healer": {
+      "status": "partial",
+      "note": "Blood Witch built: blood-red robes and horned hood over light pauldrons. Waiting on your review."
     }
   },
   "default_note": "Placeholder: the basic race skin plus held gear. Needs a look.",

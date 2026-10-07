@@ -10,12 +10,12 @@
     { id: 'imp_firecaster', label: 'Imp Firecaster', about: '<b>Imp Firecaster</b> · archer. Rune mantle and a floating ember orb.' },
     { id: 'hive_lancer', label: 'Lancer-Drone', about: '<b>Lancer-Drone</b> · Hive spearman. Four arms, a double-bladed polearm and a throwing blade.', hive: true },
     { id: 'hive_beast', label: 'Deepmaw', about: '<b>Deepmaw</b> · Hive war beast. A towering burrower with a spiked frill and one huge hooked claw.', hive: true },
-    { id: 'workers', label: 'Workers', about: '<b>Workers and guards</b> · posted roles, dressed by race. Plain work clothes in each race\'s colors.' },
+    { id: 'workers', label: 'Workers', about: '<b>Workers</b> · farmers and builders, dressed by race. Plain work clothes in each race\'s colors; orc workers are goblins.' },
     { id: 'demon_player', label: 'Demon player', about: '<b>Demon player</b> · what a player of the demon race looks like to everyone on the server.' },
   ];
   const PALETTES = [{ id: 'demon', label: 'Player demons' }, { id: 'burning_horde', label: 'Burning Horde' }];
   const HIVE_PALETTES = [{ id: 'hive', label: 'Player Hive' }, { id: 'the_swarm', label: 'The Swarm' }];
-  const ROLES = [{ id: 'farmer', label: 'Farmer' }, { id: 'builder', label: 'Builder' }, { id: 'guard', label: 'Guard' }];
+  const ROLES = [{ id: 'farmer', label: 'Farmer' }, { id: 'builder', label: 'Builder' }];
   const RACES = ['human', 'elf', 'dwarf', 'orc', 'angel', 'hive', 'demon'].map(id => ({ id, label: id[0].toUpperCase() + id.slice(1) }));
   const NAMES = CODEX.workerNames || {};
   const POSES = [{ id: 'ground', label: 'Folded' }, { id: 'jump', label: 'Jumping' }, { id: 'fly', label: 'Flying' }];
@@ -70,8 +70,10 @@
     if (m.id === 'workers') {
       const name = (NAMES[pick.race] || {})[pick.role];
       about.innerHTML = '<b>' + (name || 'Worker') + '</b> · ' + pick.race + ' ' + pick.role + '.';
-      const id = 'gear_' + pick.role + '_' + pick.race;
-      holder.add(MCModel.buildModel(CODEX.models.player_base, tex('skin/' + pick.race), null));
+      if (!ROLES.some(r => r.id === pick.role)) pick.role = 'farmer';
+      const goblin = pick.race === 'orc';
+      const id = 'gear_' + pick.role + '_' + (goblin ? 'goblin' : pick.race);
+      holder.add(MCModel.buildModel(CODEX.models.player_base, tex(goblin ? 'skin/goblin' : 'skin/' + pick.race), null));
       const g = MCModel.buildModel(CODEX.models[id], tex(pick.race + '/' + id), tex(pick.race + '/' + id + '_glow'));
       holder.add(g);
       current = { kind: 'worker', P: g.userData.parts };

@@ -226,16 +226,19 @@ def viewer_data():
                         tex[f"{pal}/{mid}{suffix}"] = uri(Image.open(f).convert("RGBA"))
     for race in ("human", "elf", "dwarf", "orc", "angel", "hive", "demon"):
         tex[f"skin/{race}"] = uri(Image.open(T / "entity" / "soldier" / f"{race}.png").convert("RGBA"))
-        for role in ("farmer", "builder", "guard"):
+        shape = "goblin" if race == "orc" else race   # orc farmers and builders are goblins
+        for role in ("farmer", "builder"):
             for suffix in ("", "_glow"):
-                f = T / "entity" / "soldier" / race / f"gear_{role}_{race}{suffix}.png"
+                f = T / "entity" / "soldier" / race / f"gear_{role}_{shape}{suffix}.png"
                 if f.exists():
-                    tex[f"{race}/gear_{role}_{race}{suffix}"] = uri(Image.open(f).convert("RGBA"))
+                    tex[f"{race}/gear_{role}_{shape}{suffix}"] = uri(Image.open(f).convert("RGBA"))
+    tex["skin/goblin"] = uri(Image.open(T / "entity" / "soldier" / "goblin.png").convert("RGBA"))
     for n in ("demon_skin", "demon_skin_glow", "demon_extras", "demon_extras_glow"):
         tex[f"player/{n}"] = uri(Image.open(T / "entity" / "player" / f"{n}.png").convert("RGBA"))
     # Only ship the models the viewer shows.
     keep = {k: v for k, v in models.items() if k.startswith(("imp", "hive_", "demon_player", "player_base"))
-            or k.startswith("gear_") and k.rsplit("_", 1)[1] in ("human", "elf", "dwarf", "orc", "angel", "hive", "demon")}
+            or k.startswith(("gear_farmer_", "gear_builder_"))
+            and k.rsplit("_", 1)[1] in ("human", "elf", "dwarf", "goblin", "angel", "hive", "demon")}
     return {"models": keep, "tex": tex, "workerNames": worker_names()}
 
 
@@ -245,7 +248,7 @@ def worker_names():
     for m in re.finditer(r'String\[\] (\w+)\s*=\s*\{([^}]*)\}', src):
         names = re.findall(r'"([^"]*)"', m.group(2))
         if len(names) >= 10:
-            out[m.group(1).lower()] = {"farmer": names[7], "builder": names[8], "guard": names[9]}
+            out[m.group(1).lower()] = {"farmer": names[7], "builder": names[8]}
     return out
 
 
@@ -344,7 +347,7 @@ def main():
         "%%DESIGNS%%": designs(),
         "%%PAGENAV%%": "".join(f'<a href="#{pid}" data-page="{pid}">{esc(label)}</a>' for pid, label, _ in PAGES),
         "%%PAGES%%": json.dumps([{"id": pid, "label": label, "sections": secs} for pid, label, secs in PAGES]),
-        "%%WORKER_SHOTS%%": shots([("workers-all-races.png", "Farmers, builders and guards for every race, front and back.", True)]),
+        "%%WORKER_SHOTS%%": shots([("workers-all-races.png", "Farmers and builders for every race, front and back (orc workers are goblins).", True)]),
         "%%RACES%%": race_cards(),
         "%%FACTIONS%%": faction_cards(),
         "%%ITEMS%%": tiles(ITEMS),
