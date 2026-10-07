@@ -108,6 +108,10 @@
   ],
   "settled": [
     {
+      "topic": "Players",
+      "answer": "Flight per race, decided: Orcs get a fuel-burst rocket pack: hold jump to thrust up or forward, burns fuel fast, loud, short and strong; for jumping walls and diving into fights, not long trips. Angels get true free flight in daylight under open sky; at night or underground the wings only glide like an elytra. Elves cast flight as a spell (levitate and a wind leap) paid with Iron's Spells mana, with a fallback cost when Iron's Spells isn't installed."
+    },
+    {
       "topic": "Pack",
       "answer": "Twilight Forest is out (CurseForge-only). In its place the pack runs The Aether and Deeper and Darker, both crossed over with Warfront as optional integrations: the Aether is the angels' homeland and the Otherside (Deeper and Darker's dimension) the Hive's; Fallen Host raids come down from the Aether and Swarm raids rise from the Otherside; their ores and sculk materials fuel mana and build altars; angel wings and the angels' war beast (an armored Moa) come from the Aether, Hive gear or a beast from the Otherside; faction outposts and raid chests also appear in both dimensions as late-game raids."
     },
@@ -209,7 +213,7 @@
     },
     {
       "topic": "Players",
-      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: the Mana Glider. Demons already fly on their wings. Not started; waiting on your references."
+      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: the Mana Glider. Demons already fly on their wings. Flight mechanics are decided (see the flight decision); the player models wait on your references."
     },
     {
       "topic": "Hive",

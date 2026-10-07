@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: flight for orcs, angels and elves",
+      "detail": "Decided: orcs get a loud fuel-burst rocket pack for short, strong jumps and dives; angels fly freely by day under open sky and only glide at night or underground; elves cast levitate and wind leap with Iron's Spells mana (Mana Shards without that mod). Queued for a build session with placeholder looks until the references come."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: the Aether and the Otherside join the war",
       "detail": "Twilight Forest is out. The Aether and Deeper and Darker come in and tie into Warfront: the Aether is the angels' homeland and the Otherside the Hive's, Fallen Host and Swarm raids come from there, their ores fuel your mana, angel wings and an armored Moa come from the Aether, and enemy outposts with raid chests wait in both dimensions. Warfront still runs without either mod. Queued for build sessions."
     },
