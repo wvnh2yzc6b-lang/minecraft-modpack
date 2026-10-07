@@ -32,6 +32,16 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - Impaler: rugged and sharper, with some armor. Firecaster: a magical look. Imps are low tier, so
   keep it modest.
 
+## Player characters and flight (owner direction)
+- Most races get their own player model, from references the owner will supply. Hive comes first.
+- Most races should have some form of flight:
+  - Orc: a jetpack or other tech. No wings.
+  - Angel: angel wings.
+  - Elf: flight magic.
+  - Human: undecided.
+  - Demon: done (wings, elytra-style flight).
+- Not started. Wait for the references.
+
 ## Hive (owner direction)
 - The Hive should be more Warden and sculk-like: an underground race that builds its keeps in caves.
 

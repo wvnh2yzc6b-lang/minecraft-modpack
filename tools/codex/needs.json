@@ -43,10 +43,28 @@
       "why": "Every unit marked Needs input uses the plain race skin. Pictures or descriptions let me give each one its own model, gear and size."
     },
     {
+      "topic": "Players",
+      "priority": "high",
+      "question": "Reference art for the Hive player character.",
+      "why": "You're finding Hive design art. The Hive player model, and the Hive's cave and sculk look, start from it."
+    },
+    {
       "topic": "Units",
       "priority": "high",
       "question": "How should each Champion look?",
       "why": "Paladin, Bladedancer, Ironbreaker, Berserker, Hellknight, Seraph and Ravager all have abilities but no design yet."
+    },
+    {
+      "topic": "Players",
+      "priority": "medium",
+      "question": "How should human players fly, if at all?",
+      "why": "Orcs get a jetpack, angels wings, elves flight magic. Humans are still open: a glider, a mount, siege tech, or no flight."
+    },
+    {
+      "topic": "Players",
+      "priority": "medium",
+      "question": "Reference art for the other player races (orc, angel, elf, dwarf, human).",
+      "why": "Each player model is built from your references, the same way the demon player was."
     },
     {
       "topic": "Hive",
@@ -65,12 +83,6 @@
       "priority": "medium",
       "question": "Should the other demons (Hellguard, Fiend, Archfiend, Blood Witch) be a species of their own?",
       "why": "Imps are now one species. The full-sized demons need a look: horned humanoids, armored knights, something else?"
-    },
-    {
-      "topic": "Players",
-      "priority": "medium",
-      "question": "Should players of other races get their own player model, like demons do?",
-      "why": "Only demon players look different. Angels with wings, dwarves shorter, hive with carapace are all possible."
     },
     {
       "topic": "Enemies",
@@ -104,6 +116,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Players",
+      "answer": "Most player races get their own player model and some form of flight. Orcs: a jetpack or similar tech, not wings. Angels: angel wings. Elves: flight magic. Humans: undecided. Demons already fly on their wings. Not started; waiting on your references."
+    },
     {
       "topic": "Hive",
       "answer": "The Hive becomes a Warden and sculk-like underground race that builds its keeps in caves. Redesign comes after the mana system."
