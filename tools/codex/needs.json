@@ -102,6 +102,10 @@
   ],
   "settled": [
     {
+      "topic": "Towers",
+      "answer": "Each race gets three of its own towers on top of the shared Arrow Tower, Arcane Spire and Healing Shrine, unlocking with base level like beasts. Human: Ballista (level 2), Watchtower Bell (level 3), Trebuchet (level 5); Elf: Thornwood Sentinel (level 2), Moonwell Grove (level 3), Elder Treant Spire (level 5); Dwarf: Rune Cannon (level 2), Stone Warden (level 3), Thunder Forge (level 5); Orc: War Drum Totem (level 2), Goblin Bomb Catapult (level 3), Waaagh Banner (level 5); Demon: Soul Pyre (level 2), Brimstone Chains (level 3), Hellgate (level 5); Angel: Sun Lance (level 2), Choir Bell (level 3), Seraphic Obelisk (level 5); Hive: Lurker Pit (level 2), Brood Nest (level 3), Synapse Spire (level 5). Only that race can build them. Race towers allowed: 2 at base level 2, 4 at level 3, 6 at level 4, 10 at level 5; each capstone is limited to one. Shared towers stay uncapped (mana limits them)."
+    },
+    {
       "topic": "UI",
       "answer": "Warfront gets a clean, modern UI: flat semi-transparent dark panels with thin borders and one accent color per race (Hive cyan, demon ember, angel gold and so on). First pass: a combat HUD (race power and army status), a War Table screen on a hotkey (army roster with ranks and duties, returning heroes, base level, beasts), a base mana overlay (look at a well, pylon or tower to see its mana, range and links) and a redesigned Summoning Altar with unit cards. Toasts handle rank-ups, fallen heroes and mana warnings, a big banner announces siege events, and chat stays clean."
     },

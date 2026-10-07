@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "planned",
+      "title": "Roadmap: race towers",
+      "detail": "Every race gets three towers of its own, unlocking at base levels 2, 3 and 5: Human: Ballista (level 2), Watchtower Bell (level 3), Trebuchet (level 5); Elf: Thornwood Sentinel (level 2), Moonwell Grove (level 3), Elder Treant Spire (level 5); Dwarf: Rune Cannon (level 2), Stone Warden (level 3), Thunder Forge (level 5); Orc: War Drum Totem (level 2), Goblin Bomb Catapult (level 3), Waaagh Banner (level 5); Demon: Soul Pyre (level 2), Brimstone Chains (level 3), Hellgate (level 5); Angel: Sun Lance (level 2), Choir Bell (level 3), Seraphic Obelisk (level 5); Hive: Lurker Pit (level 2), Brood Nest (level 3), Synapse Spire (level 5). Only that race can build them, and how many you can place grows with base level (2, 4, 6, then 10), with one capstone of each kind. Queued in three waves after the tower models."
+    },
+    {
+      "status": "planned",
       "title": "Roadmap: a clean UI for everything",
       "detail": "Warfront gets its own look: flat dark panels with each race's accent color. Coming: a combat HUD (souls, rage, fuel, flight, army and siege status), a War Table screen on a hotkey (army roster with ranks, fallen and returning heroes, base level), a mana overlay that shows what's powered when you look at your buildings, and a rebuilt Summoning Altar with unit cards. Toasts and a siege banner replace the chat messages. Each screen gets a mockup in the Codex first."
     },
