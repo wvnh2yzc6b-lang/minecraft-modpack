@@ -78,8 +78,8 @@
     {
       "topic": "Players",
       "priority": "medium",
-      "question": "The skill tree's six paths and seven race paths: which nodes and active skills go in each?",
-      "why": "The framework is decided (shared paths plus a race path, Renown points, small race affinity). Each path needs about 10 nodes, 2-3 of them active skills. We're designing them one path at a time in brainstorm sessions."
+      "question": "The skill tree's seven race paths: which nodes and active skills deepen each race power?",
+      "why": "All six shared paths are designed (Blade, Bulwark, Marksman, Arcane, Skirmisher, Commander). Each race still needs its own path of about 10 nodes that builds on its race power."
     },
     {
       "topic": "Endgame",
@@ -119,6 +119,10 @@
     }
   ],
   "settled": [
+    {
+      "topic": "Skill tree",
+      "answer": "Commander path: your army. Formations stay open to every player and never sit behind a skill. Drillmaster and Logistics lead to two branches: Empowerer gives allies effects nothing else does (Kindle Arms active, which puts your race's element on your army's weapons; Blood Bond; Shared Armor), and Warmaster grows the army (Call to Arms active, Beastmaster, Veteran Corps). They rejoin at Steady Ranks, and the capstone is the Last Order active, which raises fallen heroes nearby."
+    },
     {
       "topic": "Skill tree",
       "answer": "Skirmisher path: speed, dodging and stealth. Fleet Foot and Light Landing lead to two branches: Shadow for stealth (Vanish active, Ambush, Quiet Step) and Outrider for speed (Dash active, Hit and Run, Slippery). They rejoin at Opportunist (bonus damage to slowed, rooted, stunned or fleeing enemies), and the capstone is the Shadow Dance active."
