@@ -52,6 +52,7 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
                 ctx.getModelManager()));
         this.addLayer(new RoleGearLayer(this, ctx.getModelSet()));
         this.addLayer(new RankLayer(this, ctx.getModelSet()));
+        this.addLayer(new FactionTrimLayer(this, ctx.getModelSet()));
     }
 
     private CreatureRenderer<?> creatureFor(SoldierEntity entity) {

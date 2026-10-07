@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Enemy faction trim",
+      "detail": "Raiders now show who they fight for: Marauder war paint and bone trophies, the Black Legion's skull tabard and spiked pauldron, Burning Horde chains and brand, the Swarm's glowing acid sacs and chitin spurs, Silverwood bone masks with antlers and thorn vines, Ironbeard rune face guards and beard rings, the Fallen Host's torn gray wings and cracked halo. Cosmetic only, never on your own units. Waiting on your review on the Designs page."
+    },
+    {
+      "status": "done",
       "title": "Demon hellknights",
       "detail": "Full-sized demon soldiers now wear their own armor: faceless black-iron plate with an ember visor slit, horns through the helm, glowing seams and hooves. Hellguard (shieldbearer, heaviest plate and a black shield), Fiend (swordsman), Archfiend (Captain, crest and cape), Hellknight (Champion, great horns, spiked pauldrons, chest sigil) and Blood Witch (healer, red robes and horned hood). Rank armor stays off them; their rank shows as chevrons. Waiting on your review on the Designs page."
     },

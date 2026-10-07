@@ -120,18 +120,13 @@
       "id": "faction-trim",
       "race": "Enemies",
       "title": "Enemy faction trim",
-      "status": "planned",
+      "status": "review",
       "notes": [
-        "Owner direction: enemy factions keep their race body and colors, plus one signature piece each.",
-        "Marauder Horde (orc): war paint stripes and bone trophies on the belt and shoulders.",
-        "Black Legion (human): a black tabard with a white skull and a spiked pauldron.",
-        "Burning Horde (demon): smoldering chains and a soot-blackened brand on the chest.",
-        "The Swarm (Hive): glowing acid sacs on the back and jagged black chitin spurs.",
-        "Silverwood Reavers (elf): thorn-vine wraps and a pale antler-bone mask.",
-        "Ironbeard Clan (dwarf): a rune-etched iron face guard and braided beard rings.",
-        "Fallen Host (angel): torn, ash-gray wings and a cracked, dimmed halo.",
-        "Not built yet."
-      ]
+        "Built and in the game: raiders of each faction wear a cosmetic overlay on top of their body and armor. Your own units never do.",
+        "Left to right in the render: Fallen Host (torn ash-gray wings, a cracked dim halo), Ironbeard Clan (rune-etched iron face guard, braided beard rings), Silverwood Reavers (pale antler-bone mask, thorn-vine wraps), The Swarm (glowing acid sacs on the back, black chitin spurs), Burning Horde (smoldering chains, a glowing brand, over the hellknight armor), Black Legion (black tabard with a white skull, a spiked pauldron), Marauder Horde (red war paint, bone trophies on belt and shoulders). Front row, then from behind.",
+        "No stat changes."
+      ],
+      "render": "faction-trim-render.png"
     }
   ]
 }
