@@ -101,6 +101,18 @@
         "Thin insect-like wings with torn pale membrane, and a long spined tail ending in a scorpion stinger.",
         "Works like the Deepmaw: a rare altar unit. Not built yet."
       ]
+    },
+    {
+      "id": "demon-hellknights",
+      "race": "Demon",
+      "title": "Hellknights (Hellguard, Fiend, Archfiend, Hellknight)",
+      "status": "planned",
+      "notes": [
+        "Owner direction: the full-size demons are armored hellknights, not a horned-skin species or a mixed bestiary.",
+        "Faceless black-iron plate, fire glowing through the visor slit and joint gaps.",
+        "Hellguard heavy with a tower shield; Fiend a plate swordsman; Archfiend a Captain with a crest or banner (15% bigger); Hellknight the Champion (30% bigger), the most ornate.",
+        "Must read as demons, not Black Legion humans: open question on horns, hooves and ember seams. Blood Witch's look is open."
+      ]
     }
   ]
 }

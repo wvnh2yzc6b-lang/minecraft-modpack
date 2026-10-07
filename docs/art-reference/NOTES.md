@@ -168,3 +168,10 @@ Owner direction: the orc non-combat roles are goblins. Built without a reference
 player rig (0.8 scale against the orc's 1.1), sallow yellow-green skin, long ears swept out and back, a
 hooked nose, slit yellow eyes, a toothy grin, plain worker gear in orc colors. A reference image would let
 the face and build be matched more closely.
+
+## Demon hellknights (owner direction, no reference image yet)
+
+The full-size demons (Hellguard, Fiend, Archfiend, Hellknight) are armored hellknights: faceless black-iron
+plate with fire glowing through the visor slit and the joint gaps. Imps remain the small winged caste. They
+must not read as Black Legion humans; the distinguishing details (horns, hooves, ember seams) and the
+Blood Witch's look are still open.

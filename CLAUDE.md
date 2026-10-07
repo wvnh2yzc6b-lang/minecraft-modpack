@@ -51,7 +51,7 @@ change they cover (a new session must pass `url` and read the artifact first, or
 
 | Page | URL | Build |
 |---|---|---|
-| Warfront Codex: progress, confirmed designs, models, systems, tests | https://claude.ai/artifact/8mbSQF2ZteBXw5VcU7Aef1 | `python3 tools/codex/build_codex.py` → `build/codex/warfront-codex.html` |
+| Warfront Codex: progress, confirmed designs, models, systems, tests | https://claude.ai/artifact/8mbSQF2ZteBXw5VcU7Aef1 | `python3 mods/warfront/tools/units.py && python3 tools/codex/build_codex.py` → `build/codex/warfront-codex.html` |
 | Design Needs: every race and role by name, open questions, settled decisions | https://claude.ai/artifact/WLp7LPGzYr36T3nPoU5fBR | `python3 tools/codex/build_needs.py` → `build/codex/design-needs.html` |
 
 Data behind them, edit these instead of the HTML:
@@ -88,9 +88,9 @@ When the owner decides something: move it from `questions` to `settled` in `need
 - **References:** every image the owner sends goes to `docs/art-reference/` (crop out book text and stat blocks)
   with design notes in `NOTES.md`, written from the picture only. Build models from them, render, and compare
   side by side before calling a model done.
-- **Models** are generated: `tools/units.py` (imps, demon player, Hive units via `tools/hive_units.py`, worker
-  gear via `tools/worker_gear.py`) writes `UnitGeometry.java` and textures. Blocks, items, recipes, loot and race
-  skins come from `tools/generate_assets.py`. Edit the generators, then run them; don't hand-edit their output.
+- **Models** are generated: `mods/warfront/tools/units.py` (imps, demon player, Hive units via `hive_units.py`,
+  worker gear via `worker_gear.py`, all in `mods/warfront/tools/`) writes `UnitGeometry.java` and textures. Blocks, items, recipes, loot and race
+  skins come from `mods/warfront/tools/generate_assets.py`. Edit the generators, then run them; don't hand-edit their output.
   `generate_assets.py` also rewrites `mana_ore.png`, `deepslate_mana_ore.png` and `platform.nbt` with no real
   change: `git checkout` those three afterwards.
 - **Rendering previews:** Chromium + Playwright (node, at `/opt/node22/lib/node_modules/playwright`) with three.js

@@ -82,12 +82,6 @@
       "why": "Each player model is built from your references, the same way the demon player was."
     },
     {
-      "topic": "Units",
-      "priority": "medium",
-      "question": "Should the other demons (Hellguard, Fiend, Archfiend, Blood Witch) be a species of their own?",
-      "why": "Imps are now one species. The full-sized demons need a look: horned humanoids, armored knights, something else?"
-    },
-    {
       "topic": "Enemies",
       "priority": "low",
       "question": "Should the enemy factions look different from the player races beyond color?",
@@ -122,9 +116,19 @@
       "priority": "low",
       "question": "Raid chest looks: one per enemy faction. Any references or ideas for each?",
       "why": "Decided: each of the seven enemy factions gets its own raid chest. If no references come, I'll design them from each race's palette (Marauder war crate, Black Legion strongbox, Burning Horde bone chest, Swarm chitin pod, Silverwood root-bound coffer, Ironbeard vault, Fallen Host reliquary)."
+    },
+    {
+      "topic": "Demon",
+      "priority": "medium",
+      "question": "Hellknights: how do they stay apart from the Black Legion, and is the Blood Witch armored too?",
+      "why": "The Black Legion are dark-armored humans, so hellknights need a clear tell. My pick: horned helms, hooves, and ember-orange seams in the plate. The Blood Witch is a caster, so she could wear lighter robes over plate, or be the one unarmored demon."
     }
   ],
   "settled": [
+    {
+      "topic": "Demon",
+      "answer": "The full-size demons (Hellguard, Fiend, Archfiend, Hellknight) are armored hellknights: faceless black-iron plate with fire glowing through the visor and joint gaps. Imps stay the small winged caste for the Impaler and Firecaster."
+    },
     {
       "topic": "Units",
       "answer": "Sizes follow rank: soldiers stay at their race's size, Captains are 15% bigger and Champions 30% bigger (the Hive Ravager keeps its 35%), so heroes stand out on the field. Role doesn't change size."
