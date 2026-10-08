@@ -1334,7 +1334,9 @@ public final class WarfrontGameTests {
         for (com.warfront.faction.NpcFaction f : com.warfront.faction.NpcFaction.values()) com.warfront.war.Campaign.setWarlordBeaten(p, f, true);
         h.assertTrue(com.warfront.finale.SealOfSevenItem.unseal(p, seal) && p.getInventory().countItem(WFRegistry.SEALED_MAP.get()) == 1,
                 "with all seven beaten the seal becomes the Sealed Map");
-        h.assertTrue(com.warfront.finale.FrozenField.level(h.getLevel().getServer()) != null, "the Frozen Field dimension should exist");
+        // The test server only loads the overworld, so check the Field's dimension type registered from the data instead.
+        h.assertTrue(h.getLevel().registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DIMENSION_TYPE)
+                .containsKey(com.warfront.Warfront.id("frozen_field")), "the Frozen Field's dimension type should load");
         h.succeed();
     }
 
