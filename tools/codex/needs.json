@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-07",
+  "updated": "2026-10-08",
   "cells": {
     "demon/spearman": {
       "status": "done",
@@ -60,6 +60,10 @@
     "demon/healer": {
       "status": "partial",
       "note": "Blood Witch built: blood-red robes and horned hood over light pauldrons. Waiting on your review."
+    },
+    "angel/beast": {
+      "status": "partial",
+      "note": "Armored Moa: built with a placeholder look (blue-feathered running bird in white-and-gold barding). Waiting on references."
     }
   },
   "default_note": "Placeholder: the basic race skin plus held gear. Needs a look.",
