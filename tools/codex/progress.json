@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "3D towers, styled per race",
+      "image": "race-towers-render.png",
+      "detail": "The three towers are now 3D: the tower block is a plinth and the model rises two blocks above it. The Arrow Tower is a timber watchtower with a crenellated parapet, an arrow slit and a pennant; the Arcane Spire a tapering stone needle with gold bands, glowing rune panels and a mana crystal that floats and turns above its point; the Healing Shrine a stepped basin of glowing water under four pillars, with a light hovering over it. Each tower takes its owner's race when placed and is built in that race's materials (human stone and gold, elf pale living wood, dwarf slate and rune blue, orc rough timber, demon black iron and embers, angel white stone and gold, Hive dark chitin and cyan). The glow and motion show only while the mana network can pay for a shot; without mana the crystal sinks and goes dark. Hitboxes and line of sight are unchanged. First pass from each race's palette until references come."
+    },
+    {
+      "status": "done",
       "title": "Hive race power: Call the Swarm",
       "detail": "The Hive's race power calls reinforcements. The Swarm meter (0-100) fills from your kills (+8) and your units' kills within 32 blocks (+3), twice as fast underground or in the dark, and drains a point a second after a minute without a fight. At 50 or more, press R for a Brood Call: two Lancer-Drones and two Rippers burrow up around you in a spray of sculk and dirt. At 100, sneak + R for a Deepmaw Call: a Deepmaw rises beside you (a plain R at 100 still makes a Brood Call, so you choose). Called units follow and fight like your army but don't count toward the army size or the war-beast limit, drop no loot or XP, take no guard or patrol duty and never fall as heroes; 20 seconds after you and they stop fighting, or if you log out, die or leave the dimension, they burrow back into the ground. Enemy Swarm raid captains use it too: badly hurt, they call a brood once per raid. The HUD shows the Swarm bar with a notch at 50 that lights when a Brood Call is ready. Test Panel (Player tab, pick Hive): Swarm to 50, Swarm full, Brood Call, Deepmaw Call, Dismiss swarm; /wftest player swarm [half|fill|brood|deepmaw|dismiss]."
     },

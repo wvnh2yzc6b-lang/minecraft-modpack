@@ -64,19 +64,6 @@
       ]
     },
     {
-      "id": "tower-models",
-      "status": "ready",
-      "title": "3D tower models, styled per race",
-      "decided": "Owner, 2026-10-07: 3D models for the existing three towers first; new tower types later.",
-      "spec": [
-        "Step 1: one shared model per tower, about 1x1 footprint and 2 to 3 blocks tall (a multi-part block or a block entity renderer). Arrow Tower: timber watchtower with a crenellated top and an arrow slit. Arcane Spire: a stone needle with a floating mana crystal that glows when powered. Healing Shrine: a low altar with a basin and a soft light.",
-        "Show the mana state: the crystal or light dims when the tower has no mana.",
-        "Step 2: race variants keyed by the owner's race (TowerBlockEntity already stores the owner): materials and trim per race (human stone and banners, elf living wood, dwarf iron and rune stone, orc lashed timber and spikes, demon black iron and embers, angel white stone and gold, Hive chitin and sculk). Ship step 1 alone if step 2 grows large.",
-        "Keep the block hitbox and line-of-sight behaviour unchanged so the tower game tests still pass.",
-        "Render all three (and the race variants) for the Codex."
-      ]
-    },
-    {
       "id": "race-towers-l2",
       "status": "ready",
       "title": "Race towers, wave 1: the system plus the seven level 2 towers",

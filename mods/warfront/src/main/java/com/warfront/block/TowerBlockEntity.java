@@ -42,6 +42,9 @@ public class TowerBlockEntity extends BlockEntity {
     private int actions;
     /** Whether the last check found an enemy to shoot at; for diagnostics. */
     private boolean sawTarget;
+    /** The owner's race when placed (picks the model's materials) and whether the network can pay for a shot. */
+    private String race = "";
+    private boolean powered = true;
 
     public TowerBlockEntity(BlockPos pos, BlockState state) {
         super(WFRegistry.TOWER_BE.get(), pos, state);
@@ -60,6 +63,49 @@ public class TowerBlockEntity extends BlockEntity {
         return sawTarget;
     }
 
+    public String race() {
+        return race;
+    }
+
+    public void setRace(String race) {
+        this.race = race == null ? "" : race;
+        sync();
+    }
+
+    public boolean isPowered() {
+        return powered;
+    }
+
+    private void setPowered(boolean on) {
+        if (powered == on) return;
+        powered = on;
+        sync();
+    }
+
+    private void sync() {
+        setChanged();
+        if (level != null && !level.isClientSide) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        tag.putString("Race", race);
+        tag.putBoolean("Powered", powered);
+        return tag;
+    }
+
+    @Override
+    public net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener> getUpdatePacket() {
+        return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    /** The model rises about two blocks above the block. */
+    @Override
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition).expandTowards(0, 3, 0).inflate(0.25, 0, 0.25);
+    }
+
     /** The faction this tower fights for. */
     public String factionKey(@Nullable MinecraftServer server) {
         if (owner == null) return Factions.WILD;
@@ -73,6 +119,7 @@ public class TowerBlockEntity extends BlockEntity {
         tower.cooldown = type.interval;
         ServerLevel server = (ServerLevel) level;
         String key = tower.factionKey(server.getServer());
+        tower.setPowered(!WFConfig.TOWERS_NEED_MANA.get() || ManaNetwork.available(server, pos, key) >= type.manaCost);
         Vec3 eye = Vec3.atCenterOf(pos).add(0, 1.2, 0);
         int range = WFConfig.TOWER_RANGE.get();
         AABB box = new AABB(pos).inflate(range);
@@ -195,11 +242,15 @@ public class TowerBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (owner != null) tag.putUUID("Owner", owner);
+        if (!race.isEmpty()) tag.putString("Race", race);
+        tag.putBoolean("Powered", powered);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
+        race = tag.getString("Race");
+        powered = !tag.contains("Powered") || tag.getBoolean("Powered");
     }
 }

@@ -2502,6 +2502,38 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(1.5F, 1F, 2.6F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 64, 64);
     }
+    /** The tower_arrow body. */
+    public static LayerDefinition tower_arrow() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, 0F, -7F, 2F, 24F, 2F).texOffs(8, 0).addBox(-7F, 0F, 5F, 2F, 24F, 2F).texOffs(16, 0).addBox(5F, 0F, -7F, 2F, 24F, 2F).texOffs(24, 0).addBox(5F, 0F, 5F, 2F, 24F, 2F).texOffs(12, 50).addBox(-5F, 10F, -7F, 10F, 2F, 1F).texOffs(34, 50).addBox(-5F, 10F, 6F, 10F, 2F, 1F).texOffs(64, 26).addBox(-7F, 10F, -5F, 1F, 2F, 10F).texOffs(86, 26).addBox(6F, 10F, -5F, 1F, 2F, 10F).texOffs(0, 26).addBox(-8F, -2F, -8F, 16F, 2F, 16F).texOffs(0, 44).addBox(-8F, -7F, -8F, 16F, 5F, 1F).texOffs(34, 44).addBox(-8F, -7F, 7F, 16F, 5F, 1F).texOffs(32, 0).addBox(-8F, -7F, -7F, 1F, 5F, 14F).texOffs(62, 0).addBox(7F, -7F, -7F, 1F, 5F, 14F).texOffs(92, 44).addBox(-8F, -10F, -8F, 2F, 3F, 1F).texOffs(98, 44).addBox(-8F, -10F, 7F, 2F, 3F, 1F).texOffs(104, 44).addBox(-3F, -10F, -8F, 2F, 3F, 1F).texOffs(110, 44).addBox(-3F, -10F, 7F, 2F, 3F, 1F).texOffs(116, 44).addBox(1F, -10F, -8F, 2F, 3F, 1F).texOffs(122, 44).addBox(1F, -10F, 7F, 2F, 3F, 1F).texOffs(0, 50).addBox(6F, -10F, -8F, 2F, 3F, 1F).texOffs(6, 50).addBox(6F, -10F, 7F, 2F, 3F, 1F).texOffs(68, 44).addBox(-8F, -10F, -4F, 1F, 3F, 2F).texOffs(74, 44).addBox(-8F, -10F, 2F, 1F, 3F, 2F).texOffs(80, 44).addBox(7F, -10F, -4F, 1F, 3F, 2F).texOffs(86, 44).addBox(7F, -10F, 2F, 1F, 3F, 2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("pennant", CubeListBuilder.create().texOffs(108, 26).addBox(0F, -8F, 0F, 1F, 8F, 1F).texOffs(56, 50).addBox(1F, -8F, 0F, 5F, 3F, 0F),
+                PartPose.offsetAndRotation(6F, -10F, 6F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 128);
+    }
+    /** The tower_arcane body. */
+    public static LayerDefinition tower_arcane() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-5F, 14F, -5F, 10F, 10F, 10F).texOffs(40, 0).addBox(-4F, 4F, -4F, 8F, 10F, 8F).texOffs(0, 20).addBox(-3F, -4F, -3F, 6F, 8F, 6F).texOffs(104, 20).addBox(-1.5F, -9F, -1.5F, 3F, 5F, 3F).texOffs(24, 20).addBox(-5.5F, 13F, -5.5F, 11F, 1F, 11F).texOffs(68, 20).addBox(-4.5F, 3F, -4.5F, 9F, 1F, 9F).texOffs(0, 34).addBox(-3.5F, -5F, -3.5F, 7F, 1F, 7F).texOffs(72, 0).addBox(-5.2F, 16F, -5.2F, 0.2F, 6F, 10.4F).texOffs(96, 0).addBox(5F, 16F, -5.2F, 0.2F, 6F, 10.4F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("crystal", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, -15F, 0F, 0F, 0.785F, 0F));
+        PartDefinition p2 = p1.addOrReplaceChild("crystal_core", CubeListBuilder.create().texOffs(28, 34).addBox(-2F, -2F, -2F, 4F, 4F, 4F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0.615F, 0F, 0.615F));
+        return LayerDefinition.create(mesh, 128, 128);
+    }
+    /** The tower_healing body. */
+    public static LayerDefinition tower_healing() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-8F, 20F, -8F, 16F, 4F, 16F).texOffs(64, 0).addBox(-6F, 17F, -6F, 12F, 3F, 12F).texOffs(0, 35).addBox(-5F, 16F, -5F, 10F, 1F, 10F).texOffs(52, 35).addBox(-6F, 14F, -6F, 12F, 3F, 1F).texOffs(78, 35).addBox(-6F, 14F, 5F, 12F, 3F, 1F).texOffs(72, 20).addBox(-6F, 14F, -5F, 1F, 3F, 10F).texOffs(94, 20).addBox(5F, 14F, -5F, 1F, 3F, 10F).texOffs(112, 0).addBox(-8F, 4F, -8F, 2F, 13F, 2F).texOffs(120, 0).addBox(-8F, 4F, 6F, 2F, 13F, 2F).texOffs(0, 20).addBox(6F, 4F, -8F, 2F, 13F, 2F).texOffs(8, 20).addBox(6F, 4F, 6F, 2F, 13F, 2F).texOffs(0, 46).addBox(-8F, 2F, -8F, 16F, 2F, 2F).texOffs(36, 46).addBox(-8F, 2F, 6F, 16F, 2F, 2F).texOffs(16, 20).addBox(-8F, 2F, -6F, 2F, 2F, 12F).texOffs(44, 20).addBox(6F, 2F, -6F, 2F, 2F, 12F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("light", CubeListBuilder.create().texOffs(40, 35).addBox(-1.5F, -1.5F, -1.5F, 3F, 3F, 3F),
+                PartPose.offsetAndRotation(0F, 8F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 128);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2548,6 +2580,9 @@ public final class UnitGeometry {
         all.put("mana_glider", UnitGeometry::mana_glider);
         all.put("rocket_pack", UnitGeometry::rocket_pack);
         all.put("angel_wings", UnitGeometry::angel_wings);
+        all.put("tower_arrow", UnitGeometry::tower_arrow);
+        all.put("tower_arcane", UnitGeometry::tower_arcane);
+        all.put("tower_healing", UnitGeometry::tower_healing);
         return all;
     }
 }

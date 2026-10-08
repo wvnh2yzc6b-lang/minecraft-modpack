@@ -56,6 +56,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(WFRegistry.SOLDIER.get(), SoldierRenderer::new);
         event.registerEntityRenderer(WFRegistry.ADVISOR_ENTITY.get(), AdvisorRenderer::new);
         event.registerEntityRenderer(WFRegistry.MERCHANT.get(), net.minecraft.client.renderer.entity.WanderingTraderRenderer::new);
+        event.registerBlockEntityRenderer(WFRegistry.TOWER_BE.get(), TowerRenderer::new);
     }
 
     @SubscribeEvent

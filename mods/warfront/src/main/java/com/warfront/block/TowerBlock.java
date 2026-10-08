@@ -55,6 +55,7 @@ public class TowerBlock extends BaseEntityBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (placer instanceof Player player && level.getBlockEntity(pos) instanceof TowerBlockEntity tower) {
             tower.setOwner(player.getUUID());
+            tower.setRace(player.getData(WFRegistry.RACE));
         }
     }
 

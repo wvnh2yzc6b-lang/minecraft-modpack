@@ -138,6 +138,19 @@
         "Built and in the game, at the heart of every siege outpost. Left to right: Marauder war crate (lashed planks), Black Legion strongbox (black iron, steel bands), Burning Horde bone chest (bone slats, ember lock), Swarm chitin pod (black chitin, acid seams), Silverwood root-bound coffer, Ironbeard vault (iron, gold bands, a blue rune), Fallen Host reliquary (tarnished gilt).",
         "First pass from each faction's palette, as no references came in. Send pictures to change any of them."
       ]
+    },
+    {
+      "id": "tower-models",
+      "race": "All races",
+      "title": "3D towers, styled per race",
+      "status": "review",
+      "render": "race-towers-render.png",
+      "notes": [
+        "Built and in the game. Rows: Arrow Tower (timber watchtower, crenellated parapet with an arrow slit, a pennant), Arcane Spire (tapering stone needle with gold bands, rune panels and a floating mana crystal), Healing Shrine (stepped basin of glowing water under four pillars and a ring, a hovering light).",
+        "Left to right: Hive (dark teal chitin, cyan), angel (white stone, gold), demon (black iron, embers), orc (rough timber, green), dwarf (slate, rune blue), elf (pale living wood, green), human (stone, gold, red). Each tower takes its owner's race when placed.",
+        "The tower block is the plinth; the model rises two blocks above it. The crystal, runes, water and light glow and move only while the mana network can pay for a shot, and go dark when it can't.",
+        "First pass from each race's palette. Send references to change any of them."
+      ]
     }
   ]
 }

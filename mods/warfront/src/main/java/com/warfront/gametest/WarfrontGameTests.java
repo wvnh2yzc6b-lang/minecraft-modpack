@@ -1002,6 +1002,23 @@ public final class WarfrontGameTests {
         h.succeed();
     }
 
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void towersShowWhetherTheyHaveMana(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos towerPos = new BlockPos(1, 1, 1);
+        h.setBlock(towerPos, WFRegistry.ARCANE_SPIRE.get());
+        TowerBlockEntity tower = (TowerBlockEntity) h.getBlockEntity(towerPos);
+        tower.setOwner(owner.getUUID());
+        tower.setRace(Race.DWARF.id());
+        ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 3), owner, 0F);
+        h.assertTrue(Race.DWARF.id().equals(tower.race()), "the tower should remember its owner's race for its look");
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(!tower.isPowered(), "a tower with no mana should show as unpowered"))
+                .thenExecute(() -> well.setMana(100F))
+                .thenWaitUntil(() -> h.assertTrue(tower.isPowered(), "a tower with mana in reach should show as powered"))
+                .thenSucceed();
+    }
+
     @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
