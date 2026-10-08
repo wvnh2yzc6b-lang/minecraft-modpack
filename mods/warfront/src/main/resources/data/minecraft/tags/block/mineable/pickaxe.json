@@ -9,6 +9,13 @@
     "warfront:mana_brazier",
     "warfront:summoning_altar",
     "warfront:mana_ore",
-    "warfront:deepslate_mana_ore"
+    "warfront:deepslate_mana_ore",
+    "warfront:rune_stone",
+    "warfront:rune_stone_stairs",
+    "warfront:rune_stone_slab",
+    "warfront:rune_stone_wall",
+    "warfront:spike_floor",
+    "warfront:rune_mine",
+    "warfront:flame_vent"
   ]
 }

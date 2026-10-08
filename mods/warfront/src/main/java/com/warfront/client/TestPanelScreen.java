@@ -146,6 +146,8 @@ public class TestPanelScreen extends Screen {
         });
         send(0, 2, "Fill Mess Hall", "base", "food", "fill");
         send(1, 2, "Empty Mess Hall", "base", "food", "empty");
+        send(2, 2, "Tunnel kit", "base", "traps")
+                .setTooltip(Tooltip.create(Component.literal("Rune Drill, rune stone, spike floors, rune mines and flame vents. The drill only works for dwarves.")));
         send(0, 4, "New bounties", "base", "bounties");
         add(1, 4, "Raider camp", () -> PacketDistributor.sendToServer(new TestActionPayload(new ArrayList<>(
                 hasShiftDown() ? List.of("base", "camp", "rescue") : List.of("base", "camp")))))

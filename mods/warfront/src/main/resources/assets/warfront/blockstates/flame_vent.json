@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "warfront:block/flame_vent"
+    },
+    "facing=east": {
+      "model": "warfront:block/flame_vent",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "warfront:block/flame_vent",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "warfront:block/flame_vent",
+      "y": 270,
+      "uvlock": true
+    }
+  }
+}

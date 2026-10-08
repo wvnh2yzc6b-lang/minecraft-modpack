@@ -51,5 +51,13 @@
   "item.warfront.mana_glider": "Mana Glider",
   "item.warfront.rocket_pack": "Orc Rocket Pack",
   "item.warfront.angel_wings": "Angel Wings",
-  "item.warfront.wind_charm": "Wind Charm"
+  "item.warfront.wind_charm": "Wind Charm",
+  "item.warfront.rune_drill": "Rune Drill",
+  "block.warfront.rune_stone": "Rune Stone",
+  "block.warfront.rune_stone_stairs": "Rune Stone Stairs",
+  "block.warfront.rune_stone_slab": "Rune Stone Slab",
+  "block.warfront.rune_stone_wall": "Rune Stone Wall",
+  "block.warfront.spike_floor": "Spike Floor",
+  "block.warfront.rune_mine": "Rune Mine",
+  "block.warfront.flame_vent": "Flame Vent"
 }

@@ -181,6 +181,30 @@ public final class WFRegistry {
             () -> new com.warfront.fortress.TrophyBannerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD)
                     .strength(2.0F, 1200.0F).sound(SoundType.WOOD).noOcclusion()));
 
+    // Dwarf tunnels.
+    public static final DeferredBlock<Block> RUNE_STONE = BLOCKS.register("rune_stone",
+            () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(12.0F, 1500.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE_BRICKS)));
+    public static final DeferredBlock<net.minecraft.world.level.block.StairBlock> RUNE_STONE_STAIRS = BLOCKS.register("rune_stone_stairs",
+            () -> new net.minecraft.world.level.block.StairBlock(RUNE_STONE.get().defaultBlockState(),
+                    BlockBehaviour.Properties.ofFullCopy(RUNE_STONE.get())));
+    public static final DeferredBlock<net.minecraft.world.level.block.SlabBlock> RUNE_STONE_SLAB = BLOCKS.register("rune_stone_slab",
+            () -> new net.minecraft.world.level.block.SlabBlock(BlockBehaviour.Properties.ofFullCopy(RUNE_STONE.get())));
+    public static final DeferredBlock<net.minecraft.world.level.block.WallBlock> RUNE_STONE_WALL = BLOCKS.register("rune_stone_wall",
+            () -> new net.minecraft.world.level.block.WallBlock(BlockBehaviour.Properties.ofFullCopy(RUNE_STONE.get()).forceSolidOn()));
+    public static final DeferredBlock<com.warfront.tunnel.SpikeFloorBlock> SPIKE_FLOOR = BLOCKS.register("spike_floor",
+            () -> new com.warfront.tunnel.SpikeFloorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
+                    .strength(3.0F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+    public static final DeferredBlock<com.warfront.tunnel.RuneMineBlock> RUNE_MINE = BLOCKS.register("rune_mine",
+            () -> new com.warfront.tunnel.RuneMineBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE)
+                    .strength(2.0F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
+    public static final DeferredBlock<com.warfront.tunnel.FlameVentBlock> FLAME_VENT = BLOCKS.register("flame_vent",
+            () -> new com.warfront.tunnel.FlameVentBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
+                    .strength(3.5F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.NETHER_BRICKS).lightLevel(s -> 3)));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.tunnel.TrapBlockEntity>> TRAP_BE =
+            BLOCK_ENTITIES.register("trap", () -> BlockEntityType.Builder.of(com.warfront.tunnel.TrapBlockEntity::new,
+                    SPIKE_FLOOR.get(), RUNE_MINE.get(), FLAME_VENT.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TowerBlockEntity>> TOWER_BE =
             BLOCK_ENTITIES.register("tower", () -> BlockEntityType.Builder.of(TowerBlockEntity::new,
                     ARROW_TOWER.get(), ARCANE_SPIRE.get(), HEALING_SHRINE.get()).build(null));
@@ -222,6 +246,15 @@ public final class WFRegistry {
     public static final DeferredItem<BlockItem> MANA_BRAZIER_ITEM = ITEMS.registerSimpleBlockItem(MANA_BRAZIER);
     public static final DeferredItem<BlockItem> SUMMONING_ALTAR_ITEM = ITEMS.registerSimpleBlockItem(SUMMONING_ALTAR);
     public static final DeferredItem<BlockItem> MESS_HALL_ITEM = ITEMS.registerSimpleBlockItem(MESS_HALL);
+    public static final DeferredItem<BlockItem> RUNE_STONE_ITEM = ITEMS.registerSimpleBlockItem(RUNE_STONE);
+    public static final DeferredItem<BlockItem> RUNE_STONE_STAIRS_ITEM = ITEMS.registerSimpleBlockItem(RUNE_STONE_STAIRS);
+    public static final DeferredItem<BlockItem> RUNE_STONE_SLAB_ITEM = ITEMS.registerSimpleBlockItem(RUNE_STONE_SLAB);
+    public static final DeferredItem<BlockItem> RUNE_STONE_WALL_ITEM = ITEMS.registerSimpleBlockItem(RUNE_STONE_WALL);
+    public static final DeferredItem<BlockItem> SPIKE_FLOOR_ITEM = ITEMS.registerSimpleBlockItem(SPIKE_FLOOR);
+    public static final DeferredItem<BlockItem> RUNE_MINE_ITEM = ITEMS.registerSimpleBlockItem(RUNE_MINE);
+    public static final DeferredItem<BlockItem> FLAME_VENT_ITEM = ITEMS.registerSimpleBlockItem(FLAME_VENT);
+    public static final DeferredItem<com.warfront.tunnel.RuneDrillItem> RUNE_DRILL = ITEMS.register("rune_drill",
+            () -> new com.warfront.tunnel.RuneDrillItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<BlockItem> TROPHY_BANNER_ITEM = ITEMS.register("trophy_banner",
             () -> new BlockItem(TROPHY_BANNER.get(), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     // The warlords' gear.

@@ -825,6 +825,14 @@ def lang():
         "item.warfront.rocket_pack": "Orc Rocket Pack",
         "item.warfront.angel_wings": "Angel Wings",
         "item.warfront.wind_charm": "Wind Charm",
+        "item.warfront.rune_drill": "Rune Drill",
+        "block.warfront.rune_stone": "Rune Stone",
+        "block.warfront.rune_stone_stairs": "Rune Stone Stairs",
+        "block.warfront.rune_stone_slab": "Rune Stone Slab",
+        "block.warfront.rune_stone_wall": "Rune Stone Wall",
+        "block.warfront.spike_floor": "Spike Floor",
+        "block.warfront.rune_mine": "Rune Mine",
+        "block.warfront.flame_vent": "Flame Vent",
     }
     write_json(ASSETS / "lang" / "en_us.json", names)
 
@@ -920,7 +928,7 @@ def loot_and_tags():
             "random_sequence": f"{MODID}:blocks/{b}"})
     ores = ["mana_ore", "deepslate_mana_ore"]
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "pickaxe.json",
-               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:8] + ores]})
+               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:8] + ores + TUNNEL_BLOCKS]})
     # Floors a summoning altar can stand on: any brick or stone-brick block, so every race can build in its style.
     write_json(DATA / MODID / "tags" / "block" / "altar_base.json", {"replace": False, "values": [
         "#minecraft:stone_bricks", "minecraft:polished_blackstone_bricks", "minecraft:cracked_polished_blackstone_bricks",
@@ -929,7 +937,7 @@ def loot_and_tags():
         "minecraft:red_nether_bricks", "minecraft:bricks", "minecraft:mud_bricks", "minecraft:quartz_bricks",
         "minecraft:end_stone_bricks", "minecraft:prismarine_bricks", "minecraft:tuff_bricks"]})
     write_json(DATA / "minecraft" / "tags" / "block" / "needs_iron_tool.json",
-               {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
+               {"replace": False, "values": [f"{MODID}:{o}" for o in ores + RUNE_FAMILY]})
     write_json(DATA / "c" / "tags" / "block" / "ores.json", {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
     write_json(DATA / "c" / "tags" / "item" / "ores.json", {"replace": False, "values": [f"{MODID}:{o}" for o in ores]})
     write_json(DATA / "minecraft" / "tags" / "item" / "villager_plantable_seeds.json",
@@ -997,6 +1005,202 @@ def loot_and_tags():
         "replace": False, "entries": [f"{MODID}:seeds_from_{g}" for g in ("short_grass", "tall_grass", "fern")]})
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "axe.json",
                {"replace": False, "values": [f"{MODID}:war_standard", f"{MODID}:mess_hall"]})
+
+
+# --------------------------------------------------------------------------- dwarf tunnels
+
+RUNE_FAMILY = ["rune_stone", "rune_stone_stairs", "rune_stone_slab", "rune_stone_wall"]
+TRAPS = ["spike_floor", "rune_mine", "flame_vent"]
+TUNNEL_BLOCKS = RUNE_FAMILY + TRAPS
+
+
+def _rot(model, x=0, y=0):
+    v = {"model": model}
+    if x:
+        v["x"] = x
+    if y:
+        v["y"] = y
+    if x or y:
+        v["uvlock"] = True
+    return v
+
+
+def _stairs_states(name, tex):
+    m = f"{MODID}:block/{name}"
+    for suffix, parent in (("", "stairs"), ("_inner", "inner_stairs"), ("_outer", "outer_stairs")):
+        write_json(ASSETS / "models" / "block" / f"{name}{suffix}.json", {
+            "parent": f"minecraft:block/{parent}", "textures": {"bottom": tex, "top": tex, "side": tex}})
+    base = {"east": 0, "south": 90, "west": 180, "north": 270}
+    variants = {}
+    for facing, y0 in base.items():
+        for half in ("bottom", "top"):
+            for shape in ("straight", "inner_left", "inner_right", "outer_left", "outer_right"):
+                model = m + ("_inner" if shape.startswith("inner") else "_outer" if shape.startswith("outer") else "")
+                y = y0
+                if half == "bottom" and shape.endswith("left"):
+                    y = y0 + 270
+                if half == "top" and shape.endswith("right"):
+                    y = y0 + 90
+                variants[f"facing={facing},half={half},shape={shape}"] = _rot(model, 180 if half == "top" else 0, y % 360)
+    write_json(ASSETS / "blockstates" / f"{name}.json", {"variants": variants})
+    write_json(ASSETS / "models" / "item" / f"{name}.json", {"parent": m})
+
+
+def _slab_states(name, full, tex):
+    m = f"{MODID}:block/{name}"
+    write_json(ASSETS / "models" / "block" / f"{name}.json", {
+        "parent": "minecraft:block/slab", "textures": {"bottom": tex, "top": tex, "side": tex}})
+    write_json(ASSETS / "models" / "block" / f"{name}_top.json", {
+        "parent": "minecraft:block/slab_top", "textures": {"bottom": tex, "top": tex, "side": tex}})
+    write_json(ASSETS / "blockstates" / f"{name}.json", {"variants": {
+        "type=bottom": {"model": m}, "type=top": {"model": m + "_top"}, "type=double": {"model": f"{MODID}:block/{full}"}}})
+    write_json(ASSETS / "models" / "item" / f"{name}.json", {"parent": m})
+
+
+def _wall_states(name, tex):
+    m = f"{MODID}:block/{name}"
+    for suffix, parent in (("_post", "template_wall_post"), ("_side", "template_wall_side"),
+                           ("_side_tall", "template_wall_side_tall")):
+        write_json(ASSETS / "models" / "block" / f"{name}{suffix}.json", {
+            "parent": f"minecraft:block/{parent}", "textures": {"wall": tex}})
+    parts = [{"when": {"up": "true"}, "apply": {"model": m + "_post"}}]
+    for side, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+        for height, suffix in (("low", "_side"), ("tall", "_side_tall")):
+            apply = {"model": m + suffix, "uvlock": True}
+            if y:
+                apply["y"] = y
+            parts.append({"when": {side: height}, "apply": apply})
+    write_json(ASSETS / "blockstates" / f"{name}.json", {"multipart": parts})
+    write_json(ASSETS / "models" / "item" / f"{name}.json", {
+        "parent": "minecraft:block/wall_inventory", "textures": {"wall": tex}})
+
+
+def _rune_marks(img, color, seed):
+    """Thin glowing rune strokes cut into a face."""
+    rnd = random.Random(seed)
+    for _ in range(3):
+        x, y = rnd.randint(2, 12), rnd.randint(2, 12)
+        for i in range(rnd.randint(2, 4)):
+            if 0 <= x < 16 and 0 <= y < 16:
+                img.putpixel((x, y), color)
+            if rnd.random() < 0.5:
+                x += rnd.choice((-1, 1))
+            else:
+                y += rnd.choice((-1, 1))
+
+
+def tunnel_assets():
+    """Rune stone and its stairs/slab/wall, the three dwarf traps and the Rune Drill."""
+    rune = hexc("5fd4e8")
+    stone = brick_face(hexc("4a4f57"), hexc("2c3036"), 71)
+    _rune_marks(stone, rune, 72)
+    save(stone, "block/rune_stone.png")
+    tex = f"{MODID}:block/rune_stone"
+    write_json(ASSETS / "blockstates" / "rune_stone.json", {"variants": {"": {"model": f"{MODID}:block/rune_stone"}}})
+    write_json(ASSETS / "models" / "block" / "rune_stone.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex}})
+    write_json(ASSETS / "models" / "item" / "rune_stone.json", {"parent": f"{MODID}:block/rune_stone"})
+    _stairs_states("rune_stone_stairs", tex)
+    _slab_states("rune_stone_slab", "rune_stone", tex)
+    _wall_states("rune_stone_wall", tex)
+
+    # Spike floor: plain stone-brick floor with small holes; the sprung version has iron points in them.
+    floor = brick_face(hexc("8a8a8a"), hexc("5e5e5e"), 81)
+    holes = [(2, 2), (6, 2), (10, 2), (14, 2), (4, 6), (8, 6), (12, 6), (2, 10), (6, 10), (10, 10), (14, 10), (4, 14),
+             (8, 14), (12, 14)]
+    for x, y in holes:
+        floor.putpixel((x, y), hexc("3a3a3a"))
+    save(floor, "block/spike_floor_top.png")
+    sprung = floor.copy()
+    for x, y in holes:
+        sprung.putpixel((x, y), hexc("d8dde0"))
+        sprung.putpixel((x, y - 1 if y > 0 else y), hexc("a9b0b5"))
+    save(sprung, "block/spike_floor_sprung.png")
+    side = brick_face(hexc("8a8a8a"), hexc("5e5e5e"), 82)
+    save(side, "block/spike_floor_side.png")
+    for name, top in (("spike_floor", "spike_floor_top"), ("spike_floor_sprung", "spike_floor_sprung")):
+        write_json(ASSETS / "models" / "block" / f"{name}.json", {"parent": "minecraft:block/cube_bottom_top", "textures": {
+            "top": f"{MODID}:block/{top}", "side": f"{MODID}:block/spike_floor_side", "bottom": f"{MODID}:block/spike_floor_side"}})
+    write_json(ASSETS / "blockstates" / "spike_floor.json", {"variants": {
+        "extended=false": {"model": f"{MODID}:block/spike_floor"}, "extended=true": {"model": f"{MODID}:block/spike_floor_sprung"}}})
+    write_json(ASSETS / "models" / "item" / "spike_floor.json", {"parent": f"{MODID}:block/spike_floor"})
+
+    # Rune mine: a cobbled deepslate floor tile with one faint rune.
+    mine = Image.new("RGBA", (16, 16))
+    noise_fill(mine, hexc("4d4d52"), 0.14, 91)
+    for x, y in ((7, 6), (8, 6), (6, 7), (9, 7), (6, 8), (9, 8), (7, 9), (8, 9), (7, 7), (8, 8)):
+        mine.putpixel((x, y), hexc("3e7f8c"))
+    save(mine, "block/rune_mine.png")
+    write_json(ASSETS / "models" / "block" / "rune_mine.json", {"parent": "minecraft:block/cube_bottom_top", "textures": {
+        "top": f"{MODID}:block/rune_mine", "side": "minecraft:block/cobbled_deepslate", "bottom": "minecraft:block/cobbled_deepslate"}})
+    write_json(ASSETS / "blockstates" / "rune_mine.json", {"variants": {"": {"model": f"{MODID}:block/rune_mine"}}})
+    write_json(ASSETS / "models" / "item" / "rune_mine.json", {"parent": f"{MODID}:block/rune_mine"})
+
+    # Flame vent: a blackened grate glowing orange, set in dark brick.
+    vent = brick_face(hexc("3a2e2e"), hexc("1e1616"), 101)
+    for x in range(3, 13):
+        for y in range(3, 13):
+            vent.putpixel((x, y), hexc("ff8a2a") if (x % 2 == 1 and 4 <= y <= 11) else hexc("1a1414"))
+    save(vent, "block/flame_vent_front.png")
+    save(brick_face(hexc("3a2e2e"), hexc("1e1616"), 102), "block/flame_vent_side.png")
+    write_json(ASSETS / "models" / "block" / "flame_vent.json", {"parent": "minecraft:block/orientable", "textures": {
+        "front": f"{MODID}:block/flame_vent_front", "side": f"{MODID}:block/flame_vent_side", "top": f"{MODID}:block/flame_vent_side"}})
+    write_json(ASSETS / "blockstates" / "flame_vent.json", {"variants": {
+        f"facing={f}": _rot(f"{MODID}:block/flame_vent", 0, y) for f, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270))}})
+    write_json(ASSETS / "models" / "item" / "flame_vent.json", {"parent": f"{MODID}:block/flame_vent"})
+
+    drill = [
+        "................",
+        "...........CC...",
+        "..........CcCC..",
+        ".........IIIC...",
+        "........IIIII...",
+        ".......IIRIII...",
+        "......IIIIIG....",
+        ".....WIIIIG.....",
+        "....WWIIIG......",
+        "...WWW.GG.......",
+        "..WWW...........",
+        ".WWW............",
+        ".WW.............",
+        "................",
+        "................",
+        "................",
+    ]
+    save(sprite(drill, {"C": hexc("6ee8ff"), "c": hexc("d8fbff"), "I": hexc("8c949c"), "R": hexc("5fd4e8"),
+                        "G": hexc("b08a3a"), "W": hexc("6a4424")}), "item/rune_drill.png")
+    write_json(ASSETS / "models" / "item" / "rune_drill.json",
+               {"parent": "minecraft:item/handheld", "textures": {"layer0": f"{MODID}:item/rune_drill"}})
+
+    # Loot: each block drops itself (a double slab drops two).
+    for b in TUNNEL_BLOCKS:
+        entry = {"type": "minecraft:item", "name": f"{MODID}:{b}"}
+        if b == "rune_stone_slab":
+            entry["functions"] = [{"function": "minecraft:set_count", "count": 2, "add": False, "conditions": [
+                {"condition": "minecraft:block_state_property", "block": f"{MODID}:{b}", "properties": {"type": "double"}}]},
+                {"function": "minecraft:explosion_decay"}]
+        write_json(DATA / MODID / "loot_table" / "blocks" / f"{b}.json", {"type": "minecraft:block", "pools": [
+            {"rolls": 1, "bonus_rolls": 0, "entries": [entry], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
+            "random_sequence": f"{MODID}:blocks/{b}"})
+    write_json(DATA / MODID / "tags" / "block" / "raider_unbreakable.json",
+               {"replace": False, "values": [f"{MODID}:{b}" for b in RUNE_FAMILY]})
+    for kind, b in (("stairs", "rune_stone_stairs"), ("slabs", "rune_stone_slab"), ("walls", "rune_stone_wall")):
+        write_json(DATA / "minecraft" / "tags" / "block" / f"{kind}.json", {"replace": False, "values": [f"{MODID}:{b}"]})
+        write_json(DATA / "minecraft" / "tags" / "item" / f"{kind}.json", {"replace": False, "values": [f"{MODID}:{b}"]})
+
+    shaped("rune_stone", ["SSS", "SMS", "SSS"], {"S": "minecraft:stone", "M": "warfront:mana_shard"}, "warfront:rune_stone", 8)
+    shaped("rune_stone_from_deepslate", ["SSS", "SMS", "SSS"], {"S": "minecraft:cobbled_deepslate", "M": "warfront:mana_shard"},
+           "warfront:rune_stone", 8)
+    shaped("rune_stone_stairs", ["S  ", "SS ", "SSS"], {"S": "warfront:rune_stone"}, "warfront:rune_stone_stairs", 4)
+    shaped("rune_stone_slab", ["SSS"], {"S": "warfront:rune_stone"}, "warfront:rune_stone_slab", 6)
+    shaped("rune_stone_wall", ["SSS", "SSS"], {"S": "warfront:rune_stone"}, "warfront:rune_stone_wall", 6)
+    shaped("spike_floor", ["NNN", "SPS"], {"N": "minecraft:iron_nugget", "S": "minecraft:stone_bricks",
+                                           "P": "minecraft:stone_pressure_plate"}, "warfront:spike_floor", 2)
+    shaped("rune_mine", [" T ", "SCS"], {"T": "minecraft:tnt", "C": "warfront:mana_crystal", "S": "minecraft:cobbled_deepslate"},
+           "warfront:rune_mine", 2)
+    shaped("flame_vent", ["BBB", "BFB", "BMB"], {"B": "minecraft:deepslate_bricks", "F": "minecraft:fire_charge",
+                                                 "M": "warfront:mana_shard"}, "warfront:flame_vent")
+    shaped("rune_drill", ["CDC", " I ", " I "], {"C": "warfront:mana_crystal", "D": "minecraft:diamond_pickaxe",
+                                                 "I": "minecraft:iron_ingot"}, "warfront:rune_drill")
 
 
 # --------------------------------------------------------------------------- mana infrastructure
@@ -1350,4 +1554,5 @@ if __name__ == "__main__":
     lang()
     recipes()
     loot_and_tags()
+    tunnel_assets()
     print("Generated assets in", ROOT)

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CDC",
+    " I ",
+    " I "
+  ],
+  "key": {
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "D": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "warfront:rune_drill",
+    "count": 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "warfront:block/rune_stone",
+    "top": "warfront:block/rune_stone",
+    "side": "warfront:block/rune_stone"
+  }
+}

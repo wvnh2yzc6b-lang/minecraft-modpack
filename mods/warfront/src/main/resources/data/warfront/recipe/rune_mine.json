@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " T ",
+    "SCS"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:tnt"
+    },
+    "C": {
+      "item": "warfront:mana_crystal"
+    },
+    "S": {
+      "item": "minecraft:cobbled_deepslate"
+    }
+  },
+  "result": {
+    "id": "warfront:rune_mine",
+    "count": 2
+  }
+}

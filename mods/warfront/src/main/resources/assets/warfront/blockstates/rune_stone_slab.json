@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "warfront:block/rune_stone_slab"
+    },
+    "type=top": {
+      "model": "warfront:block/rune_stone_slab_top"
+    },
+    "type=double": {
+      "model": "warfront:block/rune_stone"
+    }
+  }
+}

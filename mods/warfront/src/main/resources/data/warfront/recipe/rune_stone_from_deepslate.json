@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SMS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "M": {
+      "item": "warfront:mana_shard"
+    }
+  },
+  "result": {
+    "id": "warfront:rune_stone",
+    "count": 8
+  }
+}

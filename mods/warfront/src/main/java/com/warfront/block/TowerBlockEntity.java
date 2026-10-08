@@ -101,7 +101,12 @@ public class TowerBlockEntity extends BlockEntity {
 
     /** Draws this shot's mana from the network; without it the tower sputters and does nothing. */
     private static boolean power(ServerLevel level, BlockPos pos, String key, TowerType type) {
-        if (!WFConfig.TOWERS_NEED_MANA.get() || ManaNetwork.draw(level, pos, key, type.manaCost)) return true;
+        return power(level, pos, key, type.manaCost);
+    }
+
+    /** Draws {@code cost} mana for a shot from the network (towers, traps); sputters and warns without it. */
+    public static boolean power(ServerLevel level, BlockPos pos, String key, float cost) {
+        if (!WFConfig.TOWERS_NEED_MANA.get() || ManaNetwork.draw(level, pos, key, cost)) return true;
         level.sendParticles(ParticleTypes.SMOKE, pos.getX() + 0.5, pos.getY() + 1.1, pos.getZ() + 0.5, 6, 0.2, 0.1, 0.2, 0.01);
         level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 1.6F);
         starving(level, pos, key);
@@ -125,14 +130,17 @@ public class TowerBlockEntity extends BlockEntity {
         }
     }
 
+    /** The tower rule for friend or foe: alive, not a creative player, and an enemy of {@code key}. Traps use it too. */
+    public static boolean isEnemy(ServerLevel level, String key, LivingEntity e) {
+        if (!e.isAlive()) return false;
+        if (e instanceof Player p && (p.isCreative() || p.isSpectator())) return false;
+        return Factions.relation(level.getServer(), key, Factions.keyOf(level.getServer(), e)) == Relation.ENEMY;
+    }
+
     @Nullable
     private static LivingEntity findEnemy(ServerLevel level, String key, Vec3 eye, AABB box, int range) {
-        List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, box, e -> {
-            if (!e.isAlive() || e.distanceToSqr(eye) > range * range) return false;
-            if (e instanceof Player p && (p.isCreative() || p.isSpectator())) return false;
-            String other = Factions.keyOf(level.getServer(), e);
-            return Factions.relation(level.getServer(), key, other) == Relation.ENEMY;
-        });
+        List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, box,
+                e -> e.distanceToSqr(eye) <= range * range && isEnemy(level, key, e));
         return list.stream()
                 .filter(e -> level.clip(new ClipContext(eye, e.getEyePosition(), ClipContext.Block.COLLIDER,
                         ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS)

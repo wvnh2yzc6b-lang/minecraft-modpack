@@ -669,6 +669,108 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void runeDrillBoresThreeByThreeOnlyForDwarves(GameTestHelper h) {
+        Player miner = h.makeMockPlayer(GameType.SURVIVAL);
+        java.util.List<BlockPos> wall = new java.util.ArrayList<>();
+        for (int x = 2; x <= 4; x++) for (int y = 2; y <= 4; y++) wall.add(new BlockPos(x, y, 5));
+        wall.forEach(p -> h.setBlock(p, Blocks.STONE));
+        BlockPos center = h.absolutePos(new BlockPos(3, 3, 5));
+        net.minecraft.world.item.ItemStack drill = new net.minecraft.world.item.ItemStack(WFRegistry.RUNE_DRILL.get());
+        miner.setData(WFRegistry.RACE, Race.HUMAN.id());
+        int human = com.warfront.tunnel.RuneDrillItem.bore(h.getLevel(), miner, center, net.minecraft.core.Direction.NORTH, drill);
+        h.assertTrue(human == 0, "only dwarves can work the Rune Drill, a human bored " + human);
+        miner.setData(WFRegistry.RACE, Race.DWARF.id());
+        int dwarf = com.warfront.tunnel.RuneDrillItem.bore(h.getLevel(), miner, center, net.minecraft.core.Direction.NORTH, drill);
+        h.assertTrue(dwarf == 8, "a dwarf's drill should bore the 8 blocks around the one mined, bored " + dwarf);
+        for (BlockPos p : wall) {
+            boolean mid = p.equals(new BlockPos(3, 3, 5));
+            h.assertTrue(h.getBlockState(p).isAir() != mid, (mid ? "the mined block itself is left to the normal break, " : "a face block should be gone, ") + p);
+        }
+        h.assertTrue(drill.getDamageValue() == 8, "each extra block should cost a point of durability, used " + drill.getDamageValue());
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void spikeFloorHurtsEnemiesNotOwnUnits(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos spikes = new BlockPos(4, 1, 4);
+        h.setBlock(spikes, WFRegistry.SPIKE_FLOOR.get());
+        com.warfront.tunnel.TrapBlockEntity trap = (com.warfront.tunnel.TrapBlockEntity) h.getBlockEntity(spikes);
+        trap.setOwner(owner.getUUID());
+        SoldierEntity mine = posted(h, owner, SoldierRole.SWORDSMAN, Race.DWARF, 2, 2);
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 6, 6);
+        enemy.setNoAi(true);
+        mine.setNoAi(true);
+        BlockPos abs = h.absolutePos(spikes);
+        h.assertTrue(!com.warfront.tunnel.SpikeFloorBlock.trigger(h.getLevel(), abs, mine) && trap.hits() == 0,
+                "spikes must never strike the owner's own units");
+        h.assertTrue(com.warfront.tunnel.SpikeFloorBlock.trigger(h.getLevel(), abs, enemy) && trap.hits() == 1,
+                "spikes should strike an enemy, hits " + trap.hits());
+        h.assertTrue(h.getBlockState(spikes).getValue(com.warfront.tunnel.SpikeFloorBlock.EXTENDED), "the spikes should be up");
+        h.assertTrue(!com.warfront.tunnel.SpikeFloorBlock.trigger(h.getLevel(), abs, enemy), "raised spikes don't strike again");
+        h.runAfterDelay(com.warfront.tunnel.SpikeFloorBlock.RESET_TICKS + 5, () -> {
+            h.assertTrue(!h.getBlockState(spikes).getValue(com.warfront.tunnel.SpikeFloorBlock.EXTENDED), "the spikes should reset");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void runeMineGoesOffOnceAndBreaksNoBlocks(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos minePos = new BlockPos(4, 1, 4);
+        h.setBlock(minePos, WFRegistry.RUNE_MINE.get());
+        h.setBlock(new BlockPos(5, 2, 4), Blocks.GLASS);
+        ((com.warfront.tunnel.TrapBlockEntity) h.getBlockEntity(minePos)).setOwner(owner.getUUID());
+        net.minecraft.world.level.block.state.BlockState floor = h.getBlockState(new BlockPos(3, 1, 4));
+        SoldierEntity mine = posted(h, owner, SoldierRole.SWORDSMAN, Race.DWARF, 2, 2);
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 4, 5);
+        enemy.setNoAi(true);
+        mine.setNoAi(true);
+        BlockPos abs = h.absolutePos(minePos);
+        h.assertTrue(!com.warfront.tunnel.RuneMineBlock.trigger(h.getLevel(), abs, mine), "a rune mine ignores its owner's units");
+        h.assertBlockPresent(WFRegistry.RUNE_MINE.get(), minePos);
+        h.assertTrue(com.warfront.tunnel.RuneMineBlock.trigger(h.getLevel(), abs, enemy), "a rune mine should go off under an enemy");
+        h.assertBlockNotPresent(WFRegistry.RUNE_MINE.get(), minePos);
+        h.assertBlockPresent(Blocks.GLASS, new BlockPos(5, 2, 4));
+        h.assertTrue(h.getBlockState(new BlockPos(3, 1, 4)) == floor, "the blast must not break the floor");
+        h.assertTrue(!com.warfront.tunnel.RuneMineBlock.trigger(h.getLevel(), abs, enemy), "a spent mine can't go off again");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 300)
+    public static void flameVentFiresOnlyWithMana(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos ventPos = new BlockPos(1, 2, 4);
+        h.setBlock(ventPos, WFRegistry.FLAME_VENT.get().defaultBlockState()
+                .setValue(com.warfront.tunnel.FlameVentBlock.FACING, net.minecraft.core.Direction.EAST));
+        com.warfront.tunnel.TrapBlockEntity vent = (com.warfront.tunnel.TrapBlockEntity) h.getBlockEntity(ventPos);
+        vent.setOwner(owner.getUUID());
+        ManaWellBlockEntity well = well(h, new BlockPos(1, 1, 7), owner, 0F);
+        Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(5, 2, 4));
+        husk.setPersistenceRequired();
+        husk.setInvulnerable(true);
+        h.startSequence()
+                .thenExecuteAfter(60, () -> h.assertTrue(vent.hits() == 0,
+                        "a flame vent with no mana should not fire, but it fired " + vent.hits() + " times"))
+                .thenExecute(() -> well.setMana(50F))
+                .thenWaitUntil(() -> h.assertTrue(vent.hits() > 0 && well.getMana() < 50F,
+                        "a powered vent should draw mana to fire (bursts " + vent.hits() + ", well " + well.getMana()
+                                + ", husk at " + husk.blockPosition().subtract(h.absolutePos(ventPos)) + ")"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void raidersCannotBreachRuneStone(GameTestHelper h) {
+        for (net.minecraft.world.level.block.Block b : java.util.List.of(WFRegistry.RUNE_STONE.get(), WFRegistry.RUNE_STONE_STAIRS.get(),
+                WFRegistry.RUNE_STONE_SLAB.get(), WFRegistry.RUNE_STONE_WALL.get())) {
+            h.assertTrue(com.warfront.entity.ai.BreachGoal.isProtected(b.defaultBlockState()), "raiders should not breach " + b);
+            h.assertTrue(b.getExplosionResistance() >= Blocks.OBSIDIAN.getExplosionResistance(), b + " should resist blasts like obsidian");
+        }
+        h.assertTrue(!com.warfront.entity.ai.BreachGoal.isProtected(Blocks.STONE_BRICKS.defaultBlockState()), "plain stone bricks can be breached");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

@@ -104,7 +104,11 @@ public final class TestActions {
                     }
                     case "camp" -> raiderCamp(player, "rescue".equals(arg(args, 2)));
                     case "food" -> messHall(player, !"empty".equals(arg(args, 2)));
-                    default -> Result.fail("base level|fill|infinite|starter");
+                    case "traps" -> {
+                        com.warfront.tunnel.Tunnels.kit(player);
+                        yield Result.ok("Dwarf tunnel kit given: Rune Drill, rune stone, spike floors, rune mines, flame vents.");
+                    }
+                    default -> Result.fail("base level|fill|infinite|starter|bounties|merchant|camp|food|traps");
                 };
                 case "siege" -> switch (b) {
                     case "start" -> startWave(player, faction(arg(args, 2)));

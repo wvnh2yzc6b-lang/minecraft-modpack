@@ -67,6 +67,7 @@ public final class TestCommands {
                         .then(Commands.literal("level").then(Commands.argument("level", IntegerArgumentType.integer(0, 5))
                                 .executes(ctx -> run(ctx, "base", "level", num(ctx, "level")))))
                         .then(simple("fill", "base", "fill"))
+                        .then(simple("traps", "base", "traps"))
                         .then(Commands.literal("infinite")
                                 .then(simple("on", "base", "infinite", "on"))
                                 .then(simple("off", "base", "infinite", "off")))

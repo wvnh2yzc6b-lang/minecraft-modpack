@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "warfront:rune_stone"
+    }
+  },
+  "result": {
+    "id": "warfront:rune_stone_wall",
+    "count": 6
+  }
+}

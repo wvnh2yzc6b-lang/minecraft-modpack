@@ -65,10 +65,15 @@ public class BreachGoal extends Goal {
     private boolean breakable(BlockPos pos) {
         BlockState state = soldier.level().getBlockState(pos);
         if (state.isAir() || state.getCollisionShape(soldier.level(), pos).isEmpty()) return false;
-        if (state.getBlock() instanceof WarStandardBlock) return false;
+        if (isProtected(state)) return false;
         float hardness = state.getDestroySpeed(soldier.level(), pos);
         if (hardness < 0 || hardness > WFConfig.MAX_BREAK_HARDNESS.get()) return false;
         return EventHooks.onEntityDestroyBlock(soldier, pos, state);
+    }
+
+    /** Blocks raiders never hack through, whatever their hardness: War Standards and rune stone. */
+    public static boolean isProtected(BlockState state) {
+        return state.getBlock() instanceof WarStandardBlock || state.is(com.warfront.tunnel.Tunnels.RAIDER_UNBREAKABLE);
     }
 
     @Override

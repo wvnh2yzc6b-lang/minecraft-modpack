@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "warfront:block/spike_floor_sprung",
+    "side": "warfront:block/spike_floor_side",
+    "bottom": "warfront:block/spike_floor_side"
+  }
+}

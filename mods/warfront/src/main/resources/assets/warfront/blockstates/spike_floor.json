@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "extended=false": {
+      "model": "warfront:block/spike_floor"
+    },
+    "extended=true": {
+      "model": "warfront:block/spike_floor_sprung"
+    }
+  }
+}
