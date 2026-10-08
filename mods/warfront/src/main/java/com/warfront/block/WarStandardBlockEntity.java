@@ -332,6 +332,7 @@ public class WarStandardBlockEntity extends BlockEntity {
 
     /** Test mode: removes the attackers and ends the siege and any campaign, with no reward. */
     public void endSiege(ServerLevel level) {
+        com.warfront.world.Summons.waveEnded(level, worldPosition);
         UUID id = warband;
         if (id != null) {
             for (SoldierEntity s : level.getEntitiesOfClass(SoldierEntity.class, new AABB(worldPosition).inflate(BAR_RANGE * 2),
@@ -354,6 +355,7 @@ public class WarStandardBlockEntity extends BlockEntity {
     }
 
     private void victory(ServerLevel level) {
+        com.warfront.world.Summons.waveEnded(level, worldPosition);
         warband = null;
         lastSiege = level.getGameTime();
         health = maxHealth();

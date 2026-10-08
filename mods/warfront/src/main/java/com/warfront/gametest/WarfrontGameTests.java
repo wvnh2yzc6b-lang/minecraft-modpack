@@ -1128,6 +1128,82 @@ public final class WarfrontGameTests {
                 "the Lurker Pit should rise and corrode the enemy"));
     }
 
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void watchtowerBellRingsAndExtendsTowerRange(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var bell = raceTower(h, com.warfront.racetower.RaceTowerType.WATCHTOWER_BELL, owner, 100F);
+        h.setBlock(new BlockPos(3, 1, 1), WFRegistry.ARROW_TOWER.get());
+        ((TowerBlockEntity) h.getBlockEntity(new BlockPos(3, 1, 1))).setOwner(owner.getUUID());
+        target(h, 6, 4);
+        String key = com.warfront.faction.Factions.keyOf(h.getLevel().getServer(), owner);
+        h.succeedWhen(() -> {
+            h.assertTrue(bell.actions() > 0, "the bell should ring for an enemy in range");
+            double bonus = com.warfront.racetower.RaceTowers.rangeBonus(h.getLevel(), h.absolutePos(new BlockPos(3, 1, 1)), key);
+            h.assertTrue(bonus == 1.25, "a tower beside the bell should reach a quarter further, got " + bonus);
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void moonwellHealsElves(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.MOONWELL_GROVE, owner, 100F);
+        SoldierEntity elf = posted(h, owner, SoldierRole.ARCHER, Race.ELF, 4, 4);
+        elf.setNoAi(true);
+        elf.setHealth(4F);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && elf.getHealth() > 4F, "the Moonwell should heal the elf"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void stoneWardenDrawsTheBlows(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.STONE_WARDEN, owner, 100F);
+        target(h, 2, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && tower.health() < com.warfront.racetower.RaceTowerBlockEntity.WARDEN_HEALTH,
+                "a taunted enemy beside the Warden should wear it down (health " + tower.health() + ")"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void goblinCatapultLobsBombs(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.GOBLIN_CATAPULT, owner, 100F);
+        target(h, 7, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0, "the catapult should lob a bomb at the enemy"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void brimstoneChainsDragEnemiesIn(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.BRIMSTONE_CHAINS, owner, 100F);
+        Husk husk = target(h, 6, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && husk.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN),
+                "the chains should grab and hold the enemy"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void choirBellShieldsAndCleanses(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.CHOIR_BELL, owner, 100F);
+        SoldierEntity unit = posted(h, owner, SoldierRole.SWORDSMAN, Race.ANGEL, 4, 4);
+        unit.setNoAi(true);
+        unit.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 400, 0));
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && unit.hasEffect(net.minecraft.world.effect.MobEffects.ABSORPTION)
+                && !unit.hasEffect(net.minecraft.world.effect.MobEffects.POISON), "the Choir Bell should shield and cleanse the unit"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void broodNestHatchesTemporarySwarmlings(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.BROOD_NEST, owner, 100F);
+        target(h, 6, 4);
+        h.succeedWhen(() -> {
+            h.assertTrue(tower.actions() > 0, "the nest should hatch a swarmling with an enemy near");
+            java.util.List<SoldierEntity> spawn = h.getLevel().getEntitiesOfClass(SoldierEntity.class,
+                    new net.minecraft.world.phys.AABB(h.absolutePos(new BlockPos(1, 2, 4))).inflate(8), s -> owner.getUUID().equals(s.getOwnerUUID()));
+            h.assertTrue(!spawn.isEmpty() && spawn.stream().allMatch(s -> s.isTemporary() && !s.countsTowardArmy()),
+                    "swarmlings are temporary and outside the army cap");
+        });
+    }
+
     @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);

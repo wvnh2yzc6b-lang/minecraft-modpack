@@ -84,6 +84,17 @@ public final class RaceTowers {
         return null;
     }
 
+    /** Towers within 8 blocks of an allied Watchtower Bell reach a quarter further. */
+    public static double rangeBonus(Level level, BlockPos pos, String key) {
+        MinecraftServer server = level.getServer();
+        for (BlockPos p : LOADED.getOrDefault(level.dimension(), Set.of())) {
+            if (p.equals(pos) || p.distSqr(pos) > 64) continue;
+            if (level.getBlockEntity(p) instanceof RaceTowerBlockEntity t && t.type() == RaceTowerType.WATCHTOWER_BELL
+                    && Factions.relation(server, key, t.factionKey(server)) == Relation.ALLY) return 1.25;
+        }
+        return 1.0;
+    }
+
     /** A death: Soul Pyres within 12 blocks whose side the victim fought against take a charge. */
     public static void onDeath(LivingEntity victim) {
         Level level = victim.level();

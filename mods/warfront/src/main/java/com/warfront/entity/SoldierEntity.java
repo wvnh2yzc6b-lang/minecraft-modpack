@@ -173,6 +173,22 @@ public class SoldierEntity extends PathfinderMob {
         refreshName();
     }
 
+    /** Configures this soldier as a unit summoned for {@code owner} by a tower: it charges the nearest enemy. */
+    public void setupAsSummon(UUID owner, SoldierRole role, Race race) {
+        this.configured = true;
+        this.entityData.set(DATA_OWNER, Optional.of(owner));
+        this.race = race;
+        this.tier = 1;
+        this.entityData.set(DATA_ROLE, role.ordinal());
+        this.entityData.set(DATA_SKIN, race.ordinal());
+        this.entityData.set(DATA_ORDER, Order.CHARGE.ordinal());
+        this.setPersistenceRequired();
+        refreshFactionKey();
+        applyStats();
+        equipLoadout();
+        refreshName();
+    }
+
     /** Configures this soldier as a neutral guard (the merchant's caravan) holding near {@code post}. */
     public void setupAsNeutral(Race race, SoldierRole role, Vec3 post) {
         this.configured = true;
@@ -262,7 +278,7 @@ public class SoldierEntity extends PathfinderMob {
     /** Player-owned Captains, Champions and war beasts fall instead of dying. */
     public boolean isHero() {
         SoldierRole r = getRole();
-        return getOwnerUUID() != null && !swarmCalled && (r == SoldierRole.CAPTAIN || r == SoldierRole.CHAMPION || r == SoldierRole.BEAST);
+        return getOwnerUUID() != null && !isTemporary() && (r == SoldierRole.CAPTAIN || r == SoldierRole.CHAMPION || r == SoldierRole.BEAST);
     }
 
     /** Seconds a fallen hero still waits for its commander. */
@@ -714,25 +730,30 @@ public class SoldierEntity extends PathfinderMob {
         swarmCalled = called;
     }
 
+    /** Swarm-called, or summoned by a tower for a while (see Summons): gone after the fight. */
+    public boolean isTemporary() {
+        return swarmCalled || com.warfront.world.Summons.isSummon(this);
+    }
+
     /** Whether this unit counts toward its commander's army size and war-beast limit. */
     public boolean countsTowardArmy() {
-        return !swarmCalled;
+        return !isTemporary();
     }
 
     @Override
     protected boolean shouldDropLoot() {
-        return !swarmCalled && super.shouldDropLoot();
+        return !isTemporary() && super.shouldDropLoot();
     }
 
     @Override
     protected void dropCustomDeathLoot(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
                                        boolean recentlyHit) {
-        if (!swarmCalled) super.dropCustomDeathLoot(level, source, recentlyHit);
+        if (!isTemporary()) super.dropCustomDeathLoot(level, source, recentlyHit);
     }
 
     @Override
     protected int getBaseExperienceReward() {
-        return swarmCalled ? 0 : super.getBaseExperienceReward();
+        return isTemporary() ? 0 : super.getBaseExperienceReward();
     }
 
     /** Test hook: start routing now. */
@@ -1164,7 +1185,7 @@ public class SoldierEntity extends PathfinderMob {
         }
 
         ItemStack held = player.getItemInHand(hand);
-        if (swarmCalled && player.isShiftKeyDown() && held.isEmpty()) {
+        if (isTemporary() && player.isShiftKeyDown() && held.isEmpty()) {
             player.displayClientMessage(Component.literal("Swarm-called units fight this battle only; they take no duty.")
                     .withStyle(ChatFormatting.GRAY), true);
             return InteractionResult.CONSUME;

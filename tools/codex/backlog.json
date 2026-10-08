@@ -64,23 +64,6 @@
       ]
     },
     {
-      "id": "race-towers-l3",
-      "status": "ready",
-      "title": "Race towers, wave 2: the seven level 3 towers",
-      "decided": "Owner, 2026-10-07: 3 race towers per race (base level 2, 3, 5), own race only, race towers capped by base level, capstones 1 each.",
-      "spec": [
-        "Human: Watchtower Bell: no attack; reveals invisible and tunneling enemies within 24 blocks (Glowing), +25% range to towers within 8 blocks, rings when a raid enters range.",
-        "Elf: Moonwell Grove: slow heal pulse for elf units and the owner within 10 blocks; cheap on mana.",
-        "Dwarf: Stone Warden: tough turret block with high health that taunts enemies within 10 blocks to attack it.",
-        "Orc: Goblin Bomb Catapult: lobs bombs in an arc, area damage, no block damage.",
-        "Demon: Brimstone Chains: grabs the nearest enemy, pulls it in and holds it for a few seconds.",
-        "Angel: Choir Bell: shields nearby friendly units (absorption) and clears harmful effects on a pulse.",
-        "Hive: Brood Nest: spawns short-lived swarmlings that rush enemies.",
-        "Every race tower is a block entity on the base mana network like the existing towers (draws mana per shot or pulse; no mana, no effect) and reuses the tower friend-or-foe targeting. Placeholder models are generated and styled in the race palette, following the tower-models item; final looks can follow references later. Numbers live in config. Codex: a render and a one-line description per tower.",
-        "Game tests: one effect test per tower; the level 3 unlock is enforced."
-      ]
-    },
-    {
       "id": "race-towers-l5",
       "status": "ready",
       "title": "Race towers, wave 3: the seven level 5 capstones",

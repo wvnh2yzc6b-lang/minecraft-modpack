@@ -1281,6 +1281,13 @@ RACE_TOWERS = {
     "soul_pyre": ("demon", "Soul Pyre", "3a2e2e", "1e1616", "minecraft:soul_soil"),
     "sun_lance": ("angel", "Sun Lance", "eeeae0", "c8c2b0", "minecraft:gold_block"),
     "lurker_pit": ("hive", "Lurker Pit", "1f3f44", "102528", "minecraft:sculk"),
+    "watchtower_bell": ("human", "Watchtower Bell", "9a9a96", "6c6c68", "minecraft:bell"),
+    "moonwell_grove": ("elf", "Moonwell Grove", "b8c4a0", "7f8c68", "minecraft:glow_berries"),
+    "stone_warden": ("dwarf", "Stone Warden", "5a5f66", "3a3e44", "minecraft:shield"),
+    "goblin_catapult": ("orc", "Goblin Bomb Catapult", "6b6a5a", "45443a", "minecraft:tnt"),
+    "brimstone_chains": ("demon", "Brimstone Chains", "3a2e2e", "1e1616", "minecraft:chain"),
+    "choir_bell": ("angel", "Choir Bell", "eeeae0", "c8c2b0", "minecraft:golden_apple"),
+    "brood_nest": ("hive", "Brood Nest", "1f3f44", "102528", "minecraft:slime_ball"),
 }
 
 

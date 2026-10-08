@@ -358,6 +358,7 @@ public final class GameEvents {
                 com.warfront.combat.SwarmCall.secondTick(player);
             }
             com.warfront.combat.SwarmCall.tick(server);
+            Summons.tick(server);
         }
         com.warfront.war.Recall.tick(server);
         com.warfront.combat.Radiance.tick(server);

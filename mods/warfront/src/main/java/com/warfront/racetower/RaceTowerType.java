@@ -22,7 +22,22 @@ public enum RaceTowerType implements StringRepresentable {
     SUN_LANCE("sun_lance", "Sun Lance", Race.ANGEL, 2, 40, 3, 20,
             "Holy beam, strong by day under open sky, weak at night; extra damage to demons, Hive and undead."),
     LURKER_PIT("lurker_pit", "Lurker Pit", Race.HIVE, 2, 40, 2, 4,
-            "Hidden in the ground until enemies come close, then sprays acid that eats their armor; stronger underground.");
+            "Hidden in the ground until enemies come close, then sprays acid that eats their armor; stronger underground."),
+
+    WATCHTOWER_BELL("watchtower_bell", "Watchtower Bell", Race.HUMAN, 3, 40, 1, 24,
+            "No attack: reveals hidden and tunneling enemies, gives towers within 8 blocks +25% range, rings when a raid comes."),
+    MOONWELL_GROVE("moonwell_grove", "Moonwell Grove", Race.ELF, 3, 40, 1, 10,
+            "A slow healing pulse for elf units and the owner nearby; cheap on mana."),
+    STONE_WARDEN("stone_warden", "Stone Warden", Race.DWARF, 3, 20, 1, 10,
+            "A tough turret that taunts enemies within 10 blocks into attacking it instead of you."),
+    GOBLIN_CATAPULT("goblin_catapult", "Goblin Bomb Catapult", Race.ORC, 3, 60, 4, 24,
+            "Lobs bombs in an arc: area damage, no block damage."),
+    BRIMSTONE_CHAINS("brimstone_chains", "Brimstone Chains", Race.DEMON, 3, 80, 3, 12,
+            "Grabs the nearest enemy, drags it in and holds it for a few seconds."),
+    CHOIR_BELL("choir_bell", "Choir Bell", Race.ANGEL, 3, 80, 3, 10,
+            "Shields nearby friends with absorption and clears their harmful effects on each pulse."),
+    BROOD_NEST("brood_nest", "Brood Nest", Race.HIVE, 3, 100, 4, 16,
+            "Hatches short-lived swarmlings that rush enemies (three at a time).");
 
     public static final Codec<RaceTowerType> CODEC = StringRepresentable.fromEnum(RaceTowerType::values);
 

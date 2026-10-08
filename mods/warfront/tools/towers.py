@@ -139,9 +139,67 @@ def rt_lurker_pit():
     return {"id": "rt_lurker_pit", "race": "hive", "tex": [128, 64], "parts": [part("body", boxes=mound, children=[maw])]}
 
 
+def rt_watchtower_bell():
+    frame = [box((x, 0, z), (2, 24, 2), "tw_wood") for x in (-6, 4) for z in (-6, 4)] + \
+            [box((-7, -2, -7), (14, 2, 14), "tw_wood_dark"), box((-8, -6, -8), (16, 4, 16), "tw_roof"),
+             box((-5, -9, -5), (10, 3, 10), "tw_roof")]
+    bell = part("bell", pivot=(0, 0, 0), boxes=[box((-3, 0, -3), (6, 6, 6), "tw_trim"), box((-1, 6, -1), (2, 2, 2), "tw_metal")])
+    return {"id": "rt_watchtower_bell", "race": "human", "tex": [128, 64], "parts": [part("body", boxes=frame, children=[bell])]}
+
+
+def rt_moonwell_grove():
+    ring = [box((-7, 20, -7), (14, 4, 14), "tw_stone"), box((-5, 19, -5), (10, 1, 10), "tw_water")]
+    tree = [box((4, 4, 4), (2, 16, 2), "tw_wood"), box((1, -2, 1), (8, 6, 8), "tw_cloth"),
+            box((-6, 10, 4), (2, 10, 2), "tw_wood"), box((-8, 6, 2), (6, 4, 6), "tw_cloth")]
+    moon = part("light", pivot=(0, 6, 0), boxes=[box((-1.5, -1.5, -1.5), (3, 3, 3), "tw_light")])
+    return {"id": "rt_moonwell_grove", "race": "elf", "tex": [128, 64], "parts": [part("body", boxes=ring + tree, children=[moon])]}
+
+
+def rt_stone_warden():
+    hulk = [box((-6, 8, -5), (12, 16, 10), "tw_stone"), box((-7, 2, -6), (14, 6, 12), "tw_stone_dark"),
+            box((-3, -3, -3), (6, 5, 6), "tw_stone"), box((-2, -1, -3.2), (1, 1, 0.2), "tw_rune2"),
+            box((1, -1, -3.2), (1, 1, 0.2), "tw_rune2"), box((-8, 4, -7), (16, 14, 1), "tw_metal"),
+            box((-1, 6, -7.3), (2, 10, 0.3), "tw_rune2")]
+    return {"id": "rt_stone_warden", "race": "dwarf", "tex": [128, 64], "parts": [part("body", boxes=hulk)]}
+
+
+def rt_goblin_catapult():
+    frame = [box((-6, 18, -7), (12, 4, 14), "tw_wood_dark"), box((-6, 10, -1), (2, 8, 2), "tw_wood"),
+             box((4, 10, -1), (2, 8, 2), "tw_wood"), box((-6, 9, -1), (12, 1, 2), "tw_wood_dark"),
+             box((-8, 20, -8), (3, 3, 3), "tw_metal"), box((5, 20, -8), (3, 3, 3), "tw_metal"),
+             box((-8, 20, 5), (3, 3, 3), "tw_metal"), box((5, 20, 5), (3, 3, 3), "tw_metal")]
+    arm = part("arm", pivot=(0, 10, 0), rot=(0.6, 0, 0), boxes=[box((-1, -1, -12), (2, 2, 16), "tw_wood"),
+                                                               box((-3, -4, -14), (6, 3, 4), "tw_cloth"),
+                                                               box((-2, -6, -13), (4, 2, 3), "tw_flame")])
+    return {"id": "rt_goblin_catapult", "race": "orc", "tex": [128, 64], "parts": [part("body", boxes=frame, children=[arm])]}
+
+
+def rt_brimstone_chains():
+    pillar = [box((-3, -4, -3), (6, 28, 6), "tw_stone_dark"), box((-4, 18, -4), (8, 6, 8), "tw_metal"),
+              box((-4, -6, -4), (8, 2, 8), "tw_trim")]
+    chains = [box((x, y, -4), (1, 2, 1), "tw_trim") for x in (-2, 1) for y in range(-2, 16, 3)] + \
+             [box((-2.5, 2, -3.6), (5, 1, 0.3), "tw_rune2"), box((-2.5, 10, -3.6), (5, 1, 0.3), "tw_rune2")]
+    return {"id": "rt_brimstone_chains", "race": "demon", "tex": [128, 64], "parts": [part("body", boxes=pillar + chains)]}
+
+
+def rt_choir_bell():
+    arch = [box((-7, 0, -2), (3, 24, 4), "tw_stone"), box((4, 0, -2), (3, 24, 4), "tw_stone"),
+            box((-8, -4, -3), (16, 4, 6), "tw_stone"), box((-8.5, -5, -3.5), (17, 1, 7), "tw_trim")]
+    bell = part("bell", pivot=(0, 0, 0), boxes=[box((-3, 2, -3), (6, 7, 6), "tw_trim"), box((-1, 9, -1), (2, 2, 2), "tw_light")])
+    return {"id": "rt_choir_bell", "race": "angel", "tex": [128, 64], "parts": [part("body", boxes=arch, children=[bell])]}
+
+
+def rt_brood_nest():
+    mound = [box((-8, 18, -8), (16, 6, 16), "tw_stone_dark"), box((-6, 12, -6), (12, 6, 12), "tw_stone"),
+             box((-3, 8, -3), (6, 4, 6), "tw_stone_dark")]
+    pods = [box((x, y, z), (3, 4, 3), "tw_flame") for (x, y, z) in ((-7, 14, -2), (4, 14, -4), (-2, 14, 4), (0, 5, -1))]
+    return {"id": "rt_brood_nest", "race": "hive", "tex": [128, 64], "parts": [part("body", boxes=mound + pods)]}
+
+
 def race_models():
     return [rt_ballista(), rt_thornwood_sentinel(), rt_rune_cannon(), rt_war_drum_totem(), rt_soul_pyre(), rt_sun_lance(),
-            rt_lurker_pit()]
+            rt_lurker_pit(), rt_watchtower_bell(), rt_moonwell_grove(), rt_stone_warden(), rt_goblin_catapult(),
+            rt_brimstone_chains(), rt_choir_bell(), rt_brood_nest()]
 
 
 def tw_material(mat, side, x, y, w, h, pal, rng):
@@ -177,6 +235,9 @@ def tw_material(mat, side, x, y, w, h, pal, rng):
         return glow(hexc(p["glow_core"] if (x + y) % 3 == 0 else p["glow"]))
     if mat == "tw_water":
         return glow(mix(hexc(p["glow"]), hexc(p["glow_core"]), rng.uniform(0, 0.4))) if side == "top" else hexc(p["stone_dark"])
+    if mat == "tw_roof":
+        c = hexc(p["roof"]) if (x + (y % 2) * 2) % 4 else shade(hexc(p["roof"]), 0.8)    # shingles
+        return shade(c, rng.uniform(0.92, 1.06))
     if mat == "tw_metal":
         c = mix(hexc(p["stone_dark"]), hexc("2a2a2a"), 0.4)
         return shade(c, 1.25) if side == "top" else shade(c, rng.uniform(0.85, 1.1))

@@ -2600,6 +2600,70 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(0F, 22F, 0F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 128, 64);
     }
+    /** The rt_watchtower_bell body. */
+    public static LayerDefinition rt_watchtower_bell() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6F, 0F, -6F, 2F, 24F, 2F).texOffs(8, 0).addBox(-6F, 0F, 4F, 2F, 24F, 2F).texOffs(16, 0).addBox(4F, 0F, -6F, 2F, 24F, 2F).texOffs(24, 0).addBox(4F, 0F, 4F, 2F, 24F, 2F).texOffs(0, 26).addBox(-7F, -2F, -7F, 14F, 2F, 14F).texOffs(32, 0).addBox(-8F, -6F, -8F, 16F, 4F, 16F).texOffs(56, 26).addBox(-5F, -9F, -5F, 10F, 3F, 10F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("bell", CubeListBuilder.create().texOffs(96, 26).addBox(-3F, 0F, -3F, 6F, 6F, 6F).texOffs(120, 26).addBox(-1F, 6F, -1F, 2F, 2F, 2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_moonwell_grove body. */
+    public static LayerDefinition rt_moonwell_grove() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, 20F, -7F, 14F, 4F, 14F).texOffs(0, 18).addBox(-5F, 19F, -5F, 10F, 1F, 10F).texOffs(56, 0).addBox(4F, 4F, 4F, 2F, 16F, 2F).texOffs(64, 0).addBox(1F, -2F, 1F, 8F, 6F, 8F).texOffs(96, 0).addBox(-6F, 10F, 4F, 2F, 10F, 2F).texOffs(40, 18).addBox(-8F, 6F, 2F, 6F, 4F, 6F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("light", CubeListBuilder.create().texOffs(64, 18).addBox(-1.5F, -1.5F, -1.5F, 3F, 3F, 3F),
+                PartPose.offsetAndRotation(0F, 6F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_stone_warden body. */
+    public static LayerDefinition rt_stone_warden() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6F, 8F, -5F, 12F, 16F, 10F).texOffs(44, 0).addBox(-7F, 2F, -6F, 14F, 6F, 12F).texOffs(34, 26).addBox(-3F, -3F, -3F, 6F, 5F, 6F).texOffs(64, 26).addBox(-2F, -1F, -3.2F, 1F, 1F, 0.2F).texOffs(68, 26).addBox(1F, -1F, -3.2F, 1F, 1F, 0.2F).texOffs(0, 26).addBox(-8F, 4F, -7F, 16F, 14F, 1F).texOffs(58, 26).addBox(-1F, 6F, -7.3F, 2F, 10F, 0.3F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_goblin_catapult body. */
+    public static LayerDefinition rt_goblin_catapult() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-6F, 18F, -7F, 12F, 4F, 14F).texOffs(88, 0).addBox(-6F, 10F, -1F, 2F, 8F, 2F).texOffs(96, 0).addBox(4F, 10F, -1F, 2F, 8F, 2F).texOffs(62, 18).addBox(-6F, 9F, -1F, 12F, 1F, 2F).texOffs(0, 18).addBox(-8F, 20F, -8F, 3F, 3F, 3F).texOffs(12, 18).addBox(5F, 20F, -8F, 3F, 3F, 3F).texOffs(24, 18).addBox(-8F, 20F, 5F, 3F, 3F, 3F).texOffs(36, 18).addBox(5F, 20F, 5F, 3F, 3F, 3F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("arm", CubeListBuilder.create().texOffs(52, 0).addBox(-1F, -1F, -12F, 2F, 2F, 16F).texOffs(104, 0).addBox(-3F, -4F, -14F, 6F, 3F, 4F).texOffs(48, 18).addBox(-2F, -6F, -13F, 4F, 2F, 3F),
+                PartPose.offsetAndRotation(0F, 10F, 0F, 0.6F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_brimstone_chains body. */
+    public static LayerDefinition rt_brimstone_chains() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-3F, -4F, -3F, 6F, 28F, 6F).texOffs(24, 0).addBox(-4F, 18F, -4F, 8F, 6F, 8F).texOffs(56, 0).addBox(-4F, -6F, -4F, 8F, 2F, 8F).texOffs(88, 0).addBox(-2F, -2F, -4F, 1F, 2F, 1F).texOffs(92, 0).addBox(-2F, 1F, -4F, 1F, 2F, 1F).texOffs(96, 0).addBox(-2F, 4F, -4F, 1F, 2F, 1F).texOffs(100, 0).addBox(-2F, 7F, -4F, 1F, 2F, 1F).texOffs(104, 0).addBox(-2F, 10F, -4F, 1F, 2F, 1F).texOffs(108, 0).addBox(-2F, 13F, -4F, 1F, 2F, 1F).texOffs(112, 0).addBox(1F, -2F, -4F, 1F, 2F, 1F).texOffs(116, 0).addBox(1F, 1F, -4F, 1F, 2F, 1F).texOffs(120, 0).addBox(1F, 4F, -4F, 1F, 2F, 1F).texOffs(124, 0).addBox(1F, 7F, -4F, 1F, 2F, 1F).texOffs(0, 34).addBox(1F, 10F, -4F, 1F, 2F, 1F).texOffs(4, 34).addBox(1F, 13F, -4F, 1F, 2F, 1F).texOffs(8, 34).addBox(-2.5F, 2F, -3.6F, 5F, 1F, 0.3F).texOffs(20, 34).addBox(-2.5F, 10F, -3.6F, 5F, 1F, 0.3F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_choir_bell body. */
+    public static LayerDefinition rt_choir_bell() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, 0F, -2F, 3F, 24F, 4F).texOffs(14, 0).addBox(4F, 0F, -2F, 3F, 24F, 4F).texOffs(52, 0).addBox(-8F, -4F, -3F, 16F, 4F, 6F).texOffs(0, 28).addBox(-8.5F, -5F, -3.5F, 17F, 1F, 7F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("bell", CubeListBuilder.create().texOffs(28, 0).addBox(-3F, 2F, -3F, 6F, 7F, 6F).texOffs(48, 28).addBox(-1F, 9F, -1F, 2F, 2F, 2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_brood_nest body. */
+    public static LayerDefinition rt_brood_nest() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-8F, 18F, -8F, 16F, 6F, 16F).texOffs(64, 0).addBox(-6F, 12F, -6F, 12F, 6F, 12F).texOffs(0, 22).addBox(-3F, 8F, -3F, 6F, 4F, 6F).texOffs(24, 22).addBox(-7F, 14F, -2F, 3F, 4F, 3F).texOffs(36, 22).addBox(4F, 14F, -4F, 3F, 4F, 3F).texOffs(48, 22).addBox(-2F, 14F, 4F, 3F, 4F, 3F).texOffs(60, 22).addBox(0F, 5F, -1F, 3F, 4F, 3F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2656,6 +2720,13 @@ public final class UnitGeometry {
         all.put("rt_soul_pyre", UnitGeometry::rt_soul_pyre);
         all.put("rt_sun_lance", UnitGeometry::rt_sun_lance);
         all.put("rt_lurker_pit", UnitGeometry::rt_lurker_pit);
+        all.put("rt_watchtower_bell", UnitGeometry::rt_watchtower_bell);
+        all.put("rt_moonwell_grove", UnitGeometry::rt_moonwell_grove);
+        all.put("rt_stone_warden", UnitGeometry::rt_stone_warden);
+        all.put("rt_goblin_catapult", UnitGeometry::rt_goblin_catapult);
+        all.put("rt_brimstone_chains", UnitGeometry::rt_brimstone_chains);
+        all.put("rt_choir_bell", UnitGeometry::rt_choir_bell);
+        all.put("rt_brood_nest", UnitGeometry::rt_brood_nest);
         return all;
     }
 }

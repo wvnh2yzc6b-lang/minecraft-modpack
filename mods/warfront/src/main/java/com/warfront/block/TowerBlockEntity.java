@@ -117,7 +117,7 @@ public class TowerBlockEntity extends BlockEntity {
         String key = tower.factionKey(server.getServer());
         tower.setPowered(!WFConfig.TOWERS_NEED_MANA.get() || ManaNetwork.available(server, pos, key) >= type.manaCost);
         Vec3 eye = Vec3.atCenterOf(pos).add(0, 1.2, 0);
-        int range = WFConfig.TOWER_RANGE.get();
+        int range = (int) Math.round(WFConfig.TOWER_RANGE.get() * com.warfront.racetower.RaceTowers.rangeBonus(server, pos, key));
         AABB box = new AABB(pos).inflate(range);
 
         switch (type) {

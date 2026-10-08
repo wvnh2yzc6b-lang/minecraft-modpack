@@ -44,6 +44,10 @@ public class RaceTowerBlockEntity extends BlockEntity {
     private int charges;
     private boolean powered = true;
     private boolean revealed;
+    /** Stone Warden: how much more punishment it can take. Watchtower Bell: whether a raid is already in range. */
+    public static final int WARDEN_HEALTH = 200;
+    private int health = WARDEN_HEALTH;
+    private boolean alert;
 
     public RaceTowerBlockEntity(BlockPos pos, BlockState state) {
         super(WFRegistry.RACE_TOWER_BE.get(), pos, state);
@@ -68,6 +72,15 @@ public class RaceTowerBlockEntity extends BlockEntity {
 
     public boolean isRevealed() {
         return revealed;
+    }
+
+    public int health() {
+        return health;
+    }
+
+    @Nullable
+    public UUID owner() {
+        return owner;
     }
 
     public RaceTowerType type() {
@@ -129,6 +142,13 @@ public class RaceTowerBlockEntity extends BlockEntity {
             case SOUL_PYRE -> pyre(server, pos, key, type, t);
             case SUN_LANCE -> lance(server, pos, key, eye, type);
             case LURKER_PIT -> lurker(server, pos, key, type, t);
+            case WATCHTOWER_BELL -> bell(server, pos, key, type, t);
+            case MOONWELL_GROVE -> moonwell(server, pos, key, type, t);
+            case STONE_WARDEN -> warden(server, pos, key, type, t);
+            case GOBLIN_CATAPULT -> catapult(server, pos, key, eye, type);
+            case BRIMSTONE_CHAINS -> chains(server, pos, key, type);
+            case CHOIR_BELL -> choir(server, pos, key, type);
+            case BROOD_NEST -> nest(server, pos, key, type, t);
         };
         if (acted) {
             t.actions++;
@@ -142,14 +162,16 @@ public class RaceTowerBlockEntity extends BlockEntity {
         return (float) (base * com.warfront.config.WFConfig.RACE_TOWER_DAMAGE.get());
     }
 
-    static List<LivingEntity> enemies(ServerLevel level, String key, BlockPos pos, int reach) {
+    static List<LivingEntity> enemies(ServerLevel level, String key, BlockPos pos, int baseReach) {
+        int reach = (int) Math.round(baseReach * RaceTowers.rangeBonus(level, pos, key));
         Vec3 c = Vec3.atCenterOf(pos);
         return level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(reach),
                 e -> e.distanceToSqr(c) <= reach * reach && TowerBlockEntity.isEnemy(level, key, e));
     }
 
     @Nullable
-    static LivingEntity nearestSeen(ServerLevel level, String key, BlockPos pos, Vec3 eye, int reach) {
+    static LivingEntity nearestSeen(ServerLevel level, String key, BlockPos pos, Vec3 eye, int baseReach) {
+        int reach = (int) Math.round(baseReach * RaceTowers.rangeBonus(level, pos, key));
         return enemies(level, key, pos, reach).stream()
                 .filter(e -> level.clip(new ClipContext(eye, e.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e))
                         .getType() == HitResult.Type.MISS)
@@ -296,6 +318,143 @@ public class RaceTowerBlockEntity extends BlockEntity {
         return true;
     }
 
+    // ------------------------------------------------------------------ the seven level 3 towers
+
+    static List<LivingEntity> allies(ServerLevel level, String key, BlockPos pos, int reach) {
+        Vec3 c = Vec3.atCenterOf(pos);
+        MinecraftServer server = level.getServer();
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(reach),
+                e -> e.isAlive() && e.distanceToSqr(c) <= reach * reach
+                        && Factions.relation(server, key, Factions.keyOf(server, e)) == Relation.ALLY);
+    }
+
+    /** Reveals the hidden (invisible) and the tunnelers (the Swarm) in range; rings once when a raid comes into range. */
+    private static boolean bell(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        List<LivingEntity> foes = enemies(level, key, pos, type.reach);
+        if (foes.isEmpty()) {
+            t.alert = false;
+            return false;
+        }
+        if (!pay(level, pos, key, type)) return false;
+        for (LivingEntity f : foes) {
+            boolean tunneler = f instanceof SoldierEntity s
+                    && com.warfront.faction.NpcFaction.byKey(s.getFactionKey()) == com.warfront.faction.NpcFaction.THE_SWARM;
+            if (f.isInvisible() || tunneler) f.addEffect(new MobEffectInstance(MobEffects.GLOWING, 60, 0));
+        }
+        if (!t.alert) {
+            t.alert = true;
+            level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 2.0F, 0.8F);
+            level.playSound(null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.5F, 1.0F);
+        }
+        return true;
+    }
+
+    /** Heals elf units and the owner nearby, two health a pulse. */
+    private static boolean moonwell(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        List<LivingEntity> hurt = allies(level, key, pos, type.reach).stream()
+                .filter(e -> e.getHealth() < e.getMaxHealth() && (Race.of(e) == Race.ELF || e.getUUID().equals(t.owner))).toList();
+        if (hurt.isEmpty() || !pay(level, pos, key, type)) return false;
+        for (LivingEntity e : hurt) {
+            e.heal(2F);
+            level.sendParticles(ParticleTypes.GLOW, e.getX(), e.getY() + 1, e.getZ(), 5, 0.3, 0.4, 0.3, 0.01);
+        }
+        level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.8F, 1.4F);
+        return true;
+    }
+
+    /** Taunts enemies into attacking it; those close enough wear it down, and at 0 it crumbles. */
+    private static boolean warden(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        List<LivingEntity> foes = enemies(level, key, pos, type.reach);
+        if (foes.isEmpty() || !pay(level, pos, key, type)) return false;
+        Vec3 c = Vec3.atBottomCenterOf(pos.above());
+        for (LivingEntity f : foes) {
+            if (f instanceof net.minecraft.world.entity.Mob mob) {
+                mob.setTarget(null);
+                mob.getNavigation().moveTo(c.x, c.y, c.z, 1.0);
+            }
+            if (f.distanceToSqr(c) < 2.6 * 2.6) {
+                var attack = f.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+                t.health -= (int) Math.max(1, attack == null ? 1 : attack.getValue());
+                f.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+                level.playSound(null, pos, SoundEvents.STONE_HIT, SoundSource.BLOCKS, 1.0F, 0.7F);
+            }
+        }
+        if (level.getGameTime() % 40 == 0) level.playSound(null, pos, SoundEvents.IRON_GOLEM_REPAIR, SoundSource.BLOCKS, 0.6F, 0.6F);
+        if (t.health <= 0) {
+            level.destroyBlock(pos, false);
+            return true;
+        }
+        t.setChanged();
+        return true;
+    }
+
+    /** A bomb lobbed in an arc at the nearest enemy at least 4 blocks off; it bursts on landing, no block damage. */
+    private static boolean catapult(ServerLevel level, BlockPos pos, String key, Vec3 eye, RaceTowerType type) {
+        LivingEntity target = enemies(level, key, pos, type.reach).stream().filter(e -> e.distanceToSqr(eye) > 16)
+                .min(Comparator.comparingDouble(e -> e.distanceToSqr(eye))).orElse(null);
+        if (target == null || !pay(level, pos, key, type)) return false;
+        Vec3 at = target.position();
+        for (int i = 0; i <= 16; i++) {
+            double f = i / 16.0;
+            Vec3 p = eye.lerp(at, f).add(0, Math.sin(f * Math.PI) * 5, 0);
+            level.sendParticles(ParticleTypes.SMOKE, p.x, p.y, p.z, 1, 0, 0, 0, 0);
+        }
+        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(3),
+                e -> e.position().distanceTo(at) <= 3 && TowerBlockEntity.isEnemy(level, key, e))) {
+            e.hurt(level.damageSources().explosion(null, null), damage(8F));
+        }
+        level.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y + 0.5, at.z, 3, 0.8, 0.3, 0.8, 0);
+        level.playSound(null, BlockPos.containing(at), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 1.0F, 1.1F);
+        level.playSound(null, pos, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0F, 0.5F);
+        return true;
+    }
+
+    /** Hooks the nearest enemy, drags it toward the tower and holds it fast for three seconds. */
+    private static boolean chains(ServerLevel level, BlockPos pos, String key, RaceTowerType type) {
+        Vec3 c = Vec3.atCenterOf(pos).add(0, 1, 0);
+        LivingEntity target = enemies(level, key, pos, type.reach).stream().filter(e -> e.distanceToSqr(c) > 6.25)
+                .min(Comparator.comparingDouble(e -> e.distanceToSqr(c))).orElse(null);
+        if (target == null || !pay(level, pos, key, type)) return false;
+        Vec3 pull = c.subtract(target.position()).normalize().scale(1.4);
+        target.setDeltaMovement(pull.x, 0.35, pull.z);
+        target.hurtMarked = true;
+        target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 6));
+        target.hurt(level.damageSources().inFire(), damage(2F));
+        Vec3 from = target.getBoundingBox().getCenter();
+        for (int i = 0; i <= 12; i++) {
+            Vec3 p = from.lerp(c, i / 12.0);
+            level.sendParticles(ParticleTypes.SMALL_FLAME, p.x, p.y, p.z, 1, 0, 0, 0, 0);
+        }
+        level.playSound(null, pos, SoundEvents.CHAIN_PLACE, SoundSource.BLOCKS, 1.5F, 0.6F);
+        return true;
+    }
+
+    /** Shields friends nearby with absorption and lifts their harmful effects. */
+    private static boolean choir(ServerLevel level, BlockPos pos, String key, RaceTowerType type) {
+        List<LivingEntity> friends = allies(level, key, pos, type.reach);
+        if (friends.isEmpty() || !pay(level, pos, key, type)) return false;
+        for (LivingEntity e : friends) {
+            e.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 0));
+            List<net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect>> bad = e.getActiveEffects().stream()
+                    .map(MobEffectInstance::getEffect)
+                    .filter(h -> h.value().getCategory() == net.minecraft.world.effect.MobEffectCategory.HARMFUL).toList();
+            bad.forEach(e::removeEffect);
+            level.sendParticles(ParticleTypes.NOTE, e.getX(), e.getY() + 2, e.getZ(), 1, 0, 0, 0, 0.5);
+        }
+        level.playSound(null, pos, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1.2F, 1.6F);
+        return true;
+    }
+
+    /** Hatches a swarmling (a Ripper that lasts 30 seconds) while enemies are near, three at most at a time. */
+    private static boolean nest(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        if (t.owner == null || enemies(level, key, pos, type.reach).isEmpty()) return false;
+        if (com.warfront.world.Summons.countFrom(level, pos, 48) >= 3 || !pay(level, pos, key, type)) return false;
+        com.warfront.world.Summons.summon(level, t.owner, Race.HIVE, SoldierRole.SWORDSMAN, Vec3.atBottomCenterOf(pos.above()),
+                600, null, pos);
+        level.playSound(null, pos, SoundEvents.FROGSPAWN_HATCH, SoundSource.BLOCKS, 1.2F, 0.7F);
+        return true;
+    }
+
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = super.getUpdateTag(registries);
@@ -316,6 +475,7 @@ public class RaceTowerBlockEntity extends BlockEntity {
         tag.putInt("Charges", charges);
         tag.putBoolean("Powered", powered);
         tag.putBoolean("Revealed", revealed);
+        tag.putInt("Health", health);
     }
 
     @Override
@@ -325,5 +485,6 @@ public class RaceTowerBlockEntity extends BlockEntity {
         charges = tag.getInt("Charges");
         powered = !tag.contains("Powered") || tag.getBoolean("Powered");
         revealed = tag.getBoolean("Revealed");
+        health = tag.contains("Health") ? tag.getInt("Health") : WARDEN_HEALTH;
     }
 }
