@@ -257,6 +257,11 @@ public class TestPanelScreen extends Screen {
         send(1, 0, "Jump to step", "advisor", "step", Integer.toString(questStep))
                 .setTooltip(Tooltip.create(Component.literal(step.goal)));
         send(0, 1, "Respawn advisor", "advisor", "respawn");
+        send(1, 1, "Sealed Map", "war", "finale")
+                .setTooltip(Tooltip.create(Component.literal("Use it on your War Standard to march on the Frozen Field and the hidden warlord.")));
+        send(2, 1, "Frozen Field", "war", "field")
+                .setTooltip(Tooltip.create(Component.literal("Go straight to the Frozen Field with your army.")));
+        send(2, 2, "Leave Field", "war", "leave");
         Race r = Race.values()[race];
         cycle(0, 2, "Guise: " + r.displayName(), () -> race = (race + 1) % Race.values().length);
         send(1, 2, "Set guise", "advisor", "disguise", r.id());

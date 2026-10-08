@@ -243,6 +243,19 @@ public final class TestActions {
                         if (!player.getInventory().add(map)) player.drop(map, false);
                         yield Result.ok("War Map: " + f.displayName + ".");
                     }
+                    case "finale" -> {
+                        ItemStack map = new ItemStack(WFRegistry.SEALED_MAP.get());
+                        if (!player.getInventory().add(map)) player.drop(map, false);
+                        yield Result.ok("Sealed Map given: use it on your War Standard to march on the Frozen Field.");
+                    }
+                    case "field" -> com.warfront.finale.FrozenField.enter(player) ? Result.ok("To the Frozen Field.")
+                            : Result.fail("Can't go from here (already there?).");
+                    case "leave" -> com.warfront.finale.FrozenField.leave(player) ? Result.ok("Home again.")
+                            : Result.fail("You aren't on the Frozen Field.");
+                    case "rematch" -> {
+                        player.setData(WFRegistry.HIDDEN_WARLORD_BEATEN, false);
+                        yield Result.ok("The hidden warlord will rise again for you on the Frozen Field.");
+                    }
                     case "beaten" -> {
                         String which = arg(args, 2);
                         boolean on = !"no".equals(arg(args, 3));

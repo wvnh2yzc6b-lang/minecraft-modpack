@@ -102,6 +102,10 @@ public final class WFRegistry {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> STARTER_KIT = ATTACHMENTS.register(
             "starter_kit", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
+    /** Whether this player has beaten the hidden warlord on the Frozen Field. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> HIDDEN_WARLORD_BEATEN = ATTACHMENTS.register(
+            "hidden_warlord_beaten", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
     /** A human's claimed village (a BlockPos as a long; Long.MIN_VALUE for none). */
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> CHARTER = ATTACHMENTS.register(
             "charter", () -> AttachmentType.builder(() -> Long.MIN_VALUE).serialize(Codec.LONG).copyOnDeath().build());
@@ -327,12 +331,30 @@ public final class WFRegistry {
     public static final DeferredItem<Item> FALLEN_HALO = ITEMS.register("fallen_halo", com.warfront.fortress.WarlordGear.FallenHalo::new);
     /** Dropped when the seventh warlord falls: the clue to the hidden warlord. */
     public static final DeferredItem<Item> SEAL_OF_SEVEN = ITEMS.register("seal_of_seven",
+            () -> new com.warfront.finale.SealOfSevenItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    /** The seven War Maps made one: the way to the Frozen Field. */
+    public static final DeferredItem<com.warfront.finale.SealedMapItem> SEALED_MAP = ITEMS.register("sealed_map",
+            () -> new com.warfront.finale.SealedMapItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    /** The hidden warlord's blade, for any race. */
+    public static final DeferredItem<Item> BROTHERS_BLADE = ITEMS.register("brothers_blade",
+            () -> new net.minecraft.world.item.SwordItem(net.minecraft.world.item.Tiers.NETHERITE, new Item.Properties()
+                    .attributes(net.minecraft.world.item.SwordItem.createAttributes(net.minecraft.world.item.Tiers.NETHERITE, 5, -2.4F))
+                    .fireResistant().rarity(Rarity.EPIC)) {
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext ctx, java.util.List<Component> tooltip,
+                                            net.minecraft.world.item.TooltipFlag flag) {
+                    tooltip.add(Component.literal("The hidden warlord's blade, given freely at the end.")
+                            .withStyle(net.minecraft.ChatFormatting.GOLD, net.minecraft.ChatFormatting.ITALIC));
+                }
+            });
+    /** Opens the way to the last fight (the advisor's betrayal, not built yet). */
+    public static final DeferredItem<Item> KEY_TO_THE_END = ITEMS.register("key_to_the_end",
             () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)) {
                 @Override
                 public void appendHoverText(ItemStack stack, TooltipContext ctx, java.util.List<Component> tooltip,
                                             net.minecraft.world.item.TooltipFlag flag) {
-                    tooltip.add(Component.literal("Seven War Maps, fitted together. They point to a battlefield out of time.")
-                            .withStyle(net.minecraft.ChatFormatting.GOLD));
+                    tooltip.add(Component.literal("\"He wants the End. Be ready when he shows his true face.\"")
+                            .withStyle(net.minecraft.ChatFormatting.GOLD, net.minecraft.ChatFormatting.ITALIC));
                 }
             });
 

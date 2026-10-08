@@ -1327,6 +1327,31 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void theSealOpensTheWayToTheFrozenField(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack seal = new net.minecraft.world.item.ItemStack(WFRegistry.SEAL_OF_SEVEN.get());
+        h.assertTrue(!com.warfront.finale.SealOfSevenItem.unseal(p, seal), "the seal stays shut until all seven warlords fall");
+        for (com.warfront.faction.NpcFaction f : com.warfront.faction.NpcFaction.values()) com.warfront.war.Campaign.setWarlordBeaten(p, f, true);
+        h.assertTrue(com.warfront.finale.SealOfSevenItem.unseal(p, seal) && p.getInventory().countItem(WFRegistry.SEALED_MAP.get()) == 1,
+                "with all seven beaten the seal becomes the Sealed Map");
+        h.assertTrue(com.warfront.finale.FrozenField.level(h.getLevel().getServer()) != null, "the Frozen Field dimension should exist");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void hiddenWarlordWakesStatuesAndLeavesHisBlade(GameTestHelper h) {
+        BlockPos at = h.absolutePos(new BlockPos(4, 2, 4));
+        SoldierEntity w = com.warfront.finale.HiddenWarlord.spawn(h.getLevel(), at);
+        h.assertTrue(com.warfront.finale.HiddenWarlord.isHim(w) && w.getMaxHealth() > 100, "a towering boss should rise, health " + w.getMaxHealth());
+        w.setNoAi(true);
+        net.minecraft.world.phys.Vec3 where = w.position();
+        com.warfront.finale.HiddenWarlord.died(w);
+        w.discard();
+        h.assertTrue(com.warfront.finale.HiddenWarlord.dropsNear(h.getLevel(), where) == 2, "he leaves his blade and the Key to the End");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

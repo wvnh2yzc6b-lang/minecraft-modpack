@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Campaign, part 4: the hidden warlord on the Frozen Field",
+      "detail": "Once all seven warlords have fallen, use the Seal of the Seven: it becomes the Sealed Map. Use the map on your War Standard and you and your army within 32 blocks step through to the Frozen Field, the battlefield of the brothers' first war, sealed out of time: flat snow under a still, gray sky, broken siege engines and fallen banners, fourteen stone statues of soldiers of all seven races frozen mid-fight in a ring, and at the center a dark keep with a throne of crying obsidian under a cracked gold crown. The hidden warlord rises from the throne with a boss bar and fights with every race's trick in turn (the seven warlords' signature attacks, faster as he weakens); at each quarter of his health four statues crack open and their soldiers defend him. When he falls he dies: over a minute his last words reveal that your advisor is his brother and the true enemy, the statues' soldiers crumble, and he leaves The Brother's Blade (a netherite-grade sword for any race) and the Key to the End; then you are walked home with your army. Use the Sealed Map in the Field to leave early; if you fall you wake at home and your army follows. Look is a stand-in (a towering worn knight, gold crown) until you design the brothers. Test Panel (Campaign tab): Sealed Map, Frozen Field, Leave Field; /wftest war finale|field|leave|rematch."
+    },
+    {
+      "status": "done",
       "title": "Crossover: enemy outposts in the Aether and the Otherside",
       "detail": "With the Aether or Deeper and Darker installed, the factions' homelands hold their own outposts: Fallen Host forts on the Aether's skyroot islands and Swarm forts in the Otherside's caverns, about one every 300 to 400 blocks (a datapack can change the spacing). They are fort-sized, in the faction's materials, with no siege attached. When you come within 24 blocks the garrison wakes (a shieldbearer, a swordsman, a spearman, two archers and a captain) and the raid chest at the heart fills with late-game loot, a tier above a wave-15 siege outpost. Empty the chest and break it to clear the outpost, as in a siege. Without those mods nothing changes."
     },

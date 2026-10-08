@@ -1,0 +1,30 @@
+{
+  "type": "warfront:frozen_field",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "warfront:frozen_field",
+      "lakes": false,
+      "features": false,
+      "structure_overrides": [],
+      "layers": [
+        {
+          "block": "minecraft:bedrock",
+          "height": 1
+        },
+        {
+          "block": "minecraft:stone",
+          "height": 40
+        },
+        {
+          "block": "minecraft:packed_ice",
+          "height": 2
+        },
+        {
+          "block": "minecraft:snow_block",
+          "height": 1
+        }
+      ]
+    }
+  }
+}

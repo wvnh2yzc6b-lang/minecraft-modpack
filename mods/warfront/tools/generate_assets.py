@@ -334,6 +334,60 @@ def echo_armor_assets():
         opt("aether:blue_moa_egg"), opt("aether:white_moa_egg"), opt("aether:black_moa_egg")]})
 
 
+def frozen_field():
+    """The Frozen Field pocket dimension: a still, colorless battlefield (flat snow over ice), no mobs, no time."""
+    write_json(DATA / MODID / "dimension_type" / "frozen_field.json", {
+        "ultrawarm": False, "natural": False, "coordinate_scale": 1.0, "has_skylight": True, "has_ceiling": False,
+        "ambient_light": 0.0, "fixed_time": 6000, "monster_spawn_light_level": 0, "monster_spawn_block_light_limit": 0,
+        "piglin_safe": False, "bed_works": False, "respawn_anchor_works": False, "has_raids": False,
+        "logical_height": 256, "min_y": 0, "height": 256, "infiniburn": "#minecraft:infiniburn_overworld",
+        "effects": "minecraft:overworld"})
+    write_json(DATA / MODID / "worldgen" / "biome" / "frozen_field.json", {
+        "has_precipitation": False, "temperature": 0.0, "downfall": 0.0,
+        "effects": {"sky_color": 10132122, "fog_color": 12895428, "water_color": 8421504, "water_fog_color": 6316128,
+                    "grass_color": 9211020, "foliage_color": 9211020},
+        "spawners": {}, "spawn_costs": {}, "carvers": {}, "features": []})
+    write_json(DATA / MODID / "dimension" / "frozen_field.json", {
+        "type": f"{MODID}:frozen_field",
+        "generator": {"type": "minecraft:flat", "settings": {
+            "biome": f"{MODID}:frozen_field", "lakes": False, "features": False, "structure_overrides": [],
+            "layers": [{"block": "minecraft:bedrock", "height": 1}, {"block": "minecraft:stone", "height": 40},
+                       {"block": "minecraft:packed_ice", "height": 2}, {"block": "minecraft:snow_block", "height": 1}]}}})
+    rows = [
+        "................",
+        ".PPPPPPPPPPPPPP.",
+        ".PpppppppppppPP.",
+        ".PpGpppppppGppP.",
+        ".PpppXpppXpppP..",
+        ".PppppXpXppppP..",
+        ".PpppppXpppppP..",
+        ".PppppXpXppppP..",
+        ".PpppXpppXpppP..",
+        ".PpGpppppppGppP.",
+        ".PpppppppppppPP.",
+        ".PPPPPPPPPPPPPP.",
+        "................",
+        "................",
+        "................",
+        "................",
+    ]
+    save(sprite(rows, {"P": hexc("b8a878"), "p": hexc("e8dcb0"), "G": hexc("d4a017"), "X": hexc("6a1a1a")}), "item/sealed_map.png")
+    blade = ["..............WW", ".............WSW", "............WSW.", "...........WSW..", "..........WSW...",
+             ".........WSW....", "........WSW.....", ".......WSW......", "..G...WSW.......", "...G.WSW........",
+             "....GSW.........", "....HG..........", "...H..G.........", "..H.............", ".H..............",
+             "................"]
+    save(sprite(blade, {"W": hexc("e8e8f0"), "S": hexc("9aa0b0"), "G": hexc("d4a017"), "H": hexc("3a2a1a")}), "item/brothers_blade.png")
+    key = ["................", "....GGG.........", "...G...G........", "...G...G........", "...G...G........",
+           "....GGG.........", ".....G..........", ".....G..........", ".....GG.........", ".....G..........",
+           ".....GG.........", ".....G..........", "................", "................", "................",
+           "................"]
+    save(sprite(key, {"G": hexc("7fe0c0")}), "item/key_to_the_end.png")
+    for name, parent in (("sealed_map", "generated"), ("brothers_blade", "handheld"),
+                         ("key_to_the_end", "generated")):
+        write_json(ASSETS / "models" / "item" / f"{name}.json",
+                   {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{name}"}})
+
+
 def hammer_texture():
     """Mason's Hammer, carried by builders: a squared iron head on a wrapped wooden haft."""
     rows = [
@@ -942,6 +996,9 @@ def lang():
         **{f"block.warfront.{t}": v[1] for t, v in RACE_TOWERS.items()},
         "item.warfront.village_charter": "Village Charter",
         "item.warfront.echo_helmet": "Echo Helm",
+        "item.warfront.sealed_map": "Sealed Map",
+        "item.warfront.brothers_blade": "The Brother's Blade",
+        "item.warfront.key_to_the_end": "Key to the End",
         "item.warfront.echo_chestplate": "Echo Carapace",
         "item.warfront.echo_leggings": "Echo Greaves",
         "item.warfront.echo_boots": "Echo Treads",
@@ -1730,6 +1787,7 @@ if __name__ == "__main__":
     flight_textures()
     charter_texture()
     echo_armor_assets()
+    frozen_field()
     block_textures()
     soldier_skins()
     models_and_states()
