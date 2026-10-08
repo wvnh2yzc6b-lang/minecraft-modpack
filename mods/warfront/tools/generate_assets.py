@@ -1288,6 +1288,13 @@ RACE_TOWERS = {
     "brimstone_chains": ("demon", "Brimstone Chains", "3a2e2e", "1e1616", "minecraft:chain"),
     "choir_bell": ("angel", "Choir Bell", "eeeae0", "c8c2b0", "minecraft:golden_apple"),
     "brood_nest": ("hive", "Brood Nest", "1f3f44", "102528", "minecraft:slime_ball"),
+    "trebuchet": ("human", "Trebuchet", "9a9a96", "6c6c68", "minecraft:diamond_block"),
+    "elder_treant_spire": ("elf", "Elder Treant Spire", "b8c4a0", "7f8c68", "minecraft:diamond_block"),
+    "thunder_forge": ("dwarf", "Thunder Forge", "5a5f66", "3a3e44", "minecraft:diamond_block"),
+    "waaagh_banner": ("orc", "Waaagh Banner", "6b6a5a", "45443a", "minecraft:diamond_block"),
+    "hellgate": ("demon", "Hellgate", "3a2e2e", "1e1616", "minecraft:diamond_block"),
+    "seraphic_obelisk": ("angel", "Seraphic Obelisk", "eeeae0", "c8c2b0", "minecraft:diamond_block"),
+    "synapse_spire": ("hive", "Synapse Spire", "1f3f44", "102528", "minecraft:diamond_block"),
 }
 
 

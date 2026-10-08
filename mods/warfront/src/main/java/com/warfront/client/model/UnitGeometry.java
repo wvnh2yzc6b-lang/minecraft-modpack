@@ -2664,6 +2664,72 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 128, 64);
     }
+    /** The rt_trebuchet body. */
+    public static LayerDefinition rt_trebuchet() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(68, 0).addBox(-7F, 18F, -7F, 14F, 4F, 14F).texOffs(52, 0).addBox(-6F, -2F, -1F, 2F, 20F, 2F).texOffs(60, 0).addBox(4F, -2F, -1F, 2F, 20F, 2F).texOffs(48, 26).addBox(-6F, -3F, -1F, 12F, 1F, 2F).texOffs(12, 26).addBox(-3F, 10F, 2F, 6F, 6F, 5F).texOffs(0, 26).addBox(-7.2F, 4F, -6F, 0.2F, 8F, 5F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("arm", CubeListBuilder.create().texOffs(0, 0).addBox(-1F, -1F, -18F, 2F, 2F, 24F).texOffs(34, 26).addBox(-2F, -3F, -19F, 4F, 3F, 3F),
+                PartPose.offsetAndRotation(0F, -2F, 0F, 0.9F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_elder_treant_spire body. */
+    public static LayerDefinition rt_elder_treant_spire() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, -8F, -4F, 8F, 32F, 8F).texOffs(0, 40).addBox(-6F, 18F, -6F, 12F, 6F, 12F).texOffs(88, 40).addBox(-11F, -4F, -1F, 7F, 2F, 2F).texOffs(106, 40).addBox(4F, -10F, -1F, 8F, 2F, 2F).texOffs(32, 0).addBox(-9F, -14F, -9F, 18F, 8F, 18F).texOffs(48, 40).addBox(-5F, -19F, -5F, 10F, 5F, 10F).texOffs(0, 58).addBox(-2.5F, 2F, -4.2F, 1F, 2F, 0.2F).texOffs(4, 58).addBox(1.5F, 2F, -4.2F, 1F, 2F, 0.2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_thunder_forge body. */
+    public static LayerDefinition rt_thunder_forge() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, 14F, -7F, 14F, 10F, 14F).texOffs(4, 24).addBox(-6F, 10F, -4F, 12F, 4F, 8F).texOffs(44, 24).addBox(-3F, 4F, -2F, 6F, 6F, 4F).texOffs(56, 0).addBox(-7.5F, 13F, -7.5F, 15F, 1F, 15F).texOffs(116, 0).addBox(-6F, -8F, -6F, 1F, 14F, 1F).texOffs(120, 0).addBox(-6F, -8F, 5F, 1F, 14F, 1F).texOffs(124, 0).addBox(5F, -8F, -6F, 1F, 14F, 1F).texOffs(0, 24).addBox(5F, -8F, 5F, 1F, 14F, 1F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("light", CubeListBuilder.create().texOffs(64, 24).addBox(-1.5F, -1.5F, -1.5F, 3F, 3F, 3F),
+                PartPose.offsetAndRotation(0F, -6F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_waaagh_banner body. */
+    public static LayerDefinition rt_waaagh_banner() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(12, 0).addBox(-6F, 18F, -6F, 12F, 6F, 12F).texOffs(0, 0).addBox(-1.5F, -14F, -1.5F, 3F, 32F, 3F).texOffs(60, 0).addBox(1.5F, -13F, -0.5F, 12F, 10F, 1F).texOffs(0, 35).addBox(-6F, -16F, -1F, 12F, 2F, 2F).texOffs(86, 0).addBox(-8F, -18F, -1F, 3F, 3F, 2F).texOffs(96, 0).addBox(5F, -18F, -1F, 3F, 3F, 2F).texOffs(28, 35).addBox(5F, -9F, -0.7F, 4F, 3F, 0.3F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_hellgate body. */
+    public static LayerDefinition rt_hellgate() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-8F, -8F, -2F, 3F, 32F, 4F).texOffs(14, 0).addBox(5F, -8F, -2F, 3F, 32F, 4F).texOffs(50, 0).addBox(-9F, -12F, -3F, 18F, 4F, 6F).texOffs(98, 0).addBox(-6F, -14F, -2F, 3F, 2F, 4F).texOffs(112, 0).addBox(3F, -14F, -2F, 3F, 2F, 4F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("flame", CubeListBuilder.create().texOffs(28, 0).addBox(-5F, -32F, -0.5F, 10F, 32F, 1F),
+                PartPose.offsetAndRotation(0F, 24F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_seraphic_obelisk body. */
+    public static LayerDefinition rt_seraphic_obelisk() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-5F, 6F, -5F, 10F, 18F, 10F).texOffs(40, 0).addBox(-4F, -10F, -4F, 8F, 16F, 8F).texOffs(72, 0).addBox(-3F, -16F, -3F, 6F, 6F, 6F).texOffs(0, 28).addBox(-5.5F, 5F, -5.5F, 11F, 1F, 11F).texOffs(64, 28).addBox(-4.5F, -11F, -4.5F, 9F, 1F, 9F).texOffs(44, 28).addBox(-8F, 10F, -1F, 3F, 10F, 2F).texOffs(54, 28).addBox(5F, 10F, -1F, 3F, 10F, 2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("lens", CubeListBuilder.create().texOffs(100, 28).addBox(-2.5F, -2.5F, -2.5F, 5F, 5F, 5F),
+                PartPose.offsetAndRotation(0F, -21F, 0F, 0F, 0.785F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_synapse_spire body. */
+    public static LayerDefinition rt_synapse_spire() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(32, 0).addBox(-6F, 16F, -6F, 12F, 8F, 12F).texOffs(0, 0).addBox(-4F, 2F, -4F, 8F, 14F, 8F).texOffs(0, 22).addBox(-2F, -12F, -2F, 4F, 14F, 4F).texOffs(80, 0).addBox(-4.2F, 4F, -4.2F, 0.2F, 10F, 8.4F).texOffs(100, 0).addBox(4F, 4F, -4.2F, 0.2F, 10F, 8.4F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("crystal", CubeListBuilder.create().texOffs(16, 22).addBox(-4F, -4F, -4F, 8F, 6F, 8F),
+                PartPose.offsetAndRotation(0F, -16F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2727,6 +2793,13 @@ public final class UnitGeometry {
         all.put("rt_brimstone_chains", UnitGeometry::rt_brimstone_chains);
         all.put("rt_choir_bell", UnitGeometry::rt_choir_bell);
         all.put("rt_brood_nest", UnitGeometry::rt_brood_nest);
+        all.put("rt_trebuchet", UnitGeometry::rt_trebuchet);
+        all.put("rt_elder_treant_spire", UnitGeometry::rt_elder_treant_spire);
+        all.put("rt_thunder_forge", UnitGeometry::rt_thunder_forge);
+        all.put("rt_waaagh_banner", UnitGeometry::rt_waaagh_banner);
+        all.put("rt_hellgate", UnitGeometry::rt_hellgate);
+        all.put("rt_seraphic_obelisk", UnitGeometry::rt_seraphic_obelisk);
+        all.put("rt_synapse_spire", UnitGeometry::rt_synapse_spire);
         return all;
     }
 }

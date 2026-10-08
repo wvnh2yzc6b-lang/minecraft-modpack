@@ -86,6 +86,38 @@ public class RaidChestBlockEntity extends BaseContainerBlockEntity {
         server.playSound(null, pos, SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 4.0F, 1.3F);
     }
 
+    /** Siege engines (the human Trebuchet) batter the outpost: this much more and it falls. */
+    public static final int OUTPOST_HEALTH = 60;
+    private int battered;
+
+    public int outpostHealth() {
+        return Math.max(0, OUTPOST_HEALTH - battered);
+    }
+
+    /**
+     * A boulder hits the outpost: knocks out a few of its blocks near {@code at}, and once it has taken
+     * {@link #OUTPOST_HEALTH} the whole outpost falls (its loot spills). Returns true if it fell.
+     */
+    public boolean bombard(ServerLevel level, net.minecraft.world.phys.Vec3 at, int damage) {
+        if (tornDown) return false;
+        battered += damage;
+        setChanged();
+        int knocked = 0;
+        List<Long> near = new ArrayList<>(placed);
+        near.sort(java.util.Comparator.comparingDouble(l -> BlockPos.of(l).distToCenterSqr(at)));
+        for (long l : near) {
+            BlockPos p = BlockPos.of(l);
+            if (p.equals(worldPosition) || level.getBlockState(p).isAir()) continue;
+            level.setBlock(p, Blocks.AIR.defaultBlockState(), 3);
+            if (++knocked >= 6) break;
+        }
+        if (battered < OUTPOST_HEALTH) return false;
+        net.minecraft.world.Containers.dropContents(level, worldPosition, this);
+        clearContent();
+        level.destroyBlock(worldPosition, false);   // the chest going tears the outpost down
+        return true;
+    }
+
     /** Removes every block the outpost placed and the raiders still holding it. Called when the chest goes. */
     public void tearDown(ServerLevel level) {
         if (tornDown) return;
@@ -142,6 +174,7 @@ public class RaidChestBlockEntity extends BaseContainerBlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        if (battered > 0) tag.putInt("Battered", battered);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.put("Placed", new LongArrayTag(placed));
         if (standard != null) tag.putLong("Standard", standard.asLong());
@@ -152,6 +185,7 @@ public class RaidChestBlockEntity extends BaseContainerBlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        battered = tag.getInt("Battered");
         items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         placed.clear();

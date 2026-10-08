@@ -95,6 +95,45 @@ public final class RaceTowers {
         return 1.0;
     }
 
+    /** An allied War Standard within reach that is under siege, or null. */
+    @Nullable
+    public static com.warfront.block.WarStandardBlockEntity siegeStandard(Level level, BlockPos pos, String key, int reach) {
+        MinecraftServer server = level.getServer();
+        for (net.minecraft.world.level.block.entity.BlockEntity be : blockEntitiesNear(level, pos, reach)) {
+            if (be instanceof com.warfront.block.WarStandardBlockEntity s && s.isUnderSiege()
+                    && Factions.relation(server, key, s.factionKey(server)) == Relation.ALLY) return s;
+        }
+        return null;
+    }
+
+    /** An enemy siege outpost's raid chest within reach, or null. */
+    @Nullable
+    public static com.warfront.outpost.RaidChestBlockEntity enemyOutpost(Level level, BlockPos pos, String key, int reach) {
+        MinecraftServer server = level.getServer();
+        com.warfront.outpost.RaidChestBlockEntity best = null;
+        for (net.minecraft.world.level.block.entity.BlockEntity be : blockEntitiesNear(level, pos, reach)) {
+            if (be instanceof com.warfront.outpost.RaidChestBlockEntity c && c.getWarband() != null
+                    && Factions.relation(server, key, c.faction().key()) == Relation.ENEMY
+                    && (best == null || c.getBlockPos().distSqr(pos) < best.getBlockPos().distSqr(pos))) best = c;
+        }
+        return best;
+    }
+
+    private static List<net.minecraft.world.level.block.entity.BlockEntity> blockEntitiesNear(Level level, BlockPos pos, int reach) {
+        List<net.minecraft.world.level.block.entity.BlockEntity> out = new ArrayList<>();
+        int r = (reach >> 4) + 1;
+        int cx = pos.getX() >> 4, cz = pos.getZ() >> 4;
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dz = -r; dz <= r; dz++) {
+                if (!level.hasChunk(cx + dx, cz + dz)) continue;
+                for (var be : level.getChunk(cx + dx, cz + dz).getBlockEntities().values()) {
+                    if (be.getBlockPos().distSqr(pos) <= (double) reach * reach) out.add(be);
+                }
+            }
+        }
+        return out;
+    }
+
     /** A death: Soul Pyres within 12 blocks whose side the victim fought against take a charge. */
     public static void onDeath(LivingEntity victim) {
         Level level = victim.level();

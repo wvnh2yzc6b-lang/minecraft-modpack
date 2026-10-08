@@ -64,25 +64,6 @@
       ]
     },
     {
-      "id": "race-towers-l5",
-      "status": "ready",
-      "title": "Race towers, wave 3: the seven level 5 capstones",
-      "decided": "Owner, 2026-10-07: 3 race towers per race (base level 2, 3, 5), own race only, race towers capped by base level, capstones 1 each.",
-      "spec": [
-        "Human: Trebuchet: very long range (48+) slow boulder with splash damage that doesn't break blocks; can target and damage enemy siege outposts.",
-        "Elf: Elder Treant Spire: at each wave start wakes a treant guardian (temporary tanky unit) that fights until the wave ends.",
-        "Dwarf: Thunder Forge: chain lightning that jumps between up to 5 enemies; uses Iron's Lightning spell power when present.",
-        "Orc: Waaagh Banner: every orc unit within 16 blocks starts each siege wave in Frenzy.",
-        "Demon: Hellgate: spawns temporary imps (Impalers/Firecasters) each wave, paid with mana; they vanish at wave end.",
-        "Angel: Seraphic Obelisk: calls a pillar of light on the strongest enemy in range for a heavy smite.",
-        "Hive: Synapse Spire: pulses confusion: enemies in range briefly attack each other.",
-        "Capstones are limited to one per base each, and count toward the race-tower cap.",
-        "Temporary summons (treant, imps, swarmlings from Brood Nest) despawn at wave end, don't count toward the army cap or beastLimit, and never drop loot.",
-        "Every race tower is a block entity on the base mana network like the existing towers (draws mana per shot or pulse; no mana, no effect) and reuses the tower friend-or-foe targeting. Placeholder models are generated and styled in the race palette, following the tower-models item; final looks can follow references later. Numbers live in config. Codex: a render and a one-line description per tower.",
-        "Game tests: the one-per-base limit; summons despawn; the Trebuchet can damage an outpost."
-      ]
-    },
-    {
       "id": "pack-aether-deeperdarker",
       "status": "ready",
       "title": "Pack: The Aether and Deeper and Darker in, Twilight Forest out",

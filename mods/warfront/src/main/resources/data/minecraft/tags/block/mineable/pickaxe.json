@@ -30,6 +30,13 @@
     "warfront:goblin_catapult",
     "warfront:brimstone_chains",
     "warfront:choir_bell",
-    "warfront:brood_nest"
+    "warfront:brood_nest",
+    "warfront:trebuchet",
+    "warfront:elder_treant_spire",
+    "warfront:thunder_forge",
+    "warfront:waaagh_banner",
+    "warfront:hellgate",
+    "warfront:seraphic_obelisk",
+    "warfront:synapse_spire"
   ]
 }

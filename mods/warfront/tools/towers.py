@@ -196,10 +196,70 @@ def rt_brood_nest():
     return {"id": "rt_brood_nest", "race": "hive", "tex": [128, 64], "parts": [part("body", boxes=mound + pods)]}
 
 
+def rt_trebuchet():
+    frame = [box((-7, 18, -7), (14, 4, 14), "tw_wood_dark"), box((-6, -2, -1), (2, 20, 2), "tw_wood"),
+             box((4, -2, -1), (2, 20, 2), "tw_wood"), box((-6, -3, -1), (12, 1, 2), "tw_wood_dark"),
+             box((-3, 10, 2), (6, 6, 5), "tw_stone_dark")]                                 # counterweight
+    arm = part("arm", pivot=(0, -2, 0), rot=(0.9, 0, 0), boxes=[box((-1, -1, -18), (2, 2, 24), "tw_wood"),
+                                                               box((-2, -3, -19), (4, 3, 3), "tw_stone")])
+    banner = [box((-7.2, 4, -6), (0.2, 8, 5), "tw_cloth")]
+    return {"id": "rt_trebuchet", "race": "human", "tex": [128, 64], "parts": [part("body", boxes=frame + banner, children=[arm])]}
+
+
+def rt_elder_treant_spire():
+    trunk = [box((-4, -8, -4), (8, 32, 8), "tw_wood"), box((-6, 18, -6), (12, 6, 12), "tw_wood_dark")]
+    boughs = [box((-11, -4, -1), (7, 2, 2), "tw_wood"), box((4, -10, -1), (8, 2, 2), "tw_wood"),
+              box((-9, -14, -9), (18, 8, 18), "tw_cloth"), box((-5, -19, -5), (10, 5, 10), "tw_cloth")]
+    face = [box((-2.5, 2, -4.2), (1, 2, 0.2), "tw_rune2"), box((1.5, 2, -4.2), (1, 2, 0.2), "tw_rune2")]
+    return {"id": "rt_elder_treant_spire", "race": "elf", "tex": [128, 64], "parts": [part("body", boxes=trunk + boughs + face)]}
+
+
+def rt_thunder_forge():
+    anvil = [box((-7, 14, -7), (14, 10, 14), "tw_stone_dark"), box((-6, 10, -4), (12, 4, 8), "tw_metal"),
+             box((-3, 4, -2), (6, 6, 4), "tw_metal"), box((-7.5, 13, -7.5), (15, 1, 15), "tw_trim")]
+    rods = [box((x, -8, z), (1, 14, 1), "tw_trim") for x in (-6, 5) for z in (-6, 5)]
+    spark = part("light", pivot=(0, -6, 0), boxes=[box((-1.5, -1.5, -1.5), (3, 3, 3), "tw_light")])
+    return {"id": "rt_thunder_forge", "race": "dwarf", "tex": [128, 64], "parts": [part("body", boxes=anvil + rods, children=[spark])]}
+
+
+def rt_waaagh_banner():
+    base = [box((-6, 18, -6), (12, 6, 12), "tw_stone"), box((-1.5, -14, -1.5), (3, 32, 3), "tw_wood_dark")]
+    flag = [box((1.5, -13, -0.5), (12, 10, 1), "tw_cloth"), box((-6, -16, -1), (12, 2, 2), "tw_wood"),
+            box((-8, -18, -1), (3, 3, 2), "tw_trim"), box((5, -18, -1), (3, 3, 2), "tw_trim"),
+            box((5, -9, -0.7), (4, 3, 0.3), "tw_flame")]
+    return {"id": "rt_waaagh_banner", "race": "orc", "tex": [128, 64], "parts": [part("body", boxes=base + flag)]}
+
+
+def rt_hellgate():
+    gate = [box((-8, -8, -2), (3, 32, 4), "tw_stone_dark"), box((5, -8, -2), (3, 32, 4), "tw_stone_dark"),
+            box((-9, -12, -3), (18, 4, 6), "tw_stone_dark"), box((-6, -14, -2), (3, 2, 4), "tw_trim"),
+            box((3, -14, -2), (3, 2, 4), "tw_trim")]
+    portal = part("flame", pivot=(0, 24, 0), boxes=[box((-5, -32, -0.5), (10, 32, 1), "tw_flame")])
+    return {"id": "rt_hellgate", "race": "demon", "tex": [128, 64], "parts": [part("body", boxes=gate, children=[portal])]}
+
+
+def rt_seraphic_obelisk():
+    obelisk = [box((-5, 6, -5), (10, 18, 10), "tw_stone"), box((-4, -10, -4), (8, 16, 8), "tw_stone"),
+               box((-3, -16, -3), (6, 6, 6), "tw_stone"), box((-5.5, 5, -5.5), (11, 1, 11), "tw_trim"),
+               box((-4.5, -11, -4.5), (9, 1, 9), "tw_trim"), box((-8, 10, -1), (3, 10, 2), "tw_trim"),
+               box((5, 10, -1), (3, 10, 2), "tw_trim")]
+    lens = part("lens", pivot=(0, -21, 0), rot=(0, 0.785, 0), boxes=[box((-2.5, -2.5, -2.5), (5, 5, 5), "tw_crystal")])
+    return {"id": "rt_seraphic_obelisk", "race": "angel", "tex": [128, 64], "parts": [part("body", boxes=obelisk, children=[lens])]}
+
+
+def rt_synapse_spire():
+    spire = [box((-6, 16, -6), (12, 8, 12), "tw_stone_dark"), box((-4, 2, -4), (8, 14, 8), "tw_stone"),
+             box((-2, -12, -2), (4, 14, 4), "tw_stone_dark"), box((-4.2, 4, -4.2), (0.2, 10, 8.4), "tw_rune"),
+             box((4, 4, -4.2), (0.2, 10, 8.4), "tw_rune")]
+    brain = part("crystal", pivot=(0, -16, 0), boxes=[box((-4, -4, -4), (8, 6, 8), "tw_flame")])
+    return {"id": "rt_synapse_spire", "race": "hive", "tex": [128, 64], "parts": [part("body", boxes=spire, children=[brain])]}
+
+
 def race_models():
     return [rt_ballista(), rt_thornwood_sentinel(), rt_rune_cannon(), rt_war_drum_totem(), rt_soul_pyre(), rt_sun_lance(),
             rt_lurker_pit(), rt_watchtower_bell(), rt_moonwell_grove(), rt_stone_warden(), rt_goblin_catapult(),
-            rt_brimstone_chains(), rt_choir_bell(), rt_brood_nest()]
+            rt_brimstone_chains(), rt_choir_bell(), rt_brood_nest(), rt_trebuchet(), rt_elder_treant_spire(), rt_thunder_forge(),
+            rt_waaagh_banner(), rt_hellgate(), rt_seraphic_obelisk(), rt_synapse_spire()]
 
 
 def tw_material(mat, side, x, y, w, h, pal, rng):

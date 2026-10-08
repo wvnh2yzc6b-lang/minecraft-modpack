@@ -37,7 +37,22 @@ public enum RaceTowerType implements StringRepresentable {
     CHOIR_BELL("choir_bell", "Choir Bell", Race.ANGEL, 3, 80, 3, 10,
             "Shields nearby friends with absorption and clears their harmful effects on each pulse."),
     BROOD_NEST("brood_nest", "Brood Nest", Race.HIVE, 3, 100, 4, 16,
-            "Hatches short-lived swarmlings that rush enemies (three at a time).");
+            "Hatches short-lived swarmlings that rush enemies (three at a time)."),
+
+    TREBUCHET("trebuchet", "Trebuchet", Race.HUMAN, 5, 100, 8, 48,
+            "Capstone. A very long-range boulder with splash damage that breaks no blocks; it can batter siege outposts down."),
+    ELDER_TREANT_SPIRE("elder_treant_spire", "Elder Treant Spire", Race.ELF, 5, 40, 20, 48,
+            "Capstone. At each siege wave it wakes a treant guardian that fights until the wave ends."),
+    THUNDER_FORGE("thunder_forge", "Thunder Forge", Race.DWARF, 5, 60, 6, 20,
+            "Capstone. Chain lightning that leaps between up to five enemies."),
+    WAAAGH_BANNER("waaagh_banner", "Waaagh Banner", Race.ORC, 5, 40, 10, 16,
+            "Capstone. Every orc unit within 16 blocks starts each siege wave in a Frenzy."),
+    HELLGATE("hellgate", "Hellgate", Race.DEMON, 5, 40, 16, 48,
+            "Capstone. Opens each siege wave by loosing imps (Impalers and Firecasters) that vanish when the wave ends."),
+    SERAPHIC_OBELISK("seraphic_obelisk", "Seraphic Obelisk", Race.ANGEL, 5, 80, 8, 24,
+            "Capstone. Calls a pillar of light down on the strongest enemy in range."),
+    SYNAPSE_SPIRE("synapse_spire", "Synapse Spire", Race.HIVE, 5, 60, 5, 12,
+            "Capstone. Pulses confusion: enemies in range turn on each other for a moment.");
 
     public static final Codec<RaceTowerType> CODEC = StringRepresentable.fromEnum(RaceTowerType::values);
 

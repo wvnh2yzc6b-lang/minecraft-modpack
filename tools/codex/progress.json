@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "Race towers, wave 3: the seven level 5 capstones",
+      "image": "race-towers-l5-render.png",
+      "detail": "Each race's capstone needs a level 5 base, and a base holds only one of each (they count toward the race-tower cap). Human Trebuchet: a boulder from up to 48 blocks with splash damage and no block damage; with no enemy in range it batters an enemy siege outpost, knocking out its walls, and four hits bring the outpost down and spill its raid chest. Elf Elder Treant Spire: at each siege wave it wakes a huge Elder Treant that fights until the wave ends. Dwarf Thunder Forge: chain lightning that leaps between up to five enemies. Orc Waaagh Banner: every orc unit within 16 blocks starts each siege wave in a Frenzy. Demon Hellgate: opens each wave by loosing two Imp Impalers and two Imp Firecasters, gone when the wave ends. Angel Seraphic Obelisk: a pillar of light on the strongest enemy in range (20 damage, half again to the unholy). Hive Synapse Spire: pulses confusion, and enemies in range turn on each other for a moment. Wave summons never count toward your army or beast limit and drop nothing."
+    },
+    {
+      "status": "done",
       "title": "Race towers, wave 2: the seven level 3 towers",
       "image": "race-towers-l3-render.png",
       "detail": "Each race gets its level 3 tower (needs a level 3 base; same cap and mana rules). Human Watchtower Bell: no attack; it outlines invisible enemies and Swarm tunnelers within 24 blocks, gives every tower within 8 blocks a quarter more reach, and rings out when a raid comes into range. Elf Moonwell Grove: a slow, cheap healing pulse for elf units and its owner within 10 blocks. Dwarf Stone Warden: a tough turret (200 health) that taunts enemies within 10 blocks into walking up and hitting it instead of you, and crumbles when worn down. Orc Goblin Bomb Catapult: lobs a bomb in an arc at enemies at least 4 blocks off; it bursts on landing, no block damage. Demon Brimstone Chains: hooks the nearest enemy, drags it in and holds it fast for three seconds. Angel Choir Bell: shields friends within 10 blocks with absorption and lifts their harmful effects. Hive Brood Nest: while enemies are near, hatches Ripper swarmlings (three at a time, 30 seconds each) that rush them; they never count toward your army and drop nothing. Tower-summoned units now share one system: timed, or tied to a siege wave and gone when it ends."

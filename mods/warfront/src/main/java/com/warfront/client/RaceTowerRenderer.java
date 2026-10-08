@@ -45,6 +45,10 @@ public class RaceTowerRenderer implements BlockEntityRenderer<RaceTowerBlockEnti
             case LURKER_PIT -> body.getChild("maw").visible = tower.isRevealed();
             case WATCHTOWER_BELL, CHOIR_BELL -> body.getChild("bell").zRot = on ? Mth.sin(time * 0.15F) * 0.25F : 0F;
             case MOONWELL_GROVE -> body.getChild("light").y = 6F + (on ? Mth.sin(time * 0.06F) : 3F);
+            case HELLGATE -> body.getChild("flame").visible = on;
+            case SERAPHIC_OBELISK -> body.getChild("lens").yRot = on ? time * 0.05F : 0.785F;
+            case THUNDER_FORGE -> body.getChild("light").visible = on && (time % 20) < 4;
+            case SYNAPSE_SPIRE -> body.getChild("crystal").yScale = 1F + (on ? Mth.sin(time * 0.2F) * 0.08F : 0F);
             case GOBLIN_CATAPULT -> body.getChild("arm").xRot = 0.6F - Math.max(0F, Mth.sin(time * 0.1F)) * 0.9F;
             default -> {
             }

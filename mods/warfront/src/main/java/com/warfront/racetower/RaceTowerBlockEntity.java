@@ -48,6 +48,8 @@ public class RaceTowerBlockEntity extends BlockEntity {
     public static final int WARDEN_HEALTH = 200;
     private int health = WARDEN_HEALTH;
     private boolean alert;
+    /** Capstones that act at each siege wave: the last wave they answered. */
+    private int lastWave;
 
     public RaceTowerBlockEntity(BlockPos pos, BlockState state) {
         super(WFRegistry.RACE_TOWER_BE.get(), pos, state);
@@ -149,6 +151,13 @@ public class RaceTowerBlockEntity extends BlockEntity {
             case BRIMSTONE_CHAINS -> chains(server, pos, key, type);
             case CHOIR_BELL -> choir(server, pos, key, type);
             case BROOD_NEST -> nest(server, pos, key, type, t);
+            case TREBUCHET -> trebuchet(server, pos, key, eye, type);
+            case ELDER_TREANT_SPIRE -> treant(server, pos, key, type, t);
+            case THUNDER_FORGE -> forge(server, pos, key, eye, type);
+            case WAAAGH_BANNER -> waaagh(server, pos, key, type, t);
+            case HELLGATE -> hellgate(server, pos, key, type, t);
+            case SERAPHIC_OBELISK -> obelisk(server, pos, key, type);
+            case SYNAPSE_SPIRE -> synapse(server, pos, key, type);
         };
         if (acted) {
             t.actions++;
@@ -455,6 +464,150 @@ public class RaceTowerBlockEntity extends BlockEntity {
         return true;
     }
 
+    // ------------------------------------------------------------------ the seven capstones (level 5)
+
+    /** A boulder at the nearest enemy 6+ blocks off, or failing that at an enemy outpost's raid chest in range. */
+    private static boolean trebuchet(ServerLevel level, BlockPos pos, String key, Vec3 eye, RaceTowerType type) {
+        LivingEntity target = enemies(level, key, pos, type.reach).stream().filter(e -> e.distanceToSqr(eye) > 36)
+                .min(Comparator.comparingDouble(e -> e.distanceToSqr(eye))).orElse(null);
+        com.warfront.outpost.RaidChestBlockEntity outpost = target == null ? RaceTowers.enemyOutpost(level, pos, key, type.reach) : null;
+        if (target == null && outpost == null || !pay(level, pos, key, type)) return false;
+        Vec3 at = target != null ? target.position() : Vec3.atCenterOf(outpost.getBlockPos());
+        arc(level, eye, at, 10);
+        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(3),
+                e -> e.position().distanceTo(at) <= 3 && TowerBlockEntity.isEnemy(level, key, e))) {
+            e.hurt(level.damageSources().explosion(null, null), damage(14F));
+        }
+        if (outpost != null) outpost.bombard(level, at, 15);
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 0.5, at.z, 1, 0, 0, 0, 0);
+        level.playSound(null, BlockPos.containing(at), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 1.5F, 0.7F);
+        level.playSound(null, pos, SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 1.5F, 0.4F);
+        return true;
+    }
+
+    private static void arc(ServerLevel level, Vec3 from, Vec3 to, double height) {
+        for (int i = 0; i <= 24; i++) {
+            double f = i / 24.0;
+            Vec3 p = from.lerp(to, f).add(0, Math.sin(f * Math.PI) * height, 0);
+            level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, p.x, p.y, p.z, 1, 0, 0, 0, 0);
+        }
+    }
+
+    /** True once per new siege wave at an allied War Standard within reach. */
+    private static boolean newWave(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        com.warfront.block.WarStandardBlockEntity standard = RaceTowers.siegeStandard(level, pos, key, type.reach);
+        if (standard == null || standard.getWave() == t.lastWave) return false;
+        t.lastWave = standard.getWave();
+        t.setChanged();
+        return true;
+    }
+
+    /** At each wave: a treant guardian (a hulking elf Shieldbearer) wakes and fights until the wave ends. */
+    private static boolean treant(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        if (t.owner == null || !newWave(level, pos, key, type, t) || !pay(level, pos, key, type)) return false;
+        com.warfront.block.WarStandardBlockEntity standard = RaceTowers.siegeStandard(level, pos, key, type.reach);
+        SoldierEntity treant = com.warfront.world.Summons.summon(level, t.owner, Race.ELF, SoldierRole.SHIELDBEARER,
+                Vec3.atBottomCenterOf(pos.above()), 0, standard == null ? pos : standard.getBlockPos(), pos);
+        if (treant != null) {
+            treant.setCustomName(net.minecraft.network.chat.Component.literal("Elder Treant"));
+            var hp = treant.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+            if (hp != null) hp.addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                    com.warfront.Warfront.id("treant_health"), 3.0, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            var scale = treant.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE);
+            if (scale != null) scale.addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(
+                    com.warfront.Warfront.id("treant_scale"), 0.6, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            treant.setHealth(treant.getMaxHealth());
+        }
+        level.playSound(null, pos, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 1.5F, 0.5F);
+        return true;
+    }
+
+    /** Chain lightning: the nearest enemy, then up to four more, each within 6 blocks of the last. */
+    private static boolean forge(ServerLevel level, BlockPos pos, String key, Vec3 eye, RaceTowerType type) {
+        LivingEntity first = nearestSeen(level, key, pos, eye, type.reach);
+        if (first == null || !pay(level, pos, key, type)) return false;
+        List<LivingEntity> hit = new java.util.ArrayList<>();
+        LivingEntity cur = first;
+        Vec3 from = eye;
+        while (cur != null && hit.size() < 5) {
+            hit.add(cur);
+            Vec3 to = cur.getBoundingBox().getCenter();
+            for (int i = 0; i <= 10; i++) {
+                Vec3 p = from.lerp(to, i / 10.0);
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, p.x, p.y, p.z, 2, 0.05, 0.05, 0.05, 0);
+            }
+            cur.hurt(level.damageSources().lightningBolt(), damage(8F));
+            from = to;
+            LivingEntity last = cur;
+            cur = level.getEntitiesOfClass(LivingEntity.class, last.getBoundingBox().inflate(6),
+                            e -> !hit.contains(e) && TowerBlockEntity.isEnemy(level, key, e))
+                    .stream().min(Comparator.comparingDouble(e -> e.distanceToSqr(last))).orElse(null);
+        }
+        level.playSound(null, pos, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.BLOCKS, 1.0F, 1.4F);
+        return true;
+    }
+
+    /** At each wave: every orc unit within 16 blocks goes into a Frenzy. */
+    private static boolean waaagh(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        if (!newWave(level, pos, key, type, t)) return false;
+        return frenzy(level, pos, key, type);
+    }
+
+    static boolean frenzy(ServerLevel level, BlockPos pos, String key, RaceTowerType type) {
+        List<LivingEntity> orcs = allies(level, key, pos, type.reach).stream()
+                .filter(e -> e instanceof SoldierEntity && Race.of(e) == Race.ORC).toList();
+        if (orcs.isEmpty() || !pay(level, pos, key, type)) return false;
+        for (LivingEntity o : orcs) o.addEffect(new MobEffectInstance(WFRegistry.FRENZY, Rage.FRENZY_TICKS, 0));
+        level.playSound(null, pos, SoundEvents.RAVAGER_ROAR, SoundSource.BLOCKS, 2.0F, 0.8F);
+        return true;
+    }
+
+    /** At each wave: two Imp Impalers and two Imp Firecasters, gone when the wave ends. */
+    private static boolean hellgate(ServerLevel level, BlockPos pos, String key, RaceTowerType type, RaceTowerBlockEntity t) {
+        if (t.owner == null || !newWave(level, pos, key, type, t) || !pay(level, pos, key, type)) return false;
+        com.warfront.block.WarStandardBlockEntity standard = RaceTowers.siegeStandard(level, pos, key, type.reach);
+        BlockPos waveKey = standard == null ? pos : standard.getBlockPos();
+        SoldierRole[] roles = {SoldierRole.SPEARMAN, SoldierRole.SPEARMAN, SoldierRole.ARCHER, SoldierRole.ARCHER};
+        for (int i = 0; i < roles.length; i++) {
+            double a = i * Math.PI / 2;
+            com.warfront.world.Summons.summon(level, t.owner, Race.DEMON, roles[i],
+                    Vec3.atBottomCenterOf(pos.above()).add(Math.cos(a) * 1.5, 0, Math.sin(a) * 1.5), 0, waveKey, pos);
+        }
+        level.sendParticles(ParticleTypes.FLAME, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, 40, 0.8, 0.8, 0.8, 0.05);
+        level.playSound(null, pos, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 0.6F, 1.6F);
+        return true;
+    }
+
+    /** A pillar of light on the strongest enemy in range: 20 damage, half again to the unholy. */
+    private static boolean obelisk(ServerLevel level, BlockPos pos, String key, RaceTowerType type) {
+        LivingEntity target = enemies(level, key, pos, type.reach).stream()
+                .max(Comparator.comparingDouble(LivingEntity::getMaxHealth)).orElse(null);
+        if (target == null || !pay(level, pos, key, type)) return false;
+        float dmg = 20F * (Radiance.smiteBonus(target) ? 1.5F : 1F);
+        target.hurt(level.damageSources().magic(), damage(dmg));
+        target.addEffect(new MobEffectInstance(MobEffects.GLOWING, 100, 0));
+        for (int y = 0; y < 24; y++) level.sendParticles(ParticleTypes.END_ROD, target.getX(), target.getY() + y, target.getZ(), 3, 0.2, 0.4, 0.2, 0);
+        level.playSound(null, target.blockPosition(), SoundEvents.TRIDENT_THUNDER.value(), SoundSource.BLOCKS, 1.0F, 1.6F);
+        return true;
+    }
+
+    /** Confusion: each enemy mob in range turns on another enemy near it for a moment; players reel. */
+    private static boolean synapse(ServerLevel level, BlockPos pos, String key, RaceTowerType type) {
+        List<LivingEntity> foes = enemies(level, key, pos, type.reach);
+        if (foes.size() < 1 || !pay(level, pos, key, type)) return false;
+        for (LivingEntity f : foes) {
+            if (f instanceof net.minecraft.world.entity.Mob mob) {
+                LivingEntity other = foes.stream().filter(o -> o != f && o.distanceToSqr(f) < 64)
+                        .min(Comparator.comparingDouble(o -> o.distanceToSqr(f))).orElse(null);
+                if (other != null) mob.setTarget(other);
+            }
+            f.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0));
+            level.sendParticles(ParticleTypes.SCULK_SOUL, f.getX(), f.getY() + 1.8, f.getZ(), 3, 0.2, 0.2, 0.2, 0.02);
+        }
+        level.playSound(null, pos, SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.BLOCKS, 1.0F, 1.4F);
+        return true;
+    }
+
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = super.getUpdateTag(registries);
@@ -476,6 +629,7 @@ public class RaceTowerBlockEntity extends BlockEntity {
         tag.putBoolean("Powered", powered);
         tag.putBoolean("Revealed", revealed);
         tag.putInt("Health", health);
+        tag.putInt("LastWave", lastWave);
     }
 
     @Override
@@ -486,5 +640,6 @@ public class RaceTowerBlockEntity extends BlockEntity {
         powered = !tag.contains("Powered") || tag.getBoolean("Powered");
         revealed = tag.getBoolean("Revealed");
         health = tag.contains("Health") ? tag.getInt("Health") : WARDEN_HEALTH;
+        lastWave = tag.getInt("LastWave");
     }
 }

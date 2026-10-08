@@ -173,6 +173,17 @@
         "Built and in the game. Left to right: human Watchtower Bell (a roofed bell frame), elf Moonwell Grove (a stone ring of glowing water under two small trees and a hovering moonlight), dwarf Stone Warden (a squat iron-shielded stone hulk with rune eyes), orc Goblin Bomb Catapult (a throwing arm on a wheeled frame), demon Brimstone Chains (a black pillar hung with chains and ember runes), angel Choir Bell (a white arch with a golden bell), Hive Brood Nest (a chitin mound studded with glowing egg pods).",
         "First pass from each race's palette; send references to change any of them."
       ]
+    },
+    {
+      "id": "race-towers-l5",
+      "race": "All races",
+      "title": "Race towers, level 5 capstones",
+      "status": "review",
+      "render": "race-towers-l5-render.png",
+      "notes": [
+        "Built and in the game. Left to right: human Trebuchet (a throwing arm, counterweight and red banner), elf Elder Treant Spire (a great living tree with a face in its bark), dwarf Thunder Forge (an anvil between four lightning rods, a spark crackling above), orc Waaagh Banner (a horned war standard), demon Hellgate (a black gate around a wall of fire), angel Seraphic Obelisk (a winged white obelisk with a turning golden lens), Hive Synapse Spire (a dark spire crowned with a pulsing brain-like mass).",
+        "First pass from each race's palette; send references to change any of them."
+      ]
     }
   ]
 }

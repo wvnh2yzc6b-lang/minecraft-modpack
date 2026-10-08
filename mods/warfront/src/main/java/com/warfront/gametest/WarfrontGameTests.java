@@ -1204,6 +1204,60 @@ public final class WarfrontGameTests {
         });
     }
 
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void capstonesAreOnePerBase(GameTestHelper h) {
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        ManaWellBlockEntity well = well(h, new BlockPos(4, 1, 7), human, 0F);
+        well.setTestLevel(5);
+        h.setBlock(new BlockPos(1, 1, 1), WFRegistry.RACE_TOWERS.get(com.warfront.racetower.RaceTowerType.TREBUCHET).get());
+        ((com.warfront.racetower.RaceTowerBlockEntity) h.getBlockEntity(new BlockPos(1, 1, 1))).setOwner(human.getUUID());
+        BlockPos at = h.absolutePos(new BlockPos(4, 2, 4));
+        h.runAfterDelay(5, () -> {
+            String second = com.warfront.racetower.RaceTowers.refusal(h.getLevel(), at, human, com.warfront.racetower.RaceTowerType.TREBUCHET);
+            h.assertTrue(second != null && second.contains("only one"), "a base holds one Trebuchet: " + second);
+            h.assertTrue(com.warfront.racetower.RaceTowers.refusal(h.getLevel(), at, human, com.warfront.racetower.RaceTowerType.BALLISTA) == null,
+                    "other race towers still fit under the cap");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA)
+    public static void waveSummonsVanishWhenTheWaveEnds(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos standard = h.absolutePos(new BlockPos(4, 1, 4));
+        SoldierEntity imp = com.warfront.world.Summons.summon(h.getLevel(), owner.getUUID(), Race.DEMON, SoldierRole.SPEARMAN,
+                h.absoluteVec(new Vec3(3.5, 2, 3.5)), 0, standard, h.absolutePos(new BlockPos(1, 1, 1)));
+        h.assertTrue(imp != null && imp.isTemporary() && !imp.countsTowardArmy() && !imp.isHero(), "a wave summon is temporary");
+        h.assertTrue(com.warfront.world.Summons.waveEnded(h.getLevel(), standard) == 1 && imp.isRemoved(), "it vanishes when the wave ends");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void trebuchetBattersOutpostsDown(GameTestHelper h) {
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos chestPos = new BlockPos(6, 1, 6);
+        h.setBlock(chestPos, WFRegistry.RAID_CHEST.get().defaultBlockState().setValue(com.warfront.outpost.RaidChestBlock.FACTION, 0));
+        com.warfront.outpost.RaidChestBlockEntity chest = (com.warfront.outpost.RaidChestBlockEntity) h.getBlockEntity(chestPos);
+        java.util.List<BlockPos> walls = new java.util.ArrayList<>();
+        for (int x = 4; x <= 7; x++) {
+            h.setBlock(new BlockPos(x, 2, 7), Blocks.SPRUCE_LOG);
+            walls.add(h.absolutePos(new BlockPos(x, 2, 7)));
+        }
+        walls.add(h.absolutePos(chestPos));
+        chest.link(h.absolutePos(new BlockPos(0, 1, 0)), UUID.randomUUID(), walls);
+        String key = com.warfront.faction.Factions.keyOf(h.getLevel().getServer(), human);
+        h.assertTrue(com.warfront.racetower.RaceTowers.enemyOutpost(h.getLevel(), h.absolutePos(new BlockPos(1, 1, 1)), key, 48) == chest,
+                "the Trebuchet should find the enemy outpost in range");
+        net.minecraft.world.phys.Vec3 at = h.absoluteVec(new Vec3(6.5, 2, 6.5));
+        boolean fell = false;
+        for (int i = 0; i < 4 && !fell; i++) fell = chest.bombard(h.getLevel(), at, 15);
+        h.assertTrue(fell, "four boulders should bring the outpost down");
+        h.assertBlockNotPresent(WFRegistry.RAID_CHEST.get(), chestPos);
+        h.assertBlockNotPresent(Blocks.SPRUCE_LOG, new BlockPos(5, 2, 7));
+        h.succeed();
+    }
+
     @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
