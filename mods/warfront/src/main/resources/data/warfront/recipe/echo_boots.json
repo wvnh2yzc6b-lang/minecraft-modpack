@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "E E",
+    "S S"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:sculk"
+    },
+    "S": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "result": {
+    "id": "warfront:echo_boots",
+    "count": 1
+  }
+}

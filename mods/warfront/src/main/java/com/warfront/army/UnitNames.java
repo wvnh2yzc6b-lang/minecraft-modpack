@@ -12,12 +12,12 @@ public final class UnitNames {
     private static final String[] DWARF = {"Ironshield",     "Halberdier",    "Axe Thane",     "Hold Captain",   "Ironbreaker",  "Sharpshooter",     "Runepriest", "Hearthfarmer", "Stonemason", "Gatekeeper", "War Beast"};
     private static final String[] ORC   = {"Bulwark",        "Gutspear",      "Brute",         "Warboss",        "Berserker",    "Hunter",           "Shaman", "Goblin Grubber", "Goblin Tinker", "Warden", "War Beast"};
     private static final String[] DEMON = {"Hellguard",      "Imp Impaler",   "Fiend",         "Archfiend",      "Hellknight",   "Imp Firecaster",   "Blood Witch", "Ash Tiller", "Brimstone Mason", "Hellwarden", "Bone Stalker"};
-    private static final String[] ANGEL = {"Aegis",          "Lancer",        "Valkyrie",      "Archangel",      "Seraph",       "Starbow",          "Lightbearer", "Lightgardener", "Sanctum Builder", "Gatewarden", "War Beast"};
+    private static final String[] ANGEL = {"Aegis",          "Lancer",        "Valkyrie",      "Archangel",      "Seraph",       "Starbow",          "Lightbearer", "Lightgardener", "Sanctum Builder", "Gatewarden", "Armored Moa"};
     private static final String[] HIVE  = {"Carapace",       "Lancer-Drone",  "Ripper",        "Hive Tyrant",    "Ravager",      "Spitter",          "Synapse Mender", "Harvester Drone", "Builder Drone", "Sentry Drone", "Deepmaw"};
 
     /** Whether a race has a war beast it can summon. Others get theirs once their beast is designed. */
     public static boolean hasBeast(Race race) {
-        return race == Race.HIVE;
+        return race == Race.HIVE || race == Race.ANGEL;
     }
 
     public static String of(Race race, SoldierRole role) {

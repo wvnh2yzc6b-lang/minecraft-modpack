@@ -184,6 +184,17 @@
         "Built and in the game. Left to right: human Trebuchet (a throwing arm, counterweight and red banner), elf Elder Treant Spire (a great living tree with a face in its bark), dwarf Thunder Forge (an anvil between four lightning rods, a spark crackling above), orc Waaagh Banner (a horned war standard), demon Hellgate (a black gate around a wall of fire), angel Seraphic Obelisk (a winged white obelisk with a turning golden lens), Hive Synapse Spire (a dark spire crowned with a pulsing brain-like mass).",
         "First pass from each race's palette; send references to change any of them."
       ]
+    },
+    {
+      "id": "angel-moa",
+      "race": "Angel",
+      "title": "Armored Moa (angel war beast)",
+      "status": "review",
+      "render": "angel-moa-render.png",
+      "notes": [
+        "Built and in the game. A tall flightless bird with sky-blue feathers, a gold beak and scaled legs, in white-and-gold barding with a crested helm; the Fallen Host's are gray with tarnished gilt. The figure on the left is an angel player for scale.",
+        "First pass; send references to change it."
+      ]
     }
   ]
 }

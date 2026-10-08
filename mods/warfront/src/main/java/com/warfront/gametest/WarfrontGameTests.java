@@ -1274,6 +1274,43 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void echoArmorIsHiveOnlyAndStrongerInTheDark(GameTestHelper h) {
+        Player hive = h.makeMockPlayer(GameType.SURVIVAL);
+        hive.setData(WFRegistry.RACE, Race.HIVE.id());
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        net.minecraft.world.item.ItemStack helm = new net.minecraft.world.item.ItemStack(WFRegistry.ECHO_HELMET.get());
+        h.assertTrue(!helm.canEquip(net.minecraft.world.entity.EquipmentSlot.HEAD, human), "only the Hive can wear echo armor");
+        h.assertTrue(helm.canEquip(net.minecraft.world.entity.EquipmentSlot.HEAD, hive), "a Hive player can wear echo armor");
+        hive.setItemSlot(net.minecraft.world.entity.EquipmentSlot.HEAD, helm);
+        hive.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, new net.minecraft.world.item.ItemStack(WFRegistry.ECHO_CHESTPLATE.get()));
+        hive.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, new net.minecraft.world.item.ItemStack(WFRegistry.ECHO_LEGGINGS.get()));
+        hive.setItemSlot(net.minecraft.world.entity.EquipmentSlot.FEET, new net.minecraft.world.item.ItemStack(WFRegistry.ECHO_BOOTS.get()));
+        var damage = hive.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE);
+        com.warfront.combat.EchoArmor.apply(hive, true);
+        var mod = damage.getModifier(com.warfront.Warfront.id("echo_dark_damage"));
+        h.assertTrue(mod != null && mod.amount() == 4, "four pieces in the dark should give +4 damage, got " + mod);
+        h.assertTrue(hive.hasEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION), "the full set gives night vision in the dark");
+        com.warfront.combat.EchoArmor.apply(hive, false);
+        h.assertTrue(damage.getModifier(com.warfront.Warfront.id("echo_dark_damage")) == null, "under open sky the bonus is gone");
+        h.assertTrue(com.warfront.combat.EchoArmor.muffles(hive, net.minecraft.world.level.gameevent.GameEvent.STEP)
+                && !com.warfront.combat.EchoArmor.muffles(human, net.minecraft.world.level.gameevent.GameEvent.STEP),
+                "the full set muffles a Hive player's steps");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void angelsFieldTheArmoredMoa(GameTestHelper h) {
+        Player angel = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity moa = recruit(h, angel, SoldierRole.BEAST, Race.ANGEL, 4, 4);
+        h.assertTrue(moa.getBody() == com.warfront.army.UnitBody.MOA && "Armored Moa".equals(moa.getUnitName()),
+                "the angel war beast should be the Armored Moa, was " + moa.getUnitName());
+        h.assertTrue(moa.getBbHeight() > 2F, "the Moa stands tall, height " + moa.getBbHeight());
+        h.assertTrue(com.warfront.army.UnitNames.hasBeast(Race.ANGEL), "angels have a war beast now");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

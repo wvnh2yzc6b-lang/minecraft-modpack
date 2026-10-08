@@ -47,6 +47,20 @@ public final class WFRegistry {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Warfront.MODID);
     public static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Warfront.MODID);
+    public static final DeferredRegister<net.minecraft.world.item.ArmorMaterial> ARMOR_MATERIALS =
+            DeferredRegister.create(Registries.ARMOR_MATERIAL, Warfront.MODID);
+    /** Hive echo armor: about as tough as diamond. */
+    public static final DeferredHolder<net.minecraft.world.item.ArmorMaterial, net.minecraft.world.item.ArmorMaterial> ECHO_MATERIAL =
+            ARMOR_MATERIALS.register("echo", () -> new net.minecraft.world.item.ArmorMaterial(
+                    net.minecraft.Util.make(new java.util.EnumMap<>(net.minecraft.world.item.ArmorItem.Type.class), m -> {
+                        m.put(net.minecraft.world.item.ArmorItem.Type.BOOTS, 3);
+                        m.put(net.minecraft.world.item.ArmorItem.Type.LEGGINGS, 6);
+                        m.put(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE, 8);
+                        m.put(net.minecraft.world.item.ArmorItem.Type.HELMET, 3);
+                        m.put(net.minecraft.world.item.ArmorItem.Type.BODY, 11);
+                    }), 12, net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_NETHERITE,
+                    () -> net.minecraft.world.item.crafting.Ingredient.of(net.minecraft.world.item.Items.ECHO_SHARD),
+                    java.util.List.of(new net.minecraft.world.item.ArmorMaterial.Layer(Warfront.id("echo"))), 2.0F, 0.0F));
     public static final DeferredRegister<net.minecraft.world.effect.MobEffect> MOB_EFFECTS =
             DeferredRegister.create(Registries.MOB_EFFECT, Warfront.MODID);
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.FrenzyEffect> FRENZY =
@@ -289,6 +303,16 @@ public final class WFRegistry {
         return map;
     }
 
+    public static final DeferredItem<com.warfront.combat.EchoArmor.Piece> ECHO_HELMET = echoPiece("echo_helmet", net.minecraft.world.item.ArmorItem.Type.HELMET);
+    public static final DeferredItem<com.warfront.combat.EchoArmor.Piece> ECHO_CHESTPLATE = echoPiece("echo_chestplate", net.minecraft.world.item.ArmorItem.Type.CHESTPLATE);
+    public static final DeferredItem<com.warfront.combat.EchoArmor.Piece> ECHO_LEGGINGS = echoPiece("echo_leggings", net.minecraft.world.item.ArmorItem.Type.LEGGINGS);
+    public static final DeferredItem<com.warfront.combat.EchoArmor.Piece> ECHO_BOOTS = echoPiece("echo_boots", net.minecraft.world.item.ArmorItem.Type.BOOTS);
+
+    private static DeferredItem<com.warfront.combat.EchoArmor.Piece> echoPiece(String name, net.minecraft.world.item.ArmorItem.Type type) {
+        return ITEMS.register(name, () -> new com.warfront.combat.EchoArmor.Piece(ECHO_MATERIAL, type,
+                new Item.Properties().durability(type.getDurability(33)).rarity(Rarity.RARE)));
+    }
+
     public static final DeferredItem<com.warfront.tunnel.RuneDrillItem> RUNE_DRILL = ITEMS.register("rune_drill",
             () -> new com.warfront.tunnel.RuneDrillItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<BlockItem> TROPHY_BANNER_ITEM = ITEMS.register("trophy_banner",
@@ -363,5 +387,6 @@ public final class WFRegistry {
         TABS.register(bus);
         ATTACHMENTS.register(bus);
         MOB_EFFECTS.register(bus);
+        ARMOR_MATERIALS.register(bus);
     }
 }

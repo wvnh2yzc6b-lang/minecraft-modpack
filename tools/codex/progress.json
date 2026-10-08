@@ -4,6 +4,12 @@
   "log": [
     {
       "status": "done",
+      "title": "Crossover: Armored Moa, Hive echo armor, Aether wings recipe",
+      "image": "angel-moa-render.png",
+      "detail": "Angels now have a war beast: the Armored Moa, a tall running bird in gilded barding, summoned at the altar like the Deepmaw and counted against the beast limit. It is Warfront's own creature, so it works without the Aether; with the Aether installed, each one hatches from a Moa egg you bring back from there. It strides fast, bobs its neck, flares its wings in a fight and strikes with its beak. The Hive gets echo armor: helm, carapace, greaves and treads, Hive only, about as tough as diamond, made from sculk and echo shards (or Deeper and Darker resonarium plates and a Mana Crystal when that mod is installed). In the dark, underground or anywhere in the Otherside, each piece adds +1 damage and +1 toughness; the full set gives night vision in the dark and muffles your steps and splashes so sculk sensors and wardens don't hear you walk. With the Aether installed, angel wings can also be made from Valkyrie Victory Medals and Mana Crystals; the plain recipe stays."
+    },
+    {
+      "status": "done",
       "title": "Crossover: homelands and mana fuel",
       "detail": "With The Aether or Deeper and Darker installed (Warfront still runs without them): the Aether is the angels' homeland, where they heal twice as fast and gather Radiance under its always-bright sky, and every raid there comes from the Fallen Host; the Otherside is the Hive's, where Hive units count as underground everywhere and never suffer sunlight, and every raid there comes from the Swarm. Mana Wells now burn other mods' mana-rich materials through two tags other packs can extend: shard grade (Aether Ambrosium Shards, Deeper and Darker sculk bones and soul dust) and crystal grade (Zanite Gemstones, soul crystals, resonarium, and vanilla echo shards)."
     },
@@ -200,11 +206,6 @@
       "status": "planned",
       "title": "Roadmap: dwarves dig in",
       "detail": "Dwarves get tunnels instead of flight: a Rune Drill that cuts 3x3 tunnels fast, Rune Stone walls that raiders and Hive tunnelers can't break through, and three tunnel traps: a hidden spike floor, a rune mine that only blows up enemies, and a flame vent that runs on base mana. Queued for a build session. Dwarves also get their race power, Hold the Line: standing your ground builds Resolve (more armor, harder to knock back), and at full you swear an Oath of Stone that makes you nearly immovable and ends in a shockwave. New dwarf players start at a hold gate carved into a mountain, and dwarves are deep miners: more Mana Crystals, faster stone mining, fewer Manabloom shards."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: Hive echo armor",
-      "detail": "From the Otherside, the Hive gets echo armor: stronger in the dark and underground, with quiet footsteps. Comes with the Deeper and Darker tie-in."
     },
     {
       "status": "planned",

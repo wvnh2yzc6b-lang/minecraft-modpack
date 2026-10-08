@@ -104,6 +104,10 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         return race == null ? Race.HUMAN : race;
     }
 
+    /** Items that unlock the angels' Armored Moa at the altar when the Aether is installed (its Moa eggs). */
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> MOA_UNLOCK = net.minecraft.tags.ItemTags.create(
+            com.warfront.Warfront.id("moa_unlock"));
+
     /** The outcome of a summon: a message for the player and whether a unit appeared. */
     public record Result(boolean ok, String message) {}
 
@@ -145,6 +149,13 @@ public class SummoningAltarBlockEntity extends BlockEntity {
                         + ") from a level " + baseLevel + " base." + next);
             }
         }
+        // With the Aether installed, an Armored Moa hatches from a Moa egg brought back from there.
+        ItemStack egg = ItemStack.EMPTY;
+        if (role == SoldierRole.BEAST && race == Race.ANGEL && net.neoforged.fml.ModList.get().isLoaded("aether")
+                && !player.getAbilities().instabuild) {
+            for (ItemStack s : player.getInventory().items) if (s.is(MOA_UNLOCK)) egg = s;
+            if (egg.isEmpty()) return new Result(false, "An Armored Moa hatches from a Moa egg: bring one back from the Aether.");
+        }
         int cost = role.manaCost(race);
         String key = factionKey(server.getServer());
         if (!player.getAbilities().instabuild && !ManaNetwork.draw(level, worldPosition, key, cost)) {
@@ -154,6 +165,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
 
         SoldierEntity soldier = spawnUnit(server, player, role, race, 0);
         if (soldier == null) return new Result(false, "The summoning failed.");
+        egg.shrink(1);
         com.warfront.advisor.Advisor.complete(player, com.warfront.advisor.Advisor.Step.SUMMON);
         return new Result(true, "A " + soldier.getUnitName() + " answers your summons. (" + (count + 1) + "/" + max
                 + ", -" + cost + " mana)" + (role.posted() ? " It works here; sneak + right-click it to move its post." : ""));

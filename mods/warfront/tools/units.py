@@ -933,6 +933,9 @@ def material(mat, side, x, y, w, h, pal, rng):
     g = towers.tw_material(mat, side, x, y, w, h, pal, rng)
     if g is not NotImplemented:
         return g
+    g = moa.mo_material(mat, side, x, y, w, h, pal, rng)
+    if g is not NotImplemented:
+        return g
     g = faction_trim.tr_material(mat, side, x, y, w, h, pal, rng)
     if g is not NotImplemented:
         return g
@@ -1146,8 +1149,10 @@ import faction_trim
 import glider
 import flight_gear
 import towers
+import moa
 glider.bind(dict(part=part, box=box, mirror=mirror, hexc=hexc, mix=mix, shade=shade, glow=glow))
 flight_gear.bind(dict(part=part, box=box, mirror=mirror, hexc=hexc, mix=mix, shade=shade, glow=glow, edge=edge))
+moa.bind(dict(part=part, box=box, mirror=mirror, hexc=hexc, mix=mix, shade=shade, glow=glow, edge=edge))
 towers.bind(dict(part=part, box=box, hexc=hexc, mix=mix, shade=shade, glow=glow, edge=edge))
 faction_trim.bind(dict(part=part, box=box, mirror=mirror, overlay=overlay, attach=attach, find=find, hexc=hexc, mix=mix,
                        shade=shade, glow=glow, edge=edge))
@@ -1168,8 +1173,9 @@ GLIDER_MODEL = glider.model()
 FLIGHT_MODELS = flight_gear.models()
 TOWER_MODELS = towers.models()
 RACE_TOWER_MODELS = towers.race_models()
+MOA_MODELS = moa.models()
 MODELS = [imp_impaler(), imp_firecaster(), *hive_units.models(), demon_player(), *GEAR_MODELS, *HELLKNIGHT_MODELS, *TRIM_MODELS,
-          GLIDER_MODEL, *FLIGHT_MODELS, *TOWER_MODELS, *RACE_TOWER_MODELS]
+          GLIDER_MODEL, *FLIGHT_MODELS, *TOWER_MODELS, *RACE_TOWER_MODELS, *MOA_MODELS]
 
 
 if __name__ == "__main__":
@@ -1213,6 +1219,9 @@ if __name__ == "__main__":
         for race, pal in towers.PALETTES.items():
             paint(m, f"tower_{race}", pal)
     print("painted", len(TOWER_MODELS), "towers for", len(towers.PALETTES), "races")
+    for m in MOA_MODELS:
+        for key, pal in moa.PALETTES.items():
+            paint(m, key, pal)
     for m in RACE_TOWER_MODELS:
         paint(m, f"tower_{m['race']}", towers.PALETTES[m["race"]])
     write_java(MODELS)

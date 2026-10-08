@@ -2730,6 +2730,28 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(0F, -16F, 0F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 128, 64);
     }
+    /** The angel_moa body. */
+    public static LayerDefinition angel_moa() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(22, 24).addBox(-1.5F, -12F, -1.5F, 3F, 12F, 3F).texOffs(80, 24).addBox(-2.5F, -16F, -4F, 5F, 5F, 6F).texOffs(24, 52).addBox(-1.5F, -14.5F, -8F, 3F, 2.5F, 4F).texOffs(0, 52).addBox(-2.75F, -16.5F, -4.5F, 5.5F, 2F, 5.5F).texOffs(84, 52).addBox(-2.6F, -14F, -3.5F, 0.2F, 1F, 1F).texOffs(88, 52).addBox(2.4F, -14F, -3.5F, 0.2F, 1F, 1F).texOffs(38, 52).addBox(-0.5F, -19F, -3F, 1F, 3F, 4F),
+                PartPose.offsetAndRotation(0F, 1F, -6F, 0F, 0F, 0F));
+        PartDefinition p1 = root.addOrReplaceChild("hat", CubeListBuilder.create(),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p2 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-5F, 0F, -6F, 10F, 10F, 14F).texOffs(48, 0).addBox(-5.5F, -0.5F, -5F, 11F, 6F, 11F).texOffs(34, 24).addBox(-5.6F, 5F, -5F, 11.2F, 1F, 11F).texOffs(0, 41).addBox(-4.5F, 10F, -4F, 9F, 1F, 10F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p3 = p2.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(38, 41).addBox(-3.5F, -1F, 0F, 7F, 3F, 7F),
+                PartPose.offsetAndRotation(0F, 2F, 8F, 0.5F, 0F, 0F));
+        PartDefinition p4 = root.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(92, 0).addBox(-1F, 0F, -2F, 1F, 7F, 10F),
+                PartPose.offsetAndRotation(-5F, 2F, -1F, 0.1F, 0F, 0.1F));
+        PartDefinition p5 = root.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 24).mirror().addBox(0F, 0F, -2F, 1F, 7F, 10F).mirror(false),
+                PartPose.offsetAndRotation(5F, 2F, -1F, 0.1F, 0F, -0.1F));
+        PartDefinition p6 = root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(66, 41).addBox(-1.5F, 0F, -1.5F, 3F, 6F, 3F).texOffs(78, 41).addBox(-0.75F, 6F, -0.75F, 1.5F, 7F, 1.5F).texOffs(48, 52).addBox(-2F, 13F, -3.5F, 4F, 1F, 5F),
+                PartPose.offsetAndRotation(-3F, 10F, 2F, 0F, 0F, 0F));
+        PartDefinition p7 = root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(86, 41).mirror().addBox(-1.5F, 0F, -1.5F, 3F, 6F, 3F).mirror(false).texOffs(98, 41).mirror().addBox(-0.75F, 6F, -0.75F, 1.5F, 7F, 1.5F).mirror(false).texOffs(66, 52).mirror().addBox(-2F, 13F, -3.5F, 4F, 1F, 5F).mirror(false),
+                PartPose.offsetAndRotation(3F, 10F, 2F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2800,6 +2822,7 @@ public final class UnitGeometry {
         all.put("rt_hellgate", UnitGeometry::rt_hellgate);
         all.put("rt_seraphic_obelisk", UnitGeometry::rt_seraphic_obelisk);
         all.put("rt_synapse_spire", UnitGeometry::rt_synapse_spire);
+        all.put("angel_moa", UnitGeometry::angel_moa);
         return all;
     }
 }

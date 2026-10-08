@@ -534,6 +534,9 @@ public class SoldierEntity extends PathfinderMob {
         if (entityData != null && getBody() == com.warfront.army.UnitBody.HIVE_BEAST) {
             return EntityDimensions.scalable(1.1F, 1.7F).withEyeHeight(1.45F);
         }
+        if (entityData != null && getBody() == com.warfront.army.UnitBody.MOA) {
+            return EntityDimensions.scalable(0.9F, 2.5F).withEyeHeight(2.3F);
+        }
         return super.getDefaultDimensions(pose);
     }
 

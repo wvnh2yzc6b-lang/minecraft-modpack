@@ -277,6 +277,63 @@ def charter_texture():
                        "r": hexc("d84a3a"), "G": hexc("d4a017")}), "item/village_charter.png")
 
 
+def echo_armor_assets():
+    """Hive echo armor: dark teal chitin plates with glowing cyan veins (armor layers and item icons), names, recipes."""
+    chitin, dark, hi, vein = hexc("143a44"), hexc("08191f"), hexc("2a6670"), hexc("29dfeb")
+    rnd = random.Random(77)
+    for layer in (1, 2):
+        img = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+        for x in range(64):
+            for y in range(32):
+                # Only paint the armor's UV regions (the player model's head/body/arms/legs areas).
+                in_layer1 = (y < 16 and x < 32) or (16 <= y and (x < 56))
+                in_layer2 = 16 <= y and x < 40
+                if not (in_layer1 if layer == 1 else in_layer2):
+                    continue
+                c = chitin if (x // 3 + y // 4) % 2 else hi
+                if (x + y) % 9 == 0 or (x * 7 + y * 3) % 23 == 0:
+                    c = vein
+                elif rnd.random() < 0.15:
+                    c = dark
+                img.putpixel((x, y), c)
+        save(img, f"models/armor/echo_layer_{layer}.png")
+    shapes = {
+        "echo_helmet": ["................", "................", "....CCCCCCCC....", "...CHHHVHHHHC...", "...CHCCCCCCHC...",
+                        "...CV......VC...", "...CC......CC...", "................"],
+        "echo_chestplate": ["................", "..CC......CC....", "..CHC....CHC....", "..CHHCCCCHHC....", "...CHHVHHHC.....",
+                            "...CHHHVHHC.....", "...CHVHHHHC.....", "...CHHHHVHC.....", "...CCCCCCCC....."],
+        "echo_leggings": ["................", "....CCCCCCCC....", "....CHHVHHHC....", "....CHC..CHC....", "....CVC..CHC....",
+                          "....CHC..CVC....", "....CHC..CHC....", "....CCC..CCC...."],
+        "echo_boots": ["................", "................", "................", "....CCC..CCC....", "....CVC..CHC....",
+                       "...CCHC..CHCC...", "...CHHC..CVHC...", "...CCCC..CCCC..."],
+    }
+    for name, rows in shapes.items():
+        rows = rows + ["................"] * (16 - len(rows))
+        save(sprite(rows, {"C": dark, "H": chitin, "V": vein}), f"item/{name}.png")
+        write_json(ASSETS / "models" / "item" / f"{name}.json",
+                   {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MODID}:item/{name}"}})
+    patterns = {"echo_helmet": ["ESE", "E E"], "echo_chestplate": ["E E", "ESE", "EEE"],
+                "echo_leggings": ["ESE", "E E", "E E"], "echo_boots": ["E E", "S S"]}
+    for name, pat in patterns.items():
+        shaped(name, pat, {"E": "minecraft:sculk", "S": "minecraft:echo_shard"}, f"warfront:{name}")
+        # With Deeper and Darker: its resonarium plates and a Mana Crystal instead.
+        write_json(DATA / MODID / "recipe" / f"{name}_deeperdarker.json", {
+            "neoforge:conditions": [{"type": "neoforge:mod_loaded", "modid": "deeperdarker"}],
+            "type": "minecraft:crafting_shaped", "category": "equipment",
+            "pattern": [r.replace("S", "C") for r in pat],
+            "key": {"E": {"item": "deeperdarker:resonarium_plate"}, "C": {"item": "warfront:mana_crystal"}},
+            "result": {"id": f"warfront:{name}", "count": 1}})
+    # Angel wings from the Aether's Valkyrie loot, when the Aether is installed.
+    write_json(DATA / MODID / "recipe" / "angel_wings_aether.json", {
+        "neoforge:conditions": [{"type": "neoforge:mod_loaded", "modid": "aether"}],
+        "type": "minecraft:crafting_shaped", "category": "equipment", "pattern": ["V V", "CVC", "C C"],
+        "key": {"V": {"item": "aether:victory_medal"}, "C": {"item": "warfront:mana_crystal"}},
+        "result": {"id": "warfront:angel_wings", "count": 1}})
+    opt = lambda i: {"id": i, "required": False}
+    write_json(DATA / MODID / "tags" / "item" / "moa_unlock.json", {"replace": False, "values": [
+        opt("aether:blue_moa_egg"), opt("aether:white_moa_egg"), opt("aether:black_moa_egg")]})
+
+
 def hammer_texture():
     """Mason's Hammer, carried by builders: a squared iron head on a wrapped wooden haft."""
     rows = [
@@ -884,6 +941,10 @@ def lang():
         "effect.warfront.corroded": "Corroded",
         **{f"block.warfront.{t}": v[1] for t, v in RACE_TOWERS.items()},
         "item.warfront.village_charter": "Village Charter",
+        "item.warfront.echo_helmet": "Echo Helm",
+        "item.warfront.echo_chestplate": "Echo Carapace",
+        "item.warfront.echo_leggings": "Echo Greaves",
+        "item.warfront.echo_boots": "Echo Treads",
         "key.warfront.race_power": "Race power (Rally, Oath, Judgment, Swarm)",
         "item.warfront.mana_glider": "Mana Glider",
         "item.warfront.rocket_pack": "Orc Rocket Pack",
@@ -1668,6 +1729,7 @@ if __name__ == "__main__":
     glider_texture()
     flight_textures()
     charter_texture()
+    echo_armor_assets()
     block_textures()
     soldier_skins()
     models_and_states()

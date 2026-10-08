@@ -13,7 +13,9 @@ public enum UnitBody {
     /** Goblins, the orcs' farmers and builders: small, long-eared humanoids on the player rig. */
     GOBLIN(-0.3, 0.85, 1.1, false),
     /** The Hive's war beast: a lobster centaur on eight legs, about player height and two and a half blocks long. */
-    HIVE_BEAST(0.25, 1.0, 0.9, false);
+    HIVE_BEAST(0.25, 1.0, 0.9, false),
+    /** The angels' war beast: an armored Moa, a tall flightless bird in gilded barding; fast on its feet. */
+    MOA(0.0, 1.0, 1.25, false);
 
     /** Added to the SCALE attribute (multiplied by base), on top of the race's size. */
     public final double scale;
@@ -36,6 +38,7 @@ public enum UnitBody {
             case IMP -> role == SoldierRole.ARCHER ? "imp_firecaster" : "imp_impaler";
             case LANCER -> "hive_lancer";
             case HIVE_BEAST -> "hive_beast";
+            case MOA -> "angel_moa";
             case GOBLIN -> "goblin";
         };
     }
@@ -50,6 +53,7 @@ public enum UnitBody {
         if (race == Race.DEMON && (role == SoldierRole.SPEARMAN || role == SoldierRole.ARCHER)) return IMP;
         if (race == Race.HIVE && role == SoldierRole.SPEARMAN) return LANCER;
         if (race == Race.HIVE && role == SoldierRole.BEAST) return HIVE_BEAST;
+        if (race == Race.ANGEL && role == SoldierRole.BEAST) return MOA;
         if (race == Race.ORC && role.worker()) return GOBLIN;
         return HUMANOID;
     }

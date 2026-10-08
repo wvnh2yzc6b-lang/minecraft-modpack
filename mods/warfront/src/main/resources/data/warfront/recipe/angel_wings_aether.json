@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "aether"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "V V",
+    "CVC",
+    "C C"
+  ],
+  "key": {
+    "V": {
+      "item": "aether:victory_medal"
+    },
+    "C": {
+      "item": "warfront:mana_crystal"
+    }
+  },
+  "result": {
+    "id": "warfront:angel_wings",
+    "count": 1
+  }
+}

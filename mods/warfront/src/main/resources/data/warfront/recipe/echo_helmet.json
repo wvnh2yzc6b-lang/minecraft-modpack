@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ESE",
+    "E E"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:sculk"
+    },
+    "S": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "result": {
+    "id": "warfront:echo_helmet",
+    "count": 1
+  }
+}

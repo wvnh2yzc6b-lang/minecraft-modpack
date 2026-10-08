@@ -41,10 +41,11 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
     public SoldierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SoldierModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5F);
         for (String id : com.warfront.client.model.UnitGeometry.all().keySet()) {
-            var part = id.startsWith("imp") || id.startsWith("hive_") ? ctx.bakeLayer(WFModelLayers.of(id)) : null;
+            var part = id.startsWith("imp") || id.startsWith("hive_") || id.equals("angel_moa") ? ctx.bakeLayer(WFModelLayers.of(id)) : null;
             if (id.startsWith("imp")) creatures.put(id, new CreatureRenderer<>(ctx, new ImpModel(part), 0.35F, id));
             else if (id.equals("hive_lancer")) creatures.put(id, new CreatureRenderer<>(ctx, new LancerModel(part), 0.5F, id));
             else if (id.equals("hive_beast")) creatures.put(id, new CreatureRenderer<>(ctx, new HiveBeastModel(part), 1.0F, id));
+            else if (id.equals("angel_moa")) creatures.put(id, new CreatureRenderer<>(ctx, new com.warfront.client.model.MoaModel(part), 0.8F, id));
         }
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),

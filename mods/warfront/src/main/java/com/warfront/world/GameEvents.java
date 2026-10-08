@@ -300,6 +300,14 @@ public final class GameEvents {
         }
     }
 
+    /** The full Hive echo armor set muffles footsteps and splashes: sculk sensors and wardens don't hear them. */
+    @SubscribeEvent
+    public static void onVanillaGameEvent(net.neoforged.neoforge.event.VanillaGameEvent event) {
+        if (event.getCause() instanceof LivingEntity e && com.warfront.combat.EchoArmor.muffles(e, event.getVanillaEvent())) {
+            event.setCanceled(true);
+        }
+    }
+
     /** A rocket dive lands without fall damage, in a shockwave. */
     @SubscribeEvent
     public static void onFall(net.neoforged.neoforge.event.entity.living.LivingFallEvent event) {
@@ -358,6 +366,7 @@ public final class GameEvents {
                 com.warfront.combat.Valor.secondTick(player);
                 if (Race.of(player) == Race.ANGEL) com.warfront.combat.Radiance.tickSecond(player);
                 com.warfront.combat.SwarmCall.secondTick(player);
+                com.warfront.combat.EchoArmor.secondTick(player);
             }
             com.warfront.combat.SwarmCall.tick(server);
             Summons.tick(server);

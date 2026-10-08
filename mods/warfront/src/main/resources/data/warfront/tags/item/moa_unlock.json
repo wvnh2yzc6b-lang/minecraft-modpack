@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "aether:blue_moa_egg",
+      "required": false
+    },
+    {
+      "id": "aether:white_moa_egg",
+      "required": false
+    },
+    {
+      "id": "aether:black_moa_egg",
+      "required": false
+    }
+  ]
+}

@@ -64,21 +64,6 @@
       ]
     },
     {
-      "id": "crossover-flight-beasts",
-      "status": "ready",
-      "title": "Crossover: Aether wings recipe and Moa, Otherside echo armor",
-      "decided": "Owner, 2026-10-07: replace Twilight Forest with The Aether and Deeper and Darker, and cross them over with Warfront (all four crossovers).",
-      "spec": [
-        "Optional integration like Iron's Spells: check ModList.isLoaded and use tags/registry lookups by id, no hard dependency; Warfront must still load and pass tests without either mod.",
-        "Angel wings (mechanics from the angel-wings item): add an Aether recipe from boss loot (Valkyrie or Sun Spirit drops) plus Mana Crystals when the Aether is loaded; the vanilla fallback recipe stays.",
-        "Angel war beast: an armored Moa, summoned at the altar like the Deepmaw (counts against beastLimit); own model in Warfront, not the Aether's entity, so it works without the Aether. Its altar unlock needs an Aether item when the Aether is loaded.",
-        "Hive echo armor (owner, 2026-10-07): a 4-piece set, Hive players only, crafted from Deeper and Darker echo materials plus Mana Crystals; without that mod, a fallback recipe from echo shards and sculk.",
-        "Bonuses through vanilla attributes/effects: armor about diamond level; each piece adds damage and toughness when the wearer is in darkness or underground (no sky, low light); the full set gives quieter steps (sculk sensors and wardens ignore walking, the vibration-dampening tag behaviour) and short night vision in caves.",
-        "Placeholder look: dark teal chitin plates with cyan vein glow, generated like the other textures; the final look follows the Hive player reference.",
-        "Game tests: the set's dark bonus applies underground and not under open sky; non-Hive players can't equip it."
-      ]
-    },
-    {
       "id": "crossover-outposts",
       "status": "ready",
       "title": "Crossover: outposts in the Aether and the Otherside",
