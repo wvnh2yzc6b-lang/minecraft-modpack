@@ -75,6 +75,8 @@ public final class Radiance {
     /** Daylight with open sky above and no rain. */
     public static boolean sunlit(LivingEntity e) {
         BlockPos head = BlockPos.containing(e.getEyePosition());
+        // The Aether, the angels' homeland, is always bright under its open sky.
+        if (com.warfront.world.Homelands.isAether(e.level())) return e.level().canSeeSky(head);
         return e.level().isDay() && e.level().canSeeSky(head) && !e.level().isRainingAt(head);
     }
 

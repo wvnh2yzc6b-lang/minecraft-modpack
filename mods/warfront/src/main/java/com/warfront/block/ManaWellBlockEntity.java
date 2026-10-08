@@ -63,9 +63,15 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
         super(WFRegistry.MANA_WELL_BE.get(), pos, state);
     }
 
+    /** Other mods' mana-rich materials (the Aether's, Deeper and Darker's), worth a shard or a crystal. */
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> SHARD_GRADE = net.minecraft.tags.ItemTags.create(
+            com.warfront.Warfront.id("mana_fuel/shard_grade"));
+    public static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> CRYSTAL_GRADE = net.minecraft.tags.ItemTags.create(
+            com.warfront.Warfront.id("mana_fuel/crystal_grade"));
+
     public static float fuelValue(ItemStack stack) {
-        if (stack.is(WFRegistry.MANA_SHARD.get())) return SHARD_MANA;
-        if (stack.is(WFRegistry.MANA_CRYSTAL.get())) return CRYSTAL_MANA;
+        if (stack.is(WFRegistry.MANA_SHARD.get()) || stack.is(SHARD_GRADE)) return SHARD_MANA;
+        if (stack.is(WFRegistry.MANA_CRYSTAL.get()) || stack.is(CRYSTAL_GRADE)) return CRYSTAL_MANA;
         return 0F;
     }
 

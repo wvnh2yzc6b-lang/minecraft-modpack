@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:echo_shard",
+    {
+      "id": "aether:zanite_gemstone",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:soul_crystal",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:resonarium",
+      "required": false
+    }
+  ]
+}

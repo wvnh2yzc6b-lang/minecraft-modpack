@@ -346,7 +346,9 @@ public final class GameEvents {
         MinecraftServer server = event.getServer();
         if (server.getTickCount() % 60 == 0) {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                if (Race.of(player) == Race.ANGEL && player.getHealth() < player.getMaxHealth()) player.heal(1F);
+                if (Race.of(player) == Race.ANGEL && player.getHealth() < player.getMaxHealth()) {
+                    player.heal(Homelands.isAether(player.level()) ? 2F : 1F);   // home in the Aether: heal twice as fast
+                }
                 if (Race.of(player) == Race.HIVE) HiveAdaptation.apply(player, 80);
             }
         }

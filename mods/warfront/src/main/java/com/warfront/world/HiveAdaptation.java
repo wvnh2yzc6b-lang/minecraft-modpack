@@ -28,13 +28,14 @@ public final class HiveAdaptation {
 
     public static boolean underground(LivingEntity e) {
         BlockPos p = e.blockPosition();
-        return p.getY() < DEPTH || e.level().getBrightness(LightLayer.SKY, p) == 0;
+        // The Otherside (Deeper and Darker) is the Hive's homeland: underground everywhere.
+        return Homelands.isOtherside(e.level()) || p.getY() < DEPTH || e.level().getBrightness(LightLayer.SKY, p) == 0;
     }
 
     public static boolean inSunlight(LivingEntity e) {
         Level level = e.level();
         BlockPos eyes = BlockPos.containing(e.getX(), e.getEyeY(), e.getZ());
-        return level.dimensionType().hasSkyLight() && level.isDay() && !level.isRaining() && level.canSeeSky(eyes);
+        return !Homelands.isOtherside(level) && level.dimensionType().hasSkyLight() && level.isDay() && !level.isRaining() && level.canSeeSky(eyes);
     }
 
     /** Refreshes the underground or sunlight effects for the next {@code duration} ticks. */

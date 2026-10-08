@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "aether:ambrosium_shard",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:sculk_bone",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:soul_dust",
+      "required": false
+    }
+  ]
+}

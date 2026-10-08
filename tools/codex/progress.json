@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Crossover: homelands and mana fuel",
+      "detail": "With The Aether or Deeper and Darker installed (Warfront still runs without them): the Aether is the angels' homeland, where they heal twice as fast and gather Radiance under its always-bright sky, and every raid there comes from the Fallen Host; the Otherside is the Hive's, where Hive units count as underground everywhere and never suffer sunlight, and every raid there comes from the Swarm. Mana Wells now burn other mods' mana-rich materials through two tags other packs can extend: shard grade (Aether Ambrosium Shards, Deeper and Darker sculk bones and soul dust) and crystal grade (Zanite Gemstones, soul crystals, resonarium, and vanilla echo shards)."
+    },
+    {
+      "status": "done",
       "title": "Pack: The Aether and Deeper and Darker in, Twilight Forest out",
       "detail": "The mod list now names the Aether by its real Modrinth id (it was missing from the pack before) and adds Deeper and Darker; The Twilight Forest is gone from the pack description. The CI pack report confirms what resolved."
     },

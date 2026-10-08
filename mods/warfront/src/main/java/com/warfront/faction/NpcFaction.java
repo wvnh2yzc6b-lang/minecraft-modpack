@@ -69,6 +69,9 @@ public enum NpcFaction {
     /** Picks an attacking faction, strongly favouring those whose homeland is this biome. */
     public static NpcFaction pick(Holder<Biome> biome, Level level, RandomSource random) {
         if (level.dimension() == Level.NETHER) return BURNING_HORDE;
+        // The Aether and the Otherside (optional mods) belong to the Fallen Host and the Swarm.
+        NpcFaction home = com.warfront.world.Homelands.homeFaction(level.dimension().location());
+        if (home != null) return home;
         int[] weights = new int[values().length];
         int total = 0;
         for (NpcFaction f : values()) {

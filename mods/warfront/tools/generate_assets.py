@@ -1247,6 +1247,12 @@ def tunnel_assets():
             {"rolls": 1, "bonus_rolls": 0, "entries": [entry], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
             "random_sequence": f"{MODID}:blocks/{b}"})
     write_json(DATA / MODID / "tags" / "entity_type" / "smite_bonus.json", {"replace": False, "values": []})
+    # Mana fuel from other mods (optional entries: fine when the mod is missing). Echo shards count as crystal grade.
+    opt = lambda i: {"id": i, "required": False}
+    write_json(DATA / MODID / "tags" / "item" / "mana_fuel" / "shard_grade.json", {"replace": False, "values": [
+        opt("aether:ambrosium_shard"), opt("deeperdarker:sculk_bone"), opt("deeperdarker:soul_dust")]})
+    write_json(DATA / MODID / "tags" / "item" / "mana_fuel" / "crystal_grade.json", {"replace": False, "values": [
+        "minecraft:echo_shard", opt("aether:zanite_gemstone"), opt("deeperdarker:soul_crystal"), opt("deeperdarker:resonarium")]})
     write_json(DATA / MODID / "tags" / "block" / "raider_unbreakable.json",
                {"replace": False, "values": [f"{MODID}:{b}" for b in RUNE_FAMILY]})
     for kind, b in (("stairs", "rune_stone_stairs"), ("slabs", "rune_stone_slab"), ("walls", "rune_stone_wall")):

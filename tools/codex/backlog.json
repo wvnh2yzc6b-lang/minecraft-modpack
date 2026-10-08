@@ -64,19 +64,6 @@
       ]
     },
     {
-      "id": "crossover-homelands-mana",
-      "status": "ready",
-      "title": "Crossover: homelands and mana fuel",
-      "decided": "Owner, 2026-10-07: replace Twilight Forest with The Aether and Deeper and Darker, and cross them over with Warfront (all four crossovers).",
-      "spec": [
-        "Optional integration like Iron's Spells: check ModList.isLoaded and use tags/registry lookups by id, no hard dependency; Warfront must still load and pass tests without either mod.",
-        "Homelands: angels get the race's 'home' bonus in the Aether dimension (aether:the_aether) and the Hive gets its underground bonus everywhere in the Otherside (deeperdarker:otherside), sunlight weakness never applies there. Add a dimension check next to the existing Hive underground logic.",
-        "Raids: Fallen Host warbands spawn freely in the Aether, Swarm warbands in the Otherside (NpcFaction homeland predicates take the dimension too). Overworld sieges are unchanged.",
-        "Mana: new item tags warfront:mana_fuel/shard_grade and crystal_grade, filled optionally with Aether Ambrosium Shard (shard grade) and Zanite Gemstone (crystal grade), and Deeper and Darker sculk bone / echo-type materials (pick real item ids from the mod's registry at build time). Mana Wells accept anything in the tags. Use tag entries with required:false so missing mods are fine.",
-        "Game tests can't load the other mods: test the tag path with a vanilla item added to the tag in a test datapack, and the dimension check via a helper."
-      ]
-    },
-    {
       "id": "crossover-flight-beasts",
       "status": "ready",
       "title": "Crossover: Aether wings recipe and Moa, Otherside echo armor",

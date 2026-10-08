@@ -1259,6 +1259,21 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void homelandsAndForeignManaFuel(GameTestHelper h) {
+        h.assertTrue(com.warfront.world.Homelands.homeFaction(com.warfront.world.Homelands.AETHER) == com.warfront.faction.NpcFaction.FALLEN_HOST,
+                "the Aether belongs to the Fallen Host");
+        h.assertTrue(com.warfront.world.Homelands.homeFaction(com.warfront.world.Homelands.OTHERSIDE) == com.warfront.faction.NpcFaction.THE_SWARM,
+                "the Otherside belongs to the Swarm");
+        h.assertTrue(com.warfront.world.Homelands.homeFaction(net.minecraft.world.level.Level.OVERWORLD.location()) == null
+                && !com.warfront.world.Homelands.isOtherside(h.getLevel()), "the Overworld is nobody's homeland");
+        h.assertTrue(ManaWellBlockEntity.fuelValue(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ECHO_SHARD))
+                == ManaWellBlockEntity.CRYSTAL_MANA, "anything tagged crystal-grade mana fuel burns like a Mana Crystal");
+        h.assertTrue(ManaWellBlockEntity.fuelValue(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIRT)) == 0F,
+                "dirt is not mana fuel");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);
