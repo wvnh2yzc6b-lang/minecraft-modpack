@@ -99,8 +99,9 @@ public final class Valor {
         if (current(p) < MAX || !(p.level() instanceof ServerLevel level)) return -1;
         set(p, 0);
         double r = radius(p);
-        List<LivingEntity> allies = level.getEntitiesOfClass(LivingEntity.class, p.getBoundingBox().inflate(r),
-                e -> e.isAlive() && e.distanceTo(p) <= r && (e == p || Factions.relation(p, e) == Relation.ALLY));
+        List<LivingEntity> allies = new java.util.ArrayList<>(level.getEntitiesOfClass(LivingEntity.class, p.getBoundingBox().inflate(r),
+                e -> e != p && e.isAlive() && e.distanceTo(p) <= r && Factions.relation(p, e) == Relation.ALLY));
+        allies.add(p);
         for (LivingEntity e : allies) {
             e.heal(e.getMaxHealth() * HEAL);
             e.addEffect(new MobEffectInstance(WFRegistry.RALLIED, RALLY_TICKS, 0));
