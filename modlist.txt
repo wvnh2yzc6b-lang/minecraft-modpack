@@ -54,7 +54,8 @@ yungs-extras
 towns-and-towers
 explorify
 dungeons-and-taverns
-the-aether
+aether
+deeperdarker
 
 # --- World generation ------------------------------------------------------
 terralith

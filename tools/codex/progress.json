@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Pack: The Aether and Deeper and Darker in, Twilight Forest out",
+      "detail": "The mod list now names the Aether by its real Modrinth id (it was missing from the pack before) and adds Deeper and Darker; The Twilight Forest is gone from the pack description. The CI pack report confirms what resolved."
+    },
+    {
+      "status": "done",
       "title": "Race towers, wave 3: the seven level 5 capstones",
       "image": "race-towers-l5-render.png",
       "detail": "Each race's capstone needs a level 5 base, and a base holds only one of each (they count toward the race-tower cap). Human Trebuchet: a boulder from up to 48 blocks with splash damage and no block damage; with no enemy in range it batters an enemy siege outpost, knocking out its walls, and four hits bring the outpost down and spill its raid chest. Elf Elder Treant Spire: at each siege wave it wakes a huge Elder Treant that fights until the wave ends. Dwarf Thunder Forge: chain lightning that leaps between up to five enemies. Orc Waaagh Banner: every orc unit within 16 blocks starts each siege wave in a Frenzy. Demon Hellgate: opens each wave by loosing two Imp Impalers and two Imp Firecasters, gone when the wave ends. Angel Seraphic Obelisk: a pillar of light on the strongest enemy in range (20 damage, half again to the unholy). Hive Synapse Spire: pulses confusion, and enemies in range turn on each other for a moment. Wave summons never count toward your army or beast limit and drop nothing."

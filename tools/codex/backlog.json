@@ -64,17 +64,6 @@
       ]
     },
     {
-      "id": "pack-aether-deeperdarker",
-      "status": "ready",
-      "title": "Pack: The Aether and Deeper and Darker in, Twilight Forest out",
-      "decided": "Owner, 2026-10-07: replace Twilight Forest with The Aether and Deeper and Darker, and cross them over with Warfront (all four crossovers).",
-      "spec": [
-        "modlist.txt: the Aether is listed as 'the-aether' but its Modrinth slug is 'aether': fix it (check pack-report.md from CI to confirm it resolves). Add 'deeperdarker'. Both have NeoForge 1.21.1 builds (Aether 1.5.x, Deeper and Darker 1.4.x).",
-        "README.md: drop The Twilight Forest from Bundled mods, add Deeper and Darker.",
-        "Modrinth is blocked from the cloud container: rely on the CI pack build and its report."
-      ]
-    },
-    {
       "id": "crossover-homelands-mana",
       "status": "ready",
       "title": "Crossover: homelands and mana fuel",
@@ -104,10 +93,9 @@
     },
     {
       "id": "crossover-outposts",
-      "status": "blocked",
+      "status": "ready",
       "title": "Crossover: outposts in the Aether and the Otherside",
       "decided": "Owner, 2026-10-07: replace Twilight Forest with The Aether and Deeper and Darker, and cross them over with Warfront (all four crossovers).",
-      "blocked_on": "siege-outposts must be built first.",
       "spec": [
         "Optional integration like Iron's Spells: check ModList.isLoaded and use tags/registry lookups by id, no hard dependency; Warfront must still load and pass tests without either mod.",
         "Reuse the siege outpost structures and raid chests as world structures: Fallen Host fort-sized outposts on Aether islands, Swarm outposts in Otherside caverns.",

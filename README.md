@@ -160,7 +160,7 @@ All numbers (army cap, siege frequency, warband chance, tower range, friendly fi
 Performance (Sodium, Iris, Lithium, FerriteCore, ModernFix, EntityCulling), magic (Iron's Spells
 'n Spellbooks, Ars Nouveau, Occultism, Apothic Enchanting, Artifacts), combat (Better Combat,
 Simply Swords, Epic Knights), adventure (When Dungeons Arise, the YUNG's suite, Towns and Towers,
-Repurposed Structures, Explorify, Dungeons and Taverns, The Aether, The Twilight Forest), world
+Repurposed Structures, Explorify, Dungeons and Taverns, The Aether, Deeper and Darker), world
 generation (Terralith, Tectonic), and QoL (JEI, Jade, Xaero's maps, Waystones, Sophisticated
 Backpacks, Corpse). See `modlist.txt` for the exact list. Each CI run's `pack-report.md` lists
 anything that failed to resolve.
