@@ -62,6 +62,7 @@ public final class GameEvents {
         com.warfront.outpost.Outposts.clearAll();
         com.warfront.flight.Rocketry.clearAll();
         com.warfront.combat.Radiance.clearAll();
+        com.warfront.racetower.RaceTowers.clearAll();
         com.warfront.war.Campaign.clearAll();
         com.warfront.fortress.Warlords.clearAll();
         com.warfront.fortress.TrophyBannerBlockEntity.clearAll();
@@ -236,6 +237,7 @@ public final class GameEvents {
             com.warfront.fortress.Warlords.died(raider, event.getSource().getEntity());
             com.warfront.war.Campaign.raiderDied(raider);
         }
+        com.warfront.racetower.RaceTowers.onDeath(victim);
         if (event.getSource().getEntity() instanceof LivingEntity anyKiller) {
             com.warfront.combat.Valor.creditKill(anyKiller, victim);
             com.warfront.combat.SwarmCall.creditKill(anyKiller, victim);

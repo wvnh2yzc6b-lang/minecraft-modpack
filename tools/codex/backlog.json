@@ -64,25 +64,6 @@
       ]
     },
     {
-      "id": "race-towers-l2",
-      "status": "ready",
-      "title": "Race towers, wave 1: the system plus the seven level 2 towers",
-      "decided": "Owner, 2026-10-07: 3 race towers per race (base level 2, 3, 5), own race only, race towers capped by base level, capstones 1 each.",
-      "spec": [
-        "System: a RaceTower base (block + block entity) with race, unlock level and cap group. Placement checks: placer's race matches, the base on that mana network is at the unlock level, and the race-tower cap isn't reached (2/4/6/10 for base levels 2-5; capstones max 1 each). Refuse with a toast (ui-foundation) or action-bar message saying why.",
-        "Count placed race towers per base (stored with the base data); breaking one frees the slot. Losing base level doesn't remove towers, but blocks new ones over the cap.",
-        "Human: Ballista: long-range bolt that pierces a line of enemies; bonus damage to beasts and large mobs.",
-        "Elf: Thornwood Sentinel: roots the nearest enemies in vines (heavy slow, short root) and marks them Glowing so archers focus them.",
-        "Dwarf: Rune Cannon: slow heavy shot, splash damage on impact, no block damage.",
-        "Orc: War Drum Totem: support: orc units within 12 blocks gain Rage faster; each drum beat has a chance to make nearby enemies flee briefly.",
-        "Demon: Soul Pyre: sets enemies on fire; kills near it charge it, and at 10 charges it unleashes a fire burst.",
-        "Angel: Sun Lance: holy beam; strong by day with open sky, weak at night; bonus damage to demons, Hive and undead.",
-        "Hive: Lurker Pit: hidden in the ground until enemies come close, then ambushes with acid that lowers armor; stronger underground.",
-        "Every race tower is a block entity on the base mana network like the existing towers (draws mana per shot or pulse; no mana, no effect) and reuses the tower friend-or-foe targeting. Placeholder models are generated and styled in the race palette, following the tower-models item; final looks can follow references later. Numbers live in config. Codex: a render and a one-line description per tower.",
-        "Game tests: wrong race can't place; under-level base can't place; cap enforced; each tower acts only with mana; one effect test per tower (assert on a counter or state)."
-      ]
-    },
-    {
       "id": "race-towers-l3",
       "status": "ready",
       "title": "Race towers, wave 2: the seven level 3 towers",

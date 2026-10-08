@@ -153,6 +153,8 @@ public class TestPanelScreen extends Screen {
                 hasShiftDown() ? List.of("base", "camp", "rescue") : List.of("base", "camp")))))
                 .setTooltip(Tooltip.create(Component.literal("Builds a raider camp 30 blocks ahead, with a bounty for it. Sneak-click for one holding a captive.")));
         send(2, 4, "Merchant", "base", "merchant");
+        send(1, 3, "Race towers", "base", "towers")
+                .setTooltip(Tooltip.create(Component.literal("Two of every race tower. Set a TEST base level to place them.")));
         send(0, 3, "Starter base", "base", "starter")
                 .setTooltip(Tooltip.create(Component.literal("Clears a flat spot in front of you and builds a Mana Well, two Pylons, "
                         + "a Summoning Altar, a War Standard and an Arrow Tower.")));

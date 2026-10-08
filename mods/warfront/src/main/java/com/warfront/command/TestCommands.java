@@ -68,6 +68,7 @@ public final class TestCommands {
                                 .executes(ctx -> run(ctx, "base", "level", num(ctx, "level")))))
                         .then(simple("fill", "base", "fill"))
                         .then(simple("traps", "base", "traps"))
+                        .then(simple("towers", "base", "towers"))
                         .then(Commands.literal("infinite")
                                 .then(simple("on", "base", "infinite", "on"))
                                 .then(simple("off", "base", "infinite", "off")))

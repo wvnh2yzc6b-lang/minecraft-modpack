@@ -810,6 +810,15 @@ def effect_icons():
         img.putpixel((x, y), hexc("b8231a"))
     save(img, "mob_effect/rallied.png")
 
+    # Corroded: green acid drops eating a gray plate.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    for x in range(3, 15):
+        for y in range(4, 14):
+            img.putpixel((x, y), hexc("7a8088") if (x + y) % 5 else hexc("5a6068"))
+    for x, y in ((5, 3), (5, 4), (6, 5), (10, 6), (10, 7), (11, 8), (8, 10), (8, 11), (9, 12), (12, 11), (12, 12)):
+        img.putpixel((x, y), hexc("7fd02a"))
+    save(img, "mob_effect/corroded.png")
+
     # Rank chevron: a light plate with a darker rim, tinted to the race's color when drawn.
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for x in range(16):
@@ -872,6 +881,8 @@ def lang():
         "effect.warfront.frenzy": "Frenzy",
         "effect.warfront.oath_of_stone": "Oath of Stone",
         "effect.warfront.rallied": "Rallied",
+        "effect.warfront.corroded": "Corroded",
+        **{f"block.warfront.{t}": v[1] for t, v in RACE_TOWERS.items()},
         "item.warfront.village_charter": "Village Charter",
         "key.warfront.race_power": "Race power (Rally, Oath, Judgment, Swarm)",
         "item.warfront.mana_glider": "Mana Glider",
@@ -981,7 +992,8 @@ def loot_and_tags():
             "random_sequence": f"{MODID}:blocks/{b}"})
     ores = ["mana_ore", "deepslate_mana_ore"]
     write_json(DATA / "minecraft" / "tags" / "block" / "mineable" / "pickaxe.json",
-               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:8] + ores + TUNNEL_BLOCKS]})
+               {"replace": False, "values": [f"{MODID}:{b}" for b in blocks[:3] + blocks[4:8] + ores + TUNNEL_BLOCKS
+                                             + list(RACE_TOWERS)]})
     # Floors a summoning altar can stand on: any brick or stone-brick block, so every race can build in its style.
     write_json(DATA / MODID / "tags" / "block" / "altar_base.json", {"replace": False, "values": [
         "#minecraft:stone_bricks", "minecraft:polished_blackstone_bricks", "minecraft:cracked_polished_blackstone_bricks",
@@ -1256,6 +1268,43 @@ def tunnel_assets():
     shaped("village_charter", ["P", "W"], {"P": "minecraft:paper", "W": "minecraft:honeycomb"}, "warfront:village_charter")
     shaped("rune_drill", ["CDC", " I ", " I "], {"C": "warfront:mana_crystal", "D": "minecraft:diamond_pickaxe",
                                                  "I": "minecraft:iron_ingot"}, "warfront:rune_drill")
+
+
+# --------------------------------------------------------------------------- race towers
+
+# id: (race, name, plinth stone, mortar, signature ingredient)
+RACE_TOWERS = {
+    "ballista": ("human", "Ballista", "9a9a96", "6c6c68", "minecraft:crossbow"),
+    "thornwood_sentinel": ("elf", "Thornwood Sentinel", "b8c4a0", "7f8c68", "minecraft:sweet_berries"),
+    "rune_cannon": ("dwarf", "Rune Cannon", "5a5f66", "3a3e44", "minecraft:iron_block"),
+    "war_drum_totem": ("orc", "War Drum Totem", "6b6a5a", "45443a", "minecraft:leather"),
+    "soul_pyre": ("demon", "Soul Pyre", "3a2e2e", "1e1616", "minecraft:soul_soil"),
+    "sun_lance": ("angel", "Sun Lance", "eeeae0", "c8c2b0", "minecraft:gold_block"),
+    "lurker_pit": ("hive", "Lurker Pit", "1f3f44", "102528", "minecraft:sculk"),
+}
+
+
+def race_tower_assets():
+    """Plinth blocks for the race towers (the 3D tower is drawn on top by RaceTowerRenderer), names, loot, recipes."""
+    for i, (tid, (race, name, stone, mortar, sig)) in enumerate(RACE_TOWERS.items()):
+        if tid == "lurker_pit":
+            # Hidden in the ground: it looks like the floor around it.
+            img = Image.new("RGBA", (16, 16))
+            noise_fill(img, hexc("2a2f2e"), 0.18, 300 + i)
+            for x, y in ((3, 4), (11, 6), (6, 11), (12, 12)):
+                img.putpixel((x, y), hexc("3fd8d0"))
+        else:
+            img = brick_face(hexc(stone), hexc(mortar), 300 + i)
+        save(img, f"block/{tid}.png")
+        write_json(ASSETS / "blockstates" / f"{tid}.json", {"variants": {"": {"model": f"{MODID}:block/{tid}"}}})
+        write_json(ASSETS / "models" / "block" / f"{tid}.json", {"parent": "minecraft:block/cube_all",
+                                                                 "textures": {"all": f"{MODID}:block/{tid}"}})
+        write_json(ASSETS / "models" / "item" / f"{tid}.json", {"parent": f"{MODID}:block/{tid}"})
+        write_json(DATA / MODID / "loot_table" / "blocks" / f"{tid}.json", {"type": "minecraft:block", "pools": [
+            {"rolls": 1, "bonus_rolls": 0, "entries": [{"type": "minecraft:item", "name": f"{MODID}:{tid}"}],
+             "conditions": [{"condition": "minecraft:survives_explosion"}]}], "random_sequence": f"{MODID}:blocks/{tid}"})
+        shaped(tid, ["SCS", "SMS", "SSS"], {"S": "minecraft:stone_bricks", "C": "warfront:mana_crystal", "M": sig},
+               f"warfront:{tid}")
 
 
 # --------------------------------------------------------------------------- mana infrastructure
@@ -1611,4 +1660,5 @@ if __name__ == "__main__":
     recipes()
     loot_and_tags()
     tunnel_assets()
+    race_tower_assets()
     print("Generated assets in", ROOT)

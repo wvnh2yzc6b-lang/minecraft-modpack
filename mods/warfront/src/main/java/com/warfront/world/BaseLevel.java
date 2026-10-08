@@ -109,6 +109,7 @@ public final class BaseLevel {
                 if (be instanceof TowerBlockEntity tower) key = tower.factionKey(server);
                 else if (be instanceof SummoningAltarBlockEntity altar && altar.hasOwner()) key = altar.factionKey(server);
                 else if (be instanceof WarStandardBlockEntity standard) key = standard.factionKey(server);
+                else if (be instanceof com.warfront.racetower.RaceTowerBlockEntity raceTower) key = raceTower.factionKey(server);
                 else continue;
                 if (Factions.relation(server, factionKey, key) != Relation.ALLY || !inReach(nodes, be.getBlockPos(), reachSq)) continue;
                 if (be instanceof WarStandardBlockEntity standard) waves = Math.max(waves, standard.getWavesWon());

@@ -77,6 +77,73 @@ def models():
     return [arrow_tower(), arcane_spire(), healing_shrine()]
 
 
+# ----------------------------------------------------------------------------- race towers (one race each)
+
+def rt_ballista():
+    stand = [box((-2, 16, -2), (4, 8, 4), "tw_wood_dark"), box((-6, 22, -6), (12, 2, 12), "tw_stone")]
+    turret = part("turret", pivot=(0, 15, 0), boxes=[
+        box((-1.5, -2, -8), (3, 2, 16), "tw_wood"),                   # stock
+        box((-11, -3, -8), (22, 2, 2), "tw_wood_dark"),               # bow arms
+        box((-11, -2.5, -6.5), (22, 0.5, 0.5), "tw_trim"),            # string
+        box((-0.5, -3, -10), (1, 1, 14), "tw_metal"),                 # the bolt
+        box((-2, -1, 6), (4, 3, 3), "tw_trim")])                      # winch
+    return {"id": "rt_ballista", "race": "human", "tex": [128, 64], "parts": [part("body", boxes=stand, children=[turret])]}
+
+
+def rt_thornwood_sentinel():
+    trunk = [box((-3, 0, -3), (6, 24, 6), "tw_wood"), box((-5, 20, -5), (10, 4, 10), "tw_wood_dark")]
+    thorns = [box((x, y, z), (w, 1, d), "tw_wood_dark") for (x, y, z, w, d) in
+              ((-8, 14, -0.5, 5, 1), (3, 10, -0.5, 6, 1), (-0.5, 6, -8, 1, 5), (-0.5, 12, 3, 1, 6))]
+    canopy = [box((-7, -6, -7), (14, 6, 14), "tw_cloth"), box((-4, -9, -4), (8, 3, 8), "tw_cloth")]
+    eyes = [box((-2, 8, -3.2), (1, 1, 0.2), "tw_rune2"), box((1, 8, -3.2), (1, 1, 0.2), "tw_rune2")]
+    return {"id": "rt_thornwood_sentinel", "race": "elf", "tex": [128, 64], "parts": [part("body", boxes=trunk + thorns + canopy + eyes)]}
+
+
+def rt_rune_cannon():
+    stand = [box((-5, 18, -5), (10, 6, 10), "tw_stone_dark"), box((-6, 17, -6), (12, 1, 12), "tw_trim")]
+    barrel = part("barrel", pivot=(0, 14, 0), rot=(-0.35, 0, 0), boxes=[
+        box((-3, -3, -10), (6, 6, 16), "tw_metal"), box((-3.5, -3.5, -9), (7, 7, 1), "tw_trim"),
+        box((-3.5, -3.5, 2), (7, 7, 1), "tw_trim"), box((-3.2, -1, -4), (0.2, 2, 4), "tw_rune2"),
+        box((3, -1, -4), (0.2, 2, 4), "tw_rune2")])
+    return {"id": "rt_rune_cannon", "race": "dwarf", "tex": [128, 64], "parts": [part("body", boxes=stand, children=[barrel])]}
+
+
+def rt_war_drum_totem():
+    drum = [box((-6, 16, -6), (12, 8, 12), "tw_wood"), box((-6.5, 15, -6.5), (13, 1, 13), "tw_cloth"),
+            box((-6.5, 19, -6.5), (13, 1, 13), "tw_trim")]
+    pole = [box((-2, -6, 4), (4, 22, 4), "tw_wood_dark"), box((-3, -2, 3.5), (6, 4, 1), "tw_cloth"),
+            box((-6, -8, 5), (3, 2, 2), "tw_trim"), box((3, -8, 5), (3, 2, 2), "tw_trim"),
+            box((-1.5, 2, 3.8), (1, 1, 0.2), "tw_rune2"), box((0.5, 2, 3.8), (1, 1, 0.2), "tw_rune2")]
+    return {"id": "rt_war_drum_totem", "race": "orc", "tex": [128, 64], "parts": [part("body", boxes=drum + pole)]}
+
+
+def rt_soul_pyre():
+    legs = [box((x, 16, z), (2, 8, 2), "tw_metal") for x in (-6, 4) for z in (-6, 4)]
+    bowl = [box((-7, 12, -7), (14, 4, 14), "tw_stone_dark"), box((-7.5, 11, -7.5), (15, 1, 15), "tw_trim")]
+    flame = part("flame", pivot=(0, 12, 0), boxes=[box((-5, -8, -5), (10, 8, 10), "tw_flame"),
+                                                   box((-3, -13, -3), (6, 5, 6), "tw_flame")])
+    return {"id": "rt_soul_pyre", "race": "demon", "tex": [128, 64], "parts": [part("body", boxes=legs + bowl, children=[flame])]}
+
+
+def rt_sun_lance():
+    obelisk = [box((-4, 4, -4), (8, 20, 8), "tw_stone"), box((-3, -8, -3), (6, 12, 6), "tw_stone"),
+               box((-4.5, 3, -4.5), (9, 1, 9), "tw_trim"), box((-3.5, -9, -3.5), (7, 1, 7), "tw_trim")]
+    lens = part("lens", pivot=(0, -12, 0), rot=(0, 0.785, 0), boxes=[box((-2, -2, -2), (4, 4, 4), "tw_crystal")])
+    return {"id": "rt_sun_lance", "race": "angel", "tex": [128, 64], "parts": [part("body", boxes=obelisk, children=[lens])]}
+
+
+def rt_lurker_pit():
+    mound = [box((-7, 22, -7), (14, 2, 14), "tw_stone_dark")]
+    maw = part("maw", pivot=(0, 22, 0), boxes=[box((x, -6, z), (2, 6, 2), "tw_trim") for x in (-6, -1, 4) for z in (-6, 4)]
+               + [box((-4, -3, -4), (8, 3, 8), "tw_flame")])
+    return {"id": "rt_lurker_pit", "race": "hive", "tex": [128, 64], "parts": [part("body", boxes=mound, children=[maw])]}
+
+
+def race_models():
+    return [rt_ballista(), rt_thornwood_sentinel(), rt_rune_cannon(), rt_war_drum_totem(), rt_soul_pyre(), rt_sun_lance(),
+            rt_lurker_pit()]
+
+
 def tw_material(mat, side, x, y, w, h, pal, rng):
     if not mat.startswith("tw_"):
         return NotImplemented
@@ -110,6 +177,16 @@ def tw_material(mat, side, x, y, w, h, pal, rng):
         return glow(hexc(p["glow_core"] if (x + y) % 3 == 0 else p["glow"]))
     if mat == "tw_water":
         return glow(mix(hexc(p["glow"]), hexc(p["glow_core"]), rng.uniform(0, 0.4))) if side == "top" else hexc(p["stone_dark"])
+    if mat == "tw_metal":
+        c = mix(hexc(p["stone_dark"]), hexc("2a2a2a"), 0.4)
+        return shade(c, 1.25) if side == "top" else shade(c, rng.uniform(0.85, 1.1))
+    if mat == "tw_rune2":
+        return glow(hexc(p["glow"]))
+    if mat == "tw_flame":
+        t = y / max(1, h - 1)                                                   # 0 at the top, 1 at the base
+        if rng.random() < (0.55 if side == "top" else 0.5 * (1 - t)):
+            return None                                                         # ragged tongues of flame
+        return glow(mix(hexc(p["glow"]), hexc(p["glow_core"]), t * 0.7))
     if mat == "tw_light":
         return glow(hexc(p["glow_core"]))
     return hexc("ff00ff")

@@ -48,6 +48,8 @@ public final class WFConfig {
     public static final ModConfigSpec.IntValue GRACE_DAYS;
     public static final ModConfigSpec.IntValue WAR_MAP_RAIDS;
     public static final ModConfigSpec.IntValue ROCKET_COAL_SECONDS;
+    public static final ModConfigSpec.DoubleValue RACE_TOWER_DAMAGE;
+    public static final ModConfigSpec.ConfigValue<java.util.List<? extends Integer>> RACE_TOWER_CAPS;
     public static final ModConfigSpec.IntValue ROCKET_CRYSTAL_SECONDS;
     public static final ModConfigSpec.DoubleValue AWAY_RAID_RATE;
     public static final ModConfigSpec.IntValue RAID_WARNING;
@@ -124,6 +126,13 @@ public final class WFConfig {
                 .defineInRange("linkRange", 16, 2, 64);
         WELL_CAPACITY = b.comment("How much mana one Mana Well can store.")
                 .defineInRange("wellCapacity", 2000, 10, 1_000_000);
+        b.pop();
+
+        b.push("raceTowers");
+        RACE_TOWER_DAMAGE = b.comment("Multiplies all race tower damage.")
+                .defineInRange("damageMultiplier", 1.0, 0.0, 10.0);
+        RACE_TOWER_CAPS = b.comment("Most race towers a base may hold at base levels 2, 3, 4 and 5.")
+                .defineList("caps", java.util.List.of(2, 4, 6, 10), () -> 2, o -> o instanceof Integer i && i >= 0 && i <= 100);
         b.pop();
 
         b.push("flight");

@@ -2534,6 +2534,72 @@ public final class UnitGeometry {
                 PartPose.offsetAndRotation(0F, 8F, 0F, 0F, 0F, 0F));
         return LayerDefinition.create(mesh, 128, 128);
     }
+    /** The rt_ballista body. */
+    public static LayerDefinition rt_ballista() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 18).addBox(-2F, 16F, -2F, 4F, 8F, 4F).texOffs(68, 0).addBox(-6F, 22F, -6F, 12F, 2F, 12F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("turret", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -2F, -8F, 3F, 2F, 16F).texOffs(30, 18).addBox(-11F, -3F, -8F, 22F, 2F, 2F).texOffs(78, 18).addBox(-11F, -2.5F, -6.5F, 22F, 0.5F, 0.5F).texOffs(38, 0).addBox(-0.5F, -3F, -10F, 1F, 1F, 14F).texOffs(16, 18).addBox(-2F, -1F, 6F, 4F, 3F, 3F),
+                PartPose.offsetAndRotation(0F, 15F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_thornwood_sentinel body. */
+    public static LayerDefinition rt_thornwood_sentinel() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-3F, 0F, -3F, 6F, 24F, 6F).texOffs(80, 0).addBox(-5F, 20F, -5F, 10F, 4F, 10F).texOffs(58, 30).addBox(-8F, 14F, -0.5F, 5F, 1F, 1F).texOffs(70, 30).addBox(3F, 10F, -0.5F, 6F, 1F, 1F).texOffs(46, 30).addBox(-0.5F, 6F, -8F, 1F, 1F, 5F).texOffs(32, 30).addBox(-0.5F, 12F, 3F, 1F, 1F, 6F).texOffs(24, 0).addBox(-7F, -6F, -7F, 14F, 6F, 14F).texOffs(0, 30).addBox(-4F, -9F, -4F, 8F, 3F, 8F).texOffs(84, 30).addBox(-2F, 8F, -3.2F, 1F, 1F, 0.2F).texOffs(88, 30).addBox(1F, 8F, -3.2F, 1F, 1F, 0.2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_rune_cannon body. */
+    public static LayerDefinition rt_rune_cannon() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(44, 0).addBox(-5F, 18F, -5F, 10F, 6F, 10F).texOffs(0, 22).addBox(-6F, 17F, -6F, 12F, 1F, 12F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("barrel", CubeListBuilder.create().texOffs(0, 0).addBox(-3F, -3F, -10F, 6F, 6F, 16F).texOffs(48, 22).addBox(-3.5F, -3.5F, -9F, 7F, 7F, 1F).texOffs(64, 22).addBox(-3.5F, -3.5F, 2F, 7F, 7F, 1F).texOffs(80, 22).addBox(-3.2F, -1F, -4F, 0.2F, 2F, 4F).texOffs(90, 22).addBox(3F, -1F, -4F, 0.2F, 2F, 4F),
+                PartPose.offsetAndRotation(0F, 14F, 0F, -0.35F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_war_drum_totem body. */
+    public static LayerDefinition rt_war_drum_totem() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 0).addBox(-6F, 16F, -6F, 12F, 8F, 12F).texOffs(64, 0).addBox(-6.5F, 15F, -6.5F, 13F, 1F, 13F).texOffs(0, 26).addBox(-6.5F, 19F, -6.5F, 13F, 1F, 13F).texOffs(0, 0).addBox(-2F, -6F, 4F, 4F, 22F, 4F).texOffs(52, 26).addBox(-3F, -2F, 3.5F, 6F, 4F, 1F).texOffs(66, 26).addBox(-6F, -8F, 5F, 3F, 2F, 2F).texOffs(76, 26).addBox(3F, -8F, 5F, 3F, 2F, 2F).texOffs(86, 26).addBox(-1.5F, 2F, 3.8F, 1F, 1F, 0.2F).texOffs(90, 26).addBox(0.5F, 2F, 3.8F, 1F, 1F, 0.2F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_soul_pyre body. */
+    public static LayerDefinition rt_soul_pyre() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(84, 18).addBox(-6F, 16F, -6F, 2F, 8F, 2F).texOffs(92, 18).addBox(-6F, 16F, 4F, 2F, 8F, 2F).texOffs(100, 18).addBox(4F, 16F, -6F, 2F, 8F, 2F).texOffs(108, 18).addBox(4F, 16F, 4F, 2F, 8F, 2F).texOffs(0, 0).addBox(-7F, 12F, -7F, 14F, 4F, 14F).texOffs(0, 18).addBox(-7.5F, 11F, -7.5F, 15F, 1F, 15F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("flame", CubeListBuilder.create().texOffs(56, 0).addBox(-5F, -8F, -5F, 10F, 8F, 10F).texOffs(60, 18).addBox(-3F, -13F, -3F, 6F, 5F, 6F),
+                PartPose.offsetAndRotation(0F, 12F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_sun_lance body. */
+    public static LayerDefinition rt_sun_lance() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-4F, 4F, -4F, 8F, 20F, 8F).texOffs(32, 0).addBox(-3F, -8F, -3F, 6F, 12F, 6F).texOffs(56, 0).addBox(-4.5F, 3F, -4.5F, 9F, 1F, 9F).texOffs(92, 0).addBox(-3.5F, -9F, -3.5F, 7F, 1F, 7F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("lens", CubeListBuilder.create().texOffs(0, 28).addBox(-2F, -2F, -2F, 4F, 4F, 4F),
+                PartPose.offsetAndRotation(0F, -12F, 0F, 0F, 0.785F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
+    /** The rt_lurker_pit body. */
+    public static LayerDefinition rt_lurker_pit() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        PartDefinition p0 = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-7F, 22F, -7F, 14F, 2F, 14F),
+                PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+        PartDefinition p1 = p0.addOrReplaceChild("maw", CubeListBuilder.create().texOffs(88, 0).addBox(-6F, -6F, -6F, 2F, 6F, 2F).texOffs(96, 0).addBox(-6F, -6F, 4F, 2F, 6F, 2F).texOffs(104, 0).addBox(-1F, -6F, -6F, 2F, 6F, 2F).texOffs(112, 0).addBox(-1F, -6F, 4F, 2F, 6F, 2F).texOffs(120, 0).addBox(4F, -6F, -6F, 2F, 6F, 2F).texOffs(0, 16).addBox(4F, -6F, 4F, 2F, 6F, 2F).texOffs(56, 0).addBox(-4F, -3F, -4F, 8F, 3F, 8F),
+                PartPose.offsetAndRotation(0F, 22F, 0F, 0F, 0F, 0F));
+        return LayerDefinition.create(mesh, 128, 64);
+    }
     /** Every generated model, by id. */
     public static Map<String, Supplier<LayerDefinition>> all() {
         Map<String, Supplier<LayerDefinition>> all = new LinkedHashMap<>();
@@ -2583,6 +2649,13 @@ public final class UnitGeometry {
         all.put("tower_arrow", UnitGeometry::tower_arrow);
         all.put("tower_arcane", UnitGeometry::tower_arcane);
         all.put("tower_healing", UnitGeometry::tower_healing);
+        all.put("rt_ballista", UnitGeometry::rt_ballista);
+        all.put("rt_thornwood_sentinel", UnitGeometry::rt_thornwood_sentinel);
+        all.put("rt_rune_cannon", UnitGeometry::rt_rune_cannon);
+        all.put("rt_war_drum_totem", UnitGeometry::rt_war_drum_totem);
+        all.put("rt_soul_pyre", UnitGeometry::rt_soul_pyre);
+        all.put("rt_sun_lance", UnitGeometry::rt_sun_lance);
+        all.put("rt_lurker_pit", UnitGeometry::rt_lurker_pit);
         return all;
     }
 }

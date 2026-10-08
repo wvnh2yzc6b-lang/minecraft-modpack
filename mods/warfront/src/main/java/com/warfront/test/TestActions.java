@@ -104,11 +104,15 @@ public final class TestActions {
                     }
                     case "camp" -> raiderCamp(player, "rescue".equals(arg(args, 2)));
                     case "food" -> messHall(player, !"empty".equals(arg(args, 2)));
+                    case "towers" -> {
+                        for (var item : WFRegistry.RACE_TOWER_ITEMS.values()) player.getInventory().add(new ItemStack(item.get(), 2));
+                        yield Result.ok("Race towers given (two of each). Each only places for its own race, on a base of its level.");
+                    }
                     case "traps" -> {
                         com.warfront.tunnel.Tunnels.kit(player);
                         yield Result.ok("Dwarf tunnel kit given: Rune Drill, rune stone, spike floors, rune mines, flame vents.");
                     }
-                    default -> Result.fail("base level|fill|infinite|starter|bounties|merchant|camp|food|traps");
+                    default -> Result.fail("base level|fill|infinite|starter|bounties|merchant|camp|food|traps|towers");
                 };
                 case "siege" -> switch (b) {
                     case "start" -> startWave(player, faction(arg(args, 2)));

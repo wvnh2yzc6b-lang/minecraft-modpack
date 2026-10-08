@@ -1167,8 +1167,9 @@ TRIM_MODELS = faction_trim.models()
 GLIDER_MODEL = glider.model()
 FLIGHT_MODELS = flight_gear.models()
 TOWER_MODELS = towers.models()
+RACE_TOWER_MODELS = towers.race_models()
 MODELS = [imp_impaler(), imp_firecaster(), *hive_units.models(), demon_player(), *GEAR_MODELS, *HELLKNIGHT_MODELS, *TRIM_MODELS,
-          GLIDER_MODEL, *FLIGHT_MODELS, *TOWER_MODELS]
+          GLIDER_MODEL, *FLIGHT_MODELS, *TOWER_MODELS, *RACE_TOWER_MODELS]
 
 
 if __name__ == "__main__":
@@ -1212,6 +1213,8 @@ if __name__ == "__main__":
         for race, pal in towers.PALETTES.items():
             paint(m, f"tower_{race}", pal)
     print("painted", len(TOWER_MODELS), "towers for", len(towers.PALETTES), "races")
+    for m in RACE_TOWER_MODELS:
+        paint(m, f"tower_{m['race']}", towers.PALETTES[m["race"]])
     write_java(MODELS)
     JSON_OUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUT.write_text(json.dumps(MODELS + [player_base()]))

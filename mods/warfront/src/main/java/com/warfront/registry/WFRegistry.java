@@ -53,6 +53,8 @@ public final class WFRegistry {
             MOB_EFFECTS.register("frenzy", () -> new com.warfront.combat.FrenzyEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.OathOfStoneEffect> OATH_OF_STONE =
             MOB_EFFECTS.register("oath_of_stone", () -> new com.warfront.combat.OathOfStoneEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.racetower.CorrodedEffect> CORRODED =
+            MOB_EFFECTS.register("corroded", () -> new com.warfront.racetower.CorrodedEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.RalliedEffect> RALLIED =
             MOB_EFFECTS.register("rallied", () -> new com.warfront.combat.RalliedEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.upkeep.WellFedEffect> WELL_FED =
@@ -210,6 +212,24 @@ public final class WFRegistry {
             () -> new com.warfront.tunnel.FlameVentBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                     .strength(3.5F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.NETHER_BRICKS).lightLevel(s -> 3)));
 
+    /** Race towers, one block per type. */
+    public static final java.util.Map<com.warfront.racetower.RaceTowerType, DeferredBlock<com.warfront.racetower.RaceTowerBlock>> RACE_TOWERS = raceTowers();
+
+    private static java.util.Map<com.warfront.racetower.RaceTowerType, DeferredBlock<com.warfront.racetower.RaceTowerBlock>> raceTowers() {
+        java.util.Map<com.warfront.racetower.RaceTowerType, DeferredBlock<com.warfront.racetower.RaceTowerBlock>> map =
+                new java.util.EnumMap<>(com.warfront.racetower.RaceTowerType.class);
+        for (com.warfront.racetower.RaceTowerType t : com.warfront.racetower.RaceTowerType.values()) {
+            map.put(t, BLOCKS.register(t.id, () -> new com.warfront.racetower.RaceTowerBlock(t, BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE).strength(3.5F, 9.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)
+                    .noOcclusion().lightLevel(st -> 4))));
+        }
+        return map;
+    }
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.racetower.RaceTowerBlockEntity>> RACE_TOWER_BE =
+            BLOCK_ENTITIES.register("race_tower", () -> BlockEntityType.Builder.of(com.warfront.racetower.RaceTowerBlockEntity::new,
+                    RACE_TOWERS.values().stream().map(DeferredBlock::get).toArray(Block[]::new)).build(null));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.warfront.tunnel.TrapBlockEntity>> TRAP_BE =
             BLOCK_ENTITIES.register("trap", () -> BlockEntityType.Builder.of(com.warfront.tunnel.TrapBlockEntity::new,
                     SPIKE_FLOOR.get(), RUNE_MINE.get(), FLAME_VENT.get()).build(null));
@@ -261,6 +281,14 @@ public final class WFRegistry {
     public static final DeferredItem<BlockItem> SPIKE_FLOOR_ITEM = ITEMS.registerSimpleBlockItem(SPIKE_FLOOR);
     public static final DeferredItem<BlockItem> RUNE_MINE_ITEM = ITEMS.registerSimpleBlockItem(RUNE_MINE);
     public static final DeferredItem<BlockItem> FLAME_VENT_ITEM = ITEMS.registerSimpleBlockItem(FLAME_VENT);
+    public static final java.util.Map<com.warfront.racetower.RaceTowerType, DeferredItem<BlockItem>> RACE_TOWER_ITEMS = raceTowerItems();
+
+    private static java.util.Map<com.warfront.racetower.RaceTowerType, DeferredItem<BlockItem>> raceTowerItems() {
+        java.util.Map<com.warfront.racetower.RaceTowerType, DeferredItem<BlockItem>> map = new java.util.EnumMap<>(com.warfront.racetower.RaceTowerType.class);
+        for (var e : RACE_TOWERS.entrySet()) map.put(e.getKey(), ITEMS.registerSimpleBlockItem(e.getValue()));
+        return map;
+    }
+
     public static final DeferredItem<com.warfront.tunnel.RuneDrillItem> RUNE_DRILL = ITEMS.register("rune_drill",
             () -> new com.warfront.tunnel.RuneDrillItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<BlockItem> TROPHY_BANNER_ITEM = ITEMS.register("trophy_banner",

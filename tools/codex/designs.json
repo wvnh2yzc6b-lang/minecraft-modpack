@@ -151,6 +151,17 @@
         "The tower block is the plinth; the model rises two blocks above it. The crystal, runes, water and light glow and move only while the mana network can pay for a shot, and go dark when it can't.",
         "First pass from each race's palette. Send references to change any of them."
       ]
+    },
+    {
+      "id": "race-towers-l2",
+      "race": "All races",
+      "title": "Race towers, level 2",
+      "status": "review",
+      "render": "race-towers-l2-render.png",
+      "notes": [
+        "Built and in the game. Left to right: human Ballista (a swivelling bolt thrower), elf Thornwood Sentinel (a thorned living tree), dwarf Rune Cannon (a rune-banded barrel), orc War Drum Totem (a war drum and a horned totem pole), demon Soul Pyre (a brazier of flame), angel Sun Lance (a white obelisk with a golden lens), Hive Lurker Pit (a mound whose fangs and acid rise when enemies come close).",
+        "Each sits on a plinth in its race's stone. First pass from each race's palette; send references to change any of them."
+      ]
     }
   ]
 }

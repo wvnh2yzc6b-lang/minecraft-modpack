@@ -1019,6 +1019,115 @@ public final class WarfrontGameTests {
                 .thenSucceed();
     }
 
+    private static com.warfront.racetower.RaceTowerBlockEntity raceTower(GameTestHelper h, com.warfront.racetower.RaceTowerType type,
+                                                                        Player owner, float mana) {
+        BlockPos pos = new BlockPos(1, 1, 4);
+        h.setBlock(pos, WFRegistry.RACE_TOWERS.get(type).get());
+        com.warfront.racetower.RaceTowerBlockEntity tower = (com.warfront.racetower.RaceTowerBlockEntity) h.getBlockEntity(pos);
+        tower.setOwner(owner.getUUID());
+        well(h, new BlockPos(1, 1, 7), owner, mana);
+        return tower;
+    }
+
+    private static Husk target(GameTestHelper h, int x, int z) {
+        Husk husk = h.spawnWithNoFreeWill(EntityType.HUSK, new BlockPos(x, 2, z));
+        husk.setPersistenceRequired();
+        husk.setInvulnerable(true);
+        return husk;
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 100)
+    public static void raceTowersKeepToTheirRaceLevelAndCap(GameTestHelper h) {
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        Player orc = h.makeMockPlayer(GameType.SURVIVAL);
+        orc.setData(WFRegistry.RACE, Race.ORC.id());
+        var ballista = com.warfront.racetower.RaceTowerType.BALLISTA;
+        BlockPos at = h.absolutePos(new BlockPos(4, 2, 4));
+        h.assertTrue(com.warfront.racetower.RaceTowers.refusal(h.getLevel(), at, orc, ballista) != null, "an orc can't raise a Ballista");
+        String noBase = com.warfront.racetower.RaceTowers.refusal(h.getLevel(), at, human, ballista);
+        h.assertTrue(noBase != null && noBase.contains("level 2"), "no base, no Ballista: " + noBase);
+        ManaWellBlockEntity well = well(h, new BlockPos(4, 1, 7), human, 0F);
+        well.setTestLevel(2);
+        for (int x : new int[]{1, 7}) {
+            h.setBlock(new BlockPos(x, 1, 1), WFRegistry.RACE_TOWERS.get(ballista).get());
+            ((com.warfront.racetower.RaceTowerBlockEntity) h.getBlockEntity(new BlockPos(x, 1, 1))).setOwner(human.getUUID());
+        }
+        h.runAfterDelay(5, () -> {
+            String full = com.warfront.racetower.RaceTowers.refusal(h.getLevel(), at, human, ballista);
+            h.assertTrue(full != null && full.contains("most race towers"), "a level 2 base holds two race towers: " + full);
+            well.setTestLevel(3);
+            h.assertTrue(com.warfront.racetower.RaceTowers.refusal(h.getLevel(), at, human, ballista) == null,
+                    "a level 3 base has room for more");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 300)
+    public static void ballistaFiresOnlyWithMana(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.BALLISTA, owner, 0F);
+        target(h, 6, 4);
+        ManaWellBlockEntity well = (ManaWellBlockEntity) h.getBlockEntity(new BlockPos(1, 1, 7));
+        h.startSequence()
+                .thenExecuteAfter(80, () -> h.assertTrue(tower.actions() == 0, "no mana, no bolt; fired " + tower.actions()))
+                .thenExecute(() -> well.setMana(50F))
+                .thenWaitUntil(() -> h.assertTrue(tower.actions() > 0 && well.getMana() < 50F, "a powered Ballista should fire"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void thornwoodSentinelRootsEnemies(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.THORNWOOD_SENTINEL, owner, 100F);
+        Husk husk = target(h, 4, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && husk.hasEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN)
+                && husk.hasEffect(net.minecraft.world.effect.MobEffects.GLOWING), "the Sentinel should root and mark the enemy"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void runeCannonFires(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.RUNE_CANNON, owner, 100F);
+        target(h, 6, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0, "the Rune Cannon should fire at the enemy"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void warDrumFeedsOrcRage(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.WAR_DRUM_TOTEM, owner, 100F);
+        SoldierEntity orc = posted(h, owner, SoldierRole.SWORDSMAN, Race.ORC, 4, 4);
+        orc.setNoAi(true);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && com.warfront.combat.Rage.current(orc) > 0,
+                "the drum should give nearby orcs Rage (beats " + tower.actions() + ")"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void soulPyreSetsEnemiesAlight(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.SOUL_PYRE, owner, 100F);
+        Husk husk = target(h, 5, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && husk.getRemainingFireTicks() > 0, "the Soul Pyre should set the enemy alight"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void sunLanceFires(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.SUN_LANCE, owner, 100F);
+        target(h, 6, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0, "the Sun Lance should strike the enemy"));
+    }
+
+    @GameTest(template = ARENA, timeoutTicks = 200)
+    public static void lurkerPitAmbushesWithAcid(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        var tower = raceTower(h, com.warfront.racetower.RaceTowerType.LURKER_PIT, owner, 100F);
+        Husk husk = target(h, 3, 4);
+        h.succeedWhen(() -> h.assertTrue(tower.actions() > 0 && tower.isRevealed() && husk.hasEffect(WFRegistry.CORRODED),
+                "the Lurker Pit should rise and corrode the enemy"));
+    }
+
     @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
