@@ -771,6 +771,74 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void resolveBuildsInCombatAndDrainsOutOfIt(GameTestHelper h) {
+        Player dwarf = h.makeMockPlayer(GameType.SURVIVAL);
+        dwarf.setData(WFRegistry.RACE, Race.DWARF.id());
+        long now = h.getLevel().getGameTime();
+        com.warfront.combat.Resolve.markCombat(dwarf);
+        for (int i = 0; i < 3; i++) com.warfront.combat.Resolve.tickSecond(dwarf, now + i * 20);
+        int fought = com.warfront.combat.Resolve.current(dwarf);
+        h.assertTrue(fought == 3 * com.warfront.combat.Resolve.PER_SECOND, "three seconds of fighting should give 12 Resolve, got " + fought);
+        com.warfront.combat.Resolve.set(dwarf, 60);
+        var armor = dwarf.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR)
+                .getModifier(com.warfront.Warfront.id("resolve_armor"));
+        h.assertTrue(armor != null && armor.amount() == 3, "60 Resolve should give +3 armor, modifier " + armor);
+        com.warfront.combat.Resolve.tickSecond(dwarf, now + 400);
+        h.assertTrue(com.warfront.combat.Resolve.current(dwarf) == 60 - com.warfront.combat.Resolve.IDLE_LOSS,
+                "out of combat Resolve should drain, now " + com.warfront.combat.Resolve.current(dwarf));
+        com.warfront.combat.Resolve.set(dwarf, 0);
+        h.assertTrue(dwarf.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR)
+                .getModifier(com.warfront.Warfront.id("resolve_armor")) == null, "no Resolve, no armor bonus");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void oathOfStoneFiresAtFullAndShakesTheGround(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        SoldierEntity dwarf = posted(h, owner, SoldierRole.SHIELDBEARER, Race.DWARF, 4, 4);
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 6, 4);
+        dwarf.setNoAi(true);
+        enemy.setNoAi(true);
+        com.warfront.combat.Resolve.set(dwarf, com.warfront.combat.Resolve.MAX);
+        com.warfront.combat.Resolve.tickSecond(dwarf);
+        h.assertTrue(com.warfront.combat.Resolve.inOath(dwarf) && com.warfront.combat.Resolve.current(dwarf) == 0,
+                "a dwarf soldier at full Resolve should swear the Oath and spend it");
+        int hit = com.warfront.combat.Resolve.shockwave(dwarf);
+        h.assertTrue(hit == 1, "the shockwave should hit the one enemy nearby, hit " + hit);
+        h.assertTrue(enemy.getDeltaMovement().horizontalDistance() > 0.2, "the shockwave should knock the enemy back, motion "
+                + enemy.getDeltaMovement());
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void dwarvesMineMoreManaCrystals(GameTestHelper h) {
+        Player dwarf = h.makeMockPlayer(GameType.SURVIVAL);
+        dwarf.setData(WFRegistry.RACE, Race.DWARF.id());
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(h.absolutePos(new BlockPos(0, 0, 0))).expandTowards(9, 9, 9);
+        int[] crystals = new int[2];
+        Player[] miners = {dwarf, human};
+        for (int m = 0; m < 2; m++) {
+            for (int x = 1; x <= 7; x++) {
+                for (int z = 2; z <= 4; z++) {
+                    BlockPos p = new BlockPos(x, 2, z);
+                    h.setBlock(p, WFRegistry.MANA_ORE.get());
+                    h.getLevel().destroyBlock(h.absolutePos(p), true, miners[m]);
+                }
+            }
+            for (net.minecraft.world.entity.item.ItemEntity item : h.getLevel().getEntitiesOfClass(
+                    net.minecraft.world.entity.item.ItemEntity.class, box)) {
+                if (item.getItem().is(WFRegistry.MANA_CRYSTAL.get())) crystals[m] += item.getItem().getCount();
+                item.discard();
+            }
+        }
+        h.assertTrue(crystals[0] > crystals[1] && crystals[1] > 0, "dwarves should get more crystals from 21 Mana Ore: dwarf "
+                + crystals[0] + ", human " + crystals[1]);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

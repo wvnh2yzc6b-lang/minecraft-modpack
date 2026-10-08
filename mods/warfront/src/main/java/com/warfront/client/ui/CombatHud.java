@@ -100,6 +100,19 @@ public final class CombatHud {
                     WFTheme.bar(g, x + 32, y + 2, W - 44, 4, v[HudPayload.RAGE] / (float) Rage.MAX, 0xB8231A);
                 }
             });
+            case DWARF -> rows.add((g, f, x, y) -> {
+                int oath = v[HudPayload.OATH];
+                int resolve = v[HudPayload.RESOLVE];
+                if (oath > 0) {
+                    WFTheme.text(g, f, "OATH OF STONE " + (oath / 20 + 1) + "s", x, y, 0xFFE0E6EE);
+                } else if (resolve >= com.warfront.combat.Resolve.MAX) {
+                    boolean flash = (p.tickCount / 6) % 2 == 0;
+                    WFTheme.text(g, f, "Oath ready: crouch", x, y, flash ? 0xFFFFFFFF : 0xFFB8C0CA);
+                } else {
+                    WFTheme.text(g, f, "Resolve", x, y, 0xFFB8C0CA);
+                    WFTheme.bar(g, x + 40, y + 2, W - 52, 4, resolve / (float) com.warfront.combat.Resolve.MAX, 0x9AA3AE);
+                }
+            });
             case HUMAN -> {
                 ItemStack chest = p.getItemBySlot(EquipmentSlot.CHEST);
                 if (chest.is(WFRegistry.MANA_GLIDER.get())) rows.add((g, f, x, y) -> {

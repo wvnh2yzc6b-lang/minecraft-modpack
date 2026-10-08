@@ -31,22 +31,6 @@
       ]
     },
     {
-      "id": "dwarf-identity",
-      "status": "ready",
-      "title": "Dwarf identity: Hold the Line, mountain hold start, deep miners",
-      "decided": "Owner, 2026-10-07: dwarves get Hold the Line (Resolve meter and Oath of Stone) as their race power, start at a mountain hold gate, and are deep miners (more crystals, faster stone mining, fewer Manabloom shards).",
-      "spec": [
-        "Hold the Line, Resolve 0-100 (a player attachment, synced; same pattern as demon souls and orc rage). Gain while in combat (hit or got hit in the last 3 s): +4 per second while not sprinting, +6 per hit taken. Sprinting loses 10 per second; out of combat for 4 s it drains 10 per second.",
-        "Resolve bonus through vanilla attributes (transient modifiers): +1 armor and +5% knockback resistance per 20 Resolve (max +5 armor, +25%).",
-        "Oath of Stone: at 100 Resolve, crouching triggers it (spends all Resolve). For 6 s: +80% knockback resistance, 30% less damage taken, Slowness I. When it ends, a stone shockwave: 4 damage and a strong knockback to enemies within 4 blocks, block-particle burst and an anvil/stone sound.",
-        "Dwarf soldiers build Resolve the same way and swear the Oath automatically at 100; they don't rout while it lasts.",
-        "Mountain hold start: when a player first picks dwarf, find the nearest mountain biome (tag #minecraft:is_mountain, search a bounded radius around spawn) and place a small hold-gate structure in the slope (carved stone gate, braziers, a 3x3 starter tunnel about 12 blocks long, a starter chest), then move the player there and set their respawn. No mountain found: fall back to normal spawn. Reuse the Hive cave-start code path.",
-        "Deep miners: breaking Mana Ore as a dwarf has a 50% chance of +1 Mana Crystal (stacks with Fortune); dwarves mine blocks in #minecraft:base_stone_overworld and deepslate 20% faster (break-speed event, so other mods' tools still work); Manabloom harvested by a dwarf gives 20% fewer shards (rounded, minimum 1).",
-        "HUD: Resolve meter in the race-power slot (stone-gray, glows when the Oath is ready). Test Panel and /wftest: fill or empty Resolve, trigger the Oath, place a hold gate here.",
-        "Game tests: Resolve rises in combat and drains out of it; the Oath fires at 100 and the shockwave knocks back a nearby enemy; dwarf Mana Ore drops average above other races; armor modifier applied and removed."
-      ]
-    },
-    {
       "id": "human-identity",
       "status": "ready",
       "title": "Human identity: Rally the Banner, village charter start, traders",

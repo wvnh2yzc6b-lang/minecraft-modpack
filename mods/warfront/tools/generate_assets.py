@@ -761,6 +761,18 @@ def effect_icons():
             img.putpixel((x, y), crumb)
     save(img, "mob_effect/well_fed.png")
 
+    # Oath of Stone: a gray shield of stone blocks with a pale rune.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    rim, stone, hi, rune = hexc("3a3f46"), hexc("8a9099"), hexc("b8c0ca"), hexc("e8f4ff")
+    for y in range(2, 16):
+        half = 6 if y < 11 else 6 - (y - 10)
+        for x in range(9 - half, 9 + half):
+            edge = x in (9 - half, 9 + half - 1) or y in (2, 15)
+            img.putpixel((x, y), rim if edge else (hi if (x + y) % 5 == 0 else stone))
+    for x, y in ((8, 5), (9, 5), (8, 6), (8, 7), (9, 8), (10, 9), (8, 9), (8, 10), (8, 11)):
+        img.putpixel((x, y), rune)
+    save(img, "mob_effect/oath_of_stone.png")
+
     # Rank chevron: a light plate with a darker rim, tinted to the race's color when drawn.
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for x in range(16):
@@ -821,6 +833,7 @@ def lang():
         "block.warfront.mana_brazier": "Mana Brazier",
         "block.warfront.summoning_altar": "Summoning Altar",
         "effect.warfront.frenzy": "Frenzy",
+        "effect.warfront.oath_of_stone": "Oath of Stone",
         "item.warfront.mana_glider": "Mana Glider",
         "item.warfront.rocket_pack": "Orc Rocket Pack",
         "item.warfront.angel_wings": "Angel Wings",

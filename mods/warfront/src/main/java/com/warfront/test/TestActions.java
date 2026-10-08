@@ -128,7 +128,26 @@ public final class TestActions {
                     case "god" -> setGod(player, !player.getData(WFRegistry.GOD_MODE));
                     case "kit" -> kit(player);
                     case "flight" -> flightGear(player);
-                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight");
+                    case "resolve" -> switch (arg(args, 2)) {
+                        case "empty" -> {
+                            com.warfront.combat.Resolve.set(player, 0);
+                            yield Result.ok("Resolve empty.");
+                        }
+                        case "oath" -> {
+                            com.warfront.combat.Resolve.set(player, com.warfront.combat.Resolve.MAX);
+                            yield com.warfront.combat.Resolve.swear(player) ? Result.ok("Oath of Stone sworn.") : Result.fail("Already under the Oath.");
+                        }
+                        default -> {
+                            com.warfront.combat.Resolve.set(player, com.warfront.combat.Resolve.MAX);
+                            com.warfront.combat.Resolve.markCombat(player);
+                            yield Result.ok("Resolve full: crouch to swear the Oath (dwarves).");
+                        }
+                    };
+                    case "hold" -> {
+                        com.warfront.world.HoldGate.testBuild(player);
+                        yield Result.ok("Hold gate built ahead of you.");
+                    }
+                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold");
                 };
                 case "difficulty" -> setPreset(player, com.warfront.war.WarState.Preset.byId(b));
                 case "raid" -> switch (b) {

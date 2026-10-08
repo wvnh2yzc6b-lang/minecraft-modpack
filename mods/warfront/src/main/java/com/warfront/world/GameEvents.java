@@ -210,6 +210,11 @@ public final class GameEvents {
             }
         }
         if (victimRace == Race.ORC && attacker != null && attacker != victim) Rage.gain(victim, Rage.ON_HURT);
+        if (victimRace == Race.DWARF && attacker != null && attacker != victim) com.warfront.combat.Resolve.hurt(victim);
+        if (attacker instanceof LivingEntity hitter && hitter != victim && Race.of(hitter) == Race.DWARF) {
+            com.warfront.combat.Resolve.markCombat(hitter);
+        }
+        if (com.warfront.combat.Resolve.inOath(victim)) event.setAmount(event.getAmount() * com.warfront.combat.Resolve.OATH_DAMAGE_TAKEN);
         if (Rage.isFrenzied(victim)) event.setAmount(event.getAmount() * 1.15F);
     }
 
@@ -322,6 +327,9 @@ public final class GameEvents {
                 if (Race.of(player) == Race.ANGEL && player.getHealth() < player.getMaxHealth()) player.heal(1F);
                 if (Race.of(player) == Race.HIVE) HiveAdaptation.apply(player, 80);
             }
+        }
+        if (server.getTickCount() % 20 == 0) {
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) Dwarves.secondTick(player);
         }
         com.warfront.war.Recall.tick(server);
         com.warfront.outpost.Outposts.tick();

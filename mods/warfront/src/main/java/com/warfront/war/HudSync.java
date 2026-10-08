@@ -30,6 +30,9 @@ public final class HudSync {
         v[HudPayload.RAGE] = Rage.current(p);
         MobEffectInstance frenzy = p.getEffect(WFRegistry.FRENZY);
         v[HudPayload.FRENZY] = frenzy == null ? 0 : frenzy.getDuration();
+        v[HudPayload.RESOLVE] = com.warfront.combat.Resolve.current(p);
+        MobEffectInstance oath = p.getEffect(WFRegistry.OATH_OF_STONE);
+        v[HudPayload.OATH] = oath == null ? 0 : oath.getDuration();
         List<SoldierEntity> units = TestActions.owned(p);
         for (SoldierEntity s : units) {
             if (s.getRole().worker()) continue;

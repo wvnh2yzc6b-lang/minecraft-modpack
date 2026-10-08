@@ -51,6 +51,8 @@ public final class WFRegistry {
             DeferredRegister.create(Registries.MOB_EFFECT, Warfront.MODID);
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.FrenzyEffect> FRENZY =
             MOB_EFFECTS.register("frenzy", () -> new com.warfront.combat.FrenzyEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.OathOfStoneEffect> OATH_OF_STONE =
+            MOB_EFFECTS.register("oath_of_stone", () -> new com.warfront.combat.OathOfStoneEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.upkeep.WellFedEffect> WELL_FED =
             MOB_EFFECTS.register("well_fed", () -> new com.warfront.upkeep.WellFedEffect());
     /** Trophy banner auras, one per faction (the Fallen Host's banner gives mana instead). */

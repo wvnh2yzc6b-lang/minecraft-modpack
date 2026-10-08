@@ -132,6 +132,13 @@ public final class WFCommands {
                     + "stronger below Y=" + com.warfront.world.HiveAdaptation.DEPTH + " and weaker in sunlight.")
                     .withStyle(race.color, ChatFormatting.ITALIC));
         }
+        if (current == null && race == Race.DWARF) {
+            boolean moved = com.warfront.world.HoldGate.sendToMountain(p);
+            ok(ctx, Component.literal(moved ? "Your clan's hold is cut into the nearest mountain: a stone gate, a tunnel and a "
+                    + "starter chest. Stand and fight to build Resolve; crouch at full Resolve to swear the Oath of Stone."
+                    : "No mountain lies near, so you start here. Stand and fight to build Resolve; crouch at full Resolve "
+                    + "to swear the Oath of Stone.").withStyle(race.color, ChatFormatting.ITALIC));
+        }
         return 1;
     }
 
