@@ -1234,6 +1234,7 @@ def tunnel_assets():
         write_json(DATA / MODID / "loot_table" / "blocks" / f"{b}.json", {"type": "minecraft:block", "pools": [
             {"rolls": 1, "bonus_rolls": 0, "entries": [entry], "conditions": [{"condition": "minecraft:survives_explosion"}]}],
             "random_sequence": f"{MODID}:blocks/{b}"})
+    write_json(DATA / MODID / "tags" / "entity_type" / "smite_bonus.json", {"replace": False, "values": []})
     write_json(DATA / MODID / "tags" / "block" / "raider_unbreakable.json",
                {"replace": False, "values": [f"{MODID}:{b}" for b in RUNE_FAMILY]})
     for kind, b in (("stairs", "rune_stone_stairs"), ("slabs", "rune_stone_slab"), ("walls", "rune_stone_wall")):

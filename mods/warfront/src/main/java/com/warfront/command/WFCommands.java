@@ -139,6 +139,11 @@ public final class WFCommands {
                     + "first one you find.") + " Kill enemies to build Valor; at full, press R to Rally the Banner.")
                     .withStyle(race.color, ChatFormatting.ITALIC));
         }
+        if (current == null && race == Race.ANGEL) {
+            com.warfront.world.SkyShrine.sendToPeak(p);
+            ok(ctx, Component.literal("Your shrine stands on the highest ground near. Gather Radiance in the open sun; at full, "
+                    + "press R to call Judgment. Mana Wells you place become Sunwells.").withStyle(race.color, ChatFormatting.ITALIC));
+        }
         if (current == null && race == Race.DWARF) {
             boolean moved = com.warfront.world.HoldGate.sendToMountain(p);
             ok(ctx, Component.literal(moved ? "Your clan's hold is cut into the nearest mountain: a stone gate, a tunnel and a "

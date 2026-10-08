@@ -61,6 +61,7 @@ public final class GameEvents {
         com.warfront.upkeep.RaidDamage.clearAll();
         com.warfront.outpost.Outposts.clearAll();
         com.warfront.flight.Rocketry.clearAll();
+        com.warfront.combat.Radiance.clearAll();
         com.warfront.war.Campaign.clearAll();
         com.warfront.fortress.Warlords.clearAll();
         com.warfront.fortress.TrophyBannerBlockEntity.clearAll();
@@ -205,6 +206,7 @@ public final class GameEvents {
                 event.setAmount(event.getAmount() * bonus);
             }
             if (attackerRace == Race.ORC && living != victim) Rage.gain(living, Rage.ON_HIT);
+            if (attackerRace == Race.ANGEL && living != victim) com.warfront.combat.Radiance.onHit(living);
             if (attackerRace == Race.DEMON && direct == living && living != victim) {
                 event.setAmount(event.getAmount() + Souls.burst(living, victim));
             }
@@ -347,9 +349,11 @@ public final class GameEvents {
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 Dwarves.secondTick(player);
                 com.warfront.combat.Valor.secondTick(player);
+                if (Race.of(player) == Race.ANGEL) com.warfront.combat.Radiance.tickSecond(player);
             }
         }
         com.warfront.war.Recall.tick(server);
+        com.warfront.combat.Radiance.tick(server);
         com.warfront.outpost.Outposts.tick();
         com.warfront.flight.Rocketry.tick(server);
         if (server.getTickCount() % 20 == 0) {

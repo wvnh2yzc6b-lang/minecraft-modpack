@@ -211,6 +211,13 @@ public class TestPanelScreen extends Screen {
                 send(2, 5, "Claim village", "player", "charter", "claim")
                         .setTooltip(Tooltip.create(Component.literal("Moves you to the nearest village and claims it for you.")));
             }
+            case ANGEL -> {
+                send(0, 4, "Radiance full", "player", "radiance", "fill");
+                send(1, 4, "Radiance empty", "player", "radiance", "empty");
+                send(2, 4, "Judgment here", "player", "radiance", "judgment")
+                        .setTooltip(Tooltip.create(Component.literal("Calls a sunbeam where you're looking (48 blocks).")));
+                send(1, 5, "Sky shrine here", "player", "shrine");
+            }
             default -> {
             }
         }

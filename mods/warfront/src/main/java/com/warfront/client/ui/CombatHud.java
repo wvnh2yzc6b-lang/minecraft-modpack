@@ -135,6 +135,16 @@ public final class CombatHud {
                 rows.add((g, f, x, y) -> WFTheme.text(g, f, "Mana shards " + shards, x, y, 0xFF8FE07A));
             }
             case ANGEL -> {
+                int radiance = v[HudPayload.RADIANCE];
+                rows.add((g, f, x, y) -> {
+                    if (radiance >= com.warfront.combat.Radiance.MAX) {
+                        boolean flash = (p.tickCount / 6) % 2 == 0;
+                        WFTheme.text(g, f, "Judgment ready: press R", x, y, flash ? 0xFFFFFFFF : 0xFFF5D76E);
+                    } else {
+                        WFTheme.text(g, f, "Radiance", x, y, 0xFFF5D76E);
+                        WFTheme.bar(g, x + 48, y + 2, W - 60, 4, radiance / (float) com.warfront.combat.Radiance.MAX, 0xFFF2C0);
+                    }
+                });
                 boolean day = p.level().isDay();
                 rows.add((g, f, x, y) -> WFTheme.text(g, f, day ? "Wings: flight (day)" : "Wings: glide only (night)", x, y,
                         day ? 0xFFF5D76E : 0xFF9AA3AE));

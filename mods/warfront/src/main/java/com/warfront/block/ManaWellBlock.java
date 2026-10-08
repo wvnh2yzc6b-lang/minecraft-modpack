@@ -60,7 +60,19 @@ public class ManaWellBlock extends BaseEntityBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (placer instanceof Player player && level.getBlockEntity(pos) instanceof ManaWellBlockEntity well) {
             well.setOwner(player.getUUID());
+            // Angels' wells drink the sun.
+            if (com.warfront.faction.Race.of(player) == com.warfront.faction.Race.ANGEL) well.setSunwell(true);
         }
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> net.minecraft.world.level.block.entity.BlockEntityTicker<T> getTicker(
+            Level level, BlockState state, net.minecraft.world.level.block.entity.BlockEntityType<T> type) {
+        return level.isClientSide ? null : createTickerHelper(type, com.warfront.registry.WFRegistry.MANA_WELL_BE.get(),
+                (l, p, s, well) -> {
+                    if (l.getGameTime() % 20 == 0) well.sunTick(l.isDay());
+                });
     }
 
     @Override

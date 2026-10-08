@@ -898,6 +898,7 @@ public class SoldierEntity extends PathfinderMob {
             heal(0.5f);
         }
         if (race == Race.DWARF) com.warfront.combat.Resolve.tickSecond(this);
+        if (race == Race.ANGEL) com.warfront.combat.Radiance.tickSecond(this);
 
         // Morale recovers over time; faster near a captain.
         float regen = (float) race.moraleRegen * 2f;

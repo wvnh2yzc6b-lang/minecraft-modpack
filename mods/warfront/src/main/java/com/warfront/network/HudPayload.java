@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Server to client, once a second: what the combat HUD shows. Packed as ints: souls, rage, frenzy ticks left,
  * units following, army total, formation, order, on guard, on patrol, beasts, beast cap, siege wave (0 none),
- * enemies left, resolve, Oath of Stone ticks left, valor.
+ * enemies left, resolve, Oath of Stone ticks left, valor, radiance.
  */
 public record HudPayload(List<Integer> values) implements CustomPacketPayload {
     public static final Type<HudPayload> TYPE = new Type<>(Warfront.id("hud"));
@@ -20,7 +20,7 @@ public record HudPayload(List<Integer> values) implements CustomPacketPayload {
             ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list(32)), HudPayload::values, HudPayload::new);
 
     public static final int SOULS = 0, RAGE = 1, FRENZY = 2, FOLLOWING = 3, TOTAL = 4, FORMATION = 5, ORDER = 6,
-            GUARD = 7, PATROL = 8, BEASTS = 9, BEAST_CAP = 10, WAVE = 11, LEFT = 12, RESOLVE = 13, OATH = 14, VALOR = 15, SIZE = 16;
+            GUARD = 7, PATROL = 8, BEASTS = 9, BEAST_CAP = 10, WAVE = 11, LEFT = 12, RESOLVE = 13, OATH = 14, VALOR = 15, RADIANCE = 16, SIZE = 17;
 
     /** The latest values on this client (plain data; safe on either side). */
     public static volatile int[] client = new int[SIZE];

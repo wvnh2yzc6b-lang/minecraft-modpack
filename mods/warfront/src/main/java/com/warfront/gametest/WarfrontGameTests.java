@@ -912,6 +912,50 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void radianceGathersInTheSunAndFadesBelow(GameTestHelper h) {
+        Player angel = h.makeMockPlayer(GameType.SURVIVAL);
+        angel.setData(WFRegistry.RACE, Race.ANGEL.id());
+        for (int i = 0; i < 3; i++) com.warfront.combat.Radiance.tickSecond(angel, true);
+        h.assertTrue(com.warfront.combat.Radiance.current(angel) == 3 * com.warfront.combat.Radiance.SUN_GAIN,
+                "three sunlit seconds should give 6 Radiance, got " + com.warfront.combat.Radiance.current(angel));
+        com.warfront.combat.Radiance.tickSecond(angel, false);
+        h.assertTrue(com.warfront.combat.Radiance.current(angel) == 3 * com.warfront.combat.Radiance.SUN_GAIN - com.warfront.combat.Radiance.FADE,
+                "out of the sun Radiance should fade, got " + com.warfront.combat.Radiance.current(angel));
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void judgmentSmitesEnemiesAndSparesAllies(GameTestHelper h) {
+        Player angel = h.makeMockPlayer(GameType.SURVIVAL);
+        angel.setData(WFRegistry.RACE, Race.ANGEL.id());
+        SoldierEntity ally = posted(h, angel, SoldierRole.SWORDSMAN, Race.ANGEL, 3, 4);
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 5, 4);
+        net.minecraft.world.entity.monster.Zombie zombie = h.spawnWithNoFreeWill(EntityType.ZOMBIE, new BlockPos(4, 2, 6));
+        ally.setNoAi(true);
+        enemy.setNoAi(true);
+        String key = com.warfront.faction.Factions.keyOf(h.getLevel().getServer(), angel);
+        java.util.Map<net.minecraft.world.entity.LivingEntity, Float> hits = com.warfront.combat.Radiance.strike(h.getLevel(),
+                h.absoluteVec(new Vec3(4.5, 2, 4.5)), key, com.warfront.combat.Radiance.RADIUS);
+        h.assertTrue(!hits.containsKey(ally), "Judgment must spare the caster's own units");
+        h.assertTrue(Float.valueOf(com.warfront.combat.Radiance.DAMAGE).equals(hits.get(enemy)), "an enemy should take 12, hits " + hits.values());
+        h.assertTrue(Float.valueOf(com.warfront.combat.Radiance.DAMAGE * com.warfront.combat.Radiance.BONUS).equals(hits.get(zombie)),
+                "the undead should take half again, got " + hits.get(zombie));
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void sunwellsGatherManaByDayOnly(GameTestHelper h) {
+        Player angel = h.makeMockPlayer(GameType.SURVIVAL);
+        ManaWellBlockEntity well = well(h, new BlockPos(4, 1, 4), angel, 0F);
+        h.assertTrue(well.sunTick(true) == 0F, "a plain Mana Well gathers nothing from the sun");
+        well.setSunwell(true);
+        h.assertTrue(well.sunTick(true) > 0F && well.getMana() > 0F, "a Sunwell under open sky should gather mana by day");
+        float before = well.getMana();
+        h.assertTrue(well.sunTick(false) == 0F && well.getMana() == before, "a Sunwell gathers nothing at night");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

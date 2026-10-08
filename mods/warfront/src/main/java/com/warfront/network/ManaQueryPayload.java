@@ -65,7 +65,8 @@ public record ManaQueryPayload(BlockPos pos, boolean network) implements CustomP
         boolean powered;
         if (be instanceof ManaWellBlockEntity w) {
             key = w.factionKey(p.server);
-            title = "Mana Well";
+            title = w.isSunwell() ? "Sunwell" : "Mana Well";
+            if (w.isSunwell()) detail = "Gathers mana by day under open sky";
             mana = Math.round(w.getMana());
             cap = Math.round(ManaWellBlockEntity.capacity());
             powered = mana > 0;

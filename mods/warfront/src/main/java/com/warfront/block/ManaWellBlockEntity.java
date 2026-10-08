@@ -19,6 +19,9 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
     private float mana;
     /** Test mode: never runs dry. */
     private boolean infinite;
+    /** Placed by an angel: gathers mana from the sun. */
+    private boolean sunwell;
+    public static final float SUN_MANA = 1F;
 
     /** Hoppers and pipes can push fuel in; nothing comes out. */
     public final IItemHandler fuelInput = new IItemHandler() {
@@ -72,6 +75,24 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
 
     public float getMana() {
         return infinite ? capacity() : mana;
+    }
+
+    public boolean isSunwell() {
+        return sunwell;
+    }
+
+    public void setSunwell(boolean sunwell) {
+        this.sunwell = sunwell;
+        setChanged();
+    }
+
+    /** Once a second: a Sunwell gains a little mana by day under open sky, out of the rain. Returns what it gained. */
+    public float sunTick(boolean day) {
+        if (!sunwell || !day || level == null) return 0F;
+        BlockPos above = worldPosition.above();
+        if (!level.canSeeSky(above) || level.isRainingAt(above) || mana >= capacity()) return 0F;
+        setMana(mana + SUN_MANA);
+        return SUN_MANA;
     }
 
     public boolean isInfinite() {
@@ -132,6 +153,7 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
         super.saveAdditional(tag, registries);
         tag.putFloat("Mana", mana);
         if (infinite) tag.putBoolean("Infinite", true);
+        if (sunwell) tag.putBoolean("Sunwell", true);
     }
 
     @Override
@@ -139,5 +161,6 @@ public class ManaWellBlockEntity extends ManaNodeBlockEntity {
         super.loadAdditional(tag, registries);
         mana = tag.getFloat("Mana");
         infinite = tag.getBoolean("Infinite");
+        sunwell = tag.getBoolean("Sunwell");
     }
 }

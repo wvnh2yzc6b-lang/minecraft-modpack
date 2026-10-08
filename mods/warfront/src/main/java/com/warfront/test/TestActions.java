@@ -158,6 +158,25 @@ public final class TestActions {
                             yield Result.ok("Valor full: press R to Rally (humans).");
                         }
                     };
+                    case "radiance" -> switch (arg(args, 2)) {
+                        case "empty" -> {
+                            com.warfront.combat.Radiance.set(player, 0);
+                            yield Result.ok("Radiance empty.");
+                        }
+                        case "judgment" -> {
+                            com.warfront.combat.Radiance.set(player, com.warfront.combat.Radiance.MAX);
+                            com.warfront.combat.Radiance.judgment(player);
+                            yield Result.ok("Judgment called at your crosshair (angels).");
+                        }
+                        default -> {
+                            com.warfront.combat.Radiance.set(player, com.warfront.combat.Radiance.MAX);
+                            yield Result.ok("Radiance full: press R to call Judgment (angels).");
+                        }
+                    };
+                    case "shrine" -> {
+                        com.warfront.world.SkyShrine.build(player.serverLevel(), player.blockPosition().relative(player.getDirection(), 5));
+                        yield Result.ok("Sky shrine built ahead of you.");
+                    }
                     case "charter" -> {
                         if ("claim".equals(arg(args, 2))) {
                             if (com.warfront.item.VillageCharterItem.sendToVillage(player)) {
@@ -173,7 +192,7 @@ public final class TestActions {
                         com.warfront.world.HoldGate.testBuild(player);
                         yield Result.ok("Hold gate built ahead of you.");
                     }
-                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold|valor [fill|empty|rally]|charter [claim]");
+                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold|valor [fill|empty|rally]|charter [claim]|radiance [fill|empty|judgment]|shrine");
                 };
                 case "difficulty" -> setPreset(player, com.warfront.war.WarState.Preset.byId(b));
                 case "raid" -> switch (b) {
