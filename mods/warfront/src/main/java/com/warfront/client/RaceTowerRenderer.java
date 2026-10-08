@@ -59,6 +59,12 @@ public class RaceTowerRenderer implements BlockEntityRenderer<RaceTowerBlockEnti
         pose.popPose();
     }
 
+    /** The model rises about two blocks above the block. */
+    @Override
+    public net.minecraft.world.phys.AABB getRenderBoundingBox(RaceTowerBlockEntity tower) {
+        return new net.minecraft.world.phys.AABB(tower.getBlockPos()).expandTowards(0, 3, 0).inflate(1, 0, 1);
+    }
+
     @Override
     public boolean shouldRenderOffScreen(RaceTowerBlockEntity tower) {
         return true;

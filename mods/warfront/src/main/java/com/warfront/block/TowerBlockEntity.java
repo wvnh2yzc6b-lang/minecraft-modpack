@@ -100,11 +100,7 @@ public class TowerBlockEntity extends BlockEntity {
         return net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket.create(this);
     }
 
-    /** The model rises about two blocks above the block. */
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition).expandTowards(0, 3, 0).inflate(0.25, 0, 0.25);
-    }
+
 
     /** The faction this tower fights for. */
     public String factionKey(@Nullable MinecraftServer server) {

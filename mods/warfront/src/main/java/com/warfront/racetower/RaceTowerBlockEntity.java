@@ -310,11 +310,6 @@ public class RaceTowerBlockEntity extends BlockEntity {
     }
 
     @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition).expandTowards(0, 3, 0).inflate(1, 0, 1);
-    }
-
-    @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (owner != null) tag.putUUID("Owner", owner);
