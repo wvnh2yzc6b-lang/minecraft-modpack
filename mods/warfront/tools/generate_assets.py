@@ -253,6 +253,30 @@ def flight_textures():
                         "m": hexc("d8fbff"), "F": hexc("f4f1e8"), "f": hexc("c8c0b0")}), "item/wind_charm.png")
 
 
+def charter_texture():
+    """Village Charter: a rolled parchment with a red wax seal and a gold ribbon."""
+    rows = [
+        "................",
+        "................",
+        "..PPPPPPPPPPP...",
+        ".pPLLLLLLLLLPp..",
+        ".pPPPPPPPPPPPp..",
+        "..PLLLLLLLLLP...",
+        "..PPPPPPPPPPP...",
+        "..PLLLLLLRRP....",
+        "..PPPPPPRrrRP...",
+        "..PLLLLLRrrR....",
+        ".pPPPPPPPRRPPp..",
+        ".pPPPPPPPGGPPp..",
+        "..PPPPPPPG.G....",
+        ".........G..G...",
+        "................",
+        "................",
+    ]
+    save(sprite(rows, {"P": hexc("eadbb0"), "p": hexc("c8b380"), "L": hexc("8a7a5a"), "R": hexc("a8231a"),
+                       "r": hexc("d84a3a"), "G": hexc("d4a017")}), "item/village_charter.png")
+
+
 def hammer_texture():
     """Mason's Hammer, carried by builders: a squared iron head on a wrapped wooden haft."""
     rows = [
@@ -713,7 +737,8 @@ def models_and_states():
 
     for item, parent in [("commander_baton", "handheld"), ("healing_staff", "handheld"), ("mason_hammer", "handheld"),
                          ("war_mark", "generated"), ("war_map", "generated"), ("war_horn", "generated"), ("mana_glider", "generated"),
-                         ("rocket_pack", "generated"), ("angel_wings", "generated"), ("wind_charm", "generated")]:
+                         ("rocket_pack", "generated"), ("angel_wings", "generated"), ("wind_charm", "generated"),
+                         ("village_charter", "generated")]:
         write_json(ASSETS / "models" / "item" / f"{item}.json",
                    {"parent": f"minecraft:item/{parent}", "textures": {"layer0": f"{MODID}:item/{item}"}})
     write_json(ASSETS / "models" / "item" / "soldier_spawn_egg.json", {"parent": "minecraft:item/template_spawn_egg"})
@@ -772,6 +797,18 @@ def effect_icons():
     for x, y in ((8, 5), (9, 5), (8, 6), (8, 7), (9, 8), (10, 9), (8, 9), (8, 10), (8, 11)):
         img.putpixel((x, y), rune)
     save(img, "mob_effect/oath_of_stone.png")
+
+    # Rallied: a gold banner on a pole.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    pole, cloth, hi = hexc("6a4424"), hexc("e2b55a"), hexc("ffe07a")
+    for y in range(1, 17):
+        img.putpixel((4, y), pole)
+    for y in range(2, 11):
+        for x in range(5, 15 - (1 if y > 8 else 0)):
+            img.putpixel((x, y), hi if (x + y) % 4 == 0 else cloth)
+    for x, y in ((9, 5), (10, 5), (9, 6), (10, 6)):
+        img.putpixel((x, y), hexc("b8231a"))
+    save(img, "mob_effect/rallied.png")
 
     # Rank chevron: a light plate with a darker rim, tinted to the race's color when drawn.
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
@@ -834,6 +871,9 @@ def lang():
         "block.warfront.summoning_altar": "Summoning Altar",
         "effect.warfront.frenzy": "Frenzy",
         "effect.warfront.oath_of_stone": "Oath of Stone",
+        "effect.warfront.rallied": "Rallied",
+        "item.warfront.village_charter": "Village Charter",
+        "key.warfront.race_power": "Race power (Rally, Oath, Judgment, Swarm)",
         "item.warfront.mana_glider": "Mana Glider",
         "item.warfront.rocket_pack": "Orc Rocket Pack",
         "item.warfront.angel_wings": "Angel Wings",
@@ -1212,6 +1252,7 @@ def tunnel_assets():
            "warfront:rune_mine", 2)
     shaped("flame_vent", ["BBB", "BFB", "BMB"], {"B": "minecraft:deepslate_bricks", "F": "minecraft:fire_charge",
                                                  "M": "warfront:mana_shard"}, "warfront:flame_vent")
+    shaped("village_charter", ["P", "W"], {"P": "minecraft:paper", "W": "minecraft:honeycomb"}, "warfront:village_charter")
     shaped("rune_drill", ["CDC", " I ", " I "], {"C": "warfront:mana_crystal", "D": "minecraft:diamond_pickaxe",
                                                  "I": "minecraft:iron_ingot"}, "warfront:rune_drill")
 
@@ -1556,6 +1597,7 @@ if __name__ == "__main__":
     hammer_texture()
     glider_texture()
     flight_textures()
+    charter_texture()
     block_textures()
     soldier_skins()
     models_and_states()

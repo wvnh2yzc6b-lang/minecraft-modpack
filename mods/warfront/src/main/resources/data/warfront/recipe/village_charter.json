@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "W"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "W": {
+      "item": "minecraft:honeycomb"
+    }
+  },
+  "result": {
+    "id": "warfront:village_charter",
+    "count": 1
+  }
+}

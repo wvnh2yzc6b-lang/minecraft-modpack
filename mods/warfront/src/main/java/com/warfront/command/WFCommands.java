@@ -132,6 +132,13 @@ public final class WFCommands {
                     + "stronger below Y=" + com.warfront.world.HiveAdaptation.DEPTH + " and weaker in sunlight.")
                     .withStyle(race.color, ChatFormatting.ITALIC));
         }
+        if (current == null && race == Race.HUMAN) {
+            boolean moved = com.warfront.item.VillageCharterItem.sendToVillage(p);
+            ok(ctx, Component.literal((moved ? "You arrive at the nearest village with a Village Charter. Use it there to claim the "
+                    + "village, then hire its villagers with Mana Shards." : "No village lies near; keep the Village Charter for the "
+                    + "first one you find.") + " Kill enemies to build Valor; at full, press R to Rally the Banner.")
+                    .withStyle(race.color, ChatFormatting.ITALIC));
+        }
         if (current == null && race == Race.DWARF) {
             boolean moved = com.warfront.world.HoldGate.sendToMountain(p);
             ok(ctx, Component.literal(moved ? "Your clan's hold is cut into the nearest mountain: a stone gate, a tunnel and a "

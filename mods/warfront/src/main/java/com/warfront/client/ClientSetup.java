@@ -29,11 +29,17 @@ public final class ClientSetup {
             "key.warfront.war_table", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
             org.lwjgl.glfw.GLFW.GLFW_KEY_H, "key.categories.warfront");
 
+    /** R: the race power (a human's Rally, a dwarf's Oath, an angel's Judgment, the Hive's Swarm call). */
+    public static final net.minecraft.client.KeyMapping RACE_POWER = new net.minecraft.client.KeyMapping(
+            "key.warfront.race_power", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+            org.lwjgl.glfw.GLFW.GLFW_KEY_R, "key.categories.warfront");
+
     @SubscribeEvent
     public static void onKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
         event.register(TEST_PANEL);
         event.register(WAR_TABLE);
         event.register(RECALL);
+        event.register(RACE_POWER);
     }
 
     @SubscribeEvent

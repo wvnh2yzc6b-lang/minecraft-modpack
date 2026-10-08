@@ -114,6 +114,16 @@ public final class CombatHud {
                 }
             });
             case HUMAN -> {
+                int valor = v[HudPayload.VALOR];
+                rows.add((g, f, x, y) -> {
+                    if (valor >= com.warfront.combat.Valor.MAX) {
+                        boolean flash = (p.tickCount / 6) % 2 == 0;
+                        WFTheme.text(g, f, "Rally ready: press R", x, y, flash ? 0xFFFFE07A : 0xFFE2B55A);
+                    } else {
+                        WFTheme.text(g, f, "Valor", x, y, 0xFFE2B55A);
+                        WFTheme.bar(g, x + 32, y + 2, W - 44, 4, valor / (float) com.warfront.combat.Valor.MAX, 0xE2B55A);
+                    }
+                });
                 ItemStack chest = p.getItemBySlot(EquipmentSlot.CHEST);
                 if (chest.is(WFRegistry.MANA_GLIDER.get())) rows.add((g, f, x, y) -> {
                     WFTheme.text(g, f, "Glider", x, y, 0xFF7FD8FF);

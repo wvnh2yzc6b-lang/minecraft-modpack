@@ -234,6 +234,7 @@ public final class GameEvents {
             com.warfront.fortress.Warlords.died(raider, event.getSource().getEntity());
             com.warfront.war.Campaign.raiderDied(raider);
         }
+        if (event.getSource().getEntity() instanceof LivingEntity anyKiller) com.warfront.combat.Valor.creditKill(anyKiller, victim);
         if (event.getSource().getEntity() instanceof SoldierEntity killer && killer != victim) {
             killer.addXp(com.warfront.army.Veterancy.killXp(victim.getMaxHealth()));
         }
@@ -275,6 +276,20 @@ public final class GameEvents {
         } else if (!player.level().isClientSide && !player.getAbilities().instabuild
                 && player.getFoodData().getFoodLevel() > 6) {
             player.causeFoodExhaustion(com.warfront.flight.WingFlight.EXHAUSTION);
+        }
+    }
+
+    /** Humans: villagers like them for good, and a claimed village's villagers can be hired with a Mana Shard. */
+    @SubscribeEvent
+    public static void onVillagerInteract(net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteract event) {
+        if (!(event.getTarget() instanceof net.minecraft.world.entity.npc.Villager villager) || event.getLevel().isClientSide) return;
+        Player player = event.getEntity();
+        if (Race.of(player) != Race.HUMAN) return;
+        com.warfront.item.VillageCharterItem.befriend(player, villager);
+        ItemStack held = event.getItemStack();
+        if (held.is(WFRegistry.MANA_SHARD.get()) && com.warfront.item.VillageCharterItem.hire(player, villager, held) != null) {
+            event.setCanceled(true);
+            event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);
         }
     }
 
@@ -329,7 +344,10 @@ public final class GameEvents {
             }
         }
         if (server.getTickCount() % 20 == 0) {
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) Dwarves.secondTick(player);
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                Dwarves.secondTick(player);
+                com.warfront.combat.Valor.secondTick(player);
+            }
         }
         com.warfront.war.Recall.tick(server);
         com.warfront.outpost.Outposts.tick();

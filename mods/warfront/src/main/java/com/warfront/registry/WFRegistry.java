@@ -53,6 +53,8 @@ public final class WFRegistry {
             MOB_EFFECTS.register("frenzy", () -> new com.warfront.combat.FrenzyEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.OathOfStoneEffect> OATH_OF_STONE =
             MOB_EFFECTS.register("oath_of_stone", () -> new com.warfront.combat.OathOfStoneEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.RalliedEffect> RALLIED =
+            MOB_EFFECTS.register("rallied", () -> new com.warfront.combat.RalliedEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.upkeep.WellFedEffect> WELL_FED =
             MOB_EFFECTS.register("well_fed", () -> new com.warfront.upkeep.WellFedEffect());
     /** Trophy banner auras, one per faction (the Fallen Host's banner gives mana instead). */
@@ -83,6 +85,10 @@ public final class WFRegistry {
             "army_formation", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> STARTER_KIT = ATTACHMENTS.register(
             "starter_kit", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
+    /** A human's claimed village (a BlockPos as a long; Long.MIN_VALUE for none). */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Long>> CHARTER = ATTACHMENTS.register(
+            "charter", () -> AttachmentType.builder(() -> Long.MIN_VALUE).serialize(Codec.LONG).copyOnDeath().build());
 
     /** Test mode: unlocks the Test Panel (F8) and /wftest for this player. */
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> TEST_MODE = ATTACHMENTS.register(
@@ -304,6 +310,8 @@ public final class WFRegistry {
             () -> new com.warfront.flight.AngelWingsItem(new Item.Properties().durability(432).rarity(Rarity.RARE)));
     public static final DeferredItem<com.warfront.flight.WindCharmItem> WIND_CHARM = ITEMS.register("wind_charm",
             () -> new com.warfront.flight.WindCharmItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<com.warfront.item.VillageCharterItem> VILLAGE_CHARTER = ITEMS.register("village_charter",
+            () -> new com.warfront.item.VillageCharterItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     /** Carried by builders; a display tool with no use of its own. */
     public static final DeferredItem<Item> MASON_HAMMER = ITEMS.register("mason_hammer",
             () -> new Item(new Item.Properties().stacksTo(1)));

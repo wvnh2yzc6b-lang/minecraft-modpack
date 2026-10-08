@@ -37,6 +37,8 @@ public final class ModEvents {
                 com.warfront.network.AltarReturnPayload::handle);
         registrar.playToClient(com.warfront.network.RacePayload.TYPE, com.warfront.network.RacePayload.STREAM_CODEC,
                 com.warfront.network.RacePayload::handle);
+        registrar.playToServer(com.warfront.network.RacePowerPayload.TYPE, com.warfront.network.RacePowerPayload.STREAM_CODEC,
+                com.warfront.network.RacePowerPayload::handle);
         registrar.playToServer(com.warfront.network.RocketPayload.TYPE, com.warfront.network.RocketPayload.STREAM_CODEC,
                 com.warfront.network.RocketPayload::handle);
         registrar.playToServer(com.warfront.network.RecallPayload.TYPE, com.warfront.network.RecallPayload.STREAM_CODEC,

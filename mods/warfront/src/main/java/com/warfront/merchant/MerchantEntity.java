@@ -81,6 +81,22 @@ public class MerchantEntity extends WanderingTrader {
         if (BuiltInRegistries.ITEM.containsKey(rl)) sells.add(sell(crystal, price, BuiltInRegistries.ITEM.get(rl), amount, 4));
     }
 
+    /** Humans trade a fifth cheaper. */
+    @Override
+    public void setTradingPlayer(@org.jetbrains.annotations.Nullable net.minecraft.world.entity.player.Player player) {
+        super.setTradingPlayer(player);
+        if (player != null) {
+            boolean human = com.warfront.faction.Race.of(player) == com.warfront.faction.Race.HUMAN;
+            for (MerchantOffer offer : getOffers()) priceFor(offer, human);
+        }
+    }
+
+    /** Sets the offer's price for a human (20% off, at least one less where it can be) or anyone else; returns it. */
+    public static int priceFor(MerchantOffer offer, boolean human) {
+        offer.setSpecialPriceDiff(human ? -(int) Math.ceil(offer.getBaseCostA().getCount() * 0.2) : 0);
+        return offer.getCostA().getCount();
+    }
+
     @Override
     public boolean hurt(DamageSource source, float amount) {
         boolean hurt = super.hurt(source, amount);

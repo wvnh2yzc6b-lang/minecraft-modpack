@@ -839,6 +839,79 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void valorRisesFromPlayerAndUnitKills(GameTestHelper h) {
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        human.moveTo(h.absoluteVec(new Vec3(2.5, 2, 2.5)));
+        SoldierEntity enemy = raider(h, SoldierRole.SWORDSMAN, 6, 6);
+        enemy.setNoAi(true);
+        com.warfront.combat.Valor.creditKill(human, enemy);
+        h.assertTrue(com.warfront.combat.Valor.current(human) == com.warfront.combat.Valor.PLAYER_KILL,
+                "a human's own kill should give 10 Valor, got " + com.warfront.combat.Valor.current(human));
+        SoldierEntity unit = posted(h, human, SoldierRole.SWORDSMAN, Race.HUMAN, 3, 3);
+        com.warfront.combat.Valor.creditUnitKill(human, unit);
+        h.assertTrue(com.warfront.combat.Valor.current(human) == com.warfront.combat.Valor.PLAYER_KILL + com.warfront.combat.Valor.UNIT_KILL,
+                "a nearby unit's kill should add 4 Valor, got " + com.warfront.combat.Valor.current(human));
+        Player orc = h.makeMockPlayer(GameType.SURVIVAL);
+        orc.setData(WFRegistry.RACE, Race.ORC.id());
+        com.warfront.combat.Valor.creditKill(orc, enemy);
+        h.assertTrue(com.warfront.combat.Valor.current(orc) == 0, "only humans gather Valor");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void rallyHealsBuffsAndEndsTheRout(GameTestHelper h) {
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        human.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
+        SoldierEntity unit = posted(h, human, SoldierRole.SWORDSMAN, Race.HUMAN, 5, 5);
+        unit.setNoAi(true);
+        unit.setHealth(unit.getMaxHealth() * 0.3F);
+        unit.routFor(200);
+        float before = unit.getHealth();
+        h.assertTrue(com.warfront.combat.Valor.rally(human) < 0, "no Rally before Valor is full");
+        com.warfront.combat.Valor.set(human, com.warfront.combat.Valor.MAX);
+        int reached = com.warfront.combat.Valor.rally(human);
+        h.assertTrue(reached >= 2, "the Rally should reach the player and their unit, reached " + reached);
+        h.assertTrue(unit.getHealth() > before && unit.hasEffect(WFRegistry.RALLIED) && !unit.isRouting(),
+                "the rallied unit should be healed, buffed and done routing (health " + before + " -> " + unit.getHealth() + ")");
+        h.assertTrue(com.warfront.combat.Valor.current(human) == 0, "the Rally spends all Valor");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void claimedVillagersCanBeHired(GameTestHelper h) {
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, Race.HUMAN.id());
+        net.minecraft.world.entity.npc.Villager villager = h.spawn(EntityType.VILLAGER, new BlockPos(4, 2, 4));
+        net.minecraft.world.item.ItemStack shards = new net.minecraft.world.item.ItemStack(WFRegistry.MANA_SHARD.get(), 3);
+        h.assertTrue(com.warfront.item.VillageCharterItem.hire(human, villager, shards) == null, "no charter, no hiring");
+        com.warfront.item.VillageCharterItem.claimAt(human, h.absolutePos(new BlockPos(4, 2, 4)));
+        SoldierEntity worker = com.warfront.item.VillageCharterItem.hire(human, villager, shards);
+        h.assertTrue(worker != null && worker.getRole() == SoldierRole.FARMER && human.getUUID().equals(worker.getOwnerUUID()),
+                "a hired villager should become the player's Farmhand, got " + (worker == null ? "nothing" : worker.getRole()));
+        h.assertTrue(villager.isRemoved() && shards.getCount() == 2, "the villager is replaced and a shard is paid");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void merchantSellsCheaperToHumans(GameTestHelper h) {
+        net.minecraft.world.item.trading.MerchantOffer offer = new net.minecraft.world.item.trading.MerchantOffer(
+                new net.minecraft.world.item.trading.ItemCost(WFRegistry.MANA_CRYSTAL.get(), 5),
+                new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND), 3, 2, 0.05F);
+        int human = com.warfront.merchant.MerchantEntity.priceFor(offer, true);
+        int other = com.warfront.merchant.MerchantEntity.priceFor(offer, false);
+        h.assertTrue(human == 4 && other == 5, "humans should pay 4 crystals where others pay 5, got " + human + " and " + other);
+        long now = 1000;
+        Player humanPlayer = h.makeMockPlayer(GameType.SURVIVAL);
+        humanPlayer.setData(WFRegistry.RACE, Race.HUMAN.id());
+        long wait = com.warfront.merchant.Caravan.nextVisit(now, net.minecraft.util.RandomSource.create(5), humanPlayer) - now;
+        long base = com.warfront.merchant.Caravan.nextVisit(now, net.minecraft.util.RandomSource.create(5)) - now;
+        h.assertTrue(wait < base, "the caravan should come to humans sooner: " + wait + " vs " + base);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

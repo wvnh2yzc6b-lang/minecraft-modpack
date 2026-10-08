@@ -50,6 +50,10 @@ public final class ClientGameEvents {
         while (ClientSetup.WAR_TABLE.consumeClick()) {
             net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.warfront.network.WarTableActionPayload(-1));
         }
+        while (ClientSetup.RACE_POWER.consumeClick()) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                    new com.warfront.network.RacePowerPayload(player.isShiftKeyDown()));
+        }
         while (ClientSetup.RECALL.consumeClick()) {
             net.neoforged.neoforge.network.PacketDistributor.sendToServer(com.warfront.network.RecallPayload.INSTANCE);
         }

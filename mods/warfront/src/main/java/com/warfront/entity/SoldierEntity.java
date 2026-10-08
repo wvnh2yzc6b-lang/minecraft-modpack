@@ -703,6 +703,17 @@ public class SoldierEntity extends PathfinderMob {
         return morale;
     }
 
+    /** Test hook: start routing now. */
+    public void routFor(int ticks) {
+        routTicks = Math.max(1, ticks);
+    }
+
+    /** A Rally: the rout ends, morale is restored (Rallied units won't rout again while it lasts). */
+    public void rallied() {
+        routTicks = 0;
+        morale = 100f;
+    }
+
     public boolean isRouting() {
         return routTicks > 0;
     }
@@ -898,7 +909,7 @@ public class SoldierEntity extends PathfinderMob {
         // Well Fed: wounds slowly close out of combat.
         if (getTarget() == null && hasEffect(WFRegistry.WELL_FED) && (tickCount / 20) % 5 == 0 && getHealth() < getMaxHealth()) heal(1f);
 
-        if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this)
+        if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this) && !hasEffect(WFRegistry.RALLIED)
                 && !com.warfront.army.Veterancy.neverRouts(getRank()) && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
             routTicks = 120;
             setTarget(null);

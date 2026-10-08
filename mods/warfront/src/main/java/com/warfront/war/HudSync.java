@@ -31,6 +31,7 @@ public final class HudSync {
         MobEffectInstance frenzy = p.getEffect(WFRegistry.FRENZY);
         v[HudPayload.FRENZY] = frenzy == null ? 0 : frenzy.getDuration();
         v[HudPayload.RESOLVE] = com.warfront.combat.Resolve.current(p);
+        v[HudPayload.VALOR] = com.warfront.combat.Valor.current(p);
         MobEffectInstance oath = p.getEffect(WFRegistry.OATH_OF_STONE);
         v[HudPayload.OATH] = oath == null ? 0 : oath.getDuration();
         List<SoldierEntity> units = TestActions.owned(p);

@@ -143,11 +143,37 @@ public final class TestActions {
                             yield Result.ok("Resolve full: crouch to swear the Oath (dwarves).");
                         }
                     };
+                    case "valor" -> switch (arg(args, 2)) {
+                        case "empty" -> {
+                            com.warfront.combat.Valor.set(player, 0);
+                            yield Result.ok("Valor empty.");
+                        }
+                        case "rally" -> {
+                            com.warfront.combat.Valor.set(player, com.warfront.combat.Valor.MAX);
+                            int n = com.warfront.combat.Valor.rally(player);
+                            yield Result.ok("Rallied " + n + " (you included).");
+                        }
+                        default -> {
+                            com.warfront.combat.Valor.set(player, com.warfront.combat.Valor.MAX);
+                            yield Result.ok("Valor full: press R to Rally (humans).");
+                        }
+                    };
+                    case "charter" -> {
+                        if ("claim".equals(arg(args, 2))) {
+                            if (com.warfront.item.VillageCharterItem.sendToVillage(player)) {
+                                com.warfront.item.VillageCharterItem.claimAt(player, player.blockPosition());
+                                yield Result.ok("Moved to the nearest village and claimed it.");
+                            }
+                            yield Result.fail("No village found within 100 chunks (a charter was given).");
+                        }
+                        player.getInventory().add(new ItemStack(WFRegistry.VILLAGE_CHARTER.get()));
+                        yield Result.ok("Village Charter given.");
+                    }
                     case "hold" -> {
                         com.warfront.world.HoldGate.testBuild(player);
                         yield Result.ok("Hold gate built ahead of you.");
                     }
-                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold");
+                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold|valor [fill|empty|rally]|charter [claim]");
                 };
                 case "difficulty" -> setPreset(player, com.warfront.war.WarState.Preset.byId(b));
                 case "raid" -> switch (b) {

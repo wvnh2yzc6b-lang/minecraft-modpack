@@ -43,6 +43,12 @@ public final class Caravan {
         return now + (3 + r.nextInt(3)) * (long) RaidScheduler.DAY;
     }
 
+    /** Humans are the trading race: the caravan comes to them about half again as often. */
+    public static long nextVisit(long now, net.minecraft.util.RandomSource r, net.minecraft.world.entity.player.Player p) {
+        long wait = nextVisit(now, r) - now;
+        return now + (com.warfront.faction.Race.of(p) == com.warfront.faction.Race.HUMAN ? wait * 2 / 3 : wait);
+    }
+
     /** Every 10 seconds. */
     public static void tick(MinecraftServer server) {
         WarState war = WarState.get(server);
@@ -50,11 +56,11 @@ public final class Caravan {
         for (ServerPlayer p : server.getPlayerList().getPlayers()) {
             WarState.Clock c = war.clock(p.getUUID());
             if (c.home == null) continue;
-            if (c.merchantDue <= 0) c.merchantDue = nextVisit(now, p.getRandom());
+            if (c.merchantDue <= 0) c.merchantDue = nextVisit(now, p.getRandom(), p);
             if (!shouldArrive(c, now)) continue;
             ServerLevel level = RaidScheduler.homeLevel(p, c);
             if (level == null || !level.isLoaded(c.home)) continue;   // wait until the base is loaded
-            c.merchantDue = nextVisit(now, p.getRandom());
+            c.merchantDue = nextVisit(now, p.getRandom(), p);
             if (c.merchantSkip) {
                 c.merchantSkip = false;   // still offended
                 continue;

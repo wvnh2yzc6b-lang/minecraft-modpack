@@ -194,11 +194,26 @@ public class TestPanelScreen extends Screen {
         send(0, 3, "God mode", "player", "god")
                 .setTooltip(Tooltip.create(Component.literal("Toggles: invulnerable, with creative-style flight.")));
         send(1, 3, "Give kit", "player", "kit");
-        send(0, 4, "Resolve full", "player", "resolve", "fill");
-        send(1, 4, "Resolve empty", "player", "resolve", "empty");
-        send(2, 4, "Oath of Stone", "player", "resolve", "oath");
-        send(1, 5, "Hold gate here", "player", "hold")
-                .setTooltip(Tooltip.create(Component.literal("Builds the dwarf starting hold (gate, tunnel, chest) ahead of you.")));
+        // Race power row for the race picked above.
+        switch (r) {
+            case DWARF -> {
+                send(0, 4, "Resolve full", "player", "resolve", "fill");
+                send(1, 4, "Resolve empty", "player", "resolve", "empty");
+                send(2, 4, "Oath of Stone", "player", "resolve", "oath");
+                send(1, 5, "Hold gate here", "player", "hold")
+                        .setTooltip(Tooltip.create(Component.literal("Builds the dwarf starting hold (gate, tunnel, chest) ahead of you.")));
+            }
+            case HUMAN -> {
+                send(0, 4, "Valor full", "player", "valor", "fill");
+                send(1, 4, "Valor empty", "player", "valor", "empty");
+                send(2, 4, "Rally now", "player", "valor", "rally");
+                send(1, 5, "Give charter", "player", "charter");
+                send(2, 5, "Claim village", "player", "charter", "claim")
+                        .setTooltip(Tooltip.create(Component.literal("Moves you to the nearest village and claims it for you.")));
+            }
+            default -> {
+            }
+        }
         coming(0, 5, "Spell mana", "Comes with the Iron's Spells link.");
     }
 
