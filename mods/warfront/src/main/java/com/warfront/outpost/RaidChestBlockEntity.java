@@ -76,8 +76,40 @@ public class RaidChestBlockEntity extends BaseContainerBlockEntity {
         return warband;
     }
 
+    /** A wild outpost (world-generated, no siege): whether its garrison has been called up and its chest stocked. */
+    private boolean garrisoned;
+    public static final int WILD_LOOT_WAVE = 20;
+    public static final int WILD_WAKE_RANGE = 24;
+
+    public boolean isGarrisoned() {
+        return garrisoned;
+    }
+
+    /**
+     * A wild outpost wakes when a player comes near: its chest fills with late-game loot (a tier above a wave-15
+     * siege) and its faction's guards take their posts. Returns the guards called.
+     */
+    public List<SoldierEntity> wake(ServerLevel level) {
+        if (garrisoned) return List.of();
+        garrisoned = true;
+        warband = UUID.randomUUID();
+        com.warfront.outpost.Outposts.fill(this, faction(), WILD_LOOT_WAVE, level.random);
+        List<SoldierRole> guards = List.of(SoldierRole.SHIELDBEARER, SoldierRole.SWORDSMAN, SoldierRole.SPEARMAN, SoldierRole.ARCHER,
+                SoldierRole.ARCHER, SoldierRole.CAPTAIN);
+        List<SoldierEntity> out = WarbandSpawner.spawnInto(level, warband, faction(), guards, worldPosition.offset(3, 0, 3),
+                Vec3.atBottomCenterOf(worldPosition), null, 3);
+        out.forEach(s -> s.setPersistenceRequired());
+        setChanged();
+        return out;
+    }
+
     /** Every 90 seconds (config) a few raiders set out from the outpost toward the standard. */
     public static void serverTick(Level level, BlockPos pos, BlockState state, RaidChestBlockEntity be) {
+        if (be.standard == null && !be.garrisoned && level instanceof ServerLevel server && level.getGameTime() % 20 == 0
+                && level.getNearestPlayer(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, WILD_WAKE_RANGE, false) != null) {
+            be.wake(server);
+            return;
+        }
         if (be.standard == null || be.warband == null || !(level instanceof ServerLevel server)) return;
         if (level.getGameTime() < be.nextPressure) return;
         be.nextPressure = level.getGameTime() + WFConfig.OUTPOST_PRESSURE.get() * 20L;
@@ -175,6 +207,7 @@ public class RaidChestBlockEntity extends BaseContainerBlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (battered > 0) tag.putInt("Battered", battered);
+        if (garrisoned) tag.putBoolean("Garrisoned", true);
         ContainerHelper.saveAllItems(tag, items, registries);
         tag.put("Placed", new LongArrayTag(placed));
         if (standard != null) tag.putLong("Standard", standard.asLong());
@@ -186,6 +219,7 @@ public class RaidChestBlockEntity extends BaseContainerBlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         battered = tag.getInt("Battered");
+        garrisoned = tag.getBoolean("Garrisoned");
         items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, registries);
         placed.clear();

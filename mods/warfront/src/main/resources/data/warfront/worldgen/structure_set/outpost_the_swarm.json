@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "warfront:outpost_the_swarm",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 22,
+    "separation": 8,
+    "salt": 1018106
+  }
+}

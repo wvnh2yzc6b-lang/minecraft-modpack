@@ -132,9 +132,57 @@ def layout(faction):
     return blocks
 
 
-def write_template(path, faction):
-    W, H, D = SIZE
-    placed = layout(faction)
+# ----------------------------------------------------------------------------- wild outposts
+
+# Fort-sized enemy outposts in the factions' homeland dimensions (optional mods): no siege attached, a garrison wakes
+# when a player comes near, and the raid chest at the heart holds late-game loot.
+OUTPOST_SIZE = (17, 8, 17)
+WILD_OUTPOSTS = {
+    "fallen_host": {"biomes": [{"id": b, "required": False} for b in (
+        "aether:skyroot_meadow", "aether:skyroot_grove", "aether:skyroot_woodland", "aether:skyroot_forest")],
+        "height": None},
+    "the_swarm": {"biomes": [{"id": b, "required": False} for b in (
+        "deeperdarker:echoing_forest", "deeperdarker:overcast_columns", "deeperdarker:otherside_highlands",
+        "deeperdarker:blooming_caverns")], "height": 40},
+}
+
+
+def outpost_layout(faction):
+    floor, wall, tower, accent, roof = PALETTES[faction]
+    W, H, D = OUTPOST_SIZE
+    blocks = {}
+
+    def put(x, y, z, b, props=None):
+        if 0 <= x < W and 0 <= y < H and 0 <= z < D:
+            blocks[(x, y, z)] = (b, props or {})
+
+    for x in range(W):
+        for z in range(D):
+            put(x, 0, z, floor)
+    for i in range(W):
+        for (x, z) in ((i, 0), (i, D - 1), (0, i), (W - 1, i)):
+            for y in range(1, 4):
+                put(x, y, z, wall)
+    for x in range(7, 10):
+        for y in range(1, 3):
+            blocks.pop((x, y, D - 1), None)                                   # the gate
+    for cx, cz in ((0, 0), (W - 3, D - 3)):
+        for dx in range(3):
+            for dz in range(3):
+                for y in range(1, 6):
+                    put(cx + dx, y, cz + dz, tower)
+                put(cx + dx, 6, cz + dz, roof)
+    for z in range(3, 6):                                                     # a tent
+        for x in (11, 13):
+            put(x, 1, z, accent)
+        put(12, 2, z, accent)
+    put(8, 1, 8, "warfront:raid_chest", {"faction": str(FACTIONS.index(faction))})
+    return blocks
+
+
+def write_template(path, faction, placed=None, size=None):
+    W, H, D = size or SIZE
+    placed = placed if placed is not None else layout(faction)
     palette, index = [], {}
     def pal(b, props):
         key = (b, tuple(sorted(props.items())))
@@ -169,7 +217,34 @@ def _json(path, obj):
     path.write_text(json.dumps(obj, indent=2) + "\n")
 
 
+def generate_outposts(data_root, modid="warfront"):
+    for i, (f, spec) in enumerate(WILD_OUTPOSTS.items()):
+        write_template(data_root / modid / "structure" / f"outpost_{f}.nbt", f, outpost_layout(f), OUTPOST_SIZE)
+        height = spec["height"]
+        structure = {
+            "type": "minecraft:jigsaw", "biomes": f"#{modid}:has_structure/outpost_{f}",
+            "step": "surface_structures" if height is None else "underground_structures", "spawn_overrides": {},
+            "terrain_adaptation": "beard_thin" if height is None else "beard_box", "start_pool": f"{modid}:outpost/{f}",
+            "size": 1, "start_height": {"absolute": 0 if height is None else height}, "max_distance_from_center": 80,
+            "use_expansion_hack": False}
+        if height is None:
+            structure["project_start_to_heightmap"] = "WORLD_SURFACE_WG"
+        _json(data_root / modid / "worldgen" / "structure" / f"outpost_{f}.json", structure)
+        _json(data_root / modid / "worldgen" / "template_pool" / "outpost" / f"{f}.json", {
+            "fallback": "minecraft:empty",
+            "elements": [{"weight": 1, "element": {"element_type": "minecraft:single_pool_element",
+                                                   "location": f"{modid}:outpost_{f}", "projection": "rigid",
+                                                   "processors": "minecraft:empty"}}]})
+        # Rare: about one per 300-400 blocks. A datapack can override this structure set to change it.
+        _json(data_root / modid / "worldgen" / "structure_set" / f"outpost_{f}.json", {
+            "structures": [{"structure": f"{modid}:outpost_{f}", "weight": 1}],
+            "placement": {"type": "minecraft:random_spread", "spacing": 22, "separation": 8, "salt": 913377 + i * 104729}})
+        _json(data_root / modid / "tags" / "worldgen" / "biome" / "has_structure" / f"outpost_{f}.json",
+              {"replace": False, "values": spec["biomes"]})
+
+
 def generate(data_root, modid="warfront"):
+    generate_outposts(data_root, modid)
     for i, f in enumerate(FACTIONS):
         write_template(data_root / modid / "structure" / f"fortress_{f}.nbt", f)
         height = HEIGHT.get(f)

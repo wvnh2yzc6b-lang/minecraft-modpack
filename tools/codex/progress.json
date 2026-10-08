@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Crossover: enemy outposts in the Aether and the Otherside",
+      "detail": "With the Aether or Deeper and Darker installed, the factions' homelands hold their own outposts: Fallen Host forts on the Aether's skyroot islands and Swarm forts in the Otherside's caverns, about one every 300 to 400 blocks (a datapack can change the spacing). They are fort-sized, in the faction's materials, with no siege attached. When you come within 24 blocks the garrison wakes (a shieldbearer, a swordsman, a spearman, two archers and a captain) and the raid chest at the heart fills with late-game loot, a tier above a wave-15 siege outpost. Empty the chest and break it to clear the outpost, as in a siege. Without those mods nothing changes."
+    },
+    {
+      "status": "done",
       "title": "Crossover: Armored Moa, Hive echo armor, Aether wings recipe",
       "image": "angel-moa-render.png",
       "detail": "Angels now have a war beast: the Armored Moa, a tall running bird in gilded barding, summoned at the altar like the Deepmaw and counted against the beast limit. It is Warfront's own creature, so it works without the Aether; with the Aether installed, each one hatches from a Moa egg you bring back from there. It strides fast, bobs its neck, flares its wings in a fight and strikes with its beak. The Hive gets echo armor: helm, carapace, greaves and treads, Hive only, about as tough as diamond, made from sculk and echo shards (or Deeper and Darker resonarium plates and a Mana Crystal when that mod is installed). In the dark, underground or anywhere in the Otherside, each piece adds +1 damage and +1 toughness; the full set gives night vision in the dark and muffles your steps and splashes so sculk sensors and wardens don't hear you walk. With the Aether installed, angel wings can also be made from Valkyrie Victory Medals and Mana Crystals; the plain recipe stays."
@@ -206,11 +211,6 @@
       "status": "planned",
       "title": "Roadmap: dwarves dig in",
       "detail": "Dwarves get tunnels instead of flight: a Rune Drill that cuts 3x3 tunnels fast, Rune Stone walls that raiders and Hive tunnelers can't break through, and three tunnel traps: a hidden spike floor, a rune mine that only blows up enemies, and a flame vent that runs on base mana. Queued for a build session. Dwarves also get their race power, Hold the Line: standing your ground builds Resolve (more armor, harder to knock back), and at full you swear an Oath of Stone that makes you nearly immovable and ends in a shockwave. New dwarf players start at a hold gate carved into a mountain, and dwarves are deep miners: more Mana Crystals, faster stone mining, fewer Manabloom shards."
-    },
-    {
-      "status": "planned",
-      "title": "Roadmap: the Aether and the Otherside join the war",
-      "detail": "Twilight Forest is out. The Aether and Deeper and Darker come in and tie into Warfront: the Aether is the angels' homeland and the Otherside the Hive's, Fallen Host and Swarm raids come from there, their ores fuel your mana, angel wings and an armored Moa come from the Aether, and enemy outposts with raid chests wait in both dimensions. Warfront still runs without either mod. Queued for build sessions."
     },
     {
       "status": "done",

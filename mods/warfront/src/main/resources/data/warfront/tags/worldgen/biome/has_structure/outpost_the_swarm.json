@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "deeperdarker:echoing_forest",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:overcast_columns",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:otherside_highlands",
+      "required": false
+    },
+    {
+      "id": "deeperdarker:blooming_caverns",
+      "required": false
+    }
+  ]
+}

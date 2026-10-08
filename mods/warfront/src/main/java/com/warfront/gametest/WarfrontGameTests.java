@@ -1311,6 +1311,22 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void wildOutpostsWakeWithLootAndGuards(GameTestHelper h) {
+        BlockPos chestPos = new BlockPos(4, 1, 4);
+        h.setBlock(chestPos, WFRegistry.RAID_CHEST.get().defaultBlockState()
+                .setValue(com.warfront.outpost.RaidChestBlock.FACTION, com.warfront.faction.NpcFaction.FALLEN_HOST.ordinal()));
+        com.warfront.outpost.RaidChestBlockEntity chest = (com.warfront.outpost.RaidChestBlockEntity) h.getBlockEntity(chestPos);
+        h.assertTrue(!chest.isGarrisoned() && chest.isEmpty(), "a wild outpost sleeps until a player comes");
+        java.util.List<SoldierEntity> guards = chest.wake(h.getLevel());
+        h.assertTrue(chest.isGarrisoned() && !chest.isEmpty(), "waking fills the raid chest");
+        h.assertTrue(guards.size() >= 5 && guards.stream().allMatch(g -> "npc:fallen_host".equals(g.getFactionKey())),
+                "the Fallen Host garrison should take its posts, got " + guards.size());
+        h.assertTrue(chest.wake(h.getLevel()).isEmpty(), "an outpost wakes only once");
+        guards.forEach(SoldierEntity::discard);
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

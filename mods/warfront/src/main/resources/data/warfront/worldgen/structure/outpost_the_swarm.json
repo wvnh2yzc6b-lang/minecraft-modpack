@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#warfront:has_structure/outpost_the_swarm",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_box",
+  "start_pool": "warfront:outpost/the_swarm",
+  "size": 1,
+  "start_height": {
+    "absolute": 40
+  },
+  "max_distance_from_center": 80,
+  "use_expansion_hack": false
+}
