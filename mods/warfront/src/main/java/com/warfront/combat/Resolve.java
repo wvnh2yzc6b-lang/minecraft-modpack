@@ -80,6 +80,10 @@ public final class Resolve {
 
     public static void tickSecond(LivingEntity e, long now) {
         if (inOath(e)) return;
+        if (e instanceof SoldierEntity && current(e) >= MAX) {
+            swear(e);   // soldiers swear as soon as they're full, before anything drains it
+            return;
+        }
         CompoundTag d = e.getPersistentData();
         long since = d.contains(COMBAT_KEY) ? now - d.getLong(COMBAT_KEY) : Long.MAX_VALUE;
         int r = current(e);
