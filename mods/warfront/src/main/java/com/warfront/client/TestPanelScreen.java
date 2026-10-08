@@ -218,6 +218,13 @@ public class TestPanelScreen extends Screen {
                         .setTooltip(Tooltip.create(Component.literal("Calls a sunbeam where you're looking (48 blocks).")));
                 send(1, 5, "Sky shrine here", "player", "shrine");
             }
+            case HIVE -> {
+                send(0, 4, "Swarm to 50", "player", "swarm", "half");
+                send(1, 4, "Swarm full", "player", "swarm", "fill");
+                send(2, 4, "Brood Call", "player", "swarm", "brood");
+                send(1, 5, "Deepmaw Call", "player", "swarm", "deepmaw");
+                send(2, 5, "Dismiss swarm", "player", "swarm", "dismiss");
+            }
             default -> {
             }
         }

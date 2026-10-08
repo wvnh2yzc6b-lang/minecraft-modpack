@@ -31,21 +31,6 @@
       ]
     },
     {
-      "id": "hive-swarm-call",
-      "status": "ready",
-      "title": "Hive race power: Call the Swarm (temporary soldiers and a temporary Deepmaw)",
-      "decided": "Owner, 2026-10-07: the Hive's race power calls reinforcements. Half meter calls basic soldiers, full meter calls a beast; summons last only for that battle. Meter fills from kills, faster underground; spend at half or save for the beast; summons burrow away about 20 s after combat.",
-      "spec": [
-        "Swarm meter 0-100 (a player attachment, synced; same pattern as the other race powers). Gain +8 per kill by the player, +3 per kill by one of the player's units within 32 blocks; doubled when the player is underground or in the dark (no sky access or block light below 7). Drains 1 per second after 60 s out of combat.",
-        "Power key at 50 or more: Brood Call, spends 50 and 4 basic Hive soldiers (2 Lancer-Drones, 2 Rippers) burrow up around the player (dig-up animation: sculk/dirt particles, rise out of the ground over 1 s). At 100, sneak + power key (or a second press within 1 s; match the other race powers' input) spends all 100 for Deepmaw Call: one temporary Deepmaw burrows up beside the player. A plain press at 100 does the Brood Call, so the player chooses.",
-        "Temporary summons: flagged as 'swarm-called' and owned by the player; they follow and fight like normal army units, but don't count toward the army cap or beastLimit, drop no loot or XP, can't be given guard/patrol duty, and never become fallen heroes. About 20 s after the player and the summons are all out of combat, they burrow back into the ground and despawn (reverse dig animation). They also leave if the player logs out, changes dimension or dies.",
-        "Underground and sunlight traits stay as they are (passive).",
-        "Enemy Swarm raids use it too: a Swarm raid captain calls a Brood Call once per raid when hurt below half health.",
-        "HUD: Swarm meter in the race-power slot (teal with cyan veins), with a notch at 50 that lights up when the Brood Call is ready and the full bar glowing when the Deepmaw is ready. Test Panel and /wftest: fill the meter to 50 or 100, Brood Call, Deepmaw Call, dismiss all swarm-called units.",
-        "Game tests: the meter fills from kills and twice as fast underground; Brood Call spends 50 and spawns 4 units that don't count toward the army cap; Deepmaw Call works at 100 and ignores beastLimit; summons despawn after combat ends."
-      ]
-    },
-    {
       "id": "skill-tree",
       "status": "blocked",
       "blocked_on": "Node lists for the seven race paths (open question in needs.json). The six shared paths are designed; they can be built first.",

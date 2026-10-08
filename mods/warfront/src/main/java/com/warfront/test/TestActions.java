@@ -173,6 +173,29 @@ public final class TestActions {
                             yield Result.ok("Radiance full: press R to call Judgment (angels).");
                         }
                     };
+                    case "swarm" -> switch (arg(args, 2)) {
+                        case "half" -> {
+                            com.warfront.combat.SwarmCall.set(player, com.warfront.combat.SwarmCall.BROOD);
+                            yield Result.ok("Swarm meter at 50: press R for a Brood Call (Hive).");
+                        }
+                        case "brood" -> {
+                            com.warfront.combat.SwarmCall.set(player, com.warfront.combat.SwarmCall.BROOD);
+                            yield Result.ok("Brood Call: " + com.warfront.combat.SwarmCall.call(player, false).size() + " units.");
+                        }
+                        case "deepmaw" -> {
+                            com.warfront.combat.SwarmCall.set(player, com.warfront.combat.SwarmCall.MAX);
+                            yield Result.ok("Deepmaw Call: " + com.warfront.combat.SwarmCall.call(player, true).size() + " unit.");
+                        }
+                        case "dismiss" -> {
+                            int n = 0;
+                            for (SoldierEntity s : owned(player)) if (s.isSwarmCalled() && com.warfront.combat.SwarmCall.idleTick(s, false, false)) n++;
+                            yield Result.ok(n + " swarm-called units burrowed away.");
+                        }
+                        default -> {
+                            com.warfront.combat.SwarmCall.set(player, com.warfront.combat.SwarmCall.MAX);
+                            yield Result.ok("Swarm meter full: sneak + R for a Deepmaw (Hive).");
+                        }
+                    };
                     case "shrine" -> {
                         com.warfront.world.SkyShrine.build(player.serverLevel(), player.blockPosition().relative(player.getDirection(), 5));
                         yield Result.ok("Sky shrine built ahead of you.");
@@ -192,7 +215,7 @@ public final class TestActions {
                         com.warfront.world.HoldGate.testBuild(player);
                         yield Result.ok("Hold gate built ahead of you.");
                     }
-                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold|valor [fill|empty|rally]|charter [claim]|radiance [fill|empty|judgment]|shrine");
+                    default -> Result.fail("player race|fill|day|night|clear|god|kit|flight|resolve [fill|empty|oath]|hold|valor [fill|empty|rally]|charter [claim]|radiance [fill|empty|judgment]|shrine|swarm [half|fill|brood|deepmaw|dismiss]");
                 };
                 case "difficulty" -> setPreset(player, com.warfront.war.WarState.Preset.byId(b));
                 case "raid" -> switch (b) {

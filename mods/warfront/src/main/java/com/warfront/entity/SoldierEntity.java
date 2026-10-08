@@ -262,7 +262,7 @@ public class SoldierEntity extends PathfinderMob {
     /** Player-owned Captains, Champions and war beasts fall instead of dying. */
     public boolean isHero() {
         SoldierRole r = getRole();
-        return getOwnerUUID() != null && (r == SoldierRole.CAPTAIN || r == SoldierRole.CHAMPION || r == SoldierRole.BEAST);
+        return getOwnerUUID() != null && !swarmCalled && (r == SoldierRole.CAPTAIN || r == SoldierRole.CHAMPION || r == SoldierRole.BEAST);
     }
 
     /** Seconds a fallen hero still waits for its commander. */
@@ -703,6 +703,38 @@ public class SoldierEntity extends PathfinderMob {
         return morale;
     }
 
+    /** Called up by the Hive's Swarm power: temporary, outside the army caps, no loot, no duty, never a fallen hero. */
+    private boolean swarmCalled;
+
+    public boolean isSwarmCalled() {
+        return swarmCalled;
+    }
+
+    public void setSwarmCalled(boolean called) {
+        swarmCalled = called;
+    }
+
+    /** Whether this unit counts toward its commander's army size and war-beast limit. */
+    public boolean countsTowardArmy() {
+        return !swarmCalled;
+    }
+
+    @Override
+    protected boolean shouldDropLoot() {
+        return !swarmCalled && super.shouldDropLoot();
+    }
+
+    @Override
+    protected void dropCustomDeathLoot(net.minecraft.server.level.ServerLevel level, net.minecraft.world.damagesource.DamageSource source,
+                                       boolean recentlyHit) {
+        if (!swarmCalled) super.dropCustomDeathLoot(level, source, recentlyHit);
+    }
+
+    @Override
+    protected int getBaseExperienceReward() {
+        return swarmCalled ? 0 : super.getBaseExperienceReward();
+    }
+
     /** Test hook: start routing now. */
     public void routFor(int ticks) {
         routTicks = Math.max(1, ticks);
@@ -899,6 +931,7 @@ public class SoldierEntity extends PathfinderMob {
         }
         if (race == Race.DWARF) com.warfront.combat.Resolve.tickSecond(this);
         if (race == Race.ANGEL) com.warfront.combat.Radiance.tickSecond(this);
+        if (race == Race.HIVE && getOwnerUUID() == null && getRole() == SoldierRole.CAPTAIN) com.warfront.combat.SwarmCall.captainCall(this);
 
         // Morale recovers over time; faster near a captain.
         float regen = (float) race.moraleRegen * 2f;
@@ -1131,6 +1164,11 @@ public class SoldierEntity extends PathfinderMob {
         }
 
         ItemStack held = player.getItemInHand(hand);
+        if (swarmCalled && player.isShiftKeyDown() && held.isEmpty()) {
+            player.displayClientMessage(Component.literal("Swarm-called units fight this battle only; they take no duty.")
+                    .withStyle(ChatFormatting.GRAY), true);
+            return InteractionResult.CONSUME;
+        }
         if (!getRole().posted() && player.isShiftKeyDown() && held.isEmpty()) {
             // Sneak + empty hand on a battle unit: guard here, then patrol here, then back to the army.
             com.warfront.army.Duty next = com.warfront.army.Duty.byOrdinal(getDuty().ordinal() + 1);
@@ -1216,6 +1254,7 @@ public class SoldierEntity extends PathfinderMob {
         tag.putInt("Skin", entityData.get(DATA_SKIN));
         tag.putInt("Order", entityData.get(DATA_ORDER));
         tag.putString("Faction", entityData.get(DATA_FACTION));
+        if (swarmCalled) tag.putBoolean("SwarmCalled", true);
         UUID owner = getOwnerUUID();
         if (owner != null) tag.putUUID("Owner", owner);
         if (warbandId != null) tag.putUUID("Warband", warbandId);
@@ -1247,6 +1286,7 @@ public class SoldierEntity extends PathfinderMob {
         entityData.set(DATA_SKIN, tag.getInt("Skin"));
         entityData.set(DATA_ORDER, tag.getInt("Order"));
         duty = com.warfront.army.Duty.byOrdinal(tag.getInt("Duty"));
+        swarmCalled = tag.getBoolean("SwarmCalled");
         if (tag.contains("Faction")) entityData.set(DATA_FACTION, tag.getString("Faction"));
         entityData.set(DATA_OWNER, tag.hasUUID("Owner") ? Optional.of(tag.getUUID("Owner")) : Optional.empty());
         warbandId = tag.hasUUID("Warband") ? tag.getUUID("Warband") : null;

@@ -117,7 +117,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         // Heroes waiting to return still count, so letting them fall can't get round the caps.
         List<com.warfront.war.WarState.Returning> away = com.warfront.war.WarState.get(server.getServer()).returning(player.getUUID());
         int count = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
-                s -> s.isAlive() && s.isOwnedBy(player)).size() + away.size();
+                s -> s.isAlive() && s.isOwnedBy(player) && s.countsTowardArmy()).size() + away.size();
         if (count >= max) return new Result(false, "Your army is at full strength (" + max + ").");
 
         Race race = raceOf(player);
@@ -133,7 +133,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         }
         if (role == SoldierRole.BEAST) {
             int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
-                    s -> s.isAlive() && s.isOwnedBy(player) && s.getRole() == SoldierRole.BEAST).size()
+                    s -> s.isAlive() && s.isOwnedBy(player) && s.countsTowardArmy() && s.getRole() == SoldierRole.BEAST).size()
                     + (int) away.stream().filter(r -> r.role() == SoldierRole.BEAST).count();
             int cap = BaseLevel.beastCap(baseLevel);
             if (beasts >= cap) {

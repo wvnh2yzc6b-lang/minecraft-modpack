@@ -150,6 +150,16 @@ public final class CombatHud {
                         day ? 0xFFF5D76E : 0xFF9AA3AE));
             }
             case HIVE -> {
+                int swarm = v[HudPayload.SWARM];
+                rows.add((g, f, x, y) -> {
+                    int bx = x + 40, bw = W - 52;
+                    boolean full = swarm >= com.warfront.combat.SwarmCall.MAX;
+                    WFTheme.text(g, f, full ? "Deepmaw!" : "Swarm", x, y, full ? 0xFF7FFFF0 : 0xFF3FD8D0);
+                    WFTheme.bar(g, bx, y + 2, bw, 4, swarm / (float) com.warfront.combat.SwarmCall.MAX, full ? 0x7FFFF0 : 0x1E8C88);
+                    // The notch at 50: lit when a Brood Call is ready.
+                    int nx = bx + bw / 2;
+                    g.fill(nx, y, nx + 1, y + 8, swarm >= com.warfront.combat.SwarmCall.BROOD ? 0xFF7FFFF0 : 0xFF0E3A38);
+                });
                 boolean under = HiveAdaptation.underground(p);
                 int sky = p.level().getBrightness(LightLayer.SKY, p.blockPosition());
                 rows.add((g, f, x, y) -> WFTheme.text(g, f, (under ? "Underground: stronger" : "Surface") + " · sky " + sky, x, y,

@@ -956,6 +956,53 @@ public final class WarfrontGameTests {
     }
 
     @GameTest(template = ARENA)
+    public static void swarmMeterFillsTwiceAsFastUnderground(GameTestHelper h) {
+        Player hive = h.makeMockPlayer(GameType.SURVIVAL);
+        hive.setData(WFRegistry.RACE, Race.HIVE.id());
+        com.warfront.combat.SwarmCall.gain(hive, com.warfront.combat.SwarmCall.PLAYER_KILL, false);
+        h.assertTrue(com.warfront.combat.SwarmCall.current(hive) == 8, "a kill on the surface gives 8, got " + com.warfront.combat.SwarmCall.current(hive));
+        com.warfront.combat.SwarmCall.gain(hive, com.warfront.combat.SwarmCall.PLAYER_KILL, true);
+        h.assertTrue(com.warfront.combat.SwarmCall.current(hive) == 24, "a kill underground gives 16 more, got " + com.warfront.combat.SwarmCall.current(hive));
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void broodCallSummonsFourOutsideTheArmyCap(GameTestHelper h) {
+        Player hive = h.makeMockPlayer(GameType.SURVIVAL);
+        hive.setData(WFRegistry.RACE, Race.HIVE.id());
+        hive.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
+        h.assertTrue(com.warfront.combat.SwarmCall.call(hive, false).isEmpty(), "no Brood Call below 50");
+        com.warfront.combat.SwarmCall.set(hive, 60);
+        java.util.List<SoldierEntity> brood = com.warfront.combat.SwarmCall.call(hive, false);
+        h.assertTrue(brood.size() == 4 && com.warfront.combat.SwarmCall.current(hive) == 10,
+                "a Brood Call spends 50 for 4 units, got " + brood.size() + " and meter " + com.warfront.combat.SwarmCall.current(hive));
+        for (SoldierEntity s : brood) {
+            h.assertTrue(s.isSwarmCalled() && !s.countsTowardArmy() && hive.getUUID().equals(s.getOwnerUUID()),
+                    "called units are the player's but outside the army cap");
+        }
+        com.warfront.combat.SwarmCall.set(hive, com.warfront.combat.SwarmCall.MAX);
+        java.util.List<SoldierEntity> maw = com.warfront.combat.SwarmCall.call(hive, true);
+        h.assertTrue(maw.size() == 1 && maw.get(0).getRole() == SoldierRole.BEAST && !maw.get(0).isHero()
+                && !maw.get(0).countsTowardArmy() && com.warfront.combat.SwarmCall.current(hive) == 0,
+                "a Deepmaw Call at 100 brings one temporary Deepmaw that ignores the beast limit and never falls as a hero");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void swarmCalledUnitsBurrowAwayAfterTheFight(GameTestHelper h) {
+        Player hive = h.makeMockPlayer(GameType.SURVIVAL);
+        hive.setData(WFRegistry.RACE, Race.HIVE.id());
+        hive.moveTo(h.absoluteVec(new Vec3(4.5, 2, 4.5)));
+        com.warfront.combat.SwarmCall.set(hive, com.warfront.combat.SwarmCall.BROOD);
+        SoldierEntity s = com.warfront.combat.SwarmCall.call(hive, false).get(0);
+        h.assertTrue(!com.warfront.combat.SwarmCall.idleTick(s, true, true), "a unit still fighting stays");
+        for (int i = 0; i < com.warfront.combat.SwarmCall.LEAVE_SECONDS - 1; i++) com.warfront.combat.SwarmCall.idleTick(s, false, true);
+        h.assertTrue(!s.isRemoved(), "it stays until 20 quiet seconds have passed");
+        h.assertTrue(com.warfront.combat.SwarmCall.idleTick(s, false, true) && s.isRemoved(), "after 20 quiet seconds it burrows away");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
     public static void orcWorkersAreGoblins(GameTestHelper h) {
         Player owner = h.makeMockPlayer(GameType.SURVIVAL);
         SoldierEntity goblin = posted(h, owner, SoldierRole.FARMER, Race.ORC, 2, 4);

@@ -236,7 +236,10 @@ public final class GameEvents {
             com.warfront.fortress.Warlords.died(raider, event.getSource().getEntity());
             com.warfront.war.Campaign.raiderDied(raider);
         }
-        if (event.getSource().getEntity() instanceof LivingEntity anyKiller) com.warfront.combat.Valor.creditKill(anyKiller, victim);
+        if (event.getSource().getEntity() instanceof LivingEntity anyKiller) {
+            com.warfront.combat.Valor.creditKill(anyKiller, victim);
+            com.warfront.combat.SwarmCall.creditKill(anyKiller, victim);
+        }
         if (event.getSource().getEntity() instanceof SoldierEntity killer && killer != victim) {
             killer.addXp(com.warfront.army.Veterancy.killXp(victim.getMaxHealth()));
         }
@@ -350,7 +353,9 @@ public final class GameEvents {
                 Dwarves.secondTick(player);
                 com.warfront.combat.Valor.secondTick(player);
                 if (Race.of(player) == Race.ANGEL) com.warfront.combat.Radiance.tickSecond(player);
+                com.warfront.combat.SwarmCall.secondTick(player);
             }
+            com.warfront.combat.SwarmCall.tick(server);
         }
         com.warfront.war.Recall.tick(server);
         com.warfront.combat.Radiance.tick(server);
