@@ -1,6 +1,6 @@
 {
   "about": "Build queue. Work the 'ready' items top to bottom without re-asking the owner; they are decided. 'blocked' items wait on what 'blocked_on' says. When an item is done, delete it here and add a 'done' entry to progress.json (replacing its 'planned' entry if it has one).",
-  "updated": "2026-10-07",
+  "updated": "2026-10-10",
   "items": [
     {
       "id": "campaign-betrayal",
@@ -19,8 +19,8 @@
     {
       "id": "skill-tree",
       "status": "blocked",
-      "blocked_on": "Node lists for the seven race paths (open question in needs.json). The six shared paths are designed; they can be built first.",
-      "title": "Player skill tree: Renown, six shared paths, race paths, active skill slots",
+      "blocked_on": "Node lists for the seven race paths (open question in needs.json). Renown, the six shared paths, slots, screen and respec are built.",
+      "title": "Player skill tree: the seven race paths",
       "decided": "Owner, 2026-10-07: build freedom over race-locked kits. Shared playstyle paths plus one race path, Renown points from battle, small race affinity, Warfront's own system, cooldowns only.",
       "spec": [
         "Renown: a player attachment (XP and level), synced. Gains: kills (small, more for Captains/Champions/beasts), raid or siege wave won, raider camp cleared, warlord beaten (large, plus 1 bonus skill point each). Level curve tuned so a player reaches about level 10 by base level 3 and about 25 by the end of the campaign. 1 skill point per level. Total points by the end: enough for about two and a half paths plus some of the race path.",
