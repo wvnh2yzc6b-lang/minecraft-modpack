@@ -399,7 +399,7 @@ public final class SkillHooks {
         if (victim.level().isClientSide) return;
         Entity killer = event.getSource().getEntity();
         if (killer instanceof Player p && p != victim) {
-            if (!SkillActives.hostile(p, victim)) return;
+            if (!SkillActives.enemyOf(p, victim)) return;
             Skills.gainRenown(p, Renown.forKill(victim));
             SkillNode lust = Skills.learned(p, "bloodlust");
             if (lust != null) {
@@ -408,7 +408,8 @@ public final class SkillHooks {
                 p.addEffect(new MobEffectInstance(WFRegistry.BLOODLUST, (int) (lust.value("seconds", 5) * 20), amp));
             }
             if (Skills.has(p, "battle_hardened")) p.heal((float) Skills.value(p, "battle_hardened", "heal"));
-        } else if (killer instanceof SoldierEntity unit && unit.getOwner() instanceof Player owner && unit.isEnemy(victim)) {
+        } else if (killer instanceof SoldierEntity unit && unit.getOwner() instanceof Player owner
+                && Factions.relation(unit, victim) == Relation.ENEMY) {
             Skills.gainRenown(owner, Math.max(1, Renown.forKill(victim) / 2));
         }
     }

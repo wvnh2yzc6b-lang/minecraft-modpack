@@ -77,7 +77,12 @@ public final class SkillActives {
 
     /** True when {@code e} is someone {@code p} fights: monsters, raiders, enemy factions. */
     public static boolean hostile(Player p, Entity e) {
-        if (!(e instanceof LivingEntity le) || e == p || !le.isAlive()) return false;
+        return e instanceof LivingEntity le && le.isAlive() && enemyOf(p, e);
+    }
+
+    /** Like {@link #hostile} without the alive check, for the moment something dies. */
+    public static boolean enemyOf(Player p, Entity e) {
+        if (!(e instanceof LivingEntity) || e == p) return false;
         if (e instanceof Player other && (other.isCreative() || other.isSpectator())) return false;
         return Factions.relation(p, e) == Relation.ENEMY;
     }
