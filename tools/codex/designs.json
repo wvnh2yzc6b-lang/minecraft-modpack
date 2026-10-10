@@ -94,13 +94,17 @@
       "id": "demon-beast",
       "race": "Demon",
       "title": "Bone Stalker (Demon war beast)",
-      "status": "planned",
+      "status": "review",
       "reference": "demon-beast.png",
       "notes": [
-        "Gaunt, bone-white and skeletal, prowling on all fours, with blood-red barbs, talons and spines.",
-        "Thin insect-like wings with torn pale membrane, and a long spined tail ending in a scorpion stinger.",
-        "Works like the Deepmaw: a rare altar unit. Not built yet."
-      ]
+        "Gaunt, bone-white and skeletal, prowling low on all fours: long thin arms with bent-out elbows as front legs, digitigrade hind legs, ribs and spine showing.",
+        "Blood-red barbs down the spine and on the shoulders, elbows, knees and heels; long red-tipped talons.",
+        "Skull face from the head studies: long narrow jaw hanging open with long fangs, small glowing red eyes, curved horn-spikes caging the head and a crown of swept-back spikes.",
+        "Four insect wings (two long, two short) with red struts and torn pale membrane, fanning up and back; they buzz in a fight.",
+        "A long barbed tail that curls up over the back to a big curved red stinger, which whips forward to strike: its sting poisons and slows.",
+        "A rare altar unit like the Deepmaw, counted against the beast limit. Burning Horde version: soot-stained bone with ember barbs."
+      ],
+      "render": "demon-beast-render.png"
     },
     {
       "id": "demon-hellknights",

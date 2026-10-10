@@ -1956,6 +1956,19 @@ public final class WarfrontGameTests {
         h.succeed();
     }
 
+    @GameTest(template = ARENA)
+    public static void demonBeastIsTheBoneStalker(GameTestHelper h) {
+        Player owner = h.makeMockPlayer(GameType.SURVIVAL);
+        h.assertTrue(com.warfront.army.UnitNames.hasBeast(Race.DEMON), "demons have a war beast now");
+        SoldierEntity beast = recruit(h, owner, SoldierRole.BEAST, Race.DEMON, 4, 4);
+        h.assertTrue(beast.getBody() == com.warfront.army.UnitBody.BONE_STALKER, "the demon beast should use the Bone Stalker body");
+        h.assertTrue("Bone Stalker".equals(beast.getUnitName()), "unit name should be Bone Stalker, was " + beast.getUnitName());
+        h.assertTrue(beast.getBbWidth() > 1F, "the Bone Stalker should be broad, was " + beast.getBbWidth() + " wide");
+        h.assertTrue(beast.isHero(), "a war beast falls instead of dying, like the other heroes");
+        beast.discard();
+        h.succeed();
+    }
+
     // ------------------------------------------------------------------ skill tree
 
     @GameTest(template = ARENA)

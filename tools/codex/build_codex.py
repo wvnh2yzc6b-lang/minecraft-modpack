@@ -332,6 +332,7 @@ def main():
             ("demon-player-no-claws.png", "Current look: front, three-quarter, side and close-up.", True),
             ("demon-player-wing-fold.png", "Wing states: folded, half-open, full spread, and the up and down strokes.", False),
             ("demon-head-oryx.png", "Head reference.", False),
+            ("demon-beast-render.png", "The Bone Stalker next to its reference: three-quarter, side, front and top, in the demons' colors and the Burning Horde's.", True),
         ]),
         "%%IMP_SHOTS%%": shots([
             ("imp-model-preview.png", "Imp roles, side by side.", True),

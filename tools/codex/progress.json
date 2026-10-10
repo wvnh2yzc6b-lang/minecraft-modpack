@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Demon war beast: the Bone Stalker",
+      "detail": "Demons can now summon their war beast at the altar (it counts against the beast limit and falls like other heroes): the Bone Stalker, built from your reference. A bone-white skeletal predator about two blocks long that prowls on all fours, with blood-red barbs, a skull face with a gaping fanged jaw and red eyes under a cage of horn-spikes, four insect wings with red struts and torn membrane, and a barbed scorpion tail curling over its back. Its hits burn like every demon's, and its sting adds Poison II and Slowness. It takes no fall damage. In a fight its wings buzz, its jaw works and its tail whips the stinger forward. Burning Horde version in soot and ember. Test Panel: Spawn tab, race Demon, War beast."
+    },
+    {
+      "status": "done",
       "title": "Skill tree: Renown and the six shared paths",
       "detail": "Players earn Renown from kills (more for Captains, Champions, beasts and warlords; your units' kills give half), siege waves won, raider camps taken and warlords beaten (each warlord, and the hidden warlord, also gives a bonus point). Each Renown level gives a skill point (about level 10 by a level 3 base, 25 by the end). Six shared paths of 10 nodes: Blade, Bulwark, Marksman, Arcane, Skirmisher, Commander, exactly as approved, loaded from data files (data/warfront/warfront_skill_paths) so numbers can be tuned without code. Each node needs one of its parents; capstones cost 2. Each race's two favored paths make their first 3 nodes free. 18 active skills go in four slots on Z, V, B, N with cooldowns (Dash has 2 charges). Passives use vanilla attributes (armor, speed, knockback, safe fall, sweeping) and event hooks; Arcane uses Iron's Spells attributes and mana when it's installed, and falls back to Warfront magic and skill cooldowns without it. Commander: +2 army, +1 beast slot, faster veterancy, steadier ranks, auras on nearby units. Respec for Mana Crystals (2 + points spent). Skill Tree screen on K and from the War Table; the combat HUD shows the slots, their cooldowns and unspent points. Test Panel Skills tab and /wftest skills renown|level|points|unlock|reset|ready. Not built yet: the seven race paths (waiting on node lists); Shield Training's faster shield raise (only the shorter axe-disable is in); Spell Echo and Overcharge work on Warfront skills and an 8 s spell-power boost rather than reading individual Iron's casts."
     },
@@ -392,6 +397,7 @@
     "aSkillNeedsItsParent": "A node can't be learned before its parent",
     "aPassiveAppliesItsAttributeAndRespecRemovesIt": "Iron Skin adds 2 armor; a respec removes it and refunds the point",
     "favoredPathsStartFree": "A dwarf's first 3 Bulwark nodes are free; a human pays",
-    "activeSkillsGoInSlotsAndCoolDown": "Dash fills a slot, has 2 charges, then waits; Logistics adds 2 army"
+    "activeSkillsGoInSlotsAndCoolDown": "Dash fills a slot, has 2 charges, then waits; Logistics adds 2 army",
+    "demonBeastIsTheBoneStalker": "A demon war beast is the Bone Stalker: its body, name, broad hitbox and hero status"
   }
 }

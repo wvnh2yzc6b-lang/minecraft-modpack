@@ -17,7 +17,7 @@ public final class UnitNames {
 
     /** Whether a race has a war beast it can summon. Others get theirs once their beast is designed. */
     public static boolean hasBeast(Race race) {
-        return race == Race.HIVE || race == Race.ANGEL;
+        return race == Race.HIVE || race == Race.ANGEL || race == Race.DEMON;
     }
 
     public static String of(Race race, SoldierRole role) {

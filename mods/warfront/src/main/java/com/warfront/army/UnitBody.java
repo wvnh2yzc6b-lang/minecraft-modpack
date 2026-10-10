@@ -15,7 +15,9 @@ public enum UnitBody {
     /** The Hive's war beast: a lobster centaur on eight legs, about player height and two and a half blocks long. */
     HIVE_BEAST(0.25, 1.0, 0.9, false),
     /** The angels' war beast: an armored Moa, a tall flightless bird in gilded barding; fast on its feet. */
-    MOA(0.0, 1.0, 1.25, false);
+    MOA(0.0, 1.0, 1.25, false),
+    /** The demons' war beast: the Bone Stalker, a skeletal winged predator on all fours with a scorpion stinger. */
+    BONE_STALKER(0.15, 1.0, 1.15, true);
 
     /** Added to the SCALE attribute (multiplied by base), on top of the race's size. */
     public final double scale;
@@ -39,6 +41,7 @@ public enum UnitBody {
             case LANCER -> "hive_lancer";
             case HIVE_BEAST -> "hive_beast";
             case MOA -> "angel_moa";
+            case BONE_STALKER -> "demon_beast";
             case GOBLIN -> "goblin";
         };
     }
@@ -54,6 +57,7 @@ public enum UnitBody {
         if (race == Race.HIVE && role == SoldierRole.SPEARMAN) return LANCER;
         if (race == Race.HIVE && role == SoldierRole.BEAST) return HIVE_BEAST;
         if (race == Race.ANGEL && role == SoldierRole.BEAST) return MOA;
+        if (race == Race.DEMON && role == SoldierRole.BEAST) return BONE_STALKER;
         if (race == Race.ORC && role.worker()) return GOBLIN;
         return HUMANOID;
     }

@@ -535,6 +535,9 @@ public class SoldierEntity extends PathfinderMob {
         if (entityData != null && getBody() == com.warfront.army.UnitBody.HIVE_BEAST) {
             return EntityDimensions.scalable(1.1F, 1.7F).withEyeHeight(1.45F);
         }
+        if (entityData != null && getBody() == com.warfront.army.UnitBody.BONE_STALKER) {
+            return EntityDimensions.scalable(1.2F, 1.8F).withEyeHeight(1.2F);
+        }
         if (entityData != null && getBody() == com.warfront.army.UnitBody.MOA) {
             return EntityDimensions.scalable(0.9F, 2.5F).withEyeHeight(2.3F);
         }
@@ -1121,6 +1124,11 @@ public class SoldierEntity extends PathfinderMob {
     public boolean doHurtTarget(Entity target) {
         boolean hit = super.doHurtTarget(target);
         if (hit && race == Race.DEMON) target.igniteForSeconds(3.0F);
+        // The Bone Stalker's sting: poison that slows.
+        if (hit && getBody() == com.warfront.army.UnitBody.BONE_STALKER && target instanceof LivingEntity stung) {
+            stung.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1), this);
+            stung.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 0), this);
+        }
         if (hit && race == Race.HIVE && getRole() == SoldierRole.CHAMPION && target instanceof LivingEntity living) {
             living.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1), this);
             living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1), this);
