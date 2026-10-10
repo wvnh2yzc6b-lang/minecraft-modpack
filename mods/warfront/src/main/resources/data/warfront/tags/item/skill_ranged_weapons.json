@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:tools/bow",
+      "required": false
+    },
+    {
+      "id": "#c:tools/crossbow",
+      "required": false
+    },
+    {
+      "id": "#c:tools/ranged_weapon",
+      "required": false
+    }
+  ]
+}

@@ -274,6 +274,10 @@ public final class TestActions {
                     case "reset" -> fortressReset(player);
                     default -> Result.fail("war meter <faction> <n>|map <faction>|beaten <faction|all|none> [no]|status|tp|place|reset");
                 };
+                case "skills" -> {
+                    com.warfront.skill.Skills.Result r = com.warfront.skill.Skills.test(player, b, arg(args, 2));
+                    yield new Result(r.ok(), r.message());
+                }
                 case "advisor" -> switch (b) {
                     case "step" -> advisorStep(player, parseInt(arg(args, 2), 0));
                     case "respawn" -> advisorRespawn(player);

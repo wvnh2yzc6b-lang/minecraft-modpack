@@ -1,0 +1,181 @@
+{
+  "name": "Marksman",
+  "order": 2,
+  "color": "#8FE07A",
+  "icon": "minecraft:bow",
+  "favored_by": [
+    "elf"
+  ],
+  "description": "Bows, crossbows, tridents and thrown weapons.",
+  "nodes": [
+    {
+      "id": "steady_aim",
+      "name": "Steady Aim",
+      "desc": "+8% projectile damage, and your shots fly truer.",
+      "pos": [
+        2,
+        0
+      ],
+      "parents": [],
+      "cost": 1,
+      "values": {
+        "damage": 0.08,
+        "true": 0.5
+      }
+    },
+    {
+      "id": "quick_draw",
+      "name": "Quick Draw",
+      "desc": "Bows draw and crossbows load 20% faster.",
+      "pos": [
+        2,
+        1
+      ],
+      "parents": [
+        "steady_aim"
+      ],
+      "cost": 1
+    },
+    {
+      "id": "piercing_shot",
+      "name": "Piercing Shot",
+      "desc": "ACTIVE: your next shot within 12 s pierces every enemy in line, +50% damage.",
+      "pos": [
+        1,
+        2
+      ],
+      "parents": [
+        "quick_draw"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 12,
+      "charges": 1,
+      "duration": 12,
+      "values": {
+        "damage": 0.5
+      }
+    },
+    {
+      "id": "hawkeye",
+      "name": "Hawkeye",
+      "desc": "+20% damage on hits from 20 blocks or more.",
+      "pos": [
+        1,
+        3
+      ],
+      "parents": [
+        "piercing_shot"
+      ],
+      "cost": 1,
+      "values": {
+        "damage": 0.2,
+        "distance": 20
+      }
+    },
+    {
+      "id": "headhunter",
+      "name": "Headhunter",
+      "desc": "+15% damage to Captains, Champions, warlords and bosses.",
+      "pos": [
+        1,
+        4
+      ],
+      "parents": [
+        "hawkeye"
+      ],
+      "cost": 1,
+      "values": {
+        "damage": 0.15
+      }
+    },
+    {
+      "id": "volley",
+      "name": "Volley",
+      "desc": "ACTIVE: your next shot within 14 s fires 5 projectiles in a cone.",
+      "pos": [
+        3,
+        2
+      ],
+      "parents": [
+        "quick_draw"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 14,
+      "charges": 1,
+      "duration": 14,
+      "values": {
+        "extra": 4
+      }
+    },
+    {
+      "id": "run_and_gun",
+      "name": "Run and Gun",
+      "desc": "No slowdown while drawing or aiming.",
+      "pos": [
+        3,
+        3
+      ],
+      "parents": [
+        "volley"
+      ],
+      "cost": 1
+    },
+    {
+      "id": "retrieval",
+      "name": "Retrieval",
+      "desc": "40% chance a shot doesn't use its arrow.",
+      "pos": [
+        3,
+        4
+      ],
+      "parents": [
+        "run_and_gun"
+      ],
+      "cost": 1,
+      "values": {
+        "chance": 0.4
+      }
+    },
+    {
+      "id": "hunters_mark",
+      "name": "Hunter's Mark",
+      "desc": "Your hits make the target glow for 5 s, and your army deals it +10% damage.",
+      "pos": [
+        2,
+        5
+      ],
+      "parents": [
+        "headhunter",
+        "retrieval"
+      ],
+      "cost": 1,
+      "values": {
+        "seconds": 5,
+        "damage": 0.1
+      }
+    },
+    {
+      "id": "rain_of_arrows",
+      "name": "Rain of Arrows",
+      "desc": "ACTIVE capstone: arrows rain for 4 s on a 6-block area where you look.",
+      "pos": [
+        2,
+        6
+      ],
+      "parents": [
+        "hunters_mark"
+      ],
+      "cost": 2,
+      "active": true,
+      "cooldown": 45,
+      "charges": 1,
+      "duration": 4,
+      "values": {
+        "radius": 3.0,
+        "range": 48
+      }
+    }
+  ]
+}

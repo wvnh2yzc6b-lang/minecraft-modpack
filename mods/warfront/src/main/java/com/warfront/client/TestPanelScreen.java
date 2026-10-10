@@ -23,7 +23,7 @@ import java.util.Locale;
  */
 public class TestPanelScreen extends Screen {
     private static final int W = 360, H = 214, BW = 110, BH = 20, GAP = 6;
-    private static final String[] TABS = {"Spawn", "Base", "Siege", "Player", "Campaign"};
+    private static final String[] TABS = {"Spawn", "Base", "Siege", "Player", "Campaign", "Skills"};
     private static final List<SoldierRole> ROLES = Arrays.stream(SoldierRole.values())
             .filter(r -> !r.retired() && r != SoldierRole.BEAST).toList();
 
@@ -68,7 +68,8 @@ public class TestPanelScreen extends Screen {
             case 1 -> baseTab();
             case 2 -> siegeTab();
             case 3 -> playerTab();
-            default -> advisorTab();
+            case 4 -> advisorTab();
+            default -> skillsTab();
         }
     }
 
@@ -268,6 +269,26 @@ public class TestPanelScreen extends Screen {
         warRows(3);
     }
 
+    private static int skillPath;
+
+    private void skillsTab() {
+        send(0, 0, "+100 Renown", "skills", "renown", "100");
+        send(1, 0, "+1000 Renown", "skills", "renown", "1000");
+        send(2, 0, "Renown level 10", "skills", "level", "10");
+        send(0, 1, "+5 skill points", "skills", "points", "5");
+        send(1, 1, "Unlock every node", "skills", "unlock", "all");
+        send(2, 1, "Reset tree (free)", "skills", "reset");
+        List<com.warfront.skill.SkillPath> paths = com.warfront.skill.ClientSkills.paths();
+        if (!paths.isEmpty()) {
+            com.warfront.skill.SkillPath path = paths.get(Math.floorMod(skillPath, paths.size()));
+            cycle(0, 2, "Path: " + path.name(), () -> skillPath++);
+            send(1, 2, "Unlock path", "skills", "unlock", path.id());
+        }
+        send(2, 2, "End cooldowns", "skills", "ready");
+        add(0, 3, "Open Skill Tree", () -> PacketDistributor.sendToServer(
+                new com.warfront.network.SkillActionPayload(new ArrayList<>(List.of("open")))));
+    }
+
     // ------------------------------------------------------------------ drawing
 
     @Override
@@ -287,6 +308,7 @@ public class TestPanelScreen extends Screen {
             case 1 -> "Acts on the mana networks within 32 blocks.";
             case 2 -> "Acts on the nearest War Standard within 128 blocks.";
             case 4 -> "Advisor quest and look; campaign war meters, maps and warlords.";
+            case 5 -> "Same as /wftest skills ... Skill keys Z V B N, Skill Tree K.";
             default -> "Same as /wftest player ...";
         };
         g.drawString(font, Component.literal(hint), left + 8, top + H - 14, 0x8090A0);

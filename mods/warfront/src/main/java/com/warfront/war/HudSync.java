@@ -48,7 +48,7 @@ public final class HudSync {
         v[HudPayload.FORMATION] = p.getData(WFRegistry.ARMY_FORMATION);
         v[HudPayload.ORDER] = p.getData(WFRegistry.ARMY_ORDER);
         BaseLevel.Status base = BaseLevel.of(p.level(), p.blockPosition(), Factions.keyOf(p.server, p));
-        v[HudPayload.BEAST_CAP] = BaseLevel.beastCap(base.buildings() > 0 || base.isTest() ? base.level() : 1);
+        v[HudPayload.BEAST_CAP] = com.warfront.skill.Skills.beastCap(p, base.buildings() > 0 || base.isTest() ? base.level() : 1);
         WarStandardBlockEntity standard = TestActions.nearestStandard(p);
         if (standard != null && standard.isUnderSiege() && standard.isDefender(p)) {
             v[HudPayload.WAVE] = standard.getWave();

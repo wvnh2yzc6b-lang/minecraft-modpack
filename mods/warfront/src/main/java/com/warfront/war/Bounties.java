@@ -292,6 +292,7 @@ public final class Bounties {
             com.warfront.alert.Alerts.toast(owner, "camp_taken", "Camp taken", "The " + camp.faction.displayName
                     + "' next raid comes a third smaller. They left supplies behind.");
             if (!camp.rescue) completeLinked(owner, camp.id, Type.CAMP);
+            com.warfront.skill.Skills.gainRenown(owner, com.warfront.skill.Renown.CAMP);
         }
     }
 

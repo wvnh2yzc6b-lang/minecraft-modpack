@@ -1,0 +1,214 @@
+{
+  "name": "Arcane",
+  "order": 3,
+  "color": "#A57FFF",
+  "icon": "minecraft:enchanted_book",
+  "favored_by": [
+    "demon",
+    "angel"
+  ],
+  "description": "Boosts Iron's Spells through its own attributes. Without Iron's Spells it boosts Warfront's magic and skill cooldowns instead.",
+  "nodes": [
+    {
+      "id": "attunement",
+      "name": "Attunement",
+      "desc": "+5% spell power (without Iron's Spells: +5% Warfront magic damage).",
+      "pos": [
+        2,
+        0
+      ],
+      "parents": [],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "irons_spellbooks:spell_power",
+          "amount": 0.05,
+          "operation": "add_multiplied_base"
+        }
+      ],
+      "values": {
+        "magic": 0.05
+      }
+    },
+    {
+      "id": "focus",
+      "name": "Focus",
+      "desc": "-10% spell cooldowns (without Iron's Spells: -10% skill cooldowns).",
+      "pos": [
+        2,
+        1
+      ],
+      "parents": [
+        "attunement"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "irons_spellbooks:cooldown_reduction",
+          "amount": 0.1,
+          "operation": "add_multiplied_base"
+        }
+      ],
+      "values": {
+        "skill_cooldown": 0.1
+      }
+    },
+    {
+      "id": "spellblade",
+      "name": "Spellblade",
+      "desc": "ACTIVE: for 6 s your melee hits add magic damage of your race's school.",
+      "pos": [
+        1,
+        2
+      ],
+      "parents": [
+        "focus"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 15,
+      "charges": 1,
+      "duration": 6,
+      "values": {
+        "damage": 3.0
+      }
+    },
+    {
+      "id": "arcane_armor",
+      "name": "Arcane Armor",
+      "desc": "10% of damage taken is paid from your spell mana instead (without Iron's Spells: 5% less damage taken).",
+      "pos": [
+        1,
+        3
+      ],
+      "parents": [
+        "spellblade"
+      ],
+      "cost": 1,
+      "values": {
+        "share": 0.1,
+        "mana_per_damage": 5,
+        "fallback": 0.05
+      }
+    },
+    {
+      "id": "mana_strike",
+      "name": "Mana Strike",
+      "desc": "Melee hits restore 3 spell mana (without Iron's Spells: take 0.5 s off your skill cooldowns).",
+      "pos": [
+        1,
+        4
+      ],
+      "parents": [
+        "arcane_armor"
+      ],
+      "cost": 1,
+      "values": {
+        "mana": 3,
+        "ticks": 10
+      }
+    },
+    {
+      "id": "overcharge",
+      "name": "Overcharge",
+      "desc": "ACTIVE: +40% spell power for 8 s (without Iron's Spells: your next Warfront magic hit +40%).",
+      "pos": [
+        3,
+        2
+      ],
+      "parents": [
+        "focus"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 20,
+      "charges": 1,
+      "duration": 8,
+      "values": {
+        "power": 0.4
+      }
+    },
+    {
+      "id": "deep_well",
+      "name": "Deep Well",
+      "desc": "+20% max mana and +15% mana regen (without Iron's Spells: -10% skill cooldowns).",
+      "pos": [
+        3,
+        3
+      ],
+      "parents": [
+        "overcharge"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "irons_spellbooks:max_mana",
+          "amount": 0.2,
+          "operation": "add_multiplied_base"
+        },
+        {
+          "attribute": "irons_spellbooks:mana_regen",
+          "amount": 0.15,
+          "operation": "add_multiplied_base"
+        }
+      ],
+      "values": {
+        "skill_cooldown": 0.1
+      }
+    },
+    {
+      "id": "spell_echo",
+      "name": "Spell Echo",
+      "desc": "10% chance a skill you use keeps no cooldown; with Iron's Spells also -5% spell cooldowns.",
+      "pos": [
+        3,
+        4
+      ],
+      "parents": [
+        "deep_well"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "irons_spellbooks:cooldown_reduction",
+          "amount": 0.05,
+          "operation": "add_multiplied_base"
+        }
+      ],
+      "values": {
+        "chance": 0.1
+      }
+    },
+    {
+      "id": "ley_tap",
+      "name": "Ley Tap",
+      "desc": "Inside your base's mana network your mana regenerates twice as fast (without Iron's Spells: skill cooldowns run twice as fast).",
+      "pos": [
+        2,
+        5
+      ],
+      "parents": [
+        "mana_strike",
+        "spell_echo"
+      ],
+      "cost": 1
+    },
+    {
+      "id": "arcane_surge",
+      "name": "Arcane Surge",
+      "desc": "ACTIVE capstone: 8 s of free spells and halved cooldowns.",
+      "pos": [
+        2,
+        6
+      ],
+      "parents": [
+        "ley_tap"
+      ],
+      "cost": 2,
+      "active": true,
+      "cooldown": 75,
+      "charges": 1,
+      "duration": 8
+    }
+  ]
+}

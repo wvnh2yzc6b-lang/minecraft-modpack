@@ -370,7 +370,10 @@ public class WarStandardBlockEntity extends BlockEntity {
                         factionKey(level.getServer()), s.getFactionKey()) == com.warfront.faction.Relation.ALLY)) {
             s.addXp(com.warfront.army.Veterancy.WAVE_XP);
         }
-        for (ServerPlayer p : audience(level)) com.warfront.combat.Valor.gain(p, com.warfront.combat.Valor.WAVE);
+        for (ServerPlayer p : audience(level)) {
+            com.warfront.combat.Valor.gain(p, com.warfront.combat.Valor.WAVE);
+            com.warfront.skill.Skills.gainRenown(p, com.warfront.skill.Renown.WAVE + com.warfront.skill.Renown.WAVE_PER * wave);
+        }
         int marks = 4 + wave * 2;
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.WAR_MARK.get(), marks));
         Block.popResource(level, worldPosition.above(), new ItemStack(WFRegistry.MANA_SHARD.get(), 2 + wave));

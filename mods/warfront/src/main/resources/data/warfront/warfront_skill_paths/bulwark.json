@@ -1,0 +1,188 @@
+{
+  "name": "Bulwark",
+  "order": 1,
+  "color": "#9AA3AE",
+  "icon": "minecraft:shield",
+  "favored_by": [
+    "dwarf",
+    "orc",
+    "angel"
+  ],
+  "description": "Shield and armor. Hold the line and keep your friends alive.",
+  "nodes": [
+    {
+      "id": "iron_skin",
+      "name": "Iron Skin",
+      "desc": "+2 armor.",
+      "pos": [
+        2,
+        0
+      ],
+      "parents": [],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "minecraft:generic.armor",
+          "amount": 2.0,
+          "operation": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "shield_training",
+      "name": "Shield Training",
+      "desc": "An axe disables your shield for half as long.",
+      "pos": [
+        2,
+        1
+      ],
+      "parents": [
+        "iron_skin"
+      ],
+      "cost": 1,
+      "values": {
+        "disable_ticks": 50
+      }
+    },
+    {
+      "id": "shield_wall",
+      "name": "Shield Wall",
+      "desc": "ACTIVE: for 4 s your raised shield blocks from every direction.",
+      "pos": [
+        1,
+        2
+      ],
+      "parents": [
+        "shield_training"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 20,
+      "charges": 1,
+      "duration": 4
+    },
+    {
+      "id": "unshakable",
+      "name": "Unshakable",
+      "desc": "+30% knockback resistance.",
+      "pos": [
+        1,
+        3
+      ],
+      "parents": [
+        "shield_wall"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "minecraft:generic.knockback_resistance",
+          "amount": 0.3,
+          "operation": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "steel_thorns",
+      "name": "Steel Thorns",
+      "desc": "Shield blocks reflect 20% of the melee damage back.",
+      "pos": [
+        1,
+        4
+      ],
+      "parents": [
+        "unshakable"
+      ],
+      "cost": 1,
+      "values": {
+        "reflect": 0.2
+      }
+    },
+    {
+      "id": "shield_bash",
+      "name": "Shield Bash",
+      "desc": "ACTIVE: stun the first enemy in front of you for 1.5 s.",
+      "pos": [
+        3,
+        2
+      ],
+      "parents": [
+        "shield_training"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 10,
+      "charges": 1,
+      "values": {
+        "range": 4.0,
+        "seconds": 1.5
+      }
+    },
+    {
+      "id": "provoke",
+      "name": "Provoke",
+      "desc": "Enemies you hit come after you for 5 s.",
+      "pos": [
+        3,
+        3
+      ],
+      "parents": [
+        "shield_bash"
+      ],
+      "cost": 1
+    },
+    {
+      "id": "momentum",
+      "name": "Momentum",
+      "desc": "Moving with your shield raised knocks enemies aside.",
+      "pos": [
+        3,
+        4
+      ],
+      "parents": [
+        "provoke"
+      ],
+      "cost": 1,
+      "values": {
+        "push": 0.9
+      }
+    },
+    {
+      "id": "last_stand",
+      "name": "Last Stand",
+      "desc": "Once every 2 min a killing blow leaves you at 1 health with Resistance III for 3 s.",
+      "pos": [
+        2,
+        5
+      ],
+      "parents": [
+        "steel_thorns",
+        "momentum"
+      ],
+      "cost": 1,
+      "values": {
+        "cooldown": 120
+      }
+    },
+    {
+      "id": "guardians_aegis",
+      "name": "Guardian's Aegis",
+      "desc": "ACTIVE capstone: for 8 s, half the damage allies within 6 blocks take goes to you instead.",
+      "pos": [
+        2,
+        6
+      ],
+      "parents": [
+        "last_stand"
+      ],
+      "cost": 2,
+      "active": true,
+      "cooldown": 60,
+      "charges": 1,
+      "duration": 8,
+      "values": {
+        "radius": 6.0,
+        "share": 0.5
+      }
+    }
+  ]
+}

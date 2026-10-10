@@ -152,6 +152,23 @@ public final class TestCommands {
                                 .suggests((c, b) -> SharedSuggestionProvider.suggest(Stream.concat(Stream.of("all", "none"),
                                         Arrays.stream(NpcFaction.values()).map(f -> f.name().toLowerCase(Locale.ROOT))), b))
                                 .executes(ctx -> run(ctx, "war", "beaten", str(ctx, "which"))))))
+                .then(Commands.literal("skills")
+                        .then(Commands.literal("renown").executes(ctx -> run(ctx, "skills", "renown"))
+                                .then(Commands.argument("n", IntegerArgumentType.integer(1, 100000))
+                                        .executes(ctx -> run(ctx, "skills", "renown", num(ctx, "n")))))
+                        .then(Commands.literal("level").then(Commands.argument("n", IntegerArgumentType.integer(0, 50))
+                                .executes(ctx -> run(ctx, "skills", "level", num(ctx, "n")))))
+                        .then(Commands.literal("points").executes(ctx -> run(ctx, "skills", "points"))
+                                .then(Commands.argument("n", IntegerArgumentType.integer(1, 100))
+                                        .executes(ctx -> run(ctx, "skills", "points", num(ctx, "n")))))
+                        .then(Commands.literal("unlock").then(Commands.argument("node", StringArgumentType.word())
+                                .suggests((c, b) -> SharedSuggestionProvider.suggest(Stream.concat(Stream.of("all"), Stream.concat(
+                                        com.warfront.skill.SkillRegistry.paths().stream().map(com.warfront.skill.SkillPath::id),
+                                        java.util.stream.StreamSupport.stream(com.warfront.skill.SkillRegistry.allNodes().spliterator(), false)
+                                                .map(com.warfront.skill.SkillNode::id))), b))
+                                .executes(ctx -> run(ctx, "skills", "unlock", str(ctx, "node")))))
+                        .then(simple("reset", "skills", "reset"))
+                        .then(simple("ready", "skills", "ready")))
                 .then(Commands.literal("advisor")
                         .then(Commands.literal("step").then(Commands.argument("step", IntegerArgumentType.integer(0, 7))
                                 .executes(ctx -> run(ctx, "advisor", "step", num(ctx, "step")))))
@@ -202,7 +219,8 @@ public final class TestCommands {
                 "/wftest difficulty <easy|normal|hard|warlord>",
                 "/wftest raid warn|siege|grace|recall",
                 "/wftest war status|meter <faction> <n>|map <faction>|beaten <faction|all|none>|tp <faction>|place <faction>|reset",
-                "/wftest advisor step <0-7>|respawn|disguise <race>"
+                "/wftest advisor step <0-7>|respawn|disguise <race>",
+                "/wftest skills renown [n]|level <n>|points [n]|unlock <node|path|all>|reset|ready"
         };
         for (String l : lines) ctx.getSource().sendSuccess(() -> Component.literal(l).withStyle(ChatFormatting.AQUA), false);
         return 1;

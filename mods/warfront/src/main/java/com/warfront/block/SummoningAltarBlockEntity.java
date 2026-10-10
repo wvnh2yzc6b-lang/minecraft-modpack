@@ -117,7 +117,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
         List<String> missing = missing(level, worldPosition);
         if (!missing.isEmpty()) return new Result(false, "The altar is incomplete. It needs " + String.join(" and ", missing) + ".");
 
-        int max = WFConfig.MAX_ARMY_SIZE.get();
+        int max = WFConfig.MAX_ARMY_SIZE.get() + com.warfront.skill.Skills.armyBonus(player);
         // Heroes waiting to return still count, so letting them fall can't get round the caps.
         List<com.warfront.war.WarState.Returning> away = com.warfront.war.WarState.get(server.getServer()).returning(player.getUUID());
         int count = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
@@ -139,7 +139,7 @@ public class SummoningAltarBlockEntity extends BlockEntity {
             int beasts = level.getEntitiesOfClass(SoldierEntity.class, new AABB(player.blockPosition()).inflate(256),
                     s -> s.isAlive() && s.isOwnedBy(player) && s.countsTowardArmy() && s.getRole() == SoldierRole.BEAST).size()
                     + (int) away.stream().filter(r -> r.role() == SoldierRole.BEAST).count();
-            int cap = BaseLevel.beastCap(baseLevel);
+            int cap = com.warfront.skill.Skills.beastCap(player, baseLevel);
             if (beasts >= cap) {
                 String next = baseLevel < BaseLevel.MAX_LEVEL && cap < WFConfig.BEAST_LIMIT.get()
                         ? " To raise it, " + base.missingFor(baseLevel + 1) + "." : "";

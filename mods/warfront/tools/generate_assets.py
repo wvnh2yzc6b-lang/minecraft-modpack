@@ -330,6 +330,12 @@ def echo_armor_assets():
         "key": {"V": {"item": "aether:victory_medal"}, "C": {"item": "warfront:mana_crystal"}},
         "result": {"id": "warfront:angel_wings", "count": 1}})
     opt = lambda i: {"id": i, "required": False}
+    # Skill tree weapon tags: modded weapons count when they use the conventional tags.
+    write_json(DATA / MODID / "tags" / "item" / "skill_melee_weapons.json", {"replace": False, "values": [
+        "#minecraft:swords", "#minecraft:axes", opt("#c:tools/melee_weapon"), opt("#c:tools/spear"), opt("#c:tools/mace"),
+        "minecraft:mace", "minecraft:trident"]})
+    write_json(DATA / MODID / "tags" / "item" / "skill_ranged_weapons.json", {"replace": False, "values": [
+        opt("#c:tools/bow"), opt("#c:tools/crossbow"), opt("#c:tools/ranged_weapon")]})
     write_json(DATA / MODID / "tags" / "item" / "moa_unlock.json", {"replace": False, "values": [
         opt("aether:blue_moa_egg"), opt("aether:white_moa_egg"), opt("aether:black_moa_egg")]})
 
@@ -930,6 +936,37 @@ def effect_icons():
         img.putpixel((x, y), hexc("7fd02a"))
     save(img, "mob_effect/corroded.png")
 
+    # Stunned: three small stars circling a gray dome.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    for x in range(4, 14):
+        for y in range(10, 16):
+            if (x - 8.5) ** 2 / 25 + (y - 15.5) ** 2 / 30 <= 1:
+                img.putpixel((x, y), hexc("8a9099") if (x + y) % 4 else hexc("b8c0ca"))
+    for cx, cy in ((4, 5), (9, 2), (14, 5)):
+        for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)):
+            img.putpixel((cx + dx, cy + dy), hexc("ffe07a") if (dx, dy) == (0, 0) else hexc("e2b55a"))
+    save(img, "mob_effect/stunned.png")
+
+    # Bleeding: three falling red drops.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    for cx, cy in ((5, 4), (12, 7), (7, 12)):
+        for y in range(-3, 3):
+            half = 0 if y < -1 else 1 if y < 1 else 1
+            for x in range(-half, half + 1):
+                img.putpixel((cx + x, cy + y), hexc("b8231a") if x or y > 0 else hexc("ff6a6a"))
+        img.putpixel((cx, cy + 2), hexc("5a0d08"))
+    save(img, "mob_effect/bleeding.png")
+
+    # Bloodlust: a red blade with a hot edge.
+    img = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    for t in range(12):
+        x, y = 3 + t, 14 - t
+        img.putpixel((x, y), hexc("5a0d08"))
+        img.putpixel((x, y - 1), hexc("ff6a3d") if t > 3 else hexc("b8231a"))
+    for x, y in ((3, 12), (4, 13), (5, 14), (2, 15)):
+        img.putpixel((x, y), hexc("6a4424"))
+    save(img, "mob_effect/bloodlust.png")
+
     # Rank chevron: a light plate with a darker rim, tinted to the race's color when drawn.
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     for x in range(16):
@@ -1015,6 +1052,14 @@ def lang():
         "block.warfront.spike_floor": "Spike Floor",
         "block.warfront.rune_mine": "Rune Mine",
         "block.warfront.flame_vent": "Flame Vent",
+        "key.warfront.skill_tree": "Skill Tree",
+        "key.warfront.skill_1": "Skill slot 1",
+        "key.warfront.skill_2": "Skill slot 2",
+        "key.warfront.skill_3": "Skill slot 3",
+        "key.warfront.skill_4": "Skill slot 4",
+        "effect.warfront.stunned": "Stunned",
+        "effect.warfront.bleeding": "Bleeding",
+        "effect.warfront.bloodlust": "Bloodlust",
     }
     write_json(ASSETS / "lang" / "en_us.json", names)
 

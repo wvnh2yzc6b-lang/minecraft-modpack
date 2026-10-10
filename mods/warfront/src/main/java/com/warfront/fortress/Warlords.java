@@ -232,6 +232,10 @@ public final class Warlords {
 
     /** Marks a warlord beaten for a player; all seven make a Warlord. */
     public static void beaten(Player p, NpcFaction f) {
+        if (!Campaign.warlordBeaten(p, f)) {
+            com.warfront.skill.Skills.gainRenown(p, com.warfront.skill.Renown.WARLORD);
+            com.warfront.skill.Skills.bonusPoint(p, "a warlord has fallen");
+        }
         Campaign.setWarlordBeaten(p, f, true);
         Alerts.banner(p, "warlord_beaten", title(f) + " has fallen!", "Their trophy banner and warlord gear are yours.", colorOf(f));
         if (Campaign.warlordsBeaten(p) >= NpcFaction.values().length && !p.getData(WFRegistry.WARLORD_TITLE)) {

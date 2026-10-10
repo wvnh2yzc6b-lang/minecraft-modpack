@@ -34,12 +34,29 @@ public final class ClientSetup {
             "key.warfront.race_power", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
             org.lwjgl.glfw.GLFW.GLFW_KEY_R, "key.categories.warfront");
 
+    /** K: the Skill Tree. */
+    public static final net.minecraft.client.KeyMapping SKILL_TREE = new net.minecraft.client.KeyMapping(
+            "key.warfront.skill_tree", com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+            org.lwjgl.glfw.GLFW.GLFW_KEY_K, "key.categories.warfront");
+
+    /** Z, V, B, N: the four skill slots. */
+    public static final net.minecraft.client.KeyMapping[] SKILL_KEYS = {
+            skillKey(1, org.lwjgl.glfw.GLFW.GLFW_KEY_Z), skillKey(2, org.lwjgl.glfw.GLFW.GLFW_KEY_V),
+            skillKey(3, org.lwjgl.glfw.GLFW.GLFW_KEY_B), skillKey(4, org.lwjgl.glfw.GLFW.GLFW_KEY_N)};
+
+    private static net.minecraft.client.KeyMapping skillKey(int slot, int key) {
+        return new net.minecraft.client.KeyMapping("key.warfront.skill_" + slot, com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+                key, "key.categories.warfront");
+    }
+
     @SubscribeEvent
     public static void onKeys(net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent event) {
         event.register(TEST_PANEL);
         event.register(WAR_TABLE);
         event.register(RECALL);
         event.register(RACE_POWER);
+        event.register(SKILL_TREE);
+        for (net.minecraft.client.KeyMapping k : SKILL_KEYS) event.register(k);
     }
 
     @SubscribeEvent

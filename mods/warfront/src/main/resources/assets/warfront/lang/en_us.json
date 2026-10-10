@@ -92,5 +92,13 @@
   "block.warfront.rune_stone_wall": "Rune Stone Wall",
   "block.warfront.spike_floor": "Spike Floor",
   "block.warfront.rune_mine": "Rune Mine",
-  "block.warfront.flame_vent": "Flame Vent"
+  "block.warfront.flame_vent": "Flame Vent",
+  "key.warfront.skill_tree": "Skill Tree",
+  "key.warfront.skill_1": "Skill slot 1",
+  "key.warfront.skill_2": "Skill slot 2",
+  "key.warfront.skill_3": "Skill slot 3",
+  "key.warfront.skill_4": "Skill slot 4",
+  "effect.warfront.stunned": "Stunned",
+  "effect.warfront.bleeding": "Bleeding",
+  "effect.warfront.bloodlust": "Bloodlust"
 }

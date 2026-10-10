@@ -188,7 +188,13 @@ public final class HiddenWarlord {
             }
         }
         List<ServerPlayer> there = new ArrayList<>(field.players());
-        for (ServerPlayer p : there) p.setData(WFRegistry.HIDDEN_WARLORD_BEATEN, true);
+        for (ServerPlayer p : there) {
+            if (!p.getData(WFRegistry.HIDDEN_WARLORD_BEATEN)) {
+                com.warfront.skill.Skills.gainRenown(p, com.warfront.skill.Renown.HIDDEN_WARLORD);
+                com.warfront.skill.Skills.bonusPoint(p, "the hidden warlord has fallen");
+            }
+            p.setData(WFRegistry.HIDDEN_WARLORD_BEATEN, true);
+        }
         long now = field.getGameTime();
         String[] lines = {
                 "\"Enough... it is done. Listen, champion, while I still have breath.\"",

@@ -1955,4 +1955,99 @@ public final class WarfrontGameTests {
         h.assertTrue(s.hasEffect(WFRegistry.TROPHY_AURAS.get(NpcFaction.MARAUDERS)), "your units near the standard get the aura");
         h.succeed();
     }
+
+    // ------------------------------------------------------------------ skill tree
+
+    @GameTest(template = ARENA)
+    public static void skillPathsLoadWithSoundTrees(GameTestHelper h) {
+        var paths = com.warfront.skill.SkillRegistry.paths();
+        h.assertTrue(paths.size() >= 6, "the six shared skill paths should load from data, got " + paths.size());
+        for (var path : paths) {
+            long roots = path.nodes().stream().filter(com.warfront.skill.SkillNode::isRoot).count();
+            h.assertTrue(roots == 1, path.id() + " should have one root, has " + roots);
+            for (var n : path.nodes()) for (String parent : n.parents()) {
+                var pn = com.warfront.skill.SkillRegistry.node(parent);
+                h.assertTrue(pn != null && pn.path().equals(path.id()), n.id() + " names a missing parent " + parent);
+            }
+            h.assertTrue(path.nodes().stream().filter(com.warfront.skill.SkillNode::active).count() == 3,
+                    path.id() + " should have 3 active skills");
+        }
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void renownRisesFromAKillAndALevelGivesAPoint(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        Husk husk = h.spawn(EntityType.HUSK, new BlockPos(4, 2, 4));
+        husk.hurt(p.damageSources().playerAttack(p), 1000F);
+        var s = com.warfront.skill.Skills.state(p);
+        h.assertTrue(s.renown > 0, "killing a husk should earn Renown, had " + s.renown);
+        h.assertTrue(s.level() == 0 && s.points() == 0, "one husk isn't a level yet (renown " + s.renown + ")");
+        com.warfront.skill.Skills.gainRenown(p, com.warfront.skill.Renown.total(1) - s.renown);
+        s = com.warfront.skill.Skills.state(p);
+        h.assertTrue(s.level() == 1 && s.points() == 1, "level 1 should give 1 point; level " + s.level() + ", points " + s.points());
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void aSkillNeedsItsParent(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        p.setData(WFRegistry.RACE, "elf");   // Blade isn't an elf path, so nothing is free
+        com.warfront.skill.Skills.test(p, "points", "5");
+        h.assertTrue(!com.warfront.skill.Skills.learn(p, "swift_hands").ok(), "Swift Hands needs Keen Edge first");
+        h.assertTrue(com.warfront.skill.Skills.learn(p, "keen_edge").ok(), "the path's root can be learned");
+        h.assertTrue(com.warfront.skill.Skills.learn(p, "swift_hands").ok(), "with Keen Edge learned, Swift Hands can be");
+        h.assertTrue(com.warfront.skill.Skills.state(p).points() == 3, "two nodes should cost 2 of 5 points, left "
+                + com.warfront.skill.Skills.state(p).points());
+        h.assertTrue(!com.warfront.skill.Skills.learn(p, "battle_hardened").ok(), "Battle Hardened needs the end of a branch");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void aPassiveAppliesItsAttributeAndRespecRemovesIt(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        p.setData(WFRegistry.RACE, "elf");
+        com.warfront.skill.Skills.test(p, "points", "2");
+        var node = com.warfront.skill.SkillRegistry.node("iron_skin");
+        h.assertTrue(node != null, "Iron Skin should exist");
+        double before = p.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+        h.assertTrue(com.warfront.skill.Skills.learn(p, "iron_skin").ok(), "Iron Skin should be learnable");
+        double with = p.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+        h.assertTrue(with >= before + 2 - 1e-6, "Iron Skin should add 2 armor: " + before + " -> " + with);
+        h.assertTrue(com.warfront.skill.Skills.respec(p, true).ok(), "the respec should go through");
+        double after = p.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+        h.assertTrue(Math.abs(after - before) < 1e-6 && com.warfront.skill.Skills.state(p).points() == 2,
+                "the respec should take the armor away and refund the point: armor " + after + ", points " + com.warfront.skill.Skills.state(p).points());
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void favoredPathsStartFree(GameTestHelper h) {
+        Player dwarf = h.makeMockPlayer(GameType.SURVIVAL);
+        dwarf.setData(WFRegistry.RACE, "dwarf");   // Bulwark is a dwarf path
+        h.assertTrue(com.warfront.skill.Skills.learn(dwarf, "iron_skin").ok(), "a dwarf's first Bulwark node is free");
+        h.assertTrue(com.warfront.skill.Skills.learn(dwarf, "shield_training").ok(), "the second is free");
+        h.assertTrue(com.warfront.skill.Skills.learn(dwarf, "shield_wall").ok(), "the third is free");
+        h.assertTrue(!com.warfront.skill.Skills.learn(dwarf, "unshakable").ok(), "the fourth costs a point the dwarf doesn't have");
+        Player human = h.makeMockPlayer(GameType.SURVIVAL);
+        human.setData(WFRegistry.RACE, "human");
+        h.assertTrue(!com.warfront.skill.Skills.learn(human, "iron_skin").ok(), "Bulwark isn't a human path: Iron Skin costs a point");
+        h.succeed();
+    }
+
+    @GameTest(template = ARENA)
+    public static void activeSkillsGoInSlotsAndCoolDown(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        com.warfront.skill.Skills.test(p, "unlock", "dash");
+        var s = com.warfront.skill.Skills.state(p);
+        h.assertTrue(s.slots.get(0).equals("dash"), "a learned active skill fills the first free slot, slots " + s.slots);
+        h.assertTrue(com.warfront.skill.Skills.use(p, 0, 1F, 0F).ok(), "the first Dash goes");
+        h.assertTrue(com.warfront.skill.Skills.use(p, 0, 1F, 0F).ok(), "Dash has a second charge");
+        h.assertTrue(!com.warfront.skill.Skills.use(p, 0, 1F, 0F).ok(), "a third Dash waits for its cooldown");
+        com.warfront.skill.Skills.test(p, "ready", "");
+        h.assertTrue(com.warfront.skill.Skills.use(p, 0, 1F, 0F).ok(), "after the cooldown it goes again");
+        com.warfront.skill.Skills.test(p, "unlock", "logistics");
+        h.assertTrue(com.warfront.skill.Skills.armyBonus(p) == 2, "Logistics adds 2 to the army size");
+        h.succeed();
+    }
 }

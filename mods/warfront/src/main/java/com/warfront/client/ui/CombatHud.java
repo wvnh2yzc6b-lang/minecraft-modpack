@@ -46,6 +46,7 @@ public final class CombatHud {
         int accent = Alerts.accent(race);
         List<Row> rows = new ArrayList<>();
         powerRow(rows, p, race, v);
+        skillRows(rows);
         if (v[HudPayload.TOTAL] > 0) {
             String order = Order.byOrdinal(v[HudPayload.ORDER]).title;
             String formation = Formation.byOrdinal(v[HudPayload.FORMATION]).title;
@@ -77,6 +78,37 @@ public final class CombatHud {
         WFTheme.panel(g, x, y, W, h, accent);
         for (int i = 0; i < rows.size(); i++) rows.get(i).draw(g, mc.font, x + 5, y + 6 + i * ROW);
         g.pose().popPose();
+    }
+
+    /** The skill slots (two to a row) and, when points are waiting, a reminder. */
+    private static void skillRows(List<Row> rows) {
+        List<String> slots = com.warfront.skill.ClientSkills.slots();
+        for (int r = 0; r < 2; r++) {
+            int first = r * 2;
+            if (slots.get(first).isEmpty() && slots.get(first + 1).isEmpty()) continue;
+            rows.add((g, f, x, y) -> {
+                for (int i = first; i < first + 2; i++) {
+                    String id = slots.get(i);
+                    if (id.isEmpty()) continue;
+                    com.warfront.skill.SkillNode n = com.warfront.skill.ClientSkills.node(id);
+                    String key = com.warfront.client.ClientSetup.SKILL_KEYS[i].getTranslatedKeyMessage().getString();
+                    String name = n == null ? id : n.name();
+                    if (name.length() > 9) name = name.substring(0, 8) + ".";
+                    int secs = com.warfront.skill.ClientSkills.secondsLeft(i);
+                    int charges = com.warfront.skill.ClientSkills.slotCharges[i];
+                    int ready = com.warfront.skill.ClientSkills.slotReady[i];
+                    boolean up = ready > 0 || secs <= 0;
+                    String text = key + " " + name + (charges > 1 ? " x" + ready : "") + (secs > 0 && !up ? " " + secs + "s" : "");
+                    int cx = x + (i - first) * 72;
+                    WFTheme.text(g, f, text, cx, y, up ? WFTheme.TEXT : WFTheme.MUTED);
+                }
+            });
+        }
+        if (com.warfront.skill.ClientSkills.points > 0) {
+            int pts = com.warfront.skill.ClientSkills.points;
+            String key = com.warfront.client.ClientSetup.SKILL_TREE.getTranslatedKeyMessage().getString();
+            rows.add((g, f, x, y) -> WFTheme.text(g, f, pts + " skill point" + (pts == 1 ? "" : "s") + " to spend (" + key + ")", x, y, 0xFFFFE07A));
+        }
     }
 
     private static void powerRow(List<Row> rows, LocalPlayer p, Race race, int[] v) {

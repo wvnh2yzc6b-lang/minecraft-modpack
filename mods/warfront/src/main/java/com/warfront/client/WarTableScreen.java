@@ -60,6 +60,8 @@ public class WarTableScreen extends Screen {
             b.active = tab != i;
             addRenderableWidget(b);
         }
+        addRenderableWidget(Button.builder(Component.literal("Skills"), x -> PacketDistributor.sendToServer(
+                new com.warfront.network.SkillActionPayload(new ArrayList<>(List.of("open"))))).bounds(left + W - 56, top + 2, 50, 14).build());
         if (tab == 0) {
             addRenderableWidget(Button.builder(Component.literal("Sort: " + SORTS[sort]), x -> {
                 sort = (sort + 1) % SORTS.length;

@@ -24,6 +24,11 @@ public final class ClientHooks {
         else mc.setScreen(new WarTableScreen(payload));
     }
 
+    public static void openSkillTree() {
+        Minecraft mc = Minecraft.getInstance();
+        if (!(mc.screen instanceof SkillTreeScreen)) mc.setScreen(new SkillTreeScreen());
+    }
+
     public static void openAltar(AltarOpenPayload payload) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.screen instanceof AltarScreen open && open.pos().equals(payload.pos())) open.refresh(payload);

@@ -54,6 +54,17 @@ public final class ClientGameEvents {
             net.neoforged.neoforge.network.PacketDistributor.sendToServer(
                     new com.warfront.network.RacePowerPayload(player.isShiftKeyDown()));
         }
+        while (ClientSetup.SKILL_TREE.consumeClick()) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToServer(
+                    new com.warfront.network.SkillActionPayload(new java.util.ArrayList<>(java.util.List.of("open"))));
+        }
+        for (int i = 0; i < ClientSetup.SKILL_KEYS.length; i++) {
+            while (ClientSetup.SKILL_KEYS[i].consumeClick()) {
+                net.neoforged.neoforge.network.PacketDistributor.sendToServer(new com.warfront.network.SkillActionPayload(
+                        new java.util.ArrayList<>(java.util.List.of("use", Integer.toString(i),
+                                Float.toString(player.input.forwardImpulse), Float.toString(player.input.leftImpulse)))));
+            }
+        }
         while (ClientSetup.RECALL.consumeClick()) {
             net.neoforged.neoforge.network.PacketDistributor.sendToServer(com.warfront.network.RecallPayload.INSTANCE);
         }
@@ -62,6 +73,16 @@ public final class ClientGameEvents {
             else player.displayClientMessage(net.minecraft.network.chat.Component.literal(
                     "Test mode is off. An operator turns it on with /wftest on."), true);
         }
+    }
+
+    /** Run and Gun (Marksman): no slowdown while drawing a bow or aiming. Vanilla cuts the input to a fifth right after this. */
+    @SubscribeEvent
+    public static void onMovementInput(net.neoforged.neoforge.client.event.MovementInputUpdateEvent event) {
+        net.minecraft.world.entity.player.Player player = event.getEntity();
+        if (!player.isUsingItem() || player.isPassenger() || !com.warfront.skill.ClientSkills.has("run_and_gun")
+                || !com.warfront.skill.SkillHooks.isRanged(player.getUseItem())) return;
+        event.getInput().leftImpulse *= 5.0F;
+        event.getInput().forwardImpulse *= 5.0F;
     }
 
     @SubscribeEvent

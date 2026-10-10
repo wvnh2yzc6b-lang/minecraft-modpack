@@ -28,7 +28,7 @@ public final class ModEvents {
 
     @SubscribeEvent
     public static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar("2");
+        var registrar = event.registrar("3");
         registrar.playToClient(com.warfront.network.AltarOpenPayload.TYPE, com.warfront.network.AltarOpenPayload.STREAM_CODEC,
                 com.warfront.network.AltarOpenPayload::handle);
         registrar.playToServer(com.warfront.network.AltarSummonPayload.TYPE, com.warfront.network.AltarSummonPayload.STREAM_CODEC,
@@ -57,6 +57,12 @@ public final class ModEvents {
                 com.warfront.network.AlertPayload::handle);
         registrar.playToClient(com.warfront.network.TestModePayload.TYPE, com.warfront.network.TestModePayload.STREAM_CODEC,
                 com.warfront.network.TestModePayload::handle);
+        registrar.playToClient(com.warfront.network.SkillStatePayload.TYPE, com.warfront.network.SkillStatePayload.STREAM_CODEC,
+                com.warfront.network.SkillStatePayload::handle);
+        registrar.playToClient(com.warfront.network.SkillTreePayload.TYPE, com.warfront.network.SkillTreePayload.STREAM_CODEC,
+                com.warfront.network.SkillTreePayload::handle);
+        registrar.playToServer(com.warfront.network.SkillActionPayload.TYPE, com.warfront.network.SkillActionPayload.STREAM_CODEC,
+                com.warfront.network.SkillActionPayload::handle);
         registrar.playToServer(com.warfront.network.TestActionPayload.TYPE, com.warfront.network.TestActionPayload.STREAM_CODEC,
                 com.warfront.network.TestActionPayload::handle);
     }

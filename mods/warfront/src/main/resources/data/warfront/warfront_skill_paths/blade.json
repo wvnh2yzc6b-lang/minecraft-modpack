@@ -1,0 +1,196 @@
+{
+  "name": "Blade",
+  "order": 0,
+  "color": "#D9534F",
+  "icon": "minecraft:iron_sword",
+  "favored_by": [
+    "human",
+    "dwarf",
+    "orc"
+  ],
+  "description": "Melee. Counts any weapon in the sword, axe and melee weapon tags, so modded blades work too.",
+  "nodes": [
+    {
+      "id": "keen_edge",
+      "name": "Keen Edge",
+      "desc": "+6% melee weapon damage.",
+      "pos": [
+        2,
+        0
+      ],
+      "parents": [],
+      "cost": 1,
+      "values": {
+        "damage": 0.06
+      }
+    },
+    {
+      "id": "swift_hands",
+      "name": "Swift Hands",
+      "desc": "+10% attack speed.",
+      "pos": [
+        2,
+        1
+      ],
+      "parents": [
+        "keen_edge"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "minecraft:generic.attack_speed",
+          "amount": 0.1,
+          "operation": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "precise_strike",
+      "name": "Precise Strike",
+      "desc": "ACTIVE: your next melee hit within 10 s ignores armor and lands as a critical (x1.5).",
+      "pos": [
+        1,
+        2
+      ],
+      "parents": [
+        "swift_hands"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 10,
+      "charges": 1,
+      "duration": 10,
+      "values": {
+        "crit": 1.5
+      }
+    },
+    {
+      "id": "executioner",
+      "name": "Executioner",
+      "desc": "+25% damage to enemies under 30% health.",
+      "pos": [
+        1,
+        3
+      ],
+      "parents": [
+        "precise_strike"
+      ],
+      "cost": 1,
+      "values": {
+        "damage": 0.25,
+        "threshold": 0.3
+      }
+    },
+    {
+      "id": "bleeding_cuts",
+      "name": "Bleeding Cuts",
+      "desc": "Critical hits make the target bleed: 1 damage a second for 4 s.",
+      "pos": [
+        1,
+        4
+      ],
+      "parents": [
+        "executioner"
+      ],
+      "cost": 1,
+      "values": {
+        "seconds": 4
+      }
+    },
+    {
+      "id": "cleave",
+      "name": "Cleave",
+      "desc": "ACTIVE: a wide arc that hits everything in front of you for your attack damage.",
+      "pos": [
+        3,
+        2
+      ],
+      "parents": [
+        "swift_hands"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 10,
+      "charges": 1,
+      "values": {
+        "range": 3.5,
+        "damage": 1.0
+      }
+    },
+    {
+      "id": "wide_arcs",
+      "name": "Wide Arcs",
+      "desc": "Sweeping attacks hit 50% harder.",
+      "pos": [
+        3,
+        3
+      ],
+      "parents": [
+        "cleave"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "minecraft:player.sweeping_damage_ratio",
+          "amount": 0.5,
+          "operation": "add_value"
+        }
+      ]
+    },
+    {
+      "id": "bloodlust",
+      "name": "Bloodlust",
+      "desc": "Kills give +10% attack speed for 5 s, stacking 3 times.",
+      "pos": [
+        3,
+        4
+      ],
+      "parents": [
+        "wide_arcs"
+      ],
+      "cost": 1,
+      "values": {
+        "seconds": 5,
+        "stacks": 3
+      }
+    },
+    {
+      "id": "battle_hardened",
+      "name": "Battle Hardened",
+      "desc": "Heal 2 health on every kill.",
+      "pos": [
+        2,
+        5
+      ],
+      "parents": [
+        "bleeding_cuts",
+        "bloodlust"
+      ],
+      "cost": 1,
+      "values": {
+        "heal": 2
+      }
+    },
+    {
+      "id": "blade_storm",
+      "name": "Blade Storm",
+      "desc": "ACTIVE capstone: a 3 s whirl striking everything around you.",
+      "pos": [
+        2,
+        6
+      ],
+      "parents": [
+        "battle_hardened"
+      ],
+      "cost": 2,
+      "active": true,
+      "cooldown": 40,
+      "charges": 1,
+      "duration": 3,
+      "values": {
+        "radius": 3.0,
+        "damage": 0.6
+      }
+    }
+  ]
+}

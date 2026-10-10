@@ -364,6 +364,7 @@ public class SoldierEntity extends PathfinderMob {
     /** Earned XP; a new rank brings a burst, a sound and a word to the commander. */
     public void addXp(int amount) {
         if (amount <= 0 || !com.warfront.army.Veterancy.ranks(getRole()) || level().isClientSide) return;
+        amount = com.warfront.skill.Skills.unitXp(this, amount);
         int before = getRank();
         xp += amount;
         int rank = com.warfront.army.Veterancy.rankFor(xp);
@@ -968,7 +969,8 @@ public class SoldierEntity extends PathfinderMob {
         if (getTarget() == null && hasEffect(WFRegistry.WELL_FED) && (tickCount / 20) % 5 == 0 && getHealth() < getMaxHealth()) heal(1f);
 
         if (race.routs && routTicks == 0 && !com.warfront.combat.Rage.isFrenzied(this) && !hasEffect(WFRegistry.RALLIED)
-                && !com.warfront.army.Veterancy.neverRouts(getRank()) && morale < 20f && getHealth() < getMaxHealth() * 0.4f) {
+                && !com.warfront.army.Veterancy.neverRouts(getRank()) && morale < (com.warfront.skill.Skills.steadyRanks(this) ? 10f : 20f)
+                && getHealth() < getMaxHealth() * 0.4f) {
             routTicks = 120;
             setTarget(null);
             level().playSound(null, getX(), getY(), getZ(), SoundEvents.VILLAGER_HURT, SoundSource.HOSTILE, 1f, 0.8f);

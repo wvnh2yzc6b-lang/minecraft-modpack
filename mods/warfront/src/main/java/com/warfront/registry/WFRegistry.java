@@ -71,6 +71,12 @@ public final class WFRegistry {
             MOB_EFFECTS.register("corroded", () -> new com.warfront.racetower.CorrodedEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.combat.RalliedEffect> RALLIED =
             MOB_EFFECTS.register("rallied", () -> new com.warfront.combat.RalliedEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.skill.StunnedEffect> STUNNED =
+            MOB_EFFECTS.register("stunned", () -> new com.warfront.skill.StunnedEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.skill.BleedingEffect> BLEEDING =
+            MOB_EFFECTS.register("bleeding", () -> new com.warfront.skill.BleedingEffect());
+    public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.skill.BloodlustEffect> BLOODLUST =
+            MOB_EFFECTS.register("bloodlust", () -> new com.warfront.skill.BloodlustEffect());
     public static final DeferredHolder<net.minecraft.world.effect.MobEffect, com.warfront.upkeep.WellFedEffect> WELL_FED =
             MOB_EFFECTS.register("well_fed", () -> new com.warfront.upkeep.WellFedEffect());
     /** Trophy banner auras, one per faction (the Fallen Host's banner gives mana instead). */
@@ -101,6 +107,11 @@ public final class WFRegistry {
             "army_formation", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> STARTER_KIT = ATTACHMENTS.register(
             "starter_kit", () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
+    /** The player skill tree: Renown, learned nodes, skill slots and cooldowns. */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<com.warfront.skill.SkillState>> SKILLS = ATTACHMENTS.register(
+            "skills", () -> AttachmentType.builder(() -> new com.warfront.skill.SkillState())
+                    .serialize(com.warfront.skill.SkillState.CODEC).copyOnDeath().build());
 
     /** Whether this player has beaten the hidden warlord on the Frozen Field. */
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> HIDDEN_WARLORD_BEATEN = ATTACHMENTS.register(

@@ -1,0 +1,191 @@
+{
+  "name": "Skirmisher",
+  "order": 4,
+  "color": "#3FD8D0",
+  "icon": "minecraft:feather",
+  "favored_by": [
+    "elf",
+    "demon",
+    "hive"
+  ],
+  "description": "Mobility and stealth: strike first, never stand still.",
+  "nodes": [
+    {
+      "id": "fleet_foot",
+      "name": "Fleet Foot",
+      "desc": "+8% movement speed.",
+      "pos": [
+        2,
+        0
+      ],
+      "parents": [],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "minecraft:generic.movement_speed",
+          "amount": 0.08,
+          "operation": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "light_landing",
+      "name": "Light Landing",
+      "desc": "No fall damage under 6 blocks, half above that.",
+      "pos": [
+        2,
+        1
+      ],
+      "parents": [
+        "fleet_foot"
+      ],
+      "cost": 1,
+      "attributes": [
+        {
+          "attribute": "minecraft:generic.safe_fall_distance",
+          "amount": 3.0,
+          "operation": "add_value"
+        },
+        {
+          "attribute": "minecraft:generic.fall_damage_multiplier",
+          "amount": -0.5,
+          "operation": "add_multiplied_base"
+        }
+      ]
+    },
+    {
+      "id": "vanish",
+      "name": "Vanish",
+      "desc": "ACTIVE: invisible for 4 s, and nearby enemies lose track of you.",
+      "pos": [
+        1,
+        2
+      ],
+      "parents": [
+        "light_landing"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 25,
+      "charges": 1,
+      "duration": 4,
+      "values": {
+        "radius": 16
+      }
+    },
+    {
+      "id": "ambush",
+      "name": "Ambush",
+      "desc": "Your first hit from invisibility or from behind deals +50% damage.",
+      "pos": [
+        1,
+        3
+      ],
+      "parents": [
+        "vanish"
+      ],
+      "cost": 1,
+      "values": {
+        "damage": 0.5
+      }
+    },
+    {
+      "id": "quiet_step",
+      "name": "Quiet Step",
+      "desc": "Sneaking makes no vibrations: sculk sensors and Wardens miss you.",
+      "pos": [
+        1,
+        4
+      ],
+      "parents": [
+        "ambush"
+      ],
+      "cost": 1
+    },
+    {
+      "id": "dash",
+      "name": "Dash",
+      "desc": "ACTIVE: dash 6 blocks the way you're moving. 2 charges, 8 s each.",
+      "pos": [
+        3,
+        2
+      ],
+      "parents": [
+        "light_landing"
+      ],
+      "cost": 1,
+      "active": true,
+      "cooldown": 8,
+      "charges": 2,
+      "values": {
+        "power": 1.6
+      }
+    },
+    {
+      "id": "hit_and_run",
+      "name": "Hit and Run",
+      "desc": "After landing a hit, +20% speed for 2 s.",
+      "pos": [
+        3,
+        3
+      ],
+      "parents": [
+        "dash"
+      ],
+      "cost": 1,
+      "values": {
+        "seconds": 2
+      }
+    },
+    {
+      "id": "slippery",
+      "name": "Slippery",
+      "desc": "15% chance to dodge a melee hit.",
+      "pos": [
+        3,
+        4
+      ],
+      "parents": [
+        "hit_and_run"
+      ],
+      "cost": 1,
+      "values": {
+        "chance": 0.15
+      }
+    },
+    {
+      "id": "opportunist",
+      "name": "Opportunist",
+      "desc": "+20% damage to slowed, stunned or routing enemies.",
+      "pos": [
+        2,
+        5
+      ],
+      "parents": [
+        "quiet_step",
+        "slippery"
+      ],
+      "cost": 1,
+      "values": {
+        "damage": 0.2
+      }
+    },
+    {
+      "id": "shadow_dance",
+      "name": "Shadow Dance",
+      "desc": "ACTIVE capstone: for 6 s Dash has no cooldown, and hitting a new enemy hides you for 1 s.",
+      "pos": [
+        2,
+        6
+      ],
+      "parents": [
+        "opportunist"
+      ],
+      "cost": 2,
+      "active": true,
+      "cooldown": 60,
+      "charges": 1,
+      "duration": 6
+    }
+  ]
+}
