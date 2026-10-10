@@ -1,0 +1,99 @@
+<title>Warfront Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Alegreya+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a war museum's display wall. Every piece stands on a dark stage plate; newest work first, then hall by hall. Shares the Codex's type and palette. */
+:root {
+  --bg: #eceff2; --surface: #f8f9fa; --ink: #1b2330; --muted: #586374; --line: #ccd3da; --accent: #9a6a12;
+  --stage: #2a2426; --stage-hi: #4a3530;
+  --ok: #2f6b3a; --warn: #9a6a12; --off: #6b7482;
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --body: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #12171f; --surface: #1a212b; --ink: #e4e8ee; --muted: #9aa6b6; --line: #2e3947;
+    --accent: #e2b55a; --stage: #241f22; --stage-hi: #3e2c28; --ok: #7fc58b; --warn: #e2b55a; --off: #8a96a6; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #12171f; --surface: #1a212b; --ink: #e4e8ee; --muted: #9aa6b6; --line: #2e3947;
+  --accent: #e2b55a; --stage: #241f22; --stage-hi: #3e2c28; --ok: #7fc58b; --warn: #e2b55a; --off: #8a96a6; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 17px/1.5 var(--body); padding-inline: 20px; padding-block: 0 56px; margin: 0; }
+.wrap { max-width: 1180px; margin: 0 auto; }
+h1, h2 { font-family: var(--display); letter-spacing: 0.02em; line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); }
+h2 { font-size: 1.45rem; }
+p { margin: 0; }
+.eyebrow { font: 600 0.74rem var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+header.mast { padding-block: 44px 22px; display: grid; gap: 10px; }
+header.mast p { color: var(--muted); max-width: 62ch; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 24px; font: 0.84rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tally b { color: var(--ink); font-size: 1.05rem; margin-right: 5px; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; background: var(--bg); display: flex; flex-wrap: wrap; gap: 6px;
+  padding-block: 10px; border-block: 1px solid var(--line); }
+nav a { font-size: 0.9rem; color: var(--ink); text-decoration: none; padding: 4px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+nav a:hover, nav a:focus-visible { border-color: var(--accent); color: var(--accent); }
+section { padding-block: 34px 4px; display: grid; gap: 14px; scroll-margin-top: 64px; }
+section > header { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 4px 12px; }
+section > header p { grid-column: 1 / -1; color: var(--muted); max-width: 70ch; }
+.count { font: 600 0.8rem var(--mono); color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 14px; }
+.grid.dense { grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); gap: 10px; }
+.latest .grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.card { margin: 0; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.plate { display: block; width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 5px; cursor: zoom-in;
+  background: radial-gradient(ellipse at 50% 70%, var(--stage-hi) 0%, var(--stage) 68%); }
+.plate:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.plate img { display: block; width: 100%; height: auto; aspect-ratio: 1; max-width: 100%; }
+figcaption { display: grid; gap: 1px; font-size: 0.95rem; line-height: 1.3; min-width: 0; }
+figcaption b { font-weight: 700; }
+.line { color: var(--muted); font-size: 0.86rem; }
+.meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 8px; margin-top: 3px; font: 0.7rem var(--mono); color: var(--muted); }
+.st { text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.st.approved { color: var(--ok); }
+.st.review { color: var(--warn); }
+.st.placeholder { color: var(--off); }
+.small figcaption { font-size: 0.86rem; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+.tile { margin: 0; display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; padding: 6px; border: 1px solid var(--line);
+  border-radius: 5px; background: var(--surface); min-width: 0; }
+.tile img { width: 40px; height: 40px; image-rendering: pixelated; background: var(--stage); border-radius: 3px; padding: 4px; }
+.tile figcaption { font-size: 0.88rem; }
+.tile figcaption span { color: var(--muted); font: 0.68rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+dialog { border: 1px solid var(--line); border-radius: 6px; padding: 0; background: var(--surface); color: var(--ink); max-width: min(92vw, 560px); }
+dialog::backdrop { background: rgb(0 0 0 / 0.6); }
+dialog .plate { cursor: zoom-out; border: 0; border-radius: 0; }
+dialog figcaption { padding: 10px 14px 14px; }
+footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 480px) { body { font-size: 16px; padding-inline: 16px; } .grid, .latest .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid.dense { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+<div class="wrap">
+<header class="mast">
+  <span class="eyebrow">Warfront: Age of Banners · updated %%UPDATED%%</span>
+  <h1>The Warfront Gallery</h1>
+  <p>The current picture of everything built for the mod, rendered from the same models and textures the game loads. Newest work comes first; tap any picture to see it larger.</p>
+  <div class="tally"><span><b>%%MODELS%%</b>models</span><span><b>%%TILES%%</b>blocks and items</span><span><b>%%APPROVED%%</b>approved</span><span><b>%%REVIEW%%</b>waiting on review</span><span><b>%%PLACEHOLDER%%</b>placeholder</span></div>
+</header>
+<nav aria-label="Gallery halls"><a href="#latest">Latest</a>%%NAV%%</nav>
+<section id="latest" class="latest"><header><h2>Latest work</h2><span class="count">8</span><p>The eight pieces changed most recently.</p></header><div class="grid">%%LATEST%%</div></section>
+%%SECTIONS%%
+<footer>Built from the repository by tools/codex/build_gallery.py and republished after every visual change. Placeholder pieces are first passes from each race's palette, waiting on your references.</footer>
+</div>
+<dialog id="zoom"><button class="plate" type="button" id="zoom-close" aria-label="Close"><img id="zoom-img" alt=""></button><figcaption id="zoom-cap"></figcaption></dialog>
+<script>
+(function () {
+  var dlg = document.getElementById('zoom'), img = document.getElementById('zoom-img'), cap = document.getElementById('zoom-cap');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.wrap .plate');
+    if (!b) return;
+    var fig = b.closest('figure'), src = b.querySelector('img');
+    img.src = src.src; img.alt = src.alt;
+    cap.innerHTML = fig.querySelector('figcaption').innerHTML;
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  document.getElementById('zoom-close').addEventListener('click', function () { dlg.close ? dlg.close() : dlg.removeAttribute('open'); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+})();
+</script>

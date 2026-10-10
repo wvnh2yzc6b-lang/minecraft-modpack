@@ -4,6 +4,11 @@
   "log": [
     {
       "status": "done",
+      "title": "Warfront Gallery page",
+      "detail": "A third page, the Warfront Gallery, shows the current picture of everything built: war beasts, soldiers, the demon player and race skins, workers, enemy faction trims, flight gear, the shared and race towers, and every block and item texture, each with its status (approved, waiting on review, placeholder) and the date it last changed. The eight most recent pieces lead the page; tap any picture to see it larger. It is rendered from the same models and textures the game loads, and is rebuilt and republished after every visual change."
+    },
+    {
+      "status": "done",
       "title": "Demon war beast: the Bone Stalker",
       "detail": "Demons can now summon their war beast at the altar (it counts against the beast limit and falls like other heroes): the Bone Stalker, built from your reference. A bone-white skeletal predator about two blocks long that prowls on all fours, with blood-red barbs, a skull face with a gaping fanged jaw and red eyes under a cage of horn-spikes, four insect wings with red struts and torn membrane, and a barbed scorpion tail curling over its back. Its hits burn like every demon's, and its sting adds Poison II and Slowness. It takes no fall damage. In a fight its wings buzz, its jaw works and its tail whips the stinger forward. Burning Horde version in soot and ember. Test Panel: Spawn tab, race Demon, War beast."
     },
