@@ -45,7 +45,7 @@ def barb(name, pivot, rot, length=3.0, width=0.9):
 
 
 def fang(name, pivot, rot, length, width, up=False, curve=10):
-    return taper(name, pivot, rot, length, width, ("fang", "fang", "fang"), curve=(-curve if up else curve), down=not up)
+    return taper(name, pivot, rot, length, width, ("fang_root", "fang", "fang"), curve=(-curve if up else curve), down=not up)
 
 
 def finger(name, pivot, rot, lengths, width, curl, claw):
@@ -73,54 +73,99 @@ def toe(name, pivot, yaw, lengths, width, talon):
     return child
 
 
+def horn(name, pivot, rot, length, width, bend):
+    """A long horn: three pieces and a pointed tip, bending `bend` (x, y, z degrees) at each joint, so it can sweep
+    sideways as well as back."""
+    seg = length / 4
+    tip = taper(f"{name}_tip", (0, seg, 0), bend, seg * 1.5, width * 0.5, ("crest", "crest_tip", "crest_tip"), curve=0)
+    child = tip
+    for k in reversed(range(3)):
+        w = width * (1 - 0.18 * k)
+        child = bone(f"{name}_{k}", pivot if k == 0 else (0, seg, 0), rot if k == 0 else bend,
+                     [cube((-w / 2, 0, -w / 2), (w, seg + 0.25, w), "crest")], [child])
+    return child
+
+
 def skull():
-    """Head after the reference: a skull face (heavy slanted brow, deep sockets with small red eyes, a nose hole, a
-    short muzzle), a long jaw hanging open to a pointed spiked chin, tapering fangs of mixed sizes, and over the
-    cranium a mane of pale spikes swept back; long spikes sweep back from the cheeks and out from the jaw."""
-    h = bone("head", (0, 0.2, -8.4), (12, 0, 0), [
-        cube((-2.5, -0.6, -5.0), (5.0, 4.0, 4.8), "skull"),                    # face and cranium
-        cube((-2.3, 2.4, -4.8), (4.6, 2.0, 4.8), "skull", rot=(16, 0, 0)),    # top of the skull
-        cube((-3.0, 2.0, -5.45), (3.1, 1.1, 1.5), "bone_mid", rot=(0, 0, -14)),   # heavy brow, slanting down to the middle
-        cube((-0.1, 2.0, -5.45), (3.1, 1.1, 1.5), "bone_mid", rot=(0, 0, 14)),
-        cube((-2.45, 0.6, -5.14), (2.1, 1.65, 0.2), "socket", rot=(0, 0, -12)),  # deep, slanted eye sockets
-        cube((0.35, 0.6, -5.14), (2.1, 1.65, 0.2), "socket", rot=(0, 0, 12)),
-        cube((-1.55, 1.25, -5.18), (0.55, 0.4, 0.08), "eye", rot=(0, 0, -12)),
-        cube((1.0, 1.25, -5.18), (0.55, 0.4, 0.08), "eye", rot=(0, 0, 12)),
-        cube((-0.55, -0.1, -5.12), (1.1, 0.8, 0.2), "socket"),                # nose hole
-        cube((-0.3, -0.45, -5.12), (0.6, 0.4, 0.2), "socket"),
-        cube((-1.9, -1.6, -5.8), (3.8, 1.3, 1.6), "skull"),                   # short upper muzzle
-        cube((-1.7, -1.75, -5.6), (3.4, 0.15, 3.6), "mouth"),                 # roof of the mouth
+    """Head after the reference and its two head studies. A skull face: a heavy brow in a V over deep sockets with
+    small red eyes, a bridge between them, a nose hole like an upturned heart, jutting cheekbones and a narrow upper
+    jaw. Over it a tall ridged dome swept up and back, framed by two long horns rising from the temples and curving
+    in; a mane of spikes runs off the back of the dome. The long lower jaw hangs wide open, narrowing to a pointed
+    chin with a beard of spikes; both jaws carry rows of tapering fangs, longest at the canines, red at the gums."""
+    h = bone("head", (0, 0.2, -8.4), (-6, 0, 0), [
+        cube((-2.6, -1.0, -4.8), (5.2, 3.6, 5.0), "skull"),                    # back of the skull
+        cube((-2.4, -0.5, -5.1), (4.8, 2.9, 0.5), "skull"),                    # face the sockets sink into
+        cube((-0.42, 0.45, -5.55), (0.84, 1.85, 0.7), "bone"),                 # bridge between the sockets
+        cube((-1.3, -1.55, -6.05), (2.6, 1.3, 1.45), "skull"),                 # narrow upper jaw
+        cube((-1.35, -1.78, -6.05), (2.7, 0.25, 1.35), "gum"),
+        cube((-1.8, -1.7, -5.6), (3.6, 0.12, 4.4), "mouth"),                   # roof of the mouth
     ])
     for x in (-1, 1):
         s = "r" if x > 0 else "l"
-        h.add(cube((x * 2.4 - (1.3 if x > 0 else 0), -1.0, -4.9), (1.3, 1.8, 3.0), "bone", rot=(0, -x * 22, -x * 10)))  # cheekbones
-        for k, (xx, z, L, w) in enumerate(((1.45, -5.75, 3.6, 0.95), (0.85, -5.8, 1.8, 0.6), (0.3, -5.75, 1.2, 0.45),
-                                           (1.7, -4.7, 1.5, 0.55), (1.75, -3.9, 1.1, 0.45))):
-            h.add(fang(f"fang_up_{s}{k}", (x * xx, -1.6, z), (-4, 0, -x * 4), L, w, curve=8 + k))
-        # The mane: rows of pale spikes over the cranium, swept back and fanning out.
-        for k, (z, L) in enumerate(((-3.4, 4.0), (-2.0, 5.0), (-0.6, 5.2), (0.8, 4.4))):
-            h.add(taper(f"crest_side_{s}{k}", (x * 1.5, 3.6, z), (28 + k * 12, 0, -x * (28 + k * 8)), L, 1.0,
-                        ("crest", "crest", "crest_tip"), curve=8))
-        for k, (z, L) in enumerate(((-3.0, 3.4), (-1.4, 4.0), (0.2, 3.6))):
-            h.add(taper(f"crest_outer_{s}{k}", (x * 2.5, 2.6, z), (40 + k * 12, 0, -x * 62), L, 0.9,
-                        ("crest", "crest", "crest_tip"), curve=10))
-        h.add(taper(f"cheek_spike_{s}", (x * 2.9, -0.5, -3.4), (62, 0, -x * 72), 5.2, 0.9, ("crest", "crest", "crest_tip"), curve=-6))
-    for k, (z, L) in enumerate(((-3.8, 4.6), (-2.4, 5.6), (-1.0, 6.2), (0.4, 5.2))):
-        h.add(taper(f"crest_mid_{k}", (0, 4.0, z), (24 + k * 10, 0, 0), L, 1.1, ("crest", "crest", "crest_tip"), curve=8))
-    jaw = bone("jaw", (0, -1.2, -1.6), (-30, 0, 0), [
-        cube((-1.9, -1.3, -4.4), (3.8, 1.3, 4.4), "bone_mid"),                # long lower jaw
-        cube((-1.4, -1.45, -5.9), (2.8, 1.35, 1.6), "bone_mid"),
-        cube((-0.65, -1.7, -6.9), (1.3, 1.4, 1.2), "bone_mid", rot=(-18, 0, 0)),  # pointed chin
-        cube((-1.6, -0.05, -5.7), (3.2, 0.15, 5.0), "mouth"),
-    ], [barb("chin_spike_l", (-0.4, -1.6, -6.6), (-150, 0, -12), 2.2, 0.6),
-        barb("chin_spike_r", (0.4, -1.6, -6.6), (-150, 0, 12), 2.2, 0.6)])
+
+        def X(x0, w):                                                          # mirror a box across the middle
+            return x0 if x > 0 else -(x0 + w)
+        h.add(cube((X(0.36, 2.05), 0.5, -5.2), (2.05, 1.55, 0.15), "socket", rot=(0, 0, x * 10)),
+              cube((X(0.9, 0.52), 0.95, -5.25), (0.52, 0.34, 0.06), "eye", rot=(0, 0, x * 10)),
+              cube((X(0.0, 0.55), -0.32, -5.2), (0.55, 0.75, 0.12), "socket", rot=(0, 0, -x * 14)),  # nose hole
+              cube((X(0.05, 2.95), 2.0, -5.85), (2.95, 0.95, 1.75), "brow", rot=(0, 0, x * 15)),     # the brow, in a V
+              cube((X(0.45, 2.5), -0.4, -5.6), (2.5, 0.85, 2.2), "bone", rot=(0, -x * 12, -x * 8)),  # cheekbone
+              cube((X(2.45, 0.6), -0.3, -4.4), (0.6, 0.75, 3.6), "bone", rot=(0, -x * 6, 0)),       # arch back to the ear
+              cube((X(2.25, 0.55), 0.35, -5.5), (0.55, 1.95, 1.2), "bone", rot=(0, -x * 18, -x * 8)),  # outer rim
+              cube((X(0.9, 1.3), -1.5, -5.65), (1.3, 1.2, 3.6), "skull", rot=(0, x * 10, 0)),      # sides of the upper jaw
+              cube((X(0.95, 1.2), -1.72, -5.6), (1.2, 0.22, 3.4), "gum", rot=(0, x * 10, 0)))
+        for k, (xx, z, L, w) in enumerate(((0.3, -5.85, 1.5, 0.42), (0.82, -5.75, 2.3, 0.52), (1.32, -5.45, 4.2, 0.82),
+                                           (1.68, -4.8, 2.5, 0.56), (1.88, -4.0, 1.9, 0.48), (2.0, -3.2, 1.4, 0.42))):
+            h.add(fang(f"fang_up_{s}{k}", (x * xx, -1.7, z), (-4, 0, -x * 5), L, w, curve=4))
+        h.add(horn(f"horn_{s}", (x * 2.7, 0.9, -3.0), (20, 0, -x * 20), 10.0, 1.25, (6, 0, x * 12)))
+        for k in range(3):                                                    # spikes fanning out from the cheeks
+            h.add(taper(f"cheek_spike_{s}{k}", (x * 2.9, 0.3 - k * 0.5, -3.8 + k * 1.1), (30 + k * 10, 0, -x * (58 + k * 34)),
+                        5.2 - k * 0.8, 0.95, ("crest", "crest", "crest_tip"), curve=-7))
+
+    dome = bone("dome", (0, 2.3, -4.6), (26, 0, 0), [
+        cube((-2.6, 0, 0), (5.2, 1.8, 5.4), "dome"),
+        cube((-2.35, 1.6, 0.25), (4.7, 1.8, 5.0), "dome"),
+        cube((-2.0, 3.2, 0.6), (4.0, 1.7, 4.4), "dome"),
+        cube((-1.5, 4.7, 1.0), (3.0, 1.4, 3.6), "dome"),
+        cube((-0.9, 5.9, 1.5), (1.8, 1.0, 2.6), "dome"),
+        cube((-0.4, 0.3, -0.25), (0.8, 6.4, 0.9), "bone_mid", rot=(14, 0, 0), pivot=(0, 0.3, 0)),  # ridge up the middle
+    ])
     for x in (-1, 1):
         s = "r" if x > 0 else "l"
-        for k, (xx, z, L, w) in enumerate(((1.15, -5.6, 2.6, 0.75), (0.5, -6.1, 1.3, 0.5), (1.4, -4.6, 1.4, 0.5),
-                                           (1.5, -3.6, 1.0, 0.42))):
-            jaw.add(fang(f"fang_dn_{s}{k}", (x * xx, -0.05, z), (4, 0, x * 4), L, w, up=True, curve=8 + k))
-        jaw.add(taper(f"jaw_spike_{s}", (x * 1.9, -0.8, -2.6), (20, 0, -x * 112), 3.2, 0.7, ("crest", "crest", "crest_tip"), curve=-8))
+        dome.add(cube(((1.3 if x > 0 else -1.85), 0.4, -0.1), (0.55, 4.8, 0.6), "bone_mid", rot=(12, 0, -x * 12),
+                      pivot=(x * 1.55, 0.4, 0)))
+        for k in range(4):                                                    # the mane off the back of the dome
+            dome.add(taper(f"mane_{s}{k}", (x * (1.0 + 0.3 * k), 5.4 - 1.1 * k, 2.2 + 0.8 * k),
+                           (42 + k * 9, 0, -x * (22 + k * 11)), 5.4 - 0.4 * k, 1.05, ("crest", "crest", "crest_tip"), curve=9))
+        for k in range(3):
+            dome.add(taper(f"mane_low_{s}{k}", (x * 2.3, 2.2 - 0.7 * k, 3.0 + 1.0 * k), (60 + k * 10, 0, -x * 55),
+                           4.4 - 0.5 * k, 0.95, ("crest", "crest", "crest_tip"), curve=10))
+    for k in range(3):
+        dome.add(taper(f"mane_mid_{k}", (0, 6.6, 2.0 + 1.0 * k), (30 + k * 14, 0, 0), (5.6, 6.4, 5.8)[k], 1.2,
+                       ("crest", "crest", "crest_tip"), curve=9))
+    h.add(dome)
+
+    jaw = bone("jaw", (0, -1.3, -1.4), (-36, 0, 0), [
+        cube((-1.4, -0.95, -5.8), (2.8, 0.5, 5.4), "mouth"),                  # the dark inside of the mouth
+        cube((-1.1, -1.5, -6.95), (2.2, 1.45, 1.4), "bone_mid"),              # front of the jaw
+        cube((-1.2, -0.1, -6.85), (2.4, 0.22, 1.2), "gum"),
+        cube((-0.6, -1.9, -7.95), (1.2, 1.5, 1.4), "bone_mid", rot=(-20, 0, 0)),  # pointed chin
+    ], [taper("chin_spike_m", (0, -2.4, -8.0), (-152, 0, 0), 3.4, 0.85, ("crest", "crest", "crest_tip"), curve=-8),
+        taper("chin_spike_l", (-0.5, -2.0, -7.6), (-150, 0, -22), 2.4, 0.65, ("crest", "crest", "crest_tip"), curve=-8),
+        taper("chin_spike_r", (0.5, -2.0, -7.6), (-150, 0, 22), 2.4, 0.65, ("crest", "crest", "crest_tip"), curve=-8)])
+    for x in (-1, 1):
+        s = "r" if x > 0 else "l"
+        jaw.add(cube(((1.0 if x > 0 else -2.0), -1.4, -6.2), (1.0, 1.4, 6.6), "bone_mid", rot=(0, x * 9, 0)),  # jawbone
+                cube(((1.0 if x > 0 else -1.9), -0.1, -6.0), (0.9, 0.22, 5.0), "gum", rot=(0, x * 9, 0)))
+        for k, (xx, z, L, w) in enumerate(((0.35, -6.55, 1.4, 0.42), (0.85, -6.15, 3.1, 0.66), (1.22, -5.4, 2.1, 0.5),
+                                           (1.42, -4.5, 1.7, 0.45), (1.58, -3.6, 1.3, 0.4))):
+            jaw.add(fang(f"fang_dn_{s}{k}", (x * xx, 0.05, z), (30, 0, x * 5), L, w, up=True, curve=-4))
+        for k in range(2):
+            jaw.add(taper(f"jaw_spike_{s}{k}", (x * 2.0, -0.8, -2.4 - k * 1.8), (20 + k * 10, 0, -x * (115 + k * 15)),
+                          3.4 - k * 0.6, 0.75, ("crest", "crest", "crest_tip"), curve=-8))
     h.add(jaw)
+    scale_tree(h, 1.12)
+    h.pivot = [0, 0.2, -8.4]
     return h
 
 
@@ -319,10 +364,52 @@ def p_tail_red(ctx):
 
 
 def p_skull(ctx):
-    c = mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.rng.uniform(0, 0.25) + ctx.v * 0.2)
+    # Skull bone in ink: pale, stippled, darker into the hollows at the bottom of each face.
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.rng.uniform(0, 0.3) + ctx.v * 0.25)
     if ctx.side == "up" and abs(ctx.u - 0.5) < 0.08:
         c = mix(c, ctx.col("bone_dark"), 0.35)                                # suture down the crown
-    return depth(ctx, c, bevel=0.2)
+    if ctx.rng.random() < 0.07 + 0.2 * (ctx.v if ctx.wall else 0.5 if ctx.side == "down" else 0):
+        c = mix(c, ctx.col("bone_dark"), ctx.rng.uniform(0.4, 0.75))
+    return depth(ctx, c, bevel=0.22, falloff=0.3)
+
+
+def p_dome(ctx):
+    # The tall dome over the skull: ridges and grooves running up it, ink stipple, darker low on the sides.
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.rng.uniform(0.05, 0.4))
+    wobble = int(round(1.2 * math.sin(ctx.y * 0.55 + ctx.x)))
+    if ctx.wall and (ctx.x + wobble) % 4 == 0:
+        c = mix(c, ctx.col("bone_dark"), 0.6)                                  # groove
+    elif ctx.wall and (ctx.x + wobble) % 4 == 1:
+        c = mix(c, ctx.col("bone"), 0.6)                                       # lit ridge beside it
+    elif ctx.side == "up" and (ctx.x + wobble) % 4 == 0:
+        c = mix(c, ctx.col("bone_dark"), 0.45)
+    if ctx.rng.random() < 0.08 + 0.2 * (ctx.v if ctx.wall else 0):
+        c = mix(c, ctx.col("bone_dark"), ctx.rng.uniform(0.4, 0.7))
+    return depth(ctx, c, bevel=0.2, falloff=0.32)
+
+
+def p_brow(ctx):
+    # The heavy brow: pale bone on top and in front, a deep shadow underneath falling into the sockets.
+    if ctx.side == "down":
+        return shade(ctx.col("shadow"), ctx.rng.uniform(1.1, 1.5))
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.rng.uniform(0, 0.3))
+    if ctx.wall and ctx.y >= ctx.h - 2:
+        c = mix(c, ctx.col("bone_dark"), 0.55)
+    return depth(ctx, c, bevel=0.25, falloff=0.2)
+
+
+def p_gum(ctx):
+    # Gums: dark, wet red, nearly the black of the mouth, so the teeth stand out instead of a lip line.
+    return shade(mix(ctx.col("mouth"), ctx.col("red_dark"), ctx.rng.uniform(0.35, 0.85)), ctx.rng.uniform(0.85, 1.1))
+
+
+def p_fang_root(ctx):
+    # Teeth are bloodied at the gum: the root end of the first piece runs from dark red into ivory.
+    down = ctx.cube.origin[1] < 0
+    root = (1 - ctx.v) if down else ctx.v
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), 0.25 + ctx.rng.uniform(0, 0.15))
+    c = mix(c, ctx.col("red_dark"), max(0.0, root - 0.45) / 0.55 * 0.85) if ctx.wall else ctx.col("red_dark")
+    return depth(ctx, c, bevel=0.1, falloff=0.0)
 
 
 def p_vertebra(ctx):
@@ -356,7 +443,10 @@ def p_talon(ctx):
 
 
 def p_fang(ctx):
-    return depth(ctx, mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.v * 0.8), bevel=0.1)
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), 0.15 + ctx.rng.uniform(0, 0.25))
+    if ctx.wall and ctx.x == ctx.w - 1:
+        c = mix(c, ctx.col("bone_dark"), 0.45)                                # shaded edge so each tooth reads
+    return depth(ctx, c, bevel=0.1, falloff=0.0)
 
 
 def p_venom(ctx):
@@ -414,7 +504,7 @@ def p_innards(ctx):
 
 
 PAINTERS = {"skin": p_skin, "skin_dark": p_skin_dark, "chest": p_chest, "belly": p_belly, "crest": p_crest,
-            "crest_tip": p_crest_tip, "tail_red": p_tail_red, "bone": p_bone("bone"), "bone_mid": p_bone("bone_mid"), "bone_dark": p_bone("bone_dark"), "skull": p_skull,
+            "crest_tip": p_crest_tip, "tail_red": p_tail_red, "bone": p_bone("bone"), "bone_mid": p_bone("bone_mid"), "bone_dark": p_bone("bone_dark"), "skull": p_skull, "dome": p_dome, "brow": p_brow, "gum": p_gum, "fang_root": p_fang_root,
             "vertebra": p_vertebra, "rib": p_rib, "barb": p_barb, "barb_root": p_barb_root, "talon": p_talon,
             "fang": p_fang, "venom": p_venom, "strut": p_strut, "membrane": p_membrane, "socket": p_socket,
             "eye": p_eye, "mouth": p_mouth, "innards": p_innards}
