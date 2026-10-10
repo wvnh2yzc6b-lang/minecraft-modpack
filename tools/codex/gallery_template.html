@@ -6,7 +6,7 @@
 /* Layout: a war museum's display wall. Every piece stands on a dark stage plate; newest work first, then hall by hall. Shares the Codex's type and palette. */
 :root {
   --bg: #eceff2; --surface: #f8f9fa; --ink: #1b2330; --muted: #586374; --line: #ccd3da; --accent: #9a6a12;
-  --stage: #2a2426; --stage-hi: #4a3530;
+  --stage: #2a2426; --stage-hi: #4a3530; --stage-ink: #e9ddd6;
   --ok: #2f6b3a; --warn: #9a6a12; --off: #6b7482;
   --display: "Cinzel", "Trajan Pro", Georgia, serif;
   --body: "Alegreya Sans", "Gill Sans", "Segoe UI", system-ui, sans-serif;
@@ -19,6 +19,7 @@
 :root[data-theme="dark"] { --bg: #12171f; --surface: #1a212b; --ink: #e4e8ee; --muted: #9aa6b6; --line: #2e3947;
   --accent: #e2b55a; --stage: #241f22; --stage-hi: #3e2c28; --ok: #7fc58b; --warn: #e2b55a; --off: #8a96a6; color-scheme: dark; }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font: 17px/1.5 var(--body); padding-inline: 20px; padding-block: 0 56px; margin: 0; }
 .wrap { max-width: 1180px; margin: 0 auto; }
 h1, h2 { font-family: var(--display); letter-spacing: 0.02em; line-height: 1.15; margin: 0; text-wrap: balance; }
@@ -42,7 +43,7 @@ section > header p { grid-column: 1 / -1; color: var(--muted); max-width: 70ch; 
 .grid.dense { grid-template-columns: repeat(auto-fill, minmax(138px, 1fr)); gap: 10px; }
 .latest .grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
 .card { margin: 0; display: grid; gap: 6px; align-content: start; min-width: 0; }
-.plate { display: block; width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 5px; cursor: zoom-in;
+.plate { display: block; width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 5px; cursor: pointer;
   background: radial-gradient(ellipse at 50% 70%, var(--stage-hi) 0%, var(--stage) 68%); }
 .plate:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .plate img { display: block; width: 100%; height: auto; aspect-ratio: 1; max-width: 100%; }
@@ -61,6 +62,23 @@ figcaption b { font-weight: 700; }
 .tile img { width: 40px; height: 40px; image-rendering: pixelated; background: var(--stage); border-radius: 3px; padding: 4px; }
 .tile figcaption { font-size: 0.88rem; }
 .tile figcaption span { color: var(--muted); font: 0.68rem var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+.stage-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: 16px; align-items: stretch; padding-block: 4px 26px; }
+.stage { position: relative; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; aspect-ratio: 16 / 10; max-width: 100%;
+  background: radial-gradient(ellipse at 50% 72%, var(--stage-hi) 0%, var(--stage) 64%); touch-action: none; cursor: grab; }
+.stage:active { cursor: grabbing; }
+.stage canvas, .stage .still { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage .still { object-fit: contain; padding: 6%; }
+.stage .hint { position: absolute; left: 12px; bottom: 10px; font: 0.72rem var(--mono); color: var(--stage-ink); opacity: 0.75; pointer-events: none; }
+.info { display: grid; align-content: start; gap: 10px; min-width: 0; }
+.info h2 { font-size: 1.6rem; }
+.info .line { font-size: 1rem; }
+.info .meta { justify-content: flex-start; gap: 6px 14px; font-size: 0.76rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.controls button { font: 500 0.9rem var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+.controls button:hover, .controls button:focus-visible { border-color: var(--accent); color: var(--accent); outline: none; }
+.controls button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.card.on .plate { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+@media (max-width: 760px) { .stage-wrap { grid-template-columns: 1fr; } .stage { aspect-ratio: 1; } }
 dialog { border: 1px solid var(--line); border-radius: 6px; padding: 0; background: var(--surface); color: var(--ink); max-width: min(92vw, 560px); }
 dialog::backdrop { background: rgb(0 0 0 / 0.6); }
 dialog .plate { cursor: zoom-out; border: 0; border-radius: 0; }
@@ -73,27 +91,142 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
 <header class="mast">
   <span class="eyebrow">Warfront: Age of Banners · updated %%UPDATED%%</span>
   <h1>The Warfront Gallery</h1>
-  <p>The current picture of everything built for the mod, rendered from the same models and textures the game loads. Newest work comes first; tap any picture to see it larger.</p>
+  <p>The current picture of everything built for the mod, rendered from the same models and textures the game loads. Every model turns in 3D on the stage below; pick any piece to load it. Newest work comes first.</p>
   <div class="tally"><span><b>%%MODELS%%</b>models</span><span><b>%%TILES%%</b>blocks and items</span><span><b>%%APPROVED%%</b>approved</span><span><b>%%REVIEW%%</b>waiting on review</span><span><b>%%PLACEHOLDER%%</b>placeholder</span></div>
 </header>
+<div class="stage-wrap" id="viewer">
+  <div class="stage" id="stage" aria-label="3D view of the selected piece: drag to turn, scroll or pinch to zoom">
+    <img class="still" id="still" src="%%FIRSTURI%%" alt="">
+    <span class="hint" id="hint">Drag to turn · scroll or pinch to zoom</span>
+  </div>
+  <div class="info">
+    <span class="eyebrow">In 3D</span>
+    <h2 id="v-name"></h2>
+    <span class="line" id="v-line"></span>
+    <span class="meta"><span class="st" id="v-st"></span><time id="v-date"></time></span>
+    <div class="controls">
+      <button type="button" id="v-prev">Previous</button><button type="button" id="v-next">Next</button>
+      <button type="button" id="v-spin" aria-pressed="true">Turntable</button><button type="button" id="v-reset">Reset view</button>
+    </div>
+    <p class="line">Pick any piece below to load it here. The order runs newest first.</p>
+  </div>
+</div>
 <nav aria-label="Gallery halls"><a href="#latest">Latest</a>%%NAV%%</nav>
 <section id="latest" class="latest"><header><h2>Latest work</h2><span class="count">8</span><p>The eight pieces changed most recently.</p></header><div class="grid">%%LATEST%%</div></section>
 %%SECTIONS%%
 <footer>Built from the repository by tools/codex/build_gallery.py and republished after every visual change. Placeholder pieces are first passes from each race's palette, waiting on your references.</footer>
 </div>
-<dialog id="zoom"><button class="plate" type="button" id="zoom-close" aria-label="Close"><img id="zoom-img" alt=""></button><figcaption id="zoom-cap"></figcaption></dialog>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>%%MCJS%%</script>
+<script type="application/json" id="stage-data">%%DATA%%</script>
 <script>
 (function () {
-  var dlg = document.getElementById('zoom'), img = document.getElementById('zoom-img'), cap = document.getElementById('zoom-cap');
-  document.addEventListener('click', function (e) {
-    var b = e.target.closest('.wrap .plate');
-    if (!b) return;
-    var fig = b.closest('figure'), src = b.querySelector('img');
-    img.src = src.src; img.alt = src.alt;
-    cap.innerHTML = fig.querySelector('figcaption').innerHTML;
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+  var D = JSON.parse(document.getElementById('stage-data').textContent);
+  var pieces = D.pieces, byId = {}, index = 0;
+  pieces.forEach(function (p, i) { byId[p.id] = i; });
+  var stage = document.getElementById('stage'), still = document.getElementById('still');
+  var $ = function (id) { return document.getElementById(id); };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var spin = !reduce, ok = !!window.THREE && !!window.MCModel, renderer, scene, cam, holder, model, texCache = {};
+  var yaw = 0.7, pitch = 0.32, dist = 1, baseDist = 1, target = null, dirty = true, visible = true, lastInteract = 0;
+  $('v-spin').setAttribute('aria-pressed', spin ? 'true' : 'false');
+
+  function texture(k) {
+    if (!k) return null;
+    if (!texCache[k]) texCache[k] = new THREE.TextureLoader().load(D.tex[k], function () { dirty = true; });
+    return texCache[k];
+  }
+  function setup() {
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (e) { ok = false; return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setClearColor(0x000000, 0);
+    stage.insertBefore(renderer.domElement, still);
+    scene = new THREE.Scene();
+    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+    var dl = new THREE.DirectionalLight(0xffffff, 0.75); dl.position.set(-40, 80, -60); scene.add(dl);
+    holder = new THREE.Group(); scene.add(holder);
+    cam = new THREE.PerspectiveCamera(30, 1, 1, 4000);
+    resize();
+  }
+  function resize() {
+    if (!renderer) return;
+    var w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); dirty = true;
+  }
+  function show(i) {
+    index = (i + pieces.length) % pieces.length;
+    var p = pieces[index];
+    $('v-name').textContent = p.name; $('v-line').textContent = p.line;
+    var st = $('v-st'); st.textContent = p.status; st.className = 'st ' + p.st; $('v-date').textContent = 'changed ' + p.date;
+    document.querySelectorAll('.card.on').forEach(function (c) { c.classList.remove('on'); });
+    document.querySelectorAll('[data-piece="' + p.id + '"]').forEach(function (b) { b.closest('.card').classList.add('on'); });
+    var img = document.getElementById('img-' + p.id);
+    if (img) still.src = img.src;
+    if (!ok) return;
+    if (model) holder.remove(model);
+    model = new THREE.Group();
+    p.layers.forEach(function (l) {
+      var spec = D.models[l.m]; if (!spec || !l.t) return;
+      model.add(MCModel.buildModel(spec, texture(l.t), texture(l.g)));
+    });
+    holder.add(model);
+    model.updateMatrixWorld(true);
+    var box = new THREE.Box3().setFromObject(model), c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
+    model.position.sub(c);
+    var r = Math.max(s.x, s.y, s.z) * 0.62;
+    baseDist = r / Math.sin(THREE.MathUtils.degToRad(cam.fov / 2)) * 0.95; dist = baseDist;
+    still.hidden = true; dirty = true;
+  }
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (!ok || !visible) return;
+    if (spin && now - lastInteract > 2500) { yaw += 0.006; dirty = true; }
+    if (!dirty) return;
+    pitch = Math.max(-0.2, Math.min(1.2, pitch));
+    cam.position.set(Math.sin(yaw) * Math.cos(pitch) * dist, Math.sin(pitch) * dist, -Math.cos(yaw) * Math.cos(pitch) * dist);
+    cam.lookAt(0, 0, 0);
+    renderer.render(scene, cam); dirty = false;
+  }
+  // Drag to turn, wheel or pinch to zoom.
+  var pts = {}, lastPinch = 0;
+  stage.addEventListener('pointerdown', function (e) { pts[e.pointerId] = [e.clientX, e.clientY]; stage.setPointerCapture(e.pointerId); lastInteract = performance.now(); });
+  stage.addEventListener('pointermove', function (e) {
+    if (!pts[e.pointerId]) return;
+    var ids = Object.keys(pts);
+    if (ids.length === 2) {
+      pts[e.pointerId] = [e.clientX, e.clientY];
+      var a = pts[ids[0]], b = pts[ids[1]], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (lastPinch) dist = Math.max(baseDist * 0.35, Math.min(baseDist * 2.5, dist * lastPinch / d));
+      lastPinch = d;
+    } else {
+      yaw += (e.clientX - pts[e.pointerId][0]) * 0.01; pitch += (e.clientY - pts[e.pointerId][1]) * 0.01;
+      pts[e.pointerId] = [e.clientX, e.clientY];
+    }
+    lastInteract = performance.now(); dirty = true;
   });
-  document.getElementById('zoom-close').addEventListener('click', function () { dlg.close ? dlg.close() : dlg.removeAttribute('open'); });
-  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  function up(e) { delete pts[e.pointerId]; lastPinch = 0; }
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+  stage.addEventListener('wheel', function (e) {
+    e.preventDefault(); dist = Math.max(baseDist * 0.35, Math.min(baseDist * 2.5, dist * (e.deltaY > 0 ? 1.1 : 0.9)));
+    lastInteract = performance.now(); dirty = true;
+  }, { passive: false });
+  $('v-prev').addEventListener('click', function () { show(index - 1); });
+  $('v-next').addEventListener('click', function () { show(index + 1); });
+  $('v-reset').addEventListener('click', function () { yaw = 0.7; pitch = 0.32; dist = baseDist; dirty = true; });
+  $('v-spin').addEventListener('click', function () { spin = !spin; this.setAttribute('aria-pressed', spin ? 'true' : 'false'); });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-piece]'); if (!b || !(b.dataset.piece in byId)) return;
+    show(byId[b.dataset.piece]); yaw = 0.7; pitch = 0.32;
+    $('viewer').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+  window.addEventListener('resize', resize);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; dirty = true; }).observe(stage);
+  if (ok) setup();
+  if (!ok) $('hint').textContent = '3D view unavailable here: showing the picture';
+  var start = location.hash.slice(1);
+  show(start in byId ? byId[start] : 0);
+  requestAnimationFrame(frame);
 })();
 </script>

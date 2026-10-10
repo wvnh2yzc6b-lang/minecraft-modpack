@@ -185,10 +185,27 @@ def main():
         s["uri"] = data_uri(RENDERS / f"{s['id']}.png")
     tl = tiles()
     latest = sorted(subs, key=lambda s: s["date"], reverse=True)[:8]
+    # The 3D stage: every model spec and texture the pieces use, keyed so each texture ships once.
+    specs = {m["id"]: m for m in json.loads((MOD / "build" / "unit-models.json").read_text())}
+    texkeys, models3d, pieces = {}, {}, []
+    def key_of(path):
+        if not path or not Path(path).exists():
+            return None
+        k = os.path.relpath(path, ENT)
+        texkeys.setdefault(k, data_uri(path))
+        return k
+    for s in sorted(subs, key=lambda s: s["date"], reverse=True):
+        layers = []
+        for l in s["layers"]:
+            models3d[l["model"]] = {"tex": specs[l["model"]]["tex"], "parts": specs[l["model"]]["parts"]}
+            layers.append({"m": l["model"], "t": key_of(l["tex"]), "g": key_of(l.get("glow"))})
+        pieces.append({"id": s["id"], "name": s["name"], "line": s["line"], "status": STATUS[s["status"]],
+                       "st": s["status"], "date": fmt(s["date"]), "layers": layers})
+    stage_data = json.dumps({"models": models3d, "tex": texkeys, "pieces": pieces}, separators=(",", ":")).replace("</", "<\\/")
 
     def card(s, small=False):
-        return (f'<figure class="card{" small" if small else ""}"><button class="plate" type="button" data-full="{s["id"]}" '
-                f'aria-label="Enlarge {html.escape(s["name"])}"><img src="{s["uri"]}" alt="{html.escape(s["name"])}, {html.escape(s["line"])}" '
+        return (f'<figure class="card{" small" if small else ""}"><button class="plate" type="button" data-piece="{s["id"]}" '
+                f'aria-label="Show {html.escape(s["name"])} in 3D"><img src="{s["uri"]}" alt="{html.escape(s["name"])}, {html.escape(s["line"])}" '
                 f'width="360" height="360" loading="lazy" id="img-{s["id"]}"></button><figcaption><b>{html.escape(s["name"])}</b>'
                 f'<span class="line">{html.escape(s["line"])}</span><span class="meta"><span class="st {s["status"]}">'
                 f'{STATUS[s["status"]]}</span><time datetime="{s["date"]}">{fmt(s["date"])}</time></span></figcaption></figure>')
@@ -213,7 +230,9 @@ def main():
     for k, v in {"%%UPDATED%%": fmt(date.today().isoformat()), "%%TOTAL%%": str(len(subs) + len(tl)),
                  "%%MODELS%%": str(len(subs)), "%%APPROVED%%": str(counts["approved"]), "%%REVIEW%%": str(counts["review"]),
                  "%%PLACEHOLDER%%": str(counts["placeholder"]), "%%TILES%%": str(len(tl)),
-                 "%%LATEST%%": "".join(card(s) for s in latest), "%%NAV%%": nav, "%%SECTIONS%%": "".join(sections)}.items():
+                 "%%LATEST%%": "".join(card(s) for s in latest), "%%NAV%%": nav, "%%SECTIONS%%": "".join(sections),
+                 "%%FIRST%%": pieces[0]["id"], "%%FIRSTURI%%": next(s["uri"] for s in subs if s["id"] == pieces[0]["id"]),
+                 "%%MCJS%%": (HERE / "mcmodel.js").read_text(), "%%DATA%%": stage_data}.items():
         page = page.replace(k, v)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(page)
