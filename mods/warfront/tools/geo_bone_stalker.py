@@ -20,77 +20,70 @@ PALETTES = {
                           red_dark="4a1206", red_hi="ff8a3a", eye="ff7a18", membrane="aca396", vein="b04a1a", mouth="1a0604"),
 }
 
-LEAN = 13            # the spine rises toward the shoulders (degrees)
+LEAN = 22            # the spine rises steeply from the hips to the shoulders (degrees)
 
 
 # ----------------------------------------------------------------------------- parts
 
-def barb(name, pivot, rot, length=3.0, width=0.9):
-    """A curved spike: a bone-coloured root and a hooked red point, pointing along +y."""
-    return bone(name, pivot, rot, [cube((-width / 2, 0, -width / 2), (width, length * 0.55, width), "barb_root")], [
-        bone(name + "_tip", (0, length * 0.55, 0), (16, 0, 0),
-             [cube((-width * 0.35, 0, -width * 0.35), (width * 0.7, length * 0.5, width * 0.7), "barb")])])
-
-
-def digit(name, pivot, yaw, lengths=(1.6, 1.3), curl=(8, 18), talon=2.0, w=0.7):
-    """A finger or toe reaching forward (-z), curling down, ending in a long red talon."""
-    seg = bone(f"{name}_c", (0, 0, -lengths[-1]), (curl[-1] + 14, 0, 0),
-               [cube((-w * 0.32, -w * 0.32, -talon), (w * 0.64, w * 0.64, talon), "talon")])
-    for i in reversed(range(len(lengths))):
-        L, ww = lengths[i], w * (1 - i * 0.12)
-        seg = bone(f"{name}_{i}", (0, 0, -lengths[i - 1]) if i else pivot, (curl[i], yaw if i == 0 else 0, 0),
-                   [cube((-ww / 2, -ww / 2, -L), (ww, ww, L), "bone"),
-                    cube((-ww * 0.6, -ww * 0.6, -0.5), (ww * 1.2, ww * 1.2, 0.6), "bone_mid")], [seg])
-    return seg
-
-
-def rib(i, z, size):
-    """One rib: out from the spine, down the flank with a slight bow, then curving in under the chest."""
-    out, down = 2.4 * size, 4.2 * size
-    return bone(f"rib_r{i}", (0.6, 1.0, z), (0, 0, 0), [
-        cube((0, -0.4, -0.35), (out, 0.8, 0.7), "rib", rot=(0, 0, -16), pivot=(0, 0, 0)),
-        cube((out - 0.35, -down, -0.35), (0.75, down, 0.7), "rib", rot=(0, 0, 6), pivot=(out, -0.6, 0)),
-        cube((0.2, -down - 0.6, -0.35), (out - 0.2, 0.7, 0.7), "rib", rot=(0, 0, 12), pivot=(out, -down, 0)),
-    ])
-
-
-def fang(name, pivot, rot, length, width, up=False, curve=10):
-    """A tapering, slightly curved fang: three pieces narrowing to a point (down from the upper jaw, or up)."""
-    sign = 1 if up else -1
-    parts = [(0.42, 1.0), (0.33, 0.66), (0.25, 0.38)]
+def taper(name, pivot, rot, length, width, mats=("barb_root", "barb", "barb"), curve=0.0, down=False):
+    """A spike that narrows to a point in three pieces, along +y (or -y when `down`), bending `curve` degrees at
+    each joint. Used for the back spikes, the crest, claws and fangs."""
+    parts = [(0.40, 1.0), (0.33, 0.62), (0.27, 0.32)]
+    sign = -1 if down else 1
     child = None
     for k in reversed(range(3)):
         f, wf = parts[k]
         L, w = length * f, width * wf
-        seg_pivot = (0, sign * length * sum(p[0] for p in parts[:k]), 0) if k else pivot
-        cubes = [cube((-w / 2, 0 if up else -L, -w / 2), (w, L, w), "fang")]
-        b = bone(f"{name}_{k}", seg_pivot if k == 0 else (0, sign * length * parts[k - 1][0], 0),
-                 rot if k == 0 else (sign * -curve, 0, 0), cubes, [child] if child else [])
-        child = b
+        cubes = [cube((-w / 2, -L if down else 0, -w / 2), (w, L, w), mats[k])]
+        piv = pivot if k == 0 else (0, sign * length * parts[k - 1][0], 0)
+        child = bone(f"{name}_{k}", piv, rot if k == 0 else (curve, 0, 0), cubes, [child] if child else [])
+    return child
+
+
+def barb(name, pivot, rot, length=3.0, width=0.9):
+    return taper(name, pivot, rot, length, width, curve=12)
+
+
+def fang(name, pivot, rot, length, width, up=False, curve=10):
+    return taper(name, pivot, rot, length, width, ("fang", "fang", "fang"), curve=(-curve if up else curve), down=not up)
+
+
+def finger(name, pivot, rot, lengths, width, curl, claw):
+    """A long finger hanging down (-y) from the hand, curling forward joint by joint, ending in a red claw."""
+    tip = taper(f"{name}_claw", (0, -lengths[-1], 0), (curl + 6, 0, 0), claw, width * 0.85,
+                ("talon", "talon", "talon"), curve=14, down=True)
+    child = tip
+    for k in reversed(range(len(lengths))):
+        L, w = lengths[k], width * (1 - 0.12 * k)
+        child = bone(f"{name}_{k}", pivot if k == 0 else (0, -lengths[k - 1], 0), rot if k == 0 else (curl, 0, 0),
+                     [cube((-w / 2, -L, -w / 2), (w, L, w), "skin"),
+                      cube((-w * 0.62, -0.7, -w * 0.62), (w * 1.24, 0.8, w * 1.24), "bone_mid")], [child])
+    return child
+
+
+def toe(name, pivot, yaw, lengths, width, talon):
+    """A toe reaching forward (-z), its talon curling down to the ground."""
+    tip = taper(f"{name}_talon", (0, 0, -lengths[-1]), (-100, 0, 0), talon, width * 0.85, ("talon", "talon", "talon"), curve=-16)
+    child = tip
+    for k in reversed(range(len(lengths))):
+        L, w = lengths[k], width * (1 - 0.12 * k)
+        child = bone(f"{name}_{k}", pivot if k == 0 else (0, 0, -lengths[k - 1]), (6 if k else 0, yaw if k == 0 else 0, 0),
+                     [cube((-w / 2, -w / 2, -L), (w, w, L), "skin"),
+                      cube((-w * 0.6, -w * 0.6, -0.6), (w * 1.2, w * 1.2, 0.7), "bone_mid")], [child])
     return child
 
 
 def skull():
-    """Head after the reference's head studies: a skull face (heavy brow, deep sockets with small red eyes, a nose
-    hole, a short muzzle) whose ridged dome sweeps back along the line of the neck; a long jaw hanging open to a
-    pointed, spiked chin; tapering fangs of mixed sizes; horns sweeping back along the dome like a cage."""
-    h = bone("head", (0, 0.4, -5.2), (-6, 0, 0), [
+    """Head after the reference: a skull face (heavy slanted brow, deep sockets with small red eyes, a nose hole, a
+    short muzzle), a long jaw hanging open to a pointed spiked chin, tapering fangs of mixed sizes, and over the
+    cranium a mane of pale spikes swept back; long spikes sweep back from the cheeks and out from the jaw."""
+    h = bone("head", (0, 0.2, -8.4), (12, 0, 0), [
         cube((-2.5, -0.6, -5.0), (5.0, 4.0, 4.8), "skull"),                    # face and cranium
-        cube((-2.2, 2.5, -4.4), (4.4, 2.4, 4.8), "skull", rot=(28, 0, 0)),    # the dome, sweeping back
-        cube((-1.8, 3.6, -2.0), (3.6, 2.1, 4.4), "skull", rot=(38, 0, 0)),
-        cube((-1.3, 4.3, 0.4), (2.6, 1.7, 3.6), "skull", rot=(48, 0, 0)),
-        cube((-0.8, 4.7, 2.8), (1.6, 1.3, 2.6), "skull", rot=(56, 0, 0)),
-        cube((-2.6, 2.0, -4.2), (1.2, 2.2, 6.0), "skull", rot=(30, 0, 28)),   # rounded sides of the dome
-        cube((1.4, 2.0, -4.2), (1.2, 2.2, 6.0), "skull", rot=(30, 0, -28)),
-        cube((-2.1, 3.2, -1.6), (1.0, 1.8, 5.0), "skull", rot=(42, 0, 30)),
-        cube((1.1, 3.2, -1.6), (1.0, 1.8, 5.0), "skull", rot=(42, 0, -30)),
-        cube((-0.25, 4.4, -3.6), (0.5, 0.6, 8.6), "bone_mid", rot=(36, 0, 0)),  # ridge along the dome
-        cube((-1.5, 3.6, -3.8), (0.4, 0.5, 6.2), "bone_mid", rot=(32, 0, 8)),
-        cube((1.1, 3.6, -3.8), (0.4, 0.5, 6.2), "bone_mid", rot=(32, 0, -8)),
+        cube((-2.3, 2.4, -4.8), (4.6, 2.0, 4.8), "skull", rot=(16, 0, 0)),    # top of the skull
         cube((-3.0, 2.0, -5.45), (3.1, 1.1, 1.5), "bone_mid", rot=(0, 0, -14)),   # heavy brow, slanting down to the middle
         cube((-0.1, 2.0, -5.45), (3.1, 1.1, 1.5), "bone_mid", rot=(0, 0, 14)),
-        cube((-2.3, 0.85, -5.12), (1.9, 1.3, 0.2), "socket", rot=(0, 0, -12)),   # deep, slanted eye sockets
-        cube((0.4, 0.85, -5.12), (1.9, 1.3, 0.2), "socket", rot=(0, 0, 12)),
+        cube((-2.45, 0.6, -5.14), (2.1, 1.65, 0.2), "socket", rot=(0, 0, -12)),  # deep, slanted eye sockets
+        cube((0.35, 0.6, -5.14), (2.1, 1.65, 0.2), "socket", rot=(0, 0, 12)),
         cube((-1.55, 1.25, -5.18), (0.55, 0.4, 0.08), "eye", rot=(0, 0, -12)),
         cube((1.0, 1.25, -5.18), (0.55, 0.4, 0.08), "eye", rot=(0, 0, 12)),
         cube((-0.55, -0.1, -5.12), (1.1, 0.8, 0.2), "socket"),                # nose hole
@@ -101,20 +94,19 @@ def skull():
     for x in (-1, 1):
         s = "r" if x > 0 else "l"
         h.add(cube((x * 2.4 - (1.3 if x > 0 else 0), -1.0, -4.9), (1.3, 1.8, 3.0), "bone", rot=(0, -x * 22, -x * 10)))  # cheekbones
-        # Upper fangs, mixed sizes: a big canine, smaller teeth between and behind.
         for k, (xx, z, L, w) in enumerate(((1.45, -5.75, 3.6, 0.95), (0.85, -5.8, 1.8, 0.6), (0.3, -5.75, 1.2, 0.45),
                                            (1.7, -4.7, 1.5, 0.55), (1.75, -3.9, 1.1, 0.45))):
             h.add(fang(f"fang_up_{s}{k}", (x * xx, -1.6, z), (-4, 0, -x * 4), L, w, curve=8 + k))
-        # The cage: a horn from each temple sweeping back along the dome, its tip turning up.
-        h.add(bone(f"horn_{s}", (x * 2.4, 2.4, -3.4), (64, 0, -x * 20),
-                   [cube((-0.65, 0, -0.65), (1.3, 3.6, 1.3), "bone")], [
-                       bone(f"horn_{s}_b", (0, 3.6, 0), (10, 0, x * 12), [cube((-0.5, 0, -0.5), (1.0, 3.4, 1.0), "bone")], [
-                           bone(f"horn_{s}_c", (0, 3.4, 0), (-14, 0, x * 10), [cube((-0.36, 0, -0.36), (0.72, 2.8, 0.72), "bone")], [
-                               bone(f"horn_{s}_d", (0, 2.8, 0), (-22, 0, x * 6), [cube((-0.24, 0, -0.24), (0.48, 2.4, 0.48), "barb")])])])]))
-        for k, (ang, L) in enumerate(((-80, 2.0), (-120, 2.2))):
-            h.add(barb(f"cheek_spike_{s}{k}", (x * 3.0, -0.2 - k * 0.4, -3.4 + k * 0.6), (30, 0, x * ang), L, 0.65))
-    for k, z in enumerate((1.0, 3.0)):
-        h.add(barb(f"crown_{k}", (0, 5.6 + k * 0.4, z), (60 + k * 10, 0, 0), 2.6 - k * 0.5, 0.75))
+        # The mane: rows of pale spikes over the cranium, swept back and fanning out.
+        for k, (z, L) in enumerate(((-3.4, 4.0), (-2.0, 5.0), (-0.6, 5.2), (0.8, 4.4))):
+            h.add(taper(f"crest_side_{s}{k}", (x * 1.5, 3.6, z), (28 + k * 12, 0, -x * (28 + k * 8)), L, 1.0,
+                        ("crest", "crest", "crest_tip"), curve=8))
+        for k, (z, L) in enumerate(((-3.0, 3.4), (-1.4, 4.0), (0.2, 3.6))):
+            h.add(taper(f"crest_outer_{s}{k}", (x * 2.5, 2.6, z), (40 + k * 12, 0, -x * 62), L, 0.9,
+                        ("crest", "crest", "crest_tip"), curve=10))
+        h.add(taper(f"cheek_spike_{s}", (x * 2.9, -0.5, -3.4), (62, 0, -x * 72), 5.2, 0.9, ("crest", "crest", "crest_tip"), curve=-6))
+    for k, (z, L) in enumerate(((-3.8, 4.6), (-2.4, 5.6), (-1.0, 6.2), (0.4, 5.2))):
+        h.add(taper(f"crest_mid_{k}", (0, 4.0, z), (24 + k * 10, 0, 0), L, 1.1, ("crest", "crest", "crest_tip"), curve=8))
     jaw = bone("jaw", (0, -1.2, -1.6), (-30, 0, 0), [
         cube((-1.9, -1.3, -4.4), (3.8, 1.3, 4.4), "bone_mid"),                # long lower jaw
         cube((-1.4, -1.45, -5.9), (2.8, 1.35, 1.6), "bone_mid"),
@@ -127,125 +119,140 @@ def skull():
         for k, (xx, z, L, w) in enumerate(((1.15, -5.6, 2.6, 0.75), (0.5, -6.1, 1.3, 0.5), (1.4, -4.6, 1.4, 0.5),
                                            (1.5, -3.6, 1.0, 0.42))):
             jaw.add(fang(f"fang_dn_{s}{k}", (x * xx, -0.05, z), (4, 0, x * 4), L, w, up=True, curve=8 + k))
-        jaw.add(barb(f"jaw_spike_{s}", (x * 1.9, -0.8, -3.0), (0, 0, -x * 115), 1.8, 0.55))
+        jaw.add(taper(f"jaw_spike_{s}", (x * 1.9, -0.8, -2.6), (20, 0, -x * 112), 3.2, 0.7, ("crest", "crest", "crest_tip"), curve=-8))
     h.add(jaw)
     return h
 
 
 def arm():
-    """A front leg: shoulder knob, humerus, a bony elbow with a barb, twin forearm bones, a clawed hand."""
-    hand = bone("hand_r", (0, -7.6, 0), (-20, 0, 0), [
-        cube((-1.4, -0.9, -1.8), (2.8, 1.0, 2.6), "bone_mid"),
-        cube((-1.0, -0.5, -0.4), (2.0, 1.2, 1.2), "bone"),
-    ], [digit(f"finger_r{i}", (x, -0.4, -1.6), x * -10, (1.6, 1.3), (6, 14)) for i, x in enumerate((-0.9, 0, 0.9))]
-       + [digit("thumb_r", (1.2, -0.3, -0.2), -60, (1.0,), (10,), 1.5, 0.6)])
-    fore = bone("forearm_r", (0, -6.6, 0), (-42, 0, -16), [
-        cube((-1.1, -1.2, -1.1), (2.2, 2.2, 2.2), "bone_mid"),                 # elbow
-        cube((-0.9, -7.6, -0.45), (0.8, 7.0, 0.8), "bone"),                    # radius
-        cube((0.15, -7.4, -0.05), (0.75, 6.8, 0.75), "bone"),                  # ulna
-        cube((-1.0, -7.8, -0.8), (2.0, 1.0, 1.6), "bone_mid"),                 # wrist
-    ], [hand, barb("elbow_barb_r", (0, -0.4, 0.8), (105, 0, 0), 3.6, 1.0),
-        barb("forearm_barb_r", (0.6, -3.6, 0.3), (110, 0, -40), 2.2, 0.7)])
-    return bone("arm_r", (3.4, 0.6, -11.6), (-LEAN + 6, 0, 18), [
-        cube((-1.6, -1.4, -1.6), (3.2, 2.8, 3.2), "bone_mid"),                 # shoulder knob
-        cube((-1.0, -6.6, -1.0), (2.0, 6.0, 2.0), "bone"),                     # humerus
-        cube((-1.25, -3.6, -1.15), (2.5, 2.4, 2.3), "bone_mid"),               # sinew knot
-    ], [fore, barb("shoulder_barb_r", (0.9, 0.6, 0.6), (40, 0, -30), 3.2, 1.0)])
+    """A mantis-like arm: the upper arm rises up and back to a high elbow that bristles with long red spikes; a long
+    forearm comes down in front to a big hand with four long, spread fingers and red claws."""
+    hand = bone("hand_r", (0, -21.0, 0), (18, 0, 0), [
+        cube((-2.1, -3.8, -1.3), (4.2, 3.8, 2.6), "skin"),
+        cube((-2.2, -4.2, -1.1), (4.4, 0.9, 2.2), "bone_mid"),                # knuckles
+    ], [finger(f"finger_r{k}", (x, -4.0, 0), (4, 0, -x * 11), (3.6, 2.8, 2.0), 0.85, 12, 3.6)
+        for k, x in enumerate((-1.6, -0.55, 0.55, 1.6))]
+       + [finger("thumb_r", (-2.2, -1.8, -0.4), (10, 0, 40), (2.2, 1.6), 0.8, 12, 2.8)])
+    fore = bone("forearm_r", (0, 12.5, 0), (-26, 0, 22), [
+        cube((-1.5, -1.5, -1.5), (3.0, 3.0, 3.0), "skin"),                    # elbow
+        cube((-1.35, -11.0, -1.3), (2.7, 11.0, 2.6), "skin"),
+        cube((-1.0, -21.0, -1.0), (2.0, 10.4, 2.0), "skin"),
+        cube((-0.3, -19.0, 0.6), (0.6, 17.0, 0.5), "bone_mid"),              # ulna ridge down the back
+    ], [hand] + [taper(f"forearm_spike_r{k}", (0, -2.5 - k * 2.6, 0.9), (118 + k * 6, 0, 0), 3.8 - k * 0.7, 0.8, curve=10)
+                 for k in range(2)])
+    elbow_spikes = [taper(f"elbow_spike_r{k}", (0, 12.1, 0.6), (rx, 0, rz), L, 1.15, curve=8)
+                    for k, (rx, rz, L) in enumerate(((18, -18, 8.0), (34, 8, 8.6), (52, -8, 7.6), (70, 16, 6.6), (90, -2, 5.4)))]
+    return bone("arm_r", (4.6, -0.6, -16.4), (38, 0, -28), [
+        cube((-2.0, -1.8, -2.0), (4.0, 3.6, 4.0), "skin"),                    # shoulder
+        cube((-1.2, 0, -1.2), (2.4, 12.5, 2.4), "skin"),                      # upper arm
+        cube((-1.5, 2.0, -1.5), (3.0, 4.6, 2.3), "skin"),                     # sinew bulge
+    ], [fore] + elbow_spikes)
 
 
 def leg():
-    """A hind leg, digitigrade: thigh forward, shin back, a long ankle forward, clawed toes; barbed knee and heel."""
-    foot = bone("foot_r", (0, -5.0, 0), (34, 0, 0), [cube((-1.3, -0.8, -1.6), (2.6, 1.0, 2.6), "bone_mid")],
-                [digit(f"toe_r{i}", (x, -0.4, -1.4), x * -12, (1.4, 1.1), (4, 10), 1.8, 0.65) for i, x in enumerate((-0.8, 0, 0.8))])
-    ankle = bone("ankle_r", (0, -6.2, 0), (-78, 0, 0), [
-        cube((-0.75, -5.2, -0.75), (1.5, 5.2, 1.5), "bone"),
-        cube((-1.0, -0.9, -1.0), (2.0, 1.8, 2.0), "bone_mid"),
-    ], [foot, barb("heel_barb_r", (0, -0.4, 0.7), (115, 0, 0), 3.0, 0.9)])
-    shin = bone("shin_r", (0, -6.4, 0), (86, 0, 0), [
-        cube((-1.2, -1.2, -1.2), (2.4, 2.4, 2.4), "bone_mid"),                 # knee
-        cube((-0.8, -6.4, -0.8), (1.6, 6.0, 1.6), "bone"),
-        cube((0.3, -5.8, 0.0), (0.6, 5.0, 0.6), "bone_dark"),                  # fibula
-    ], [ankle, barb("knee_barb_r", (0, -0.2, -1.0), (-40, 0, 0), 3.0, 1.0)])
-    return bone("leg_r", (2.8, -0.6, 0.6), (-LEAN - 40, 0, 6), [
-        cube((-1.5, -6.6, -1.5), (3.0, 6.6, 3.0), "bone_mid"),
-        cube((-1.7, -2.6, -1.6), (3.4, 2.6, 3.2), "bone"),                     # haunch
+    """A long hind leg, digitigrade: a muscled haunch, thigh forward, shin back, a high hock with a big red spur, a long
+    ankle down to a foot of long taloned toes."""
+    foot = bone("foot_r", (0, -7.6, 0), (-30, 0, 0), [cube((-1.7, -1.0, -2.2), (3.4, 1.4, 3.2), "skin")],
+                [toe(f"toe_r{k}", (x, -0.4, -2.0), -x * 16, (4.4, 3.4), 0.9, 4.4) for k, x in enumerate((-1.1, 0, 1.1))]
+                + [toe("dewclaw_r", (0, -0.2, 0.8), 180, (1.4,), 0.8, 2.6)])
+    ankle = bone("ankle_r", (0, -8.0, 0), (84, 0, -6), [
+        cube((-1.4, -1.2, -1.4), (2.8, 2.6, 2.8), "bone_mid"),                # hock
+        cube((-0.9, -7.6, -0.9), (1.8, 7.6, 1.8), "skin"),
+        cube((-0.25, -7.0, 0.7), (0.5, 6.4, 0.5), "bone_mid"),               # tendon down the back
+    ], [foot, taper("hock_spur_r", (0, 0.4, 1.0), (70, 0, 0), 7.0, 1.6, curve=16)])
+    shin = bone("shin_r", (0, -8.6, 0), (-92, 0, 0), [
+        cube((-1.6, -1.4, -1.6), (3.2, 3.0, 3.2), "skin"),                    # knee
+        cube((-1.15, -8.0, -1.15), (2.3, 8.0, 2.3), "skin"),
+    ], [ankle] + [taper(f"knee_spike_r{k}", (0, -0.6 - k * 1.8, 1.2), (96 + k * 12, 0, 0), 3.8 - k * 0.6, 1.0, curve=10)
+                  for k in range(3)])
+    return bone("leg_r", (3.6, -1.6, 0.4), (13, 0, 14), [
+        cube((-2.4, -5.0, -2.8), (4.8, 6.6, 5.4), "skin"),                    # haunch
+        cube((-1.7, -8.6, -1.8), (3.4, 8.6, 3.4), "skin"),                    # thigh, thick with muscle
     ], [shin])
 
 
-TAIL_CURL = [-6, -2, -3, -5, -9, -13, -17, -21, -23, -23, -21, -18]
+TAIL_CURL = [-2, -1, -1, -1, -1, -2, -6, -16, -26, -30, -28, -22, -14, -8, -5, -3, -2, -2, -2, -2, -2, -3, -4, -5, -6]
 
 
 def tail():
+    """A long thick tail with big red spikes along the top and smaller ones beneath. It runs back, rises and arches
+    over the body, turning red toward the end, and ends in a hooked red stinger above the head."""
     n = len(TAIL_CURL)
-    tip = bone("stinger", (0, 0, 2.2), (-30, 0, 0), [
-        cube((-1.35, -1.35, 0), (2.7, 2.6, 3.0), "venom"),
-    ], [bone("stinger_hook", (0, 0, 3.0), (-38, 0, 0), [cube((-0.6, -0.6, 0), (1.2, 1.2, 3.4), "barb")], [
-        bone("stinger_point", (0, 0, 3.4), (-40, 0, 0), [cube((-0.35, -0.35, 0), (0.7, 0.7, 3.0), "barb")])])])
+    tip = bone("stinger", (0, 0, 2.3), (-20, 0, 0), [
+        cube((-1.5, -1.5, 0), (3.0, 3.0, 3.2), "venom"),
+    ], [taper("stinger_blade", (0, 0, 3.2), (-80, 0, 0), 9.0, 1.6, ("tail_red", "barb", "barb"), curve=-24)]
+       + [taper(f"stinger_hook_{k}", (0, 1.4, 1.0 + k * 1.2), (-20 - k * 10, 0, 0), 2.0, 0.7, curve=-12) for k in range(2)])
     child = tip
     for i in reversed(range(n)):
-        w = 2.3 - i * 0.12
-        L = 2.6 - i * 0.04
-        seg = bone(f"tail_{i}", (0, 0.4, 2.0) if i == 0 else (0, 0, 2.6 - (i - 1) * 0.04),
+        w = 4.0 - i * 0.11
+        L = 3.6 - i * 0.055
+        red = i >= n - 9
+        mat = "tail_red" if red else "skin"
+        seg = bone(f"tail_{i}", (0, 0.6, 2.6) if i == 0 else (0, 0, 3.6 - (i - 1) * 0.055),
                    (TAIL_CURL[i] - (LEAN if i == 0 else 0), 0, 0), [
-                       cube((-w / 2, -w * 0.45, 0), (w, w * 0.9, L * 0.8), "vertebra"),
-                       cube((-w * 0.6, -w * 0.55, L * 0.75), (w * 1.2, w * 1.1, 0.45), "bone_mid"),
-                   ], [child, barb(f"tail_barb_{i}", (0, w * 0.4, L * 0.4), (34, 0, 0), 2.8 - i * 0.12, 0.8 - i * 0.02)])
-        if i % 2 == 0:
-            for x in (-1, 1):
-                seg.add(barb(f"tail_side_{i}_{'r' if x > 0 else 'l'}", (x * w * 0.5, 0, L * 0.4), (20, 0, -x * 80), 1.6 - i * 0.05, 0.55))
+                       cube((-w / 2, -w * 0.45, 0), (w, w * 0.9, L * 0.82), mat),
+                       cube((-w * 0.58, -w * 0.52, L * 0.74), (w * 1.16, w * 1.04, 0.55), "bone_mid" if not red else "tail_red"),
+                   ], [child,
+                       taper(f"tail_spike_{i}", (0, w * 0.4, L * 0.35), (50, 0, 0), max(1.8, 5.6 - i * 0.16), w * 0.55, curve=10),
+                       taper(f"tail_under_{i}", (0, -w * 0.4, L * 0.4), (128, 0, 0), max(1.0, 3.2 - i * 0.12), w * 0.36, curve=-8)])
         child = seg
     return child
 
 
-def wing(name, y, z, length, width, flare, sweep):
-    """Insect wing: a see-through membrane with a raised red leading strut and veins fanning across it."""
-    veins = [cube((-0.15, 0, -0.15), (0.3, length * f, 0.3), "strut", rot=(a, 0, 0), pivot=(0, 0, 0))
-             for f, a in ((0.85, 9), (0.7, 18), (0.5, 27))]
-    cross = [cube((-0.12, length * f, 0), (0.24, 0.24, width * (1 - f) * 0.9), "strut") for f in (0.3, 0.5, 0.7)]
-    return bone(name.replace("_r", "_root_r"), (1.4, 2.0, z), (LEAN * -1, 0, 0), [], [
+def wing(name, z, y, length, width, flare, sweep):
+    """A long, narrow dragonfly wing: see-through veined membrane with a raised red leading strut and two veins."""
+    veins = [cube((-0.14, 0, 0.6), (0.28, length * f, 0.28), "strut", rot=(a, 0, 0), pivot=(0, 0, 0))
+             for f, a in ((0.86, 3.0), (0.74, 6.0))]
+    return bone(name.replace("_r", "_root_r"), (1.8, y, z), (-LEAN, 0, 0), [], [
         bone(name, (0, 0, 0), (sweep, 0, -flare), [
             cube((0, 0, 0), (0, length, width), "membrane"),
-            cube((-0.3, 0, -0.3), (0.6, length, 0.6), "strut"),
-            cube((-0.45, 0, -0.45), (0.9, 2.2, 0.9), "barb_root"),
-        ] + veins + cross)])
+            cube((-0.28, 0, 0.1), (0.55, length * 0.9, 0.55), "strut"),
+            cube((-0.6, -0.4, -0.6), (1.2, 2.4, 1.2), "barb_root"),
+        ] + veins)])
 
 
 def body():
-    b = bone("body", (0, 14.0, 5.0), (LEAN, 0, 0), [
-        cube((-3.0, -1.8, -1.6), (6.0, 3.2, 4.0), "bone_mid"),                 # pelvis
-        cube((-1.0, -0.6, -6.0), (2.0, 2.0, 5.0), "bone_dark"),               # bare spine at the waist
-        cube((-1.0, -2.8, -12.2), (2.0, 3.2, 5.4), "innards"),                 # dark hollow behind the ribs
-        cube((-0.6, -4.9, -13.4), (1.2, 1.0, 6.8), "bone"),                    # breastbone
-        cube((-3.6, 0.2, -13.4), (7.2, 1.8, 3.4), "bone_mid"),                 # shoulder girdle
+    b = bone("body", (0, 21.0, 6.0), (LEAN, 0, 0), [
+        cube((-3.4, -2.2, -2.0), (6.8, 4.4, 4.8), "skin"),                    # pelvis
+        cube((-2.5, -2.4, -8.6), (5.0, 4.2, 6.8), "belly"),                   # gaunt waist
+        cube((-4.6, -3.4, -19.4), (9.2, 7.4, 11.2), "chest"),                 # ribcage under skin, narrowing below
+        cube((-3.5, -6.2, -18.8), (7.0, 3.0, 9.6), "chest"),
+        cube((-1.2, -6.6, -19.0), (2.4, 1.2, 8.5), "bone_mid", rot=(-8, 0, 0)),  # breastbone keel
+        cube((-5.0, 2.6, -19.6), (10.0, 2.2, 6.4), "skin"),                   # shoulders
+        cube((-3.0, 3.6, -20.0), (6.0, 2.4, 4.0), "skin"),                    # base of the neck
     ])
-    for k in range(9):                                                        # vertebrae along the back
-        b.add(cube((-0.8, 1.0, -1.0 - k * 1.55), (1.6, 1.3, 1.1), "vertebra"))
     for x in (-1, 1):
-        b.add(cube((x * 2.2 - (1.6 if x > 0 else 0), -0.6, -1.4), (1.6, 2.8, 3.4), "bone", rot=(0, 0, -x * 14)))   # hip blades
-        b.add(cube((x * 2.0 - (2.0 if x > 0 else 0), 0.6, -13.0), (2.0, 3.0, 3.6), "bone", rot=(-10, 0, -x * 22)))  # shoulder blades
-    for i, z in enumerate((-6.6, -8.2, -9.8, -11.4, -12.8)):
-        r = rib(i, z, 0.8 + 0.06 * i)
-        b.add(r, mirror(r))
-    for k in range(8):
-        b.add(barb(f"spine_barb_{k}", (0, 2.2, -0.8 - k * 1.7), (-LEAN + 34 - k * 2, 0, 0), 4.4 - abs(k - 4) * 0.4, 1.0))
-    neck = bone("neck", (0, 1.4, -13.6), (16, 0, 0), [
-        cube((-0.9, -0.9, -1.8), (1.8, 1.8, 1.8), "vertebra"),
-        cube((-0.85, -0.8, -3.6), (1.7, 1.7, 1.8), "vertebra", rot=(-6, 0, 0)),
-        cube((-0.8, -0.7, -5.3), (1.6, 1.6, 1.8), "vertebra", rot=(-10, 0, 0)),
-    ], [skull()] + [barb(f"neck_barb_{k}", (0, 0.8, -0.8 - k * 1.7), (40, 0, 0), 2.4, 0.8) for k in range(3)])
+        b.add(cube((x * 3.0 - (1.3 if x > 0 else 0), -1.4, -1.8), (1.3, 3.0, 4.0), "bone_mid", rot=(0, 0, -x * 12)))  # hip bones
+        for i in range(6):                                                    # ribs standing out of the hide
+            L = 7.0 - i * 0.45
+            b.add(cube((x * 4.75 - 0.3, 1.8 - i * 1.25, -15.6 + i * 0.5), (0.6, 0.55, L), "rib", rot=(-28, 0, 0)))
+    for k in range(11):                                                       # knobs of the spine
+        b.add(cube((-0.7, 2.0, -0.6 - k * 1.8), (1.4, 1.2, 1.2), "vertebra"))
+    # The mane of red spikes down the back: longest over the shoulders, shorter toward the hips, two side rows.
+    for k in range(14):
+        z = -19.6 + k * 1.35
+        L = 10.0 - k * 0.48
+        y = 4.6 if z < -13 else 3.0
+        b.add(taper(f"back_spike_{k}", (0, y, z), (10 + k * 2.5, 0, 0), L, 1.35, curve=9))
+    for x in (-1, 1):
+        for k in range(6):
+            b.add(taper(f"shoulder_spike_{'r' if x > 0 else 'l'}{k}", (x * (2.4 + k * 0.1), 4.2, -19.4 + k * 1.5),
+                        (14 + k * 4, 0, -x * (22 + k * 3)), 8.4 - k * 0.7, 1.15, curve=10))
+    neck = bone("neck", (0, 2.4, -20.2), (-30, 0, 0), [
+        cube((-2.2, -2.4, -4.5), (4.4, 4.6, 5.0), "skin"),
+        cube((-1.8, -2.0, -8.6), (3.6, 3.9, 4.6), "skin"),
+        cube((-1.0, -2.6, -8.0), (2.0, 1.0, 7.6), "skin_dark"),               # sinew under the throat
+    ], [skull()] + [taper(f"neck_spike_{k}", (0, 1.8, -1.6 - k * 2.4), (30, 0, 0), 3.6 - k * 0.5, 0.9, curve=10) for k in range(3)])
     b.add(neck)
     a, l = arm(), leg()
     b.add(a, mirror(a), l, mirror(l), tail())
-    for wb in (wing("wing_r", 2.0, -11.0, 21, 8, 30, 22), wing("hindwing_r", 2.0, -9.4, 16, 7, 42, 52)):
+    for wb in (wing("wing_r", -15.0, 4.2, 36, 6.0, 24, 30), wing("hindwing_r", -12.5, 3.8, 31, 5.2, 40, 60)):
         b.add(wb, mirror(wb))
     return b
 
 
-BODY_SCALE = 1.45    # the body is this much bigger than it was first drawn; the head keeps its size
-
-
 def model():
-    return scale_tree(bone("root", (0, 0, 0), (0, 0, 0), [], [body()]), BODY_SCALE, keep=("head",))
+    return bone("root", (0, 0, 0), (0, 0, 0), [], [body()])
 
 
 # ----------------------------------------------------------------------------- painting
@@ -259,6 +266,56 @@ def p_bone(base_key):
             c = mix(c, ctx.col("bone_dark"), 0.35)                            # hairline cracks
         return depth(ctx, c)
     return paint
+
+
+def p_skin(ctx):
+    # Pale hide stretched over bone: mottled, with grey sinew streaks running along the limb and deep shading.
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.rng.uniform(0.15, 0.7))
+    if ctx.wall and (ctx.x * 5 + (ctx.y // 5) * 3) % 9 == 0:
+        c = mix(c, ctx.col("bone_dark"), 0.45)
+    shadowed = ctx.v if ctx.wall else (0.9 if ctx.side == "down" else 0.1)
+    if ctx.rng.random() < 0.08 + 0.22 * shadowed:                           # ink stipple, thicker in the shadows
+        c = mix(c, ctx.col("bone_dark"), ctx.rng.uniform(0.45, 0.8))
+    return depth(ctx, c, bevel=0.22, falloff=0.4)
+
+
+def p_skin_dark(ctx):
+    return depth(ctx, mix(ctx.col("bone_mid"), ctx.col("bone_dark"), 0.3 + ctx.rng.uniform(0, 0.3)), falloff=0.2)
+
+
+def p_chest(ctx):
+    # The ribcage under the hide: slanting grooves between the ribs on the flanks, a keel down the front.
+    c = mix(ctx.col("bone"), ctx.col("bone_mid"), ctx.rng.uniform(0.05, 0.35))
+    if ctx.side in ("east", "west") and (ctx.y + ctx.x // 2) % 5 == 0:
+        c = mix(c, ctx.col("bone_dark"), 0.5)
+    elif ctx.side == "down" and (ctx.y // 3) % 2 == 0:
+        c = mix(c, ctx.col("bone_dark"), 0.25)
+    return depth(ctx, c, bevel=0.2, falloff=0.28)
+
+
+def p_belly(ctx):
+    c = mix(ctx.col("bone_mid"), ctx.col("bone"), ctx.rng.uniform(0.2, 0.6))
+    if ctx.y % 3 == 0:
+        c = mix(c, ctx.col("bone_dark"), 0.35)                                # sunken, segmented belly
+    return depth(ctx, c, falloff=0.3)
+
+
+def p_crest(ctx):
+    # The pale spikes of the mane: bone at the root, greying toward the point.
+    t = ctx.v if ctx.wall else 0.5
+    return depth(ctx, mix(ctx.col("bone_dark"), ctx.col("bone"), 0.15 + 0.6 * t), bevel=0.14, falloff=0.0)
+
+
+def p_crest_tip(ctx):
+    t = ctx.v if ctx.wall else 0.5
+    return depth(ctx, mix(ctx.col("shadow"), ctx.col("bone_dark"), 0.2 + 0.6 * t), bevel=0.1, falloff=0.0)
+
+
+def p_tail_red(ctx):
+    c = mix(ctx.col("red"), ctx.col("red_dark"), ctx.rng.uniform(0, 0.45))
+    if ctx.wall and ctx.y == 0:
+        c = mix(c, ctx.col("red_hi"), 0.4)
+    return depth(ctx, c, bevel=0.18, falloff=0.2)
 
 
 def p_skull(ctx):
@@ -316,16 +373,25 @@ def p_strut(ctx):
 
 
 def p_membrane(ctx):
-    # See-through membrane: pale, faintly veined, cloudier near the root, torn at the outer edge and the tip.
+    # See-through dragonfly membrane: a network of fine veins (long veins down the wing, cross veins between them
+    # making cells), clearer toward the tip, a little torn at the trailing edge.
     if ctx.side not in ("east", "west"):
         return None
-    if (ctx.u > 0.82 and (ctx.y * 7 + ctx.x * 3) % 9 < 3) or (ctx.v < 0.1 and ctx.u > 0.35 + ctx.v * 4) or ctx.rng.random() < 0.015:
+    t = 1 - ctx.v                                                             # 0 at the root, 1 at the tip
+    half = 0.5 * (0.4 + 0.6 * min(1.0, t / 0.3))
+    if t > 0.72:
+        half *= math.sqrt(max(0.0, 1 - ((t - 0.72) / 0.28) ** 2))
+    if abs(ctx.u - 0.5) > half or ctx.rng.random() < 0.006:
         return None
-    c = mix(ctx.col("membrane"), ctx.col("vein"), 0.06 + ctx.rng.uniform(0, 0.06))
-    if (ctx.x + ctx.y) % 13 == 0:
-        c = mix(c, ctx.col("vein"), 0.35)
-    a = round(150 + 70 * ctx.v)
-    return with_alpha(shade(c, 1.0 + 0.08 * (1 - ctx.v)), a)
+    if abs(ctx.u - 0.5) > half - 0.6 / ctx.w:
+        return with_alpha(mix(ctx.col("vein"), ctx.col("bone_dark"), 0.3), 200)   # the rim
+    band = int((ctx.u - 0.5 + half) / (2 * half) * 4)
+    long_vein = any(abs(ctx.u - (0.5 - half + 2 * half * f)) < 0.5 / ctx.w for f in (0.25, 0.5, 0.75))
+    cross = (ctx.y * 5 + band * 13) % 17 == 0
+    if long_vein or cross:
+        return with_alpha(mix(ctx.col("vein"), ctx.col("bone_dark"), 0.4), 170)
+    c = mix(ctx.col("membrane"), ctx.col("vein"), 0.02 + ctx.rng.uniform(0, 0.04))
+    return with_alpha(shade(c, 1.0 + 0.05 * t), round(45 + 60 * ctx.v))
 
 
 def p_socket(ctx):
@@ -347,7 +413,8 @@ def p_innards(ctx):
     return shade(ctx.col("shadow"), f * ctx.rng.uniform(0.85, 1.1))
 
 
-PAINTERS = {"bone": p_bone("bone"), "bone_mid": p_bone("bone_mid"), "bone_dark": p_bone("bone_dark"), "skull": p_skull,
+PAINTERS = {"skin": p_skin, "skin_dark": p_skin_dark, "chest": p_chest, "belly": p_belly, "crest": p_crest,
+            "crest_tip": p_crest_tip, "tail_red": p_tail_red, "bone": p_bone("bone"), "bone_mid": p_bone("bone_mid"), "bone_dark": p_bone("bone_dark"), "skull": p_skull,
             "vertebra": p_vertebra, "rib": p_rib, "barb": p_barb, "barb_root": p_barb_root, "talon": p_talon,
             "fang": p_fang, "venom": p_venom, "strut": p_strut, "membrane": p_membrane, "socket": p_socket,
             "eye": p_eye, "mouth": p_mouth, "innards": p_innards}
@@ -361,29 +428,32 @@ def _w(t, period, phase=0.0):
 
 def idle(t):
     p = 3.2
-    out = {"body": {"pos": (0, 0.25 * _w(t, p), 0)},
-           "neck": {"rot": (3 * _w(t, p, 0.1), 4 * _w(t, p * 2), 0)},
+    out = {"body": {"pos": (0, 0.3 * _w(t, p), 0)},
+           "neck": {"rot": (3 * _w(t, p, 0.1), 5 * _w(t, p * 2), 0)},
+           "head": {"rot": (2 * _w(t, p, 0.3), 0, 0)},
            "jaw": {"rot": (-3 - 3 * _w(t, p / 2), 0, 0)},
+           "arm_r": {"rot": (2 * _w(t, p), 0, 0)}, "arm_l": {"rot": (2 * _w(t, p, 0.5), 0, 0)},
            "wing_r": {"rot": (0, 0, -3 * _w(t, p))}, "wing_l": {"rot": (0, 0, 3 * _w(t, p))},
            "hindwing_r": {"rot": (0, 0, -2 * _w(t, p, 0.2))}, "hindwing_l": {"rot": (0, 0, 2 * _w(t, p, 0.2))}}
     for i in range(len(TAIL_CURL)):
-        out[f"tail_{i}"] = {"rot": (1.2 * _w(t, p, i * 0.05), 5 * _w(t, p, i * 0.07), 0)}
+        out[f"tail_{i}"] = {"rot": (1.0 * _w(t, p, i * 0.05), 2.5 * _w(t, p, i * 0.06), 0)}
     return out
 
 
 def walk(t):
-    p = 1.0
+    p = 1.1
     s, o = _w(t, p), _w(t, p, 0.5)
     lift_a, lift_b = max(0.0, _w(t, p, 0.25)), max(0.0, _w(t, p, 0.75))
-    out = {"body": {"pos": (0, 0.5 * abs(_w(t, p / 2)), 0)},
-           "arm_r": {"rot": (-26 * s, 0, 0)}, "leg_l": {"rot": (-26 * s, 0, 0)},
-           "arm_l": {"rot": (-26 * o, 0, 0)}, "leg_r": {"rot": (-26 * o, 0, 0)},
-           "forearm_r": {"rot": (-24 * lift_a, 0, 0)}, "shin_l": {"rot": (20 * lift_a, 0, 0)},
-           "forearm_l": {"rot": (-24 * lift_b, 0, 0)}, "shin_r": {"rot": (20 * lift_b, 0, 0)},
+    out = {"body": {"pos": (0, 0.6 * abs(_w(t, p / 2)), 0)},
+           # Diagonal pairs: front right with hind left. The arms reach forward from the shoulder and lift the hand.
+           "arm_r": {"rot": (-14 * s, 0, 0)}, "forearm_r": {"rot": (-16 * lift_a, 0, 0)},
+           "arm_l": {"rot": (-14 * o, 0, 0)}, "forearm_l": {"rot": (-16 * lift_b, 0, 0)},
+           "leg_l": {"rot": (-22 * s, 0, 0)}, "shin_l": {"rot": (18 * lift_a, 0, 0)},
+           "leg_r": {"rot": (-22 * o, 0, 0)}, "shin_r": {"rot": (18 * lift_b, 0, 0)},
            "neck": {"rot": (4 * _w(t, p / 2, 0.25), 0, 0)},
            "jaw": {"rot": (-4, 0, 0)}}
     for i in range(len(TAIL_CURL)):
-        out[f"tail_{i}"] = {"rot": (0, 7 * _w(t, p, i * 0.06), 0)}
+        out[f"tail_{i}"] = {"rot": (0, 3.5 * _w(t, p, i * 0.06), 0)}
     return out
 
 
@@ -392,13 +462,15 @@ def attack(t):
     k = math.sin(math.pi * min(1.0, t / L))                                  # 0 -> 1 -> 0
     strike = math.sin(math.pi * min(1.0, max(0.0, (t - 0.15) / 0.5)))
     out = {"body": {"pos": (0, -0.3 * k, -2.0 * strike), "rot": (-4 * strike, 0, 0)},
-           "neck": {"rot": (-10 * k, 0, 0)}, "jaw": {"rot": (-14 * k, 0, 0)},
-           "wing_r": {"rot": (0, 0, -16 * k + 6 * _w(t, 0.2))}, "wing_l": {"rot": (0, 0, 16 * k - 6 * _w(t, 0.2))},
-           "hindwing_r": {"rot": (0, 0, -12 * k + 6 * _w(t, 0.2, 0.5))}, "hindwing_l": {"rot": (0, 0, 12 * k - 6 * _w(t, 0.2, 0.5))},
-           "arm_r": {"rot": (-14 * strike, 0, 0)}, "arm_l": {"rot": (-14 * strike, 0, 0)},
-           "stinger": {"rot": (-26 * strike, 0, 0)}}
+           "neck": {"rot": (-8 * k, 0, 0)}, "jaw": {"rot": (-14 * k, 0, 0)},
+           "wing_r": {"rot": (0, 0, -14 * k + 5 * _w(t, 0.2))}, "wing_l": {"rot": (0, 0, 14 * k - 5 * _w(t, 0.2))},
+           "hindwing_r": {"rot": (0, 0, -10 * k + 5 * _w(t, 0.2, 0.5))}, "hindwing_l": {"rot": (0, 0, 10 * k - 5 * _w(t, 0.2, 0.5))},
+           # Both arms rake forward while the tail drives the stinger down over the head.
+           "arm_r": {"rot": (-24 * k, 0, 0)}, "arm_l": {"rot": (-24 * k, 0, 0)},
+           "forearm_r": {"rot": (-30 * strike, 0, 0)}, "forearm_l": {"rot": (-30 * strike, 0, 0)},
+           "stinger": {"rot": (-30 * strike, 0, 0)}}
     for i in range(len(TAIL_CURL)):
-        out[f"tail_{i}"] = {"rot": ((-9 if i > 4 else 4) * strike, 0, 0)}
+        out[f"tail_{i}"] = {"rot": ((-6 if i > 6 else 2) * strike, 0, 0)}
     return out
 
 

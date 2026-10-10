@@ -88,6 +88,12 @@ These drive the soldier models (3D parts), skins and unit sizes.
   sockets with small red eyes, a nose hole, a short muzzle) under a tall ridged dome swept up and back; a long jaw
   hanging open to a pointed, spiked chin; long fangs above and below; horns curving up the sides of the dome like a
   cage; spikes fanning out from the cheeks and jaw. Compare: `demon-beast-head-compare.png`.
+- **Matched to the reference, 2026-10-10 (owner: "match the reference as much as possible"):** mantis arms (the
+  upper arm rises up, back and out to a high elbow bristling with red spikes; a long forearm comes down in front to a
+  big hand of long spread claws); a deep ribcage narrowing below a gaunt waist; heavy thighs, a high hock with a big
+  red spur, a long ankle slanting forward, long taloned toes; the tail runs straight back at the hips with big red
+  spikes above and below, then arches over to the stinger; long narrow see-through wings with fine veins; a crown of
+  spikes radiating round the skull; ink-stippled hide, darker in the shadows. Compare: `demon-beast-compare.png`.
 - **Built as the Bone Stalker** (`tools/bone_stalker.py`, render `demon-beast-render.png`): the torso pitches forward
   so it prowls low on long arms with bent-out elbows; four wings (two long, two short) fan up and back from the
   shoulders; the tail runs back then curls up over the body to the stinger. Burning Horde version: soot-stained bone
