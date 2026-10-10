@@ -7,26 +7,31 @@ const [jobsFile, outDir, threePath] = process.argv.slice(2);
 const ROOT = path.resolve(__dirname, '../..');
 const specs = Object.fromEntries(JSON.parse(fs.readFileSync(ROOT + '/mods/warfront/build/unit-models.json')).map(m => [m.id, m]));
 const jobs = JSON.parse(fs.readFileSync(jobsFile));
+const GEO = ROOT + '/mods/warfront/src/main/resources/assets/warfront/geo/';
+const geos = id => JSON.parse(fs.readFileSync(GEO + id + '.geo.json'));
 const uri = f => 'data:image/png;base64,' + fs.readFileSync(f).toString('base64');
 fs.mkdirSync(outDir, { recursive: true });
 (async () => {
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const page = await browser.newPage({ viewport: { width: 360, height: 360 } });
   await page.setContent(`<html><body style="margin:0"><script>${fs.readFileSync(threePath)}</script>
-    <script>${fs.readFileSync(__dirname + '/mcmodel.js')}</script></body></html>`);
+    <script>${fs.readFileSync(__dirname + '/mcmodel.js')}</script><script>${fs.readFileSync(__dirname + '/geomodel.js')}</script></body></html>`);
   await page.evaluate(() => {
     window.R = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     R.setSize(360, 360); R.setClearColor(0x000000, 0); document.body.appendChild(R.domElement);
   });
   for (const job of jobs) {
-    const layers = job.layers.map(l => ({ spec: specs[l.model], tex: uri(l.tex), glow: l.glow && fs.existsSync(l.glow) ? uri(l.glow) : null }));
+    const layers = job.layers.map(l => ({ spec: l.geo ? geos(l.geo) : specs[l.model], geo: !!l.geo, tex: uri(l.tex), glow: l.glow && fs.existsSync(l.glow) ? uri(l.glow) : null }));
     if (layers.some(l => !l.spec)) { console.error('missing model in', job.id); continue; }
     const png = await page.evaluate(async ({ layers, view }) => {
       const load = src => new Promise(r => new THREE.TextureLoader().load(src, r));
       const scene = new THREE.Scene();
       scene.add(new THREE.AmbientLight(0xffffff, 0.8));
       const dl = new THREE.DirectionalLight(0xffffff, 0.75); dl.position.set(-30, 60, -50); scene.add(dl);
-      for (const l of layers) scene.add(MCModel.buildModel(l.spec, await load(l.tex), l.glow ? await load(l.glow) : null));
+      for (const l of layers) {
+        const t = await load(l.tex), g = l.glow ? await load(l.glow) : null;
+        scene.add(l.geo ? GeoModel.build(l.spec, t, g) : MCModel.buildModel(l.spec, t, g));
+      }
       const box = new THREE.Box3().setFromObject(scene);
       const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
       const dir = { three: [0.72, 0.42, -0.72], side: [1, 0.15, 0], front: [0, 0.15, -1] }[view || 'three'];

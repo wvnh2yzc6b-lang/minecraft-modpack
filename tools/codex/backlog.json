@@ -3,6 +3,20 @@
   "updated": "2026-10-10",
   "items": [
     {
+      "id": "hd-models",
+      "status": "blocked",
+      "blocked_on": "Owner's review of the high-detail Bone Stalker (the sample). Once approved, convert the rest in this order.",
+      "title": "High-detail GeckoLib models for everything",
+      "decided": "Owner, 2026-10-10: every model gets the high-detail animated style (GeckoLib), not just more shading on the box models.",
+      "spec": [
+        "Pipeline: mods/warfront/tools/geo.py (bones, per-cube rotation, per-face UV at 2x density, baked depth shading, see-through, glowmask, keyframed animations). One generator per model: tools/geo_<name>.py. Java: GeoAnims.usesGeo + SoldierRenderer's geo map + SoldierGeoModel/SoldierGeoRenderer; textures in textures/entity/geo/<skin>/.",
+        "Order: the other beasts (Deepmaw, Armored Moa), then imps and the Lancer-Drone, then the demon hellknight armor sets, the demon player, workers and faction trims, then towers and race towers (block entity geo renderers), flight gear last.",
+        "Every model gets idle, walk and attack clips (towers: idle and fire); the Gallery shows each in 3D with its clips.",
+        "Humanoid units that wear vanilla armor and hold items need GeckoLib's item and armor layers; check those before converting the player-rig units.",
+        "Retire each old box model and its textures when its replacement lands; rebuild and republish the Gallery each time."
+      ]
+    },
+    {
       "id": "campaign-betrayal",
       "status": "blocked",
       "blocked_on": "The advisor's true form (open question in needs.json). The hidden warlord is built (stand-in look) and drops the Key to the End, which should start this.",

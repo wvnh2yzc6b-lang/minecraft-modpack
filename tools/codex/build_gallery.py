@@ -17,6 +17,7 @@ TEX = MOD / "src" / "main" / "resources" / "assets" / "warfront" / "textures"
 ENT = TEX / "entity"
 OUT = ROOT / "build" / "codex" / "warfront-gallery.html"
 RENDERS = ROOT / "build" / "gallery"
+ASSETS = MOD / "src" / "main" / "resources" / "assets" / "warfront"
 LANG = json.loads((MOD / "src" / "main" / "resources" / "assets" / "warfront" / "lang" / "en_us.json").read_text())
 NEEDS = json.loads((HERE / "needs.json").read_text())["cells"]
 
@@ -28,6 +29,14 @@ FACTIONS = {"marauders": ("Marauder Horde", "orc"), "black_legion": ("Black Legi
 WORKERS = {"human": ("Farmhand", "Mason"), "elf": ("Grovetender", "Treewright"), "dwarf": ("Hearthfarmer", "Stonemason"),
            "orc": ("Goblin Grubber", "Goblin Tinker"), "demon": ("Ash Tiller", "Brimstone Mason"),
            "angel": ("Lightgardener", "Sanctum Builder"), "hive": ("Harvester Drone", "Builder Drone")}
+
+
+GEO_TEX = TEX / "entity" / "geo"
+
+
+def geo_layer(model, skin):
+    """A high-detail GeckoLib model (assets/warfront/geo) in one skin."""
+    return {"geo": model, "tex": str(GEO_TEX / skin / f"{model}.png"), "glow": str(GEO_TEX / skin / f"{model}_glowmask.png")}
 
 
 def t(folder, model):
@@ -62,11 +71,11 @@ def subjects():
     for sid, model, folder, name, line, key in [
         ("beast_hive", "hive_beast", "hive", "Deepmaw", "Hive war beast", "hive/beast"),
         ("beast_swarm", "hive_beast", "the_swarm", "Deepmaw", "The Swarm", "hive/beast"),
-        ("beast_demon", "demon_beast", "demon", "Bone Stalker", "Demon war beast", "demon/beast"),
-        ("beast_horde", "demon_beast", "burning_horde", "Bone Stalker", "Burning Horde", "demon/beast"),
         ("beast_angel", "angel_moa", "angel", "Armored Moa", "Angel war beast", "angel/beast"),
         ("beast_fallen", "angel_moa", "fallen_host", "Armored Moa", "Fallen Host", "angel/beast")]:
         add("beasts", sid, name, line, status(key), [layer(model, t(folder, model))])
+    add("beasts", "beast_demon", "Bone Stalker", "Demon war beast · high detail", status("demon/beast"), [geo_layer("demon_beast", "demon")])
+    add("beasts", "beast_horde", "Bone Stalker", "Burning Horde · high detail", status("demon/beast"), [geo_layer("demon_beast", "burning_horde")])
     # Soldiers with their own models or armor
     for sid, model, folder, name, line, key in [
         ("imp_impaler", "imp_impaler", "demon", "Imp Impaler", "Demon spearman", "demon/spearman"),
@@ -181,27 +190,36 @@ def main():
     subs = subjects()
     render(subs)
     for s in subs:
-        s["date"] = git_date([l["tex"] for l in s["layers"]])
+        s["date"] = git_date([l["tex"] for l in s["layers"]] + [str(ASSETS / "geo" / f'{l["geo"]}.geo.json') for l in s["layers"] if l.get("geo")])
         s["uri"] = data_uri(RENDERS / f"{s['id']}.png")
     tl = tiles()
     latest = sorted(subs, key=lambda s: s["date"], reverse=True)[:8]
     # The 3D stage: every model spec and texture the pieces use, keyed so each texture ships once.
     specs = {m["id"]: m for m in json.loads((MOD / "build" / "unit-models.json").read_text())}
-    texkeys, models3d, pieces = {}, {}, []
+    texkeys, models3d, pieces, geos, anims = {}, {}, [], {}, {}
     def key_of(path):
         if not path or not Path(path).exists():
             return None
-        k = os.path.relpath(path, ENT)
+        k = os.path.relpath(path, TEX)
         texkeys.setdefault(k, data_uri(path))
         return k
     for s in sorted(subs, key=lambda s: s["date"], reverse=True):
-        layers = []
+        layers, clips = [], []
         for l in s["layers"]:
+            if l.get("geo"):
+                gid = l["geo"]
+                geos[gid] = json.loads((ASSETS / "geo" / f"{gid}.geo.json").read_text())
+                af = ASSETS / "animations" / f"{gid}.animation.json"
+                if af.exists():
+                    anims[gid] = json.loads(af.read_text())["animations"]
+                    clips = [k.rsplit(".", 1)[1] for k in anims[gid]]
+                layers.append({"geo": gid, "t": key_of(l["tex"]), "g": key_of(l.get("glow"))})
+                continue
             models3d[l["model"]] = {"tex": specs[l["model"]]["tex"], "parts": specs[l["model"]]["parts"]}
             layers.append({"m": l["model"], "t": key_of(l["tex"]), "g": key_of(l.get("glow"))})
         pieces.append({"id": s["id"], "name": s["name"], "line": s["line"], "status": STATUS[s["status"]],
-                       "st": s["status"], "date": fmt(s["date"]), "layers": layers})
-    stage_data = json.dumps({"models": models3d, "tex": texkeys, "pieces": pieces}, separators=(",", ":")).replace("</", "<\\/")
+                       "st": s["status"], "date": fmt(s["date"]), "layers": layers, "clips": clips})
+    stage_data = json.dumps({"models": models3d, "geo": geos, "anim": anims, "tex": texkeys, "pieces": pieces}, separators=(",", ":")).replace("</", "<\\/")
 
     def card(s, small=False):
         return (f'<figure class="card{" small" if small else ""}"><button class="plate" type="button" data-piece="{s["id"]}" '
@@ -232,7 +250,7 @@ def main():
                  "%%PLACEHOLDER%%": str(counts["placeholder"]), "%%TILES%%": str(len(tl)),
                  "%%LATEST%%": "".join(card(s) for s in latest), "%%NAV%%": nav, "%%SECTIONS%%": "".join(sections),
                  "%%FIRST%%": pieces[0]["id"], "%%FIRSTURI%%": next(s["uri"] for s in subs if s["id"] == pieces[0]["id"]),
-                 "%%MCJS%%": (HERE / "mcmodel.js").read_text(), "%%DATA%%": stage_data}.items():
+                 "%%MCJS%%": (HERE / "mcmodel.js").read_text() + "\n" + (HERE / "geomodel.js").read_text(), "%%DATA%%": stage_data}.items():
         page = page.replace(k, v)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(page)

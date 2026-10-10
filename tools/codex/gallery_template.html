@@ -108,6 +108,7 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
       <button type="button" id="v-prev">Previous</button><button type="button" id="v-next">Next</button>
       <button type="button" id="v-spin" aria-pressed="true">Turntable</button><button type="button" id="v-reset">Reset view</button>
     </div>
+    <div class="controls" id="v-clips" hidden></div>
     <p class="line">Pick any piece below to load it here. The order runs newest first.</p>
   </div>
 </div>
@@ -167,10 +168,14 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
     if (!ok) return;
     if (model) holder.remove(model);
     model = new THREE.Group();
+    geoParts = [];
     p.layers.forEach(function (l) {
-      var spec = D.models[l.m]; if (!spec || !l.t) return;
+      if (!l.t) return;
+      if (l.geo) { var gm = GeoModel.build(D.geo[l.geo], texture(l.t), texture(l.g)); geoParts.push({ obj: gm, id: l.geo }); model.add(gm); return; }
+      var spec = D.models[l.m]; if (!spec) return;
       model.add(MCModel.buildModel(spec, texture(l.t), texture(l.g)));
     });
+    clipBar(p);
     holder.add(model);
     model.updateMatrixWorld(true);
     var box = new THREE.Box3().setFromObject(model), c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
@@ -179,9 +184,34 @@ footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line);
     baseDist = r / Math.sin(THREE.MathUtils.degToRad(cam.fov / 2)) * 0.95; dist = baseDist;
     still.hidden = true; dirty = true;
   }
+  var geoParts = [], clip = null, clipStart = 0;
+  function clipBar(p) {
+    var bar = $('v-clips'); bar.innerHTML = ''; clip = null;
+    bar.hidden = !(p.clips && p.clips.length);
+    (p.clips || []).forEach(function (name, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { play(name); });
+      bar.appendChild(b);
+    });
+    if (p.clips && p.clips.length) play(p.clips.indexOf('idle') >= 0 ? 'idle' : p.clips[0]);
+  }
+  function play(name) {
+    clip = name; clipStart = performance.now();
+    document.querySelectorAll('#v-clips button').forEach(function (b) { b.setAttribute('aria-pressed', b.textContent.toLowerCase() === name ? 'true' : 'false'); });
+  }
   function frame(now) {
     requestAnimationFrame(frame);
     if (!ok || !visible) return;
+    if (clip && geoParts.length && !reduce) {
+      var t = (now - clipStart) / 1000;
+      geoParts.forEach(function (g) {
+        var c = D.anim[g.id] && D.anim[g.id]['animation.' + g.id + '.' + clip];
+        if (c && c.loop === false && t > c.animation_length + 0.6) { clipStart = now; t = 0; }
+        GeoModel.pose(g.obj, c, t);
+      });
+      dirty = true;
+    }
     if (spin && now - lastInteract > 2500) { yaw += 0.006; dirty = true; }
     if (!dirty) return;
     pitch = Math.max(-0.2, Math.min(1.2, pitch));

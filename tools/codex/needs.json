@@ -144,6 +144,10 @@
   ],
   "settled": [
     {
+      "topic": "Models",
+      "answer": "Every model moves to a high-detail, animated style on GeckoLib (now a required library in the mod and the pack): many more pieces, each angled on its own, textures at double detail with baked shading, see-through materials and real animations (idle, walk, attack). The Bone Stalker goes first as the sample; the rest follow once it's approved."
+    },
+    {
       "topic": "Skill tree",
       "answer": "Commander path: your army. Formations stay open to every player and never sit behind a skill. Drillmaster and Logistics lead to two branches: Empowerer gives allies effects nothing else does (Kindle Arms active, which puts your race's element on your army's weapons; Blood Bond; Shared Armor), and Warmaster grows the army (Call to Arms active, Beastmaster, Veteran Corps). They rejoin at Steady Ranks, and the capstone is the Last Order active, which raises fallen heroes nearby."
     },
