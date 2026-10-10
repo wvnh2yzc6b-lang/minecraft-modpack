@@ -54,7 +54,7 @@
     const g = geo['minecraft:geometry'][0], tw = g.description.texture_width, th = g.description.texture_height;
     prep(texture);
     const mat = new THREE.MeshLambertMaterial({ map: texture, side: THREE.DoubleSide, transparent: true, alphaTest: 0.04 });
-    const glowMat = glowTexture ? new THREE.MeshBasicMaterial({ map: prep(glowTexture), side: THREE.DoubleSide, transparent: true,
+    const glowMat = glowTexture ? new THREE.MeshBasicMaterial({ map: prep(glowTexture), side: THREE.FrontSide, transparent: true,
       blending: THREE.AdditiveBlending, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1 }) : null;
     const root = new THREE.Group(), bones = {};
     for (const b of g.bones) {

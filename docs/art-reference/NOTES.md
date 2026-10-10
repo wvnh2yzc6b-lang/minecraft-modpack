@@ -84,6 +84,10 @@ These drive the soldier models (3D parts), skins and unit sizes.
 - **Colors:** bone white and pale grey, with dark blood-red barbs, talons, wing struts and stinger.
 - **Head studies:** the two sketches in the top left show the skull from the front: a long, narrow face, jagged
   fangs, and curved horn-spikes framing the head like a cage. Use them for the head's front view.
+- **Head, rebuilt 2026-10-10 after owner feedback ("too dragon"):** not a long snout. A skull face (heavy brow, deep
+  sockets with small red eyes, a nose hole, a short muzzle) under a tall ridged dome swept up and back; a long jaw
+  hanging open to a pointed, spiked chin; long fangs above and below; horns curving up the sides of the dome like a
+  cage; spikes fanning out from the cheeks and jaw. Compare: `demon-beast-head-compare.png`.
 - **Built as the Bone Stalker** (`tools/bone_stalker.py`, render `demon-beast-render.png`): the torso pitches forward
   so it prowls low on long arms with bent-out elbows; four wings (two long, two short) fan up and back from the
   shoulders; the tail runs back then curls up over the body to the stinger. Burning Horde version: soot-stained bone

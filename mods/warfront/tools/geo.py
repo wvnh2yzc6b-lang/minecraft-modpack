@@ -143,7 +143,9 @@ def export(model_id, root, out_geo, painters, palettes, tex_dir, width=512, glow
             entry["cubes"] = cubes
         bones_json.append(entry)
 
-    placed, height = pack([(f[0], f[3], f[4]) for f in faces], width)
+    # Each face gets a 1-texel border filled with its own edge colours, so nothing bleeds in from its neighbours.
+    padded, height = pack([(f[0], f[3] + 2, f[4] + 2) for f in faces], width)
+    placed = {k: (u + 1, v + 1) for k, (u, v) in padded.items()}
     for entry in bones_json:
         for cj in entry.get("cubes", []):
             cj["uv"] = {side: {"uv": list(placed[key]), "uv_size": [next(f[3] for f in faces if f[0] == key),
@@ -170,9 +172,20 @@ def export(model_id, root, out_geo, painters, palettes, tex_dir, width=512, glow
                     if col is None:
                         continue
                     if isinstance(col, tuple) and len(col) == 2 and col[0] == "glow":
-                        col = col[1]
-                        glow.putpixel((u0 + px, v0 + py), col)
+                        # Glowing pixels: the glow layer adds the colour full-bright, so the base under it stays
+                        # dark, or the two would add up to white.
+                        glow.putpixel((u0 + px, v0 + py), col[1])
+                        col = shade(col[1], 0.3)
                     img.putpixel((u0 + px, v0 + py), col)
+        for key, c, side, tw, th, _o in faces:
+            u0, v0 = placed[key]
+            for im in (img, glow):
+                for px in range(-1, tw + 1):
+                    im.putpixel((u0 + px, v0 - 1), im.getpixel((u0 + min(max(px, 0), tw - 1), v0)))
+                    im.putpixel((u0 + px, v0 + th), im.getpixel((u0 + min(max(px, 0), tw - 1), v0 + th - 1)))
+                for py in range(th):
+                    im.putpixel((u0 - 1, v0 + py), im.getpixel((u0, v0 + py)))
+                    im.putpixel((u0 + tw, v0 + py), im.getpixel((u0 + tw - 1, v0 + py)))
         d = Path(tex_dir) / skin
         d.mkdir(parents=True, exist_ok=True)
         img.save(d / f"{model_id}.png")

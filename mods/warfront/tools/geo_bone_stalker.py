@@ -15,9 +15,9 @@ MODEL = "demon_beast"
 
 PALETTES = {
     "demon": dict(bone="ece8df", bone_mid="cdc6b9", bone_dark="8f877b", shadow="2a1a18", red="8e1612", red_dark="420606",
-                  red_hi="c4352b", eye="ff3a22", membrane="ebe6de", vein="9a2a22", mouth="2a0505"),
+                  red_hi="c4352b", eye="ee1408", membrane="ebe6de", vein="9a2a22", mouth="2a0505"),
     "burning_horde": dict(bone="b9b0a4", bone_mid="958b7e", bone_dark="5e554b", shadow="1a100c", red="b2401a",
-                          red_dark="4a1206", red_hi="ff8a3a", eye="ffb040", membrane="aca396", vein="b04a1a", mouth="1a0604"),
+                          red_dark="4a1206", red_hi="ff8a3a", eye="ff7a18", membrane="aca396", vein="b04a1a", mouth="1a0604"),
 }
 
 LEAN = 13            # the spine rises toward the shoulders (degrees)
@@ -55,46 +55,60 @@ def rib(i, z, size):
 
 
 def skull():
-    h = bone("head", (0, 0.4, -5.2), (-28, 0, 0), [
-        cube((-2.4, -0.6, -5.2), (4.8, 4.2, 5.4), "skull"),                    # cranium
-        cube((-2.0, -0.2, -0.3), (4.0, 3.5, 1.0), "bone_mid"),                 # back of the skull
-        cube((-2.7, 2.5, -5.7), (5.4, 1.2, 1.7), "bone_mid", rot=(12, 0, 0)),  # brow ridge
-        cube((-2.1, 1.2, -5.35), (1.6, 1.1, 0.45), "socket"),                  # eye sockets
-        cube((0.5, 1.2, -5.35), (1.6, 1.1, 0.45), "socket"),
-        cube((-1.85, 1.4, -5.42), (0.8, 0.6, 0.3), "eye"),
-        cube((1.05, 1.4, -5.42), (0.8, 0.6, 0.3), "eye"),
-        cube((-1.8, -0.7, -8.4), (3.6, 1.9, 3.5), "skull"),                    # long upper jaw
-        cube((-1.3, -0.5, -9.8), (2.6, 1.5, 1.6), "skull"),                    # snout tip
-        cube((-0.55, 0.9, -9.4), (1.1, 0.7, 4.6), "bone_mid", rot=(-8, 0, 0)),  # nasal ridge
-        cube((-0.9, 0.2, -9.85), (1.8, 0.5, 0.12), "socket"),                  # nostrils
-        cube((-1.4, -0.75, -8.2), (2.8, 0.15, 7.6), "mouth"),                  # palate seen through the open jaw
+    """Head after the reference's head studies: a skull face (heavy brow, deep sockets, a nose hole, a short
+    muzzle) under a tall ridged dome swept up and back, a long jaw hanging wide open down to a pointed, spiked chin,
+    long fangs above and below, horns curving up the sides of the dome like a cage, and spikes fanning from the
+    cheeks and jaw."""
+    h = bone("head", (0, 0.4, -5.2), (-14, 0, 0), [
+        cube((-2.5, -0.6, -5.0), (5.0, 4.0, 4.8), "skull"),                    # cranium and face
+        cube((-2.2, 3.2, -4.7), (4.4, 2.6, 4.4), "skull", rot=(12, 0, 0)),    # the dome, rising up and back
+        cube((-1.7, 5.4, -4.0), (3.4, 2.3, 3.6), "skull", rot=(20, 0, 0)),
+        cube((-1.1, 7.3, -3.1), (2.2, 1.7, 2.6), "skull", rot=(28, 0, 0)),
+        cube((-0.25, 3.0, -5.0), (0.5, 5.6, 0.6), "bone_mid", rot=(18, 0, 0)),  # ridge up the front of the dome
+        cube((-1.6, 3.1, -4.7), (0.4, 4.0, 0.5), "bone_mid", rot=(16, 0, 10)),
+        cube((1.2, 3.1, -4.7), (0.4, 4.0, 0.5), "bone_mid", rot=(16, 0, -10)),
+        cube((-2.9, 2.2, -5.45), (5.8, 1.1, 1.4), "bone_mid"),                # heavy brow
+        cube((-2.25, 0.85, -5.12), (1.8, 1.45, 0.2), "socket"),               # deep eye sockets
+        cube((0.45, 0.85, -5.12), (1.8, 1.45, 0.2), "socket"),
+        cube((-1.6, 1.35, -5.18), (0.5, 0.45, 0.08), "eye"),
+        cube((1.1, 1.35, -5.18), (0.5, 0.45, 0.08), "eye"),
+        cube((-0.55, -0.1, -5.12), (1.1, 0.8, 0.2), "socket"),                # nose hole
+        cube((-0.3, -0.45, -5.12), (0.6, 0.4, 0.2), "socket"),
+        cube((-1.9, -1.6, -5.8), (3.8, 1.3, 1.6), "skull"),                   # short upper muzzle
+        cube((-1.7, -1.75, -5.6), (3.4, 0.15, 3.6), "mouth"),                 # roof of the mouth
     ])
     for x in (-1, 1):
         s = "r" if x > 0 else "l"
-        h.add(cube((x * 2.2 - (1.1 if x > 0 else 0), -0.2, -5.0), (1.1, 1.5, 3.4), "bone", rot=(0, -x * 18, 0)))   # cheekbones
-        for k, z in enumerate((-9.3, -8.4, -7.5, -6.6, -5.7)):
-            L = 2.4 if k == 0 else 1.7 - k * 0.1
-            h.add(cube((x * 1.45 - 0.2, -0.7 - L, z), (0.4, L, 0.4), "fang", rot=(0, 0, -x * 4)))
-        # The horn cage: a long horn sweeping back from each temple, a shorter one from each cheek.
-        h.add(bone(f"horn_{s}", (x * 2.2, 2.6, -3.6), (55, 0, -x * 32),
-                   [cube((-0.6, 0, -0.6), (1.2, 3.2, 1.2), "bone")], [
-                       bone(f"horn_{s}_b", (0, 3.2, 0), (22, 0, x * 16), [cube((-0.45, 0, -0.45), (0.9, 2.8, 0.9), "bone")], [
-                           bone(f"horn_{s}_c", (0, 2.8, 0), (24, 0, x * 12), [cube((-0.3, 0, -0.3), (0.6, 2.4, 0.6), "barb")])])]))
-        h.add(bone(f"cheekhorn_{s}", (x * 2.4, 0.6, -2.4), (72, 0, -x * 62),
-                   [cube((-0.4, 0, -0.4), (0.8, 2.4, 0.8), "bone")], [
-                       bone(f"cheekhorn_{s}_b", (0, 2.4, 0), (24, 0, x * 10), [cube((-0.28, 0, -0.28), (0.56, 2.0, 0.56), "barb")])]))
-    for k, x in enumerate((-1.6, -0.8, 0, 0.8, 1.6)):
-        h.add(barb(f"crown_{k}", (x, 3.4, -1.6), (62 + abs(x) * 4, 0, -x * 14), 4.4 - abs(x) * 0.6, 0.85))
-    jaw = bone("jaw", (0, -0.9, -3.6), (30, 0, 0), [
-        cube((-1.6, -1.1, -6.0), (3.2, 1.0, 6.0), "bone_mid"),
-        cube((-1.15, -1.0, -6.8), (2.3, 0.9, 0.9), "bone_mid"),
-        cube((-1.3, -0.15, -5.7), (2.6, 0.15, 5.2), "mouth"),
-    ])
+        h.add(cube((x * 2.4 - (1.3 if x > 0 else 0), -1.0, -4.9), (1.3, 1.8, 3.0), "bone", rot=(0, -x * 22, -x * 10)))  # cheekbones
+        for k, (xx, L) in enumerate(((1.5, 3.0), (0.95, 2.2), (0.35, 1.8))):
+            h.add(cube((x * xx - 0.22, -1.6 - L, -5.6), (0.44, L, 0.44), "fang", rot=(-6, 0, -x * 5)))  # upper fangs
+        for k, z in enumerate((-4.6, -3.6)):
+            h.add(cube((x * 1.7 - 0.2, -1.6 - 1.6, z), (0.4, 1.6, 0.4), "fang"))
+        # The cage: a long horn from each temple, curving up the side of the dome and in over it.
+        h.add(bone(f"horn_{s}", (x * 2.6, 2.4, -3.0), (6, 0, -x * 38),
+                   [cube((-0.65, 0, -0.65), (1.3, 3.8, 1.3), "bone")], [
+                       bone(f"horn_{s}_b", (0, 3.8, 0), (8, 0, x * 22), [cube((-0.5, 0, -0.5), (1.0, 3.6, 1.0), "bone")], [
+                           bone(f"horn_{s}_c", (0, 3.6, 0), (10, 0, x * 24), [cube((-0.38, 0, -0.38), (0.76, 3.0, 0.76), "bone")], [
+                               bone(f"horn_{s}_d", (0, 3.0, 0), (10, 0, x * 22), [cube((-0.25, 0, -0.25), (0.5, 2.6, 0.5), "barb")])])])]))
+        # Spikes fanning out and down from the cheeks.
+        for k, (ang, L) in enumerate(((-70, 2.6), (-105, 3.0), (-135, 2.4))):
+            h.add(barb(f"cheek_spike_{s}{k}", (x * 3.0, 0.0 - k * 0.3, -3.6 + k * 0.5), (0, 0, x * ang), L, 0.7))
+    for k, x in enumerate((-1.0, 0, 1.0)):
+        h.add(barb(f"crown_{k}", (x, 8.2 - abs(x) * 0.8, -1.4), (38 + abs(x) * 8, 0, -x * 18), 3.2 - abs(x) * 0.6, 0.8))
+    for k, x in enumerate((-1.6, 1.6)):
+        h.add(barb(f"dome_spike_{k}", (x, 6.0, -1.0), (50, 0, -x * 16), 2.6, 0.75))
+    jaw = bone("jaw", (0, -1.2, -1.6), (-38, 0, 0), [
+        cube((-1.9, -1.3, -4.4), (3.8, 1.3, 4.4), "bone_mid"),                # long lower jaw
+        cube((-1.4, -1.45, -5.9), (2.8, 1.35, 1.6), "bone_mid"),
+        cube((-0.65, -1.7, -6.9), (1.3, 1.4, 1.2), "bone_mid", rot=(-18, 0, 0)),  # pointed chin
+        cube((-1.6, -0.05, -5.7), (3.2, 0.15, 5.0), "mouth"),
+    ], [barb("chin_spike_l", (-0.4, -1.6, -6.6), (-150, 0, -12), 2.4, 0.6),
+        barb("chin_spike_r", (0.4, -1.6, -6.6), (-150, 0, 12), 2.4, 0.6)])
     for x in (-1, 1):
-        for k, z in enumerate((-6.4, -5.4, -4.4, -3.4)):
-            L = 1.8 if k == 0 else 1.2
-            jaw.add(cube((x * 1.25 - 0.2, -0.1, z), (0.4, L, 0.4), "fang"))
-        jaw.add(cube((x * 1.6 - (0.5 if x > 0 else 0), -1.0, -3.0), (0.5, 0.9, 3.0), "bone"))   # jaw hinge
+        s = "r" if x > 0 else "l"
+        for k, (z, L) in enumerate(((-6.2, 2.6), (-5.2, 2.2), (-4.2, 1.8), (-3.2, 1.4))):
+            jaw.add(cube((x * (1.2 - k * 0.05 if k else 0.6) - 0.21, -0.05, z), (0.42, L, 0.42), "fang", rot=(6, 0, x * 4)))
+        jaw.add(barb(f"jaw_spike_{s}", (x * 1.9, -0.8, -3.0), (0, 0, -x * 120), 2.2, 0.6))
     h.add(jaw)
     return h
 
@@ -293,12 +307,12 @@ def p_membrane(ctx):
 
 
 def p_socket(ctx):
-    return ctx.col("shadow")
+    return shade(ctx.col("shadow"), 0.6 if 0 < ctx.x < ctx.w - 1 and 0 < ctx.y < ctx.h - 1 else 0.9)
 
 
 def p_eye(ctx):
     c = ctx.col("eye")
-    return ("glow", mix(c, hexc("ffffff"), 0.35) if (ctx.x + ctx.y) % 3 == 0 else c)
+    return ("glow", c)
 
 
 def p_mouth(ctx):
@@ -325,7 +339,7 @@ def idle(t):
     p = 3.2
     out = {"body": {"pos": (0, 0.25 * _w(t, p), 0)},
            "neck": {"rot": (3 * _w(t, p, 0.1), 4 * _w(t, p * 2), 0)},
-           "jaw": {"rot": (5 + 5 * _w(t, p / 2), 0, 0)},
+           "jaw": {"rot": (-3 - 3 * _w(t, p / 2), 0, 0)},
            "wing_r": {"rot": (0, 0, -3 * _w(t, p))}, "wing_l": {"rot": (0, 0, 3 * _w(t, p))},
            "hindwing_r": {"rot": (0, 0, -2 * _w(t, p, 0.2))}, "hindwing_l": {"rot": (0, 0, 2 * _w(t, p, 0.2))}}
     for i in range(len(TAIL_CURL)):
@@ -343,7 +357,7 @@ def walk(t):
            "forearm_r": {"rot": (-24 * lift_a, 0, 0)}, "shin_l": {"rot": (20 * lift_a, 0, 0)},
            "forearm_l": {"rot": (-24 * lift_b, 0, 0)}, "shin_r": {"rot": (20 * lift_b, 0, 0)},
            "neck": {"rot": (4 * _w(t, p / 2, 0.25), 0, 0)},
-           "jaw": {"rot": (6, 0, 0)}}
+           "jaw": {"rot": (-4, 0, 0)}}
     for i in range(len(TAIL_CURL)):
         out[f"tail_{i}"] = {"rot": (0, 7 * _w(t, p, i * 0.06), 0)}
     return out
@@ -354,7 +368,7 @@ def attack(t):
     k = math.sin(math.pi * min(1.0, t / L))                                  # 0 -> 1 -> 0
     strike = math.sin(math.pi * min(1.0, max(0.0, (t - 0.15) / 0.5)))
     out = {"body": {"pos": (0, -0.3 * k, -2.0 * strike), "rot": (-4 * strike, 0, 0)},
-           "neck": {"rot": (-10 * k, 0, 0)}, "jaw": {"rot": (14 * k, 0, 0)},
+           "neck": {"rot": (-10 * k, 0, 0)}, "jaw": {"rot": (-14 * k, 0, 0)},
            "wing_r": {"rot": (0, 0, -16 * k + 6 * _w(t, 0.2))}, "wing_l": {"rot": (0, 0, 16 * k - 6 * _w(t, 0.2))},
            "hindwing_r": {"rot": (0, 0, -12 * k + 6 * _w(t, 0.2, 0.5))}, "hindwing_l": {"rot": (0, 0, 12 * k - 6 * _w(t, 0.2, 0.5))},
            "arm_r": {"rot": (-14 * strike, 0, 0)}, "arm_l": {"rot": (-14 * strike, 0, 0)},
