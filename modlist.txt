@@ -3,6 +3,9 @@
 # One slug per line; anything after '#' is a comment. The build script tolerates
 # slugs that fail to resolve and reports them, so the pack always builds.
 
+# --- Libraries Warfront needs ---------------------------------------------
+geckolib                 # Warfront's high-detail animated models
+
 # --- Performance -----------------------------------------------------------
 sodium
 iris

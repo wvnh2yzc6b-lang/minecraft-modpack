@@ -27,6 +27,13 @@ versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.warfront]]
+modId = "geckolib"
+type = "required"
+versionRange = "[4.5,)"
+ordering = "NONE"
+side = "BOTH"
+
 [[accessTransformers]]
 file = "META-INF/accesstransformer.cfg"
 

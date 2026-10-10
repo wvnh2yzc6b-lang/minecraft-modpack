@@ -55,7 +55,7 @@ import java.util.*;
  * A recruitable (or hostile) soldier. All roles share this entity; the role decides loadout,
  * stats and which AI goals are active.
  */
-public class SoldierEntity extends PathfinderMob {
+public class SoldierEntity extends PathfinderMob implements software.bernie.geckolib.animatable.GeoEntity {
     private static final EntityDataAccessor<Integer> DATA_ROLE =
             SynchedEntityData.defineId(SoldierEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_SKIN =
@@ -1124,6 +1124,7 @@ public class SoldierEntity extends PathfinderMob {
     public boolean doHurtTarget(Entity target) {
         boolean hit = super.doHurtTarget(target);
         if (hit && race == Race.DEMON) target.igniteForSeconds(3.0F);
+        if (hit) GeoAnims.attacked(this);
         // The Bone Stalker's sting: poison that slows.
         if (hit && getBody() == com.warfront.army.UnitBody.BONE_STALKER && target instanceof LivingEntity stung) {
             stung.addEffect(new MobEffectInstance(MobEffects.POISON, 80, 1), this);
@@ -1346,5 +1347,20 @@ public class SoldierEntity extends PathfinderMob {
         if (tag.contains("WorkItems")) workItems.fromTag(tag.getList("WorkItems", net.minecraft.nbt.Tag.TAG_COMPOUND), registryAccess());
         blueprint = tag.contains("Blueprint")
                 ? Blueprint.load(tag.getCompound("Blueprint"), level().holderLookup(net.minecraft.core.registries.Registries.BLOCK)) : null;
+    }
+
+    // ------------------------------------------------------------------ GeckoLib (high-detail models)
+
+    private final software.bernie.geckolib.animatable.instance.AnimatableInstanceCache geoCache =
+            software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(software.bernie.geckolib.animation.AnimatableManager.ControllerRegistrar controllers) {
+        GeoAnims.register(this, controllers);
+    }
+
+    @Override
+    public software.bernie.geckolib.animatable.instance.AnimatableInstanceCache getAnimatableInstanceCache() {
+        return geoCache;
     }
 }

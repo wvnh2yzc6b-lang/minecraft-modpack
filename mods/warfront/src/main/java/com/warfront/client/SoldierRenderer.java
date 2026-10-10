@@ -41,13 +41,13 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
     public SoldierRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new SoldierModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5F);
         for (String id : com.warfront.client.model.UnitGeometry.all().keySet()) {
-            var part = id.startsWith("imp") || id.startsWith("hive_") || id.equals("angel_moa") || id.equals("demon_beast") ? ctx.bakeLayer(WFModelLayers.of(id)) : null;
+            var part = id.startsWith("imp") || id.startsWith("hive_") || id.equals("angel_moa") ? ctx.bakeLayer(WFModelLayers.of(id)) : null;
             if (id.startsWith("imp")) creatures.put(id, new CreatureRenderer<>(ctx, new ImpModel(part), 0.35F, id));
             else if (id.equals("hive_lancer")) creatures.put(id, new CreatureRenderer<>(ctx, new LancerModel(part), 0.5F, id));
             else if (id.equals("hive_beast")) creatures.put(id, new CreatureRenderer<>(ctx, new HiveBeastModel(part), 1.0F, id));
-            else if (id.equals("demon_beast")) creatures.put(id, new CreatureRenderer<>(ctx, new com.warfront.client.model.BoneStalkerModel(part), 0.9F, id));
             else if (id.equals("angel_moa")) creatures.put(id, new CreatureRenderer<>(ctx, new com.warfront.client.model.MoaModel(part), 0.8F, id));
         }
+        geo.put("demon_beast", new com.warfront.client.geo.SoldierGeoRenderer(ctx, "demon_beast", 0.9F));
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
@@ -56,6 +56,9 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
         this.addLayer(new RankLayer(this, ctx.getModelSet()));
         this.addLayer(new FactionTrimLayer(this, ctx.getModelSet()));
     }
+
+    /** High-detail GeckoLib models, by variant name. */
+    private final java.util.Map<String, com.warfront.client.geo.SoldierGeoRenderer> geo = new java.util.HashMap<>();
 
     private CreatureRenderer<?> creatureFor(SoldierEntity entity) {
         UnitBody body = entity.getBody();
@@ -72,8 +75,11 @@ public class SoldierRenderer extends HumanoidMobRenderer<SoldierEntity, SoldierM
             poseStack.translate(0.0, 0.25, 0.0);
             poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(90.0F));
         }
-        CreatureRenderer<?> creature = creatureFor(entity);
-        if (creature != null) creature.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        com.warfront.client.geo.SoldierGeoRenderer hd = com.warfront.entity.GeoAnims.usesGeo(entity.getBody())
+                ? geo.get(entity.getBody().variant(entity.getRole())) : null;
+        CreatureRenderer<?> creature = hd != null ? null : creatureFor(entity);
+        if (hd != null) hd.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        else if (creature != null) creature.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         else super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
         if (fallen) poseStack.popPose();
     }
