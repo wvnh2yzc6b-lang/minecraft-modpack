@@ -64,6 +64,22 @@ def mirror(b, swap=("_r", "_l")):
     return out
 
 
+def scale_tree(b, s, keep=()):
+    """Scales a bone tree about the model origin. Bones named in `keep` move with their parent (their pivot is
+    scaled) but keep their own size, and so does everything under them."""
+    b.pivot = [v * s for v in b.pivot]
+    if b.name in keep:
+        return b
+    for c in b.cubes:
+        c.origin = [v * s for v in c.origin]
+        c.size = [v * s for v in c.size]
+        if c.pivot:
+            c.pivot = [v * s for v in c.pivot]
+    for ch in b.children:
+        scale_tree(ch, s, keep)
+    return b
+
+
 def walk(b, parent=None, base=(0, 0, 0)):
     """Yields (bone, parent name, absolute pivot) depth first."""
     abs_pivot = [base[i] + b.pivot[i] for i in range(3)]

@@ -536,7 +536,7 @@ public class SoldierEntity extends PathfinderMob implements software.bernie.geck
             return EntityDimensions.scalable(1.1F, 1.7F).withEyeHeight(1.45F);
         }
         if (entityData != null && getBody() == com.warfront.army.UnitBody.BONE_STALKER) {
-            return EntityDimensions.scalable(1.2F, 1.8F).withEyeHeight(1.2F);
+            return EntityDimensions.scalable(1.5F, 2.3F).withEyeHeight(1.7F);
         }
         if (entityData != null && getBody() == com.warfront.army.UnitBody.MOA) {
             return EntityDimensions.scalable(0.9F, 2.5F).withEyeHeight(2.3F);
