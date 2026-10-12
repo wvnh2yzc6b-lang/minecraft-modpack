@@ -96,27 +96,30 @@ def skull():
         cube((-2.6, -1.0, -4.8), (5.2, 3.6, 5.0), "skull"),                    # back of the skull
         cube((-2.4, -0.5, -5.1), (4.8, 2.9, 0.5), "skull"),                    # face the sockets sink into
         cube((-0.42, 0.45, -5.55), (0.84, 1.85, 0.7), "bone"),                 # bridge between the sockets
-        cube((-1.3, -1.55, -6.05), (2.6, 1.3, 1.45), "skull"),                 # narrow upper jaw
-        cube((-1.35, -1.78, -6.05), (2.7, 0.25, 1.35), "gum"),
-        cube((-1.8, -1.7, -5.6), (3.6, 0.12, 4.4), "mouth"),                   # roof of the mouth
+        cube((-0.75, -1.3, -6.1), (1.5, 1.1, 1.5), "skull"),                   # upper jaw, lifted in a snarl
+        cube((-0.75, -1.5, -6.05), (1.5, 0.22, 1.35), "gum"),
+        cube((-1.8, -1.45, -5.6), (3.6, 0.12, 4.4), "mouth"),                  # roof of the mouth
     ])
     for x in (-1, 1):
         s = "r" if x > 0 else "l"
 
         def X(x0, w):                                                          # mirror a box across the middle
             return x0 if x > 0 else -(x0 + w)
-        h.add(cube((X(0.36, 2.05), 0.5, -5.2), (2.05, 1.55, 0.15), "socket", rot=(0, 0, x * 10)),
-              cube((X(0.9, 0.52), 0.95, -5.25), (0.52, 0.34, 0.06), "eye", rot=(0, 0, x * 10)),
+        h.add(cube((X(0.36, 2.05), 0.5, -5.2), (2.05, 1.55, 0.15), "socket", rot=(0, 0, x * 16)),
+              cube((X(0.9, 0.52), 0.95, -5.25), (0.52, 0.34, 0.06), "eye", rot=(0, 0, x * 18)),
               cube((X(0.0, 0.55), -0.32, -5.2), (0.55, 0.75, 0.12), "socket", rot=(0, 0, -x * 14)),  # nose hole
-              cube((X(0.05, 2.95), 2.0, -5.85), (2.95, 0.95, 1.75), "brow", rot=(0, 0, x * 15)),     # the brow, in a V
+              cube((X(0.05, 2.95), 1.85, -5.85), (2.95, 0.95, 1.75), "brow", rot=(0, 0, x * 21)),    # the brow, in a V
               cube((X(0.45, 2.5), -0.4, -5.6), (2.5, 0.85, 2.2), "bone", rot=(0, -x * 12, -x * 8)),  # cheekbone
               cube((X(2.45, 0.6), -0.3, -4.4), (0.6, 0.75, 3.6), "bone", rot=(0, -x * 6, 0)),       # arch back to the ear
               cube((X(2.25, 0.55), 0.35, -5.5), (0.55, 1.95, 1.2), "bone", rot=(0, -x * 18, -x * 8)),  # outer rim
-              cube((X(0.9, 1.3), -1.5, -5.65), (1.3, 1.2, 3.6), "skull", rot=(0, x * 10, 0)),      # sides of the upper jaw
-              cube((X(0.95, 1.2), -1.72, -5.6), (1.2, 0.22, 3.4), "gum", rot=(0, x * 10, 0)))
-        for k, (xx, z, L, w) in enumerate(((0.3, -5.85, 1.5, 0.42), (0.82, -5.75, 2.3, 0.52), (1.32, -5.45, 4.2, 0.82),
-                                           (1.68, -4.8, 2.5, 0.56), (1.88, -4.0, 1.9, 0.48), (2.0, -3.2, 1.4, 0.42))):
-            h.add(fang(f"fang_up_{s}{k}", (x * xx, -1.7, z), (-4, 0, -x * 5), L, w, curve=4))
+              cube((X(0.6, 0.85), -1.75, -6.0), (0.85, 1.5, 1.6), "skull"),                         # low over the canines
+              cube((X(0.6, 0.85), -1.95, -5.95), (0.85, 0.22, 1.45), "gum"),
+              cube((X(0.9, 1.3), -1.7, -5.65), (1.3, 1.4, 3.6), "skull", rot=(0, x * 10, 0)),      # sides of the upper jaw
+              cube((X(0.95, 1.2), -1.92, -5.6), (1.2, 0.22, 3.4), "gum", rot=(0, x * 10, 0)))
+        for k, (xx, y, z, L, w) in enumerate(((0.3, -1.45, -5.85, 1.5, 0.42), (0.82, -1.9, -5.75, 2.3, 0.52),
+                                              (1.32, -1.9, -5.45, 4.2, 0.82), (1.68, -1.9, -4.8, 2.5, 0.56),
+                                              (1.88, -1.9, -4.0, 1.9, 0.48), (2.0, -1.9, -3.2, 1.4, 0.42))):
+            h.add(fang(f"fang_up_{s}{k}", (x * xx, y, z), (-4, 0, -x * 5), L, w, curve=4))
         h.add(horn(f"horn_{s}", (x * 2.7, 0.9, -3.0), (20, 0, -x * 20), 10.0, 1.25, (6, 0, x * 12)))
         for k in range(3):                                                    # spikes fanning out from the cheeks
             h.add(taper(f"cheek_spike_{s}{k}", (x * 2.9, 0.3 - k * 0.5, -3.8 + k * 1.1), (30 + k * 10, 0, -x * (58 + k * 34)),
@@ -145,21 +148,23 @@ def skull():
                        ("crest", "crest", "crest_tip"), curve=9))
     h.add(dome)
 
-    jaw = bone("jaw", (0, -1.3, -1.4), (-36, 0, 0), [
-        cube((-1.4, -0.95, -5.8), (2.8, 0.5, 5.4), "mouth"),                  # the dark inside of the mouth
-        cube((-1.1, -1.5, -6.95), (2.2, 1.45, 1.4), "bone_mid"),              # front of the jaw
-        cube((-1.2, -0.1, -6.85), (2.4, 0.22, 1.2), "gum"),
-        cube((-0.6, -1.9, -7.95), (1.2, 1.5, 1.4), "bone_mid", rot=(-20, 0, 0)),  # pointed chin
+    jaw = bone("jaw", (0, -1.3, -1.4), (-46, 0, 0), [
+        cube((-1.6, -0.95, -5.8), (3.2, 0.5, 5.4), "mouth"),                  # the dark inside of the mouth
+        cube((-1.5, -1.5, -6.95), (3.0, 1.45, 1.4), "bone_mid"),              # front of the jaw
+        cube((-1.5, -0.1, -6.85), (3.0, 0.22, 1.2), "gum"),
+        cube((-0.75, -1.9, -7.95), (1.5, 1.5, 1.4), "bone_mid", rot=(-20, 0, 0)),  # pointed chin
     ], [taper("chin_spike_m", (0, -2.4, -8.0), (-152, 0, 0), 3.4, 0.85, ("crest", "crest", "crest_tip"), curve=-8),
         taper("chin_spike_l", (-0.5, -2.0, -7.6), (-150, 0, -22), 2.4, 0.65, ("crest", "crest", "crest_tip"), curve=-8),
         taper("chin_spike_r", (0.5, -2.0, -7.6), (-150, 0, 22), 2.4, 0.65, ("crest", "crest", "crest_tip"), curve=-8)])
     for x in (-1, 1):
         s = "r" if x > 0 else "l"
-        jaw.add(cube(((1.0 if x > 0 else -2.0), -1.4, -6.2), (1.0, 1.4, 6.6), "bone_mid", rot=(0, x * 9, 0)),  # jawbone
-                cube(((1.0 if x > 0 else -1.9), -0.1, -6.0), (0.9, 0.22, 5.0), "gum", rot=(0, x * 9, 0)))
-        for k, (xx, z, L, w) in enumerate(((0.35, -6.55, 1.4, 0.42), (0.85, -6.15, 3.1, 0.66), (1.22, -5.4, 2.1, 0.5),
-                                           (1.42, -4.5, 1.7, 0.45), (1.58, -3.6, 1.3, 0.4))):
+        jaw.add(cube(((1.1 if x > 0 else -2.1), -1.4, -6.2), (1.0, 1.4, 6.6), "bone_mid", rot=(0, x * 2, 0)),  # jawbone
+                cube(((1.15 if x > 0 else -2.05), -0.1, -6.0), (0.9, 0.22, 5.0), "gum", rot=(0, x * 2, 0)))
+        for k, (xx, z, L, w) in enumerate(((0.4, -6.55, 1.4, 0.42), (1.05, -6.3, 3.1, 0.66), (1.5, -5.4, 2.1, 0.5),
+                                           (1.6, -4.5, 1.7, 0.45), (1.65, -3.6, 1.3, 0.4))):
             jaw.add(fang(f"fang_dn_{s}{k}", (x * xx, 0.05, z), (30, 0, x * 5), L, w, up=True, curve=-4))
+        for a in (12, 34, 56):                                               # flesh closing the mouth corners
+            jaw.add(cube(((1.85 if x > 0 else -2.1), -0.7, -4.0), (0.25, 1.4, 4.0), "sinew", rot=(a, 0, 0), pivot=(0, 0, 0)))
         for k in range(2):
             jaw.add(taper(f"jaw_spike_{s}{k}", (x * 2.0, -0.8, -2.4 - k * 1.8), (20 + k * 10, 0, -x * (115 + k * 15)),
                           3.4 - k * 0.6, 0.75, ("crest", "crest", "crest_tip"), curve=-8))
@@ -403,6 +408,14 @@ def p_gum(ctx):
     return shade(mix(ctx.col("mouth"), ctx.col("red_dark"), ctx.rng.uniform(0.35, 0.85)), ctx.rng.uniform(0.85, 1.1))
 
 
+def p_sinew(ctx):
+    # The flesh at the corners of the mouth: dark and wet, stretched into pale strands across the gape.
+    c = mix(ctx.col("mouth"), ctx.col("red_dark"), ctx.rng.uniform(0.3, 0.8))
+    if ctx.wall and (ctx.x + ctx.y // 3) % 3 == 0:
+        c = mix(c, ctx.col("bone_mid"), 0.3 + ctx.rng.uniform(0, 0.15))
+    return shade(c, ctx.rng.uniform(0.85, 1.05))
+
+
 def p_fang_root(ctx):
     # Teeth are bloodied at the gum: the root end of the first piece runs from dark red into ivory.
     down = ctx.cube.origin[1] < 0
@@ -504,7 +517,7 @@ def p_innards(ctx):
 
 
 PAINTERS = {"skin": p_skin, "skin_dark": p_skin_dark, "chest": p_chest, "belly": p_belly, "crest": p_crest,
-            "crest_tip": p_crest_tip, "tail_red": p_tail_red, "bone": p_bone("bone"), "bone_mid": p_bone("bone_mid"), "bone_dark": p_bone("bone_dark"), "skull": p_skull, "dome": p_dome, "brow": p_brow, "gum": p_gum, "fang_root": p_fang_root,
+            "crest_tip": p_crest_tip, "tail_red": p_tail_red, "bone": p_bone("bone"), "bone_mid": p_bone("bone_mid"), "bone_dark": p_bone("bone_dark"), "skull": p_skull, "dome": p_dome, "brow": p_brow, "gum": p_gum, "sinew": p_sinew, "fang_root": p_fang_root,
             "vertebra": p_vertebra, "rib": p_rib, "barb": p_barb, "barb_root": p_barb_root, "talon": p_talon,
             "fang": p_fang, "venom": p_venom, "strut": p_strut, "membrane": p_membrane, "socket": p_socket,
             "eye": p_eye, "mouth": p_mouth, "innards": p_innards}

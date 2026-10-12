@@ -101,6 +101,10 @@ These drive the soldier models (3D parts), skins and unit sizes.
   fanning out each side, a narrow upper jaw; the long lower jaw hangs wide open in a V to a pointed chin with a
   beard of three spikes. Six fangs a side above, five below, longest at the canines, dark red at the gums. The head
   tips down so the face looks forward and down. Compare: `demon-beast-head-compare.png`.
+- **Snarl, not a grin (owner, 2026-10-12: "looks too much like it's smiling"):** the upper lip lifts over the front
+  teeth and drops at the canines; the lower jaw hangs further open with straight sides and a squared front, so the
+  mouth gapes tall instead of curving up; dark flesh with pale strands closes the corners of the mouth; the brow
+  and eyes slant harder into a scowl.
 - **Built as the Bone Stalker** (`tools/bone_stalker.py`, render `demon-beast-render.png`): the torso pitches forward
   so it prowls low on long arms with bent-out elbows; four wings (two long, two short) fan up and back from the
   shoulders; the tail runs back then curls up over the body to the stinger. Burning Horde version: soot-stained bone
